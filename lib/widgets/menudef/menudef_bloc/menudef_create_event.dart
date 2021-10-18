@@ -1,0 +1,159 @@
+import 'package:eliud_core/model/dialog_model.dart';
+import 'package:eliud_core/model/menu_def_model.dart';
+import 'package:eliud_core/model/menu_item_model.dart';
+import 'package:eliud_core/model/page_model.dart';
+import 'package:equatable/equatable.dart';
+
+abstract class MenuDefCreateEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class MenuDefCreateInitialiseEvent extends MenuDefCreateEvent {
+  final MenuDefModel menuDefModel;
+
+  MenuDefCreateInitialiseEvent(this.menuDefModel);
+
+  @override
+  List<Object?> get props => [menuDefModel];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MenuDefCreateInitialiseEvent &&
+          menuDefModel == other.menuDefModel;
+}
+
+class MenuDefCreateAddMenuItemForPage extends MenuDefCreateEvent {
+  final PageModel pageModel;
+
+  MenuDefCreateAddMenuItemForPage(this.pageModel);
+
+  @override
+  List<Object?> get props => [pageModel];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is MenuDefCreateAddMenuItemForPage && pageModel == other.pageModel;
+}
+
+class MenuDefCreateAddMenuItemForDialog extends MenuDefCreateEvent {
+  final DialogModel dialogModel;
+
+  MenuDefCreateAddMenuItemForDialog(this.dialogModel);
+
+  @override
+  List<Object?> get props => [dialogModel];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is MenuDefCreateAddMenuItemForDialog && dialogModel == other.dialogModel;
+}
+
+class MenuDefRefreshDialogs extends MenuDefCreateEvent {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is MenuDefRefreshDialogs;
+}
+
+class MenuDefRefreshPages extends MenuDefCreateEvent {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is MenuDefRefreshPages;
+}
+
+class MenuDefCreateAddLogin extends MenuDefCreateEvent {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) => identical(this, other);
+}
+
+class MenuDefCreateAddLogout extends MenuDefCreateEvent {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) => identical(this, other);
+}
+
+class MenuDefCreateAddOtherApps extends MenuDefCreateEvent {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) => identical(this, other);
+}
+
+class MenuDefCreateDeleteMenuItemFromIndex extends MenuDefCreateEvent {
+  final int index;
+
+  MenuDefCreateDeleteMenuItemFromIndex(this.index);
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MenuDefCreateDeleteMenuItemFromIndex && index == other.index;
+}
+
+class MenuDefCreateDeleteMenuItem extends MenuDefCreateEvent {
+  final MenuItemModel menuItemModel;
+
+  MenuDefCreateDeleteMenuItem(this.menuItemModel);
+  @override
+  List<Object?> get props => [menuItemModel];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MenuDefCreateDeleteMenuItem &&
+          menuItemModel == other.menuItemModel;
+}
+
+enum MoveMenuItemDirection { Up, Down }
+
+class MenuDefMoveMenuItem extends MenuDefCreateEvent {
+  final MenuItemModel menuItemModel;
+  final MoveMenuItemDirection moveMenuItemDirection;
+
+  MenuDefMoveMenuItem(this.menuItemModel, this.moveMenuItemDirection);
+  @override
+  List<Object?> get props => [menuItemModel, moveMenuItemDirection];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is MenuDefMoveMenuItem &&
+              moveMenuItemDirection == other.moveMenuItemDirection &&
+              menuItemModel == other.menuItemModel;
+}
+
+class MenuDefUpdateMenuItem extends MenuDefCreateEvent {
+  final MenuItemModel beforeMenuItemModel;
+  final MenuItemModel afterMenuItemModel;
+
+  MenuDefUpdateMenuItem(this.beforeMenuItemModel, this.afterMenuItemModel);
+
+  @override
+  List<Object?> get props => [beforeMenuItemModel, afterMenuItemModel];
+
+  @override
+  bool operator ==(Object other) => identical(this, other)||
+      other is MenuDefUpdateMenuItem &&
+          beforeMenuItemModel == other.beforeMenuItemModel &&
+          afterMenuItemModel == other.afterMenuItemModel;
+}
+

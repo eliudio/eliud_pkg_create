@@ -1,0 +1,55 @@
+name: eliud_pkg_create
+description: Eliud package for app creator
+version: 0.0.1
+author:
+homepage:
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  eliud_core:
+    path: ../eliud_core
+
+  eliud_pkg_etc:
+    path: ../eliud_pkg_etc
+
+  eliud_pkg_text:
+    path: ../eliud_pkg_text
+
+  eliud_pkg_medium:
+    path: ../eliud_pkg_medium
+
+  eliud_pkg_follow:
+    path: ../eliud_pkg_follow
+
+dev_dependencies:
+  build_runner: "1.11.5"
+
+  eliud_generator:
+    path: ../eliud_generator
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - packages/eliud_pkg_create/assets/new_app/legal/policies.pdf
+    - packages/eliud_pkg_create/assets/annoyed.png
+    - packages/eliud_pkg_create/assets/angry.png
+    - packages/eliud_pkg_create/assets/embarassed.png
+    - packages/eliud_pkg_create/assets/excited.png
+    - packages/eliud_pkg_create/assets/frustrated.png
+    - packages/eliud_pkg_create/assets/happy.png
+    - packages/eliud_pkg_create/assets/lonely.png
+    - packages/eliud_pkg_create/assets/loved.png
+    - packages/eliud_pkg_create/assets/nervous.png
+    - packages/eliud_pkg_create/assets/neutral.png
+    - packages/eliud_pkg_create/assets/sad.png
+    - packages/eliud_pkg_create/assets/scared.png
+    - packages/eliud_pkg_create/assets/sick.png
+    - packages/eliud_pkg_create/assets/stressed.png
+    - packages/eliud_pkg_create/assets/surprised.png
+    - packages/eliud_pkg_create/assets/tired.png
