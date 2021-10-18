@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/tools/app_bar_helper.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/tools/dialog/chat_dialog_helper.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/tools/home_menu_helper.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/tools/left_drawer_helper.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/tools/member_dashboard_helper.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/tools/page/policy_page_helper.dart';
@@ -75,15 +78,8 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
     var newAppId = newApp.documentID!;
     var memberId = member.documentID!;
 
-    // home menu
-    var theHomeMenu = await homeMenu(newAppId, store: true);
-    progressManager.progressedNextStep(); // step 0
-    if (state is NewAppCreateCreateCancelled) return;
-
-    // app bar
-    var theAppBar = await appBar(newAppId);
-    progressManager.progressedNextStep(); // step 1
-    if (state is NewAppCreateCreateCancelled) return;
+    // chat
+    var chatDialogs = await ChatDialogHelper(newApp).create();
 
     // member dashboard
     var memberDashboard = null;
@@ -91,21 +87,21 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
       memberDashboard = await MemberDashboardHelper(newAppId).create();
     }
 
-    // chat
-
     // feed
 
     // shop
 
-    // todo:
-    // 1) LOGO to include in leftDrawerHelper.
-    // 2) request to include shop, feed, chat, default policy, ...
-    // 3)  the idea of ProgressManager should be to register tasks. A task has a size to allow to display progress. A task can be executed. We should be able to interrupt to process. We should probably call it ProcessHelper
+    // home menu
+    var theHomeMenu = await HomeMenuHelper(newAppId, welcomePageId: welcomePageId, feedPageId: feedPageId, shopPageId: shopPageId).create();
+
+    // app bar
+    var theAppBar = await AppBarHelper(newAppId, chatDialogs: chatDialogs).create();
 
     // left drawer
     var leftDrawer = await LeftDrawerHelper(
       newAppId,
       logo: logo,
+      welcomePageId: welcomePageId,
       policyPageId: policyPageId,
       feedPageId: feedPageId,
       shopPageId: shopPageId,
@@ -119,7 +115,6 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
     // policy
     var policyMedium;
     var policyModel;
-    var policyPage;
     if (includeExamplePolicy ?? false) {
       // policy medium
       policyMedium =
@@ -130,13 +125,22 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
           await AppPolicyHelper(newAppId, memberId, policyMedium).create();
 
       // policy page
-      policyPage = await PolicyPageHelper(policyPageId!, newApp, member, theHomeMenu,
-          theAppBar, leftDrawer, rightDrawer, policyMedium, 'Policy').create();
+      await PolicyPageHelper(
+              policyPageId!,
+              newApp,
+              member,
+              theHomeMenu,
+              theAppBar,
+              leftDrawer,
+              rightDrawer,
+              policyMedium,
+              'Policy')
+          .create();
     }
 
     // welcome page
-    var homePage = await WelcomePageHelper(welcomePageId!,
-            newApp, member, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+    var homePage = await WelcomePageHelper(welcomePageId!, newApp, member,
+            theHomeMenu, theAppBar, leftDrawer, rightDrawer)
         .create();
     progressManager.progressedNextStep(); // step 5
     if (state is NewAppCreateCreateCancelled) return;
@@ -146,7 +150,8 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
         documentID: newAppId,
         title: 'New application',
         ownerID: member.documentID,
-        styleFamily: newApp.styleFamily ?? DefaultStyleFamily.defaultStyleFamilyName,
+        styleFamily:
+            newApp.styleFamily ?? DefaultStyleFamily.defaultStyleFamilyName,
         styleName: newApp.styleName ?? DefaultStyle.defaultStyleName,
         email: member.email,
         policies: policyModel,

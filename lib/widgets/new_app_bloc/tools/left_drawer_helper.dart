@@ -20,8 +20,9 @@ class LeftDrawerHelper {
   final String? policyPageId;
   final String? shopPageId;
   final String? feedPageId;
+  final String? welcomePageId;
 
-  LeftDrawerHelper(this.appId, {this.policyPageId, this.logo, this.shopPageId, this.feedPageId, })
+  LeftDrawerHelper(this.appId, {this.welcomePageId, this.policyPageId, this.logo, this.shopPageId, this.feedPageId, })
       : drawerId = drawerID(appId, DrawerType.Left);
 
   Future<DrawerModel> create() async {
@@ -54,10 +55,14 @@ class LeftDrawerHelper {
       documentID: drawerId,
       name: 'Left drawer',
       menuItems: [
+        if (welcomePageId != null)
+          menuItem(appId, welcomePageId, 'Welcome', Icons.rule),
         if (policyPageId != null)
           menuItem(appId, policyPageId, 'Policy', Icons.rule),
         if (shopPageId != null)
           menuItem(appId, shopPageId, 'Shop', Icons.rule),
+        if (feedPageId != null)
+          menuItem(appId, feedPageId, 'Feed', Icons.rule),
       ],
       admin: false,
     );

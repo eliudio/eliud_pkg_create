@@ -26,6 +26,12 @@ dependencies:
   eliud_pkg_follow:
     path: ../eliud_pkg_follow
 
+  eliud_pkg_chat:
+    path: ../eliud_pkg_chat
+
+  eliud_pkg_feed:
+    path: ../eliud_pkg_feed
+
 dev_dependencies:
   build_runner: "1.11.5"
 

@@ -155,6 +155,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.1"
+  chat_bubbles:
+    dependency: transitive
+    description:
+      path: "../../chat_bubbles"
+      relative: true
+    source: path
+    version: "1.1.0"
   checked_yaml:
     dependency: transitive
     description:
@@ -379,10 +386,24 @@ packages:
       relative: true
     source: path
     version: "1.0.0+1"
+  eliud_pkg_chat:
+    dependency: "direct main"
+    description:
+      path: "../eliud_pkg_chat"
+      relative: true
+    source: path
+    version: "0.0.1"
   eliud_pkg_etc:
     dependency: "direct main"
     description:
       path: "../eliud_pkg_etc"
+      relative: true
+    source: path
+    version: "0.0.1"
+  eliud_pkg_feed:
+    dependency: "direct main"
+    description:
+      path: "../eliud_pkg_feed"
       relative: true
     source: path
     version: "0.0.1"
@@ -400,6 +421,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  eliud_pkg_membership:
+    dependency: transitive
+    description:
+      path: "../eliud_pkg_membership"
+      relative: true
+    source: path
+    version: "0.0.1"
   eliud_pkg_notifications:
     dependency: transitive
     description:
@@ -411,6 +439,13 @@ packages:
     dependency: "direct main"
     description:
       path: "../eliud_pkg_text"
+      relative: true
+    source: path
+    version: "0.0.1"
+  eliud_pkg_workflow:
+    dependency: transitive
+    description:
+      path: "../eliud_pkg_workflow"
       relative: true
     source: path
     version: "0.0.1"
@@ -636,6 +671,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  flutter_lints:
+    dependency: transitive
+    description:
+      name: flutter_lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   flutter_markdown:
     dependency: transitive
     description:
@@ -657,6 +699,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.3"
+  flutter_stage:
+    dependency: transitive
+    description:
+      name: flutter_stage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
   flutter_staggered_grid_view:
     dependency: transitive
     description:
@@ -671,11 +720,25 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.22.0"
+  flutter_tagging:
+    dependency: transitive
+    description:
+      name: flutter_tagging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   flutter_test:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_typeahead:
+    dependency: transitive
+    description:
+      name: flutter_typeahead
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -884,6 +947,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.3.0"
+  lints:
+    dependency: transitive
+    description:
+      name: lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   logging:
     dependency: transitive
     description:
