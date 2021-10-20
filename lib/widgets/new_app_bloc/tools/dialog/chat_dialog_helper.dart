@@ -10,10 +10,12 @@ import 'package:eliud_pkg_chat/model/abstract_repository_singleton.dart';
 import 'dialog_helper.dart';
 
 class ChatDialogs {
-  final DialogModel chatUnread;
-  final DialogModel chatReadAndUnread;
+  final DialogModel hasUnreadChatDialog;
+  final DialogModel allMessagesHaveBeenReadChatDialog;
 
-  ChatDialogs({required this.chatUnread, required this.chatReadAndUnread});
+  ChatDialogs(
+      {required this.hasUnreadChatDialog,
+      required this.allMessagesHaveBeenReadChatDialog});
 }
 
 class ChatDialogHelper extends DialogHelper {
@@ -21,8 +23,8 @@ class ChatDialogHelper extends DialogHelper {
 
   // Security is setup to indicate if a page or dialog is accessible
   // For this reason we need 2 dialogs, one for unread and one for read chats
-  static String IDENTIFIER_READ = "chat_dialog_read";
-  static String IDENTIFIER_UNREAD = "chat_dialog_unread";
+  static String IDENTIFIER_MEMBER_HAS_UNREAD_CHAT = "chat_dialog_with_unread";
+  static String IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ = "chat_dialog_all_read";
 
   static String CHAT_ID = "chat";
 
@@ -70,10 +72,12 @@ class ChatDialogHelper extends DialogHelper {
 
   Future<ChatDialogs> create() async {
     await _setupChat();
-    var dialogModel1 = await _setupDialog(IDENTIFIER_READ,
-        ChatPackage.CONDITION_MEMBER_DOES_NOT_HAVE_UNREAD_CHAT);
-    var dialogModel2 = await _setupDialog(
-        IDENTIFIER_UNREAD, ChatPackage.CONDITION_MEMBER_HAS_UNREAD_CHAT);
-    return ChatDialogs(chatUnread: dialogModel1, chatReadAndUnread: dialogModel2);
+    var hasUnreadChatDialog = await _setupDialog(IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
+        ChatPackage.CONDITION_MEMBER_HAS_UNREAD_CHAT);
+    var allMessagesHaveBeenReadChatDialog = await _setupDialog(IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
+        ChatPackage.CONDITION_MEMBER_ALL_HAVE_BEEN_READ);
+    return ChatDialogs(
+        hasUnreadChatDialog: hasUnreadChatDialog,
+        allMessagesHaveBeenReadChatDialog: allMessagesHaveBeenReadChatDialog);
   }
 }

@@ -41,7 +41,10 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
             includeChat: event.includeChat,
             includeFeed: event.includeFeed,
             includeMemberDashboard: event.includeMemberDashboard,
-            includeExamplePolicy: event.includeExamplePolicy);
+            includeExamplePolicy: event.includeExamplePolicy,
+            includeSignoutButton: event.includeSignoutButton,
+            includeFlushButton: event.includeFlushButton,
+        );
       } else if (event is NewAppSwitchAppEvent) {
         yield SwitchApp(theState.appToBeCreated, theState.member);
       } else if (event is NewAppCreateProgressed) {
@@ -66,6 +69,8 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
     bool? includeFeed,
     bool? includeMemberDashboard,
     bool? includeExamplePolicy,
+    bool? includeSignoutButton,
+    bool? includeFlushButton
   }) async {
     var shopPageId = (includeShop ?? false) ? 'shop' : null;
     var feedPageId = (includeFeed ?? false) ? 'feed' : null;
@@ -109,7 +114,7 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
 
     // Right drawer
     var rightDrawer =
-        await RightDrawerHelper(newAppId, memberDashboard: memberDashboard)
+        await RightDrawerHelper(newAppId, memberDashboard: memberDashboard, withSignOut: includeSignoutButton ?? false, withFlush: includeFlushButton ?? false)
             .create();
 
     // policy

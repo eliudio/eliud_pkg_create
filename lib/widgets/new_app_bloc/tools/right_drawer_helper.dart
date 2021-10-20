@@ -21,8 +21,10 @@ class RightDrawerHelper {
   final String appId;
   final String drawerId;
   final DialogModel? memberDashboard;
+  final bool withSignOut;
+  final bool withFlush;
 
-  RightDrawerHelper(this.appId, {this.memberDashboard}): drawerId = drawerID(appId, DrawerType.Right);
+  RightDrawerHelper(this.appId, {required this.withSignOut, required this.withFlush, this.memberDashboard}): drawerId = drawerID(appId, DrawerType.Right);
 
   Future<DrawerModel> create() async {
     var drawerModel = DrawerModel(
@@ -49,10 +51,12 @@ class RightDrawerHelper {
     }
 
     MenuDefModel menu = MenuDefModel(
-        documentID: "drawer_profile_menu",
+        documentID: drawerId,
         appId: appId,
         name: "Drawer Profile Menu",
         menuItems: menuItems);
+
+    await menuDefRepository(appId: appId)!.add(menu);
     return menu;
   }
 }

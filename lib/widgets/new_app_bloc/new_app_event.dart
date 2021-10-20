@@ -32,18 +32,33 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   final bool includeFeed;
   final bool includeMemberDashboard;
   final bool includeExamplePolicy;
+  final bool includeSignoutButton;
+  final bool includeFlushButton;
 
-  NewAppCreateConfirm(
-      {required this.logo,
-      required this.includeShop,
-      required this.includeWelcome,
-      required this.includeChat,
-      required this.includeFeed,
-      required this.includeMemberDashboard,
-      required this.includeExamplePolicy});
+  NewAppCreateConfirm({
+    required this.logo,
+    required this.includeShop,
+    required this.includeWelcome,
+    required this.includeChat,
+    required this.includeFeed,
+    required this.includeMemberDashboard,
+    required this.includeExamplePolicy,
+    required this.includeSignoutButton,
+    required this.includeFlushButton,
+  });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [
+        logo,
+        includeShop,
+        includeWelcome,
+        includeChat,
+        includeFeed,
+        includeMemberDashboard,
+        includeExamplePolicy,
+        includeSignoutButton,
+        includeFlushButton,
+      ];
 
   @override
   bool operator ==(Object other) =>
@@ -54,7 +69,9 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
           includeChat == other.includeChat &&
           includeFeed == other.includeFeed &&
           includeMemberDashboard == other.includeMemberDashboard &&
-          includeExamplePolicy == other.includeExamplePolicy;
+          includeExamplePolicy == other.includeExamplePolicy &&
+          includeSignoutButton == other.includeSignoutButton &&
+          includeFlushButton == other.includeFlushButton;
 }
 
 class NewAppCreateProgressed extends NewAppCreateEvent {

@@ -106,6 +106,8 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           includeFeed: true,
                           includeMemberDashboard: true,
                           includeExamplePolicy: true,
+                          includeSignoutButton: true,
+                          includeFlushButton: true,
                         ));
                         return false;
                       }

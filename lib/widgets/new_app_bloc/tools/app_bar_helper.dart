@@ -46,31 +46,31 @@ class AppBarHelper {
       name: 'AppBar Menu',
       menuItems: [
         if (chatDialogs != null) MenuItemModel(
-            documentID: 'chatUnread',
+            documentID: ChatDialogHelper.IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
             text: 'Chat',
-            description: 'Open unread chat messages',
+            description: 'Some unread messages available',
             icon: IconModel(
                 codePoint: Icons.chat_bubble_rounded.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
             action: OpenDialog(appId,
-                dialogID: chatDialogs!.chatUnread.documentID!,
+                dialogID: chatDialogs!.hasUnreadChatDialog.documentID!,
                 conditions: ConditionsModel(
                     privilegeLevelRequired:
                     PrivilegeLevelRequired.NoPrivilegeRequired,
                     packageCondition: ChatPackage.CONDITION_MEMBER_HAS_UNREAD_CHAT))),
         if (chatDialogs != null) MenuItemModel(
-            documentID: 'chatReadAndUnread',
+            documentID: ChatDialogHelper.IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
             text: 'Chat',
             description: 'Open chat',
             icon: IconModel(
                 codePoint: Icons.chat_bubble_outline_rounded.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
             action: OpenDialog(appId,
-                dialogID: chatDialogs!.chatReadAndUnread.documentID!,
+                dialogID: chatDialogs!.allMessagesHaveBeenReadChatDialog.documentID!,
                 conditions: ConditionsModel(
                     privilegeLevelRequired:
                     PrivilegeLevelRequired.NoPrivilegeRequired,
-                    packageCondition: ChatPackage.CONDITION_MEMBER_DOES_NOT_HAVE_UNREAD_CHAT))),
+                    packageCondition: ChatPackage.CONDITION_MEMBER_ALL_HAVE_BEEN_READ))),
 
       ],
       admin: false,

@@ -44,12 +44,9 @@ class PlayStoreState extends State<PlayStore> {
     if (state is AppLoaded) {
       var appID = state.app.documentID!;
       return BlocBuilder<AppListBloc, AppListState>(builder: (context, state) {
-        print("inside bloc builder");
         if (state is AppListLoaded) {
-          print("state is AppListLoaded");
           var components = <Widget>[];
           if (member != null) {
-            print("member");
             components.add(GestureDetector(
                 onTap: () async {
 //                  createNewApp(context);
@@ -73,7 +70,6 @@ class PlayStoreState extends State<PlayStore> {
                     child: Icon(Icons.add))));
           }
           state.values!.forEach((model) {
-            print("item...");
             if (!AccessBloc.isPlayStoreApp(context, model!.documentID!)) {
               components.add(GestureDetector(
                   onTap: () async {
@@ -88,7 +84,6 @@ class PlayStoreState extends State<PlayStore> {
             }
           });
 
-          print("Container");
           return Container(
               padding: EdgeInsets.all(16.0),
               child: GridView.extent(
