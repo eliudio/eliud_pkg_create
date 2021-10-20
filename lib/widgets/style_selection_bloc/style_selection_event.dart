@@ -78,3 +78,30 @@ class InsertNewStyleEvent extends StyleSelectionEvent {
 
   InsertNewStyleEvent();
 }
+
+class StyleSelectionApplyChanges extends StyleSelectionEvent {
+  final bool save;
+
+  StyleSelectionApplyChanges(this.save);
+
+  @override
+  List<Object?> get props => [save];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is StyleSelectionApplyChanges &&
+              save == other.save;
+}
+
+class StyleSelectionRevertChanges extends StyleSelectionEvent {
+  StyleSelectionRevertChanges();
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is StyleSelectionRevertChanges;
+}

@@ -47,16 +47,19 @@ class PlayStoreBase extends AbstractPlayStoreComponent {
   Widget yourWidget(BuildContext context, PlayStoreModel? value) {
     var state = AccessBloc.getState(context);
     if (state is AppLoaded) {
+      print('app loaded...');
       var appId = state.app.documentID;
       return BlocProvider<AppListBloc>(
           create: (context) => AppListBloc(
             detailed: true,
             eliudQuery: null, // for now all
             appRepository: appRepository(
-                appId: AccessBloc.appId(context))!,
+                appId: appId!)!,
           )..add(LoadAppList()),
           child: PlayStore(value!));
     } else {
+      print('state...');
+      print(state);
       return progressIndicator(context);
     }
   }

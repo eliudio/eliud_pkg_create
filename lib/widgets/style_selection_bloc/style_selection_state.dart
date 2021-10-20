@@ -87,3 +87,4 @@ class StyleSelectionInitializedWithoutSelection
     return StyleSelectionInitializedWithoutSelection(families: newFamilies);
   }
 }
+

@@ -26,6 +26,8 @@ import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 
 class StyleSelectionBloc
     extends Bloc<StyleSelectionEvent, StyleSelectionState> {
+  String? originalStyleFamily;
+  String? styleName;
   final AppModel app;
   final CanRefresh? canRefresh;
 
@@ -34,6 +36,8 @@ class StyleSelectionBloc
   Stream<StyleSelectionState> mapEventToState(
       StyleSelectionEvent event) async* {
     if (event is InitialiseStyleSelectionEvent) {
+      originalStyleFamily = app.styleFamily;
+      styleName = app.styleName;
       var styleFamily;
       if (event.family != null) {
         styleFamily = StyleRegistry.registry().styleFamily(event.family!);
@@ -99,6 +103,19 @@ class StyleSelectionBloc
         if (newStyle != null) {
           newStyle.styleFamily.styles[event.newName] = newStyle;
           yield theState.copyWith(theState.families);
+        }
+      } else if (event is StyleSelectionApplyChanges) {
+        if (event.save) {
+          appRepository(appId: app.documentID)!.update(app);
+        }
+        if (canRefresh != null) {
+          canRefresh!.refresh();
+        }
+      } else if (event is StyleSelectionRevertChanges) {
+        app.styleFamily = originalStyleFamily;
+        app.styleName = styleName;
+        if (canRefresh != null) {
+          canRefresh!.refresh();
         }
       }
     }

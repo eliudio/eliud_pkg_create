@@ -212,6 +212,13 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           if (widget.withHeader) HeaderWidget(
             cancelAction: () async {
+              BlocProvider.of<StyleSelectionBloc>(context)
+                  .add(StyleSelectionRevertChanges());
+              return true;
+            },
+            okAction: () async {
+              BlocProvider.of<StyleSelectionBloc>(context)
+                  .add(StyleSelectionApplyChanges(true));
               return true;
             },
             title: 'Change style',

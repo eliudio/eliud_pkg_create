@@ -39,53 +39,60 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _textController.text = widget.menuItemModel.text != null ? widget.menuItemModel.text! : '';
-    _descriptionController.text = widget.menuItemModel.description != null ? widget.menuItemModel.description! : '';
+    _textController.text =
+        widget.menuItemModel.text != null ? widget.menuItemModel.text! : '';
+    _descriptionController.text = widget.menuItemModel.description != null
+        ? widget.menuItemModel.description!
+        : '';
 
-    List<Widget> children = [];
-    children.add(Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-        child: h1(context, 'General')));
+    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
+      topicContainer(context,
+          title: 'General',
+          collapsible: true,
+          collapsed: true,
+          children: [
+            textFormField(context,
+                readOnly: false,
+                labelText: 'text',
+                icon: Icons.text_format,
+                textEditingController: _textController,
+                keyboardType: TextInputType.text, validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter text';
+              }
+              return null;
+            }, hintText: ''),
+            textFormField(context,
+                readOnly: false,
+                labelText: 'description',
+                icon: Icons.text_format,
+                textEditingController: _descriptionController,
+                keyboardType: TextInputType.text, validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter description';
+              }
+              return null;
+            }, hintText: '')
+          ]),
+      topicContainer(context,
+          title: 'Icon',
+          collapsible: true,
+          collapsed: true,
+          children: [IconField(widget.menuItemModel.icon, _onIconChanged)]),
+      topicContainer(context,
+          title: 'Action',
+          collapsible: true,
+          collapsed: true,
+          children: [_actionDescription(context),]),
+    ]);
+  }
 
-    children.add(textFormField(context,
-            readOnly: false,
-            labelText: 'text',
-            icon: Icons.text_format,
-            textEditingController: _textController,
-            keyboardType: TextInputType.text, validator: (value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter text';
-      }
-      return null;
-    }, hintText: ''));
-
-    children.add(textFormField(context,
-        readOnly: false,
-        labelText: 'description',
-        icon: Icons.text_format,
-        textEditingController: _descriptionController,
-        keyboardType: TextInputType.text, validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter description';
-          }
-          return null;
-        }, hintText: ''));
-
-    children.add(Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-        child: h1(context, 'Icon')));
-
-    children.add(IconField(widget.menuItemModel.icon, _onIconChanged));
-
-    children.add(Container(height: 20.0));
-    children.add(divider(context));
-    return simpleTopicContainer(
-            context,
-            children: children as List<Widget>);
+  Widget _actionDescription(BuildContext context) {
+    if (widget.menuItemModel.action == null) return text(context, 'No action');
+    return widget.menuItemModel.action!.describe(context);
   }
 
   void _onIconChanged(value) {
+    widget.menuItemModel.icon = value;
   }
 }

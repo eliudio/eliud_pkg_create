@@ -9,6 +9,7 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_tabs.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/style/style_registry.dart';
+import 'package:eliud_core/tools/etc.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/utils/popup_menu_item_choices.dart';
 import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
@@ -99,6 +100,8 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                           return ListTile(
                               key: theKey,
                               onTap: () => details(item),
+                              leading: IconHelper.getIconFromModel(
+                                  iconModel: item.icon),
                               trailing: PopupMenuItemChoices(
                                 isFirst: (count != 1),
                                 isLast: (count != size),

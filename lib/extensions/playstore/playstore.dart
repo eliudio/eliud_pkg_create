@@ -44,9 +44,12 @@ class PlayStoreState extends State<PlayStore> {
     if (state is AppLoaded) {
       var appID = state.app.documentID!;
       return BlocBuilder<AppListBloc, AppListState>(builder: (context, state) {
+        print("inside bloc builder");
         if (state is AppListLoaded) {
+          print("state is AppListLoaded");
           var components = <Widget>[];
           if (member != null) {
+            print("member");
             components.add(GestureDetector(
                 onTap: () async {
 //                  createNewApp(context);
@@ -70,11 +73,12 @@ class PlayStoreState extends State<PlayStore> {
                     child: Icon(Icons.add))));
           }
           state.values!.forEach((model) {
+            print("item...");
             if (!AccessBloc.isPlayStoreApp(context, model!.documentID!)) {
               components.add(GestureDetector(
                   onTap: () async {
                     EliudRouter.Router.navigateTo(
-                        context, SwitchApp(appID, toAppID: model.documentID));
+                        context, SwitchApp(appID, toAppID: model.documentID!));
                   },
                   child: Container(
                     color: Colors.red,
@@ -84,6 +88,7 @@ class PlayStoreState extends State<PlayStore> {
             }
           });
 
+          print("Container");
           return Container(
               padding: EdgeInsets.all(16.0),
               child: GridView.extent(
@@ -94,8 +99,9 @@ class PlayStoreState extends State<PlayStore> {
                   physics: ScrollPhysics(), // to disable GridView's scrolling
                   shrinkWrap: true,
                   children: components));
+        } else {
+          return progressIndicator(context);
         }
-        return progressIndicator(context);
       });
     } else {
       return text(context, 'App not loaded');

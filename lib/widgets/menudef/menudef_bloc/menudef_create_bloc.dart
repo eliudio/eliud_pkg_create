@@ -55,7 +55,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               documentID: newRandomKey(),
               text: 'Sign in',
               description: 'Sign in',
-              action: InternalAction(appId,
+              action: InternalAction(appId!,
                   internalActionEnum: InternalActionEnum.Login)),
         );
         apply();
@@ -65,7 +65,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               documentID: newRandomKey(),
               text: 'Sign out',
               description: 'Sign out',
-              action: InternalAction(appId,
+              action: InternalAction(appId!,
                   internalActionEnum: InternalActionEnum.Logout)),
         );
         apply();
@@ -75,7 +75,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               documentID: newRandomKey(),
               text: 'Other apps',
               description: 'Other apps',
-              action: InternalAction(appId,
+              action: InternalAction(appId!,
                   internalActionEnum: InternalActionEnum.OtherApps)),
         );
         apply();
@@ -88,7 +88,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               icon: IconModel(
                   codePoint: Icons.favorite_border.codePoint,
                   fontFamily: Icons.settings.fontFamily),
-              action: GotoPage(appId, pageID: event.pageModel.documentID)),
+              action: GotoPage(appId!, pageID: event.pageModel.documentID!)),
         );
         apply();
       } else if (event is MenuDefCreateAddMenuItemForDialog) {
@@ -100,7 +100,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               icon: IconModel(
                   codePoint: Icons.favorite_border.codePoint,
                   fontFamily: Icons.settings.fontFamily),
-              action: OpenDialog(appId, dialogID: event.dialogModel.documentID)),
+              action: OpenDialog(appId!, dialogID: event.dialogModel.documentID!)),
         );
         apply();
       } else if (event is MenuDefMoveMenuItem) {
