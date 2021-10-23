@@ -26,6 +26,9 @@ dependencies:
   eliud_pkg_follow:
     path: ../eliud_pkg_follow
 
+  eliud_pkg_workflow:
+    path: ../eliud_pkg_workflow
+
   eliud_pkg_chat:
     path: ../eliud_pkg_chat
 

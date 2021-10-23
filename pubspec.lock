@@ -443,7 +443,7 @@ packages:
     source: path
     version: "0.0.1"
   eliud_pkg_workflow:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "../eliud_pkg_workflow"
       relative: true

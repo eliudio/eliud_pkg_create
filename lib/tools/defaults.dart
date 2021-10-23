@@ -1,33 +1,16 @@
-import 'package:eliud_core/model/app_home_page_references_model.dart';
-import 'package:eliud_core/model/app_policy_item_model.dart';
-import 'package:eliud_core/model/app_policy_model.dart';
-import 'package:eliud_core/model/body_component_model.dart';
-import 'package:eliud_core/model/conditions_model.dart';
-import 'package:eliud_core/model/conditions_simple_model.dart';
-import 'package:eliud_core/model/member_model.dart';
-import 'package:eliud_core/model/platform_medium_model.dart';
-import 'package:eliud_core/style/_default/default_style_family.dart';
-import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
-import 'package:eliud_pkg_text/model/abstract_repository_singleton.dart';
-import 'package:eliud_pkg_text/model/html_component.dart';
-import 'package:eliud_pkg_text/model/html_model.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
-import 'package:eliud_core/core/access/bloc/access_event.dart';
+import 'package:eliud_pkg_workflow/model/workflow_model.dart';
+import 'package:eliud_pkg_workflow/model/workflow_notification_model.dart';
+import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';
+import 'package:eliud_pkg_workflow/tools/task/task_model.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
-import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/page_model.dart';
-import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_core/tools/random.dart';
-import 'package:flutter/material.dart';
 
 String drawerID(String appID, DrawerType drawerType) {
   return appID +
@@ -108,8 +91,11 @@ Future<AppBarModel> newAppBar(String appId, {bool? store}) async {
     menuDefModel = newMenuDef(appBarId);
     await menuDefRepository(appId: appId)!.add(menuDefModel);
   }
-  var appBarModel =
-      AppBarModel(documentID: appBarId, appId: appId, header: HeaderSelection.Title,iconMenu: menuDefModel);
+  var appBarModel = AppBarModel(
+      documentID: appBarId,
+      appId: appId,
+      header: HeaderSelection.Title,
+      iconMenu: menuDefModel);
   if ((store != null) && (store)) {
     await appBarRepository(appId: appId)!.add(appBarModel);
   }
@@ -156,3 +142,19 @@ DialogModel newDialogDefaults(String appId) => DialogModel(
     appId: appId,
     conditions: null,
     layout: DialogLayout.ListView);
+
+WorkflowModel newWorkflowDefaults(String appId) => WorkflowModel(
+      documentID: newRandomKey(),
+      name: 'New workflow',
+      workflowTask: [],
+    );
+
+WorkflowTaskModel newWorkflowTaskDefaults() => WorkflowTaskModel(
+    documentID: newRandomKey(),
+    seqNumber: 0,
+    task: null,
+    confirmMessage: WorkflowNotificationModel(message: '', addressee: WorkflowNotificationAddressee.CurrentMember),
+    rejectMessage: WorkflowNotificationModel(message: '', addressee: WorkflowNotificationAddressee.CurrentMember),
+    responsible: WorkflowTaskResponsible.CurrentMember
+);
+

@@ -21,6 +21,7 @@ import 'package:flutter/widgets.dart';
 
 import '../dialog_widget.dart';
 import '../page_widget.dart';
+import '../workflow_widget.dart';
 import 'menudef_bloc/menudef_create_bloc.dart';
 import 'menudef_bloc/menudef_create_event.dart';
 import 'menudef_bloc/menudef_create_state.dart';
@@ -66,7 +67,7 @@ class MenuDefCreateWidget extends StatefulWidget {
 class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  final List<String> items = ['Pages', 'Dialogs', 'Other'];
+  final List<String> items = ['Pages', 'Dialogs', 'Workflows', 'Other'];
   final int active = 0;
   GlobalKey? currentVisible = GlobalKey();
 
@@ -99,9 +100,12 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                           count++;
                           return ListTile(
                               key: theKey,
-                              onTap: () => details(item),
-                              leading: IconHelper.getIconFromModel(
-                                  iconModel: item.icon),
+//                              onTap: () => details(item),
+                              leading: item.icon == null
+                                  ? text(context,
+                                      item.text == null ? "?" : item.text!)
+                                  : IconHelper.getIconFromModel(
+                                      iconModel: item.icon),
                               trailing: PopupMenuItemChoices(
                                 isFirst: (count != 1),
                                 isLast: (count != size),
@@ -118,7 +122,12 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                     BlocProvider.of<MenuDefCreateBloc>(context)
                                         .add(MenuDefCreateDeleteMenuItem(item)),
                               ),
-                              title: text(context,
+                              title: text(
+                                  context,
+                                  item.action != null
+                                      ? item.action!.describe()
+                                      : ''),
+                              subtitle: text(context,
                                   item.text == null ? "?" : item.text!));
                         }).toList())))
               ]),
@@ -143,15 +152,18 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                               itemBuilder: (context, position) {
                                 var page = state.pages[position];
                                 return ListTile(
-                                    onTap: () {
-                                      BlocProvider.of<MenuDefCreateBloc>(
-                                              context)
-                                          .add(MenuDefCreateAddMenuItemForPage(
-                                              page!));
-                                    },
-                                    trailing: Icon(Icons.add),
-                                    title: text(context,
-                                        page != null ? page.documentID! : '?'));
+                                    trailing: availableMenuItemPopup(
+                                        MenuDefCreateAddMenuItemForPage(page!),
+                                        () => openPage(
+                                            context,
+                                            false,
+                                            page,
+                                            'Update page',
+                                            callOnAction: () => BlocProvider.of<
+                                                    MenuDefCreateBloc>(context)
+                                                .add(
+                                                    MenuDefRefreshPages()))), //Icon(Icons.add),
+                                    title: text(context, page.documentID!));
                               })),
                       divider(context),
                       GestureDetector(
@@ -181,14 +193,18 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                               itemBuilder: (context, position) {
                                 var dialog = state.dialogs[position];
                                 return ListTile(
-                                    onTap: () {
-                                      BlocProvider.of<MenuDefCreateBloc>(
-                                              context)
-                                          .add(
-                                              MenuDefCreateAddMenuItemForDialog(
-                                                  dialog!));
-                                    },
-                                    trailing: Icon(Icons.add),
+                                    trailing: availableMenuItemPopup(
+                                        MenuDefCreateAddMenuItemForDialog(
+                                            dialog!),
+                                        () => openDialog(
+                                            context,
+                                            true,
+                                            dialog,
+                                            'Update dialog',
+                                            callOnAction: () => BlocProvider.of<
+                                                    MenuDefCreateBloc>(context)
+                                                .add(
+                                                    MenuDefRefreshDialogs()))), //Icon(Icons.add),
                                     title: text(
                                         context,
                                         dialog != null
@@ -212,31 +228,80 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                   ),
                 if (_tabController!.index == 2)
                   Container(
+                    height: height(),
+                    child: ListView(children: [
+                      Container(
+                          height: 200,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: ScrollPhysics(),
+                              itemCount: state.workflows.length,
+                              itemBuilder: (context, position) {
+                                var workflow = state.workflows[position];
+                                return ListTile(
+                                    trailing: availableMenuItemPopup(
+                                        MenuDefCreateAddMenuItemForWorkflow(
+                                            workflow!),
+                                        () => openWorkflow(
+                                            context,
+                                            false,
+                                            workflow,
+                                            'Update workflow',
+                                            callOnAction: () => BlocProvider.of<
+                                                    MenuDefCreateBloc>(context)
+                                                .add(
+                                                    MenuDefRefreshWorkflows()))), //Icon(Icons.add),
+                                    title: text(
+                                        context,
+                                        workflow != null
+                                            ? workflow.documentID!
+                                            : '?'));
+                              })),
+                      divider(context),
+                      GestureDetector(
+                          child: Icon(Icons.add),
+                          onTap: () {
+                            openWorkflow(
+                                context,
+                                true,
+                                newWorkflowDefaults(AccessBloc.appId(context)!),
+                                'Create workflow',
+                                callOnAction: () =>
+                                    BlocProvider.of<MenuDefCreateBloc>(context)
+                                        .add(MenuDefRefreshWorkflows()));
+                          })
+                    ], shrinkWrap: true, physics: ScrollPhysics()),
+                  ),
+                if (_tabController!.index == 3)
+                  Container(
                       height: height(),
                       child: ListView(
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
                         children: [
                           ListTile(
-                              onTap: () {
-                                BlocProvider.of<MenuDefCreateBloc>(context)
-                                    .add(MenuDefCreateAddLogin());
-                              },
-                              trailing: Icon(Icons.add),
+                              trailing: GestureDetector(
+                                  onTap: () {
+                                    BlocProvider.of<MenuDefCreateBloc>(context)
+                                        .add(MenuDefCreateAddLogin());
+                                  },
+                                  child: Icon(Icons.add)),
                               title: text(context, 'login')),
                           ListTile(
-                              onTap: () {
-                                BlocProvider.of<MenuDefCreateBloc>(context)
-                                    .add(MenuDefCreateAddLogout());
-                              },
-                              trailing: Icon(Icons.add),
+                              trailing: GestureDetector(
+                                  onTap: () {
+                                    BlocProvider.of<MenuDefCreateBloc>(context)
+                                        .add(MenuDefCreateAddLogout());
+                                  },
+                                  child: Icon(Icons.add)),
                               title: text(context, 'logout')),
                           ListTile(
-                              onTap: () {
-                                BlocProvider.of<MenuDefCreateBloc>(context)
-                                    .add(MenuDefCreateAddOtherApps());
-                              },
-                              trailing: Icon(Icons.add),
+                              trailing: GestureDetector(
+                                  onTap: () {
+                                    BlocProvider.of<MenuDefCreateBloc>(context)
+                                        .add(MenuDefCreateAddOtherApps());
+                                  },
+                                  child: Icon(Icons.add)),
                               title: text(context, 'other apps')),
                         ],
                       )),
@@ -248,6 +313,30 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
         return progressIndicator(context);
       }
     });
+  }
+
+  PopupMenuButton<int> availableMenuItemPopup(
+      MenuDefCreateEvent eventWhenAdded, VoidCallback updateAction) {
+    return PopupMenuButton<int>(
+        child: Icon(Icons.more_vert),
+        elevation: 10,
+        itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: text(context, 'Add to menu'),
+              ),
+              PopupMenuItem(
+                value: 2,
+                child: text(context, 'Update'),
+              ),
+            ],
+        onSelected: (value) {
+          if (value == 1) {
+            BlocProvider.of<MenuDefCreateBloc>(context).add(eventWhenAdded);
+          } else if (value == 2) {
+            updateAction();
+          }
+        });
   }
 
   void details(MenuItemModel menuItemModel) {

@@ -13,6 +13,8 @@ import 'package:eliud_core/tools/action/action_model.dart';
 import 'package:eliud_core/tools/etc.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
+import 'package:eliud_pkg_workflow/model/abstract_repository_singleton.dart';
+import 'package:eliud_pkg_workflow/tools/action/workflow_action_model.dart';
 import 'package:flutter/material.dart';
 import 'menudef_create_event.dart';
 import 'menudef_create_state.dart';
@@ -32,8 +34,9 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
       var appId = app.documentID;
       var pages = await pageRepository(appId: appId)!.valuesList();
       var dialogs = await dialogRepository(appId: appId)!.valuesList();
+      var workflows = await workflowRepository(appId: appId)!.valuesList();
       yield MenuDefCreateInitialised(
-          menuDefModel: event.menuDefModel, pages: pages, dialogs: dialogs);
+          menuDefModel: event.menuDefModel, pages: pages, dialogs: dialogs, workflows: workflows);
     } else if (state is MenuDefCreateInitialised) {
       var appId = app.documentID;
       if (event is MenuDefRefreshPages) {
@@ -46,6 +49,11 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
         var dialogs = await dialogRepository(appId: app.documentID)!
             .valuesList();
         yield theState.copyWith(dialogs: dialogs);
+      } else if (event is MenuDefRefreshWorkflows) {
+        MenuDefCreateInitialised theState = state as MenuDefCreateInitialised;
+        var workflows = await workflowRepository(appId: app.documentID)!
+            .valuesList();
+        yield theState.copyWith(workflows: workflows);
       } else if (event is MenuDefCreateDeleteMenuItem) {
         yield _newStateDeleteItem(event.menuItemModel);
         apply();
@@ -101,6 +109,18 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
                   codePoint: Icons.favorite_border.codePoint,
                   fontFamily: Icons.settings.fontFamily),
               action: OpenDialog(appId!, dialogID: event.dialogModel.documentID!)),
+        );
+        apply();
+      } else if (event is MenuDefCreateAddMenuItemForWorkflow) {
+        yield _newStateWithNewItem(
+          MenuItemModel(
+              documentID: newRandomKey(),
+              text: 'New Workflow',
+              description: 'New Workflow',
+              icon: IconModel(
+                  codePoint: Icons.favorite_border.codePoint,
+                  fontFamily: Icons.settings.fontFamily),
+              action: WorkflowActionModel(appId!, workflow: event.workflowModel)),
         );
         apply();
       } else if (event is MenuDefMoveMenuItem) {

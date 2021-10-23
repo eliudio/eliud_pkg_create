@@ -30,9 +30,9 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
   Stream<AppCreateState> mapEventToState(AppCreateEvent event) async* {
     if (event is AppCreateEventValidateEvent) {
       List<PageModel?> pages =
-          await pageRepository(appId: appId)!.valuesList() ?? [];
+          await pageRepository(appId: appId)!.valuesList();
       List<DialogModel?> dialogs =
-          await dialogRepository(appId: appId)!.valuesList() ?? [];
+          await dialogRepository(appId: appId)!.valuesList();
 
       var theHomeMenu = await homeMenu(appId, store: true);
       var theAppBar = await appBar(appId);

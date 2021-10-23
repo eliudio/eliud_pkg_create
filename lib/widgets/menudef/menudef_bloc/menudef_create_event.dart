@@ -2,6 +2,7 @@ import 'package:eliud_core/model/dialog_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class MenuDefCreateEvent extends Equatable {
@@ -52,6 +53,20 @@ class MenuDefCreateAddMenuItemForDialog extends MenuDefCreateEvent {
           other is MenuDefCreateAddMenuItemForDialog && dialogModel == other.dialogModel;
 }
 
+class MenuDefCreateAddMenuItemForWorkflow extends MenuDefCreateEvent {
+  final WorkflowModel workflowModel;
+
+  MenuDefCreateAddMenuItemForWorkflow(this.workflowModel);
+
+  @override
+  List<Object?> get props => [workflowModel];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is MenuDefCreateAddMenuItemForWorkflow && workflowModel == other.workflowModel;
+}
+
 class MenuDefRefreshDialogs extends MenuDefCreateEvent {
   @override
   List<Object?> get props => [];
@@ -60,6 +75,16 @@ class MenuDefRefreshDialogs extends MenuDefCreateEvent {
   bool operator ==(Object other) =>
       identical(this, other) ||
           other is MenuDefRefreshDialogs;
+}
+
+class MenuDefRefreshWorkflows extends MenuDefCreateEvent {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is MenuDefRefreshWorkflows;
 }
 
 class MenuDefRefreshPages extends MenuDefCreateEvent {
@@ -156,4 +181,5 @@ class MenuDefUpdateMenuItem extends MenuDefCreateEvent {
           beforeMenuItemModel == other.beforeMenuItemModel &&
           afterMenuItemModel == other.afterMenuItemModel;
 }
+
 

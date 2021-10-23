@@ -89,7 +89,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
 
   Widget _actionDescription(BuildContext context) {
     if (widget.menuItemModel.action == null) return text(context, 'No action');
-    return widget.menuItemModel.action!.describe(context);
+    return text(context, widget.menuItemModel.action!.describe());
   }
 
   void _onIconChanged(value) {
