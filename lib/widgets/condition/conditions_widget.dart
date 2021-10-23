@@ -9,9 +9,25 @@ import 'package:flutter/src/widgets/framework.dart';
 
 import '../utils/combobox_widget.dart';
 
+const comment2 = """
+(**) It's worth remembering that when a member is blocked, that person is not blocked from public view, as that person can always logoff and open the site anonymously.
+""";
+
+const String menuItemComment = """
+A menu item condition allows to limit access to a menu item. However, because access conditions can also be specified on the level of a page / dialog, in case a menu item refers to a page or dialog, it's condition also depends on that page / dialog condition. Because of this, we recommend not to use conditions on the level of menu item for a page or dialog and use it for workflows or other actions, e.g. login/logout, ...
+
+(*) Privilege and display conditions for menu items are both display only conditions, in contrast to conditions for pages and dialogs. If you want to protect you data, set the privilege of the page, dialog and most importantly the component itself, which is where your actual data sits.
+"""+ comment2;
+
+const String pageAndDialogComment = """
+(*) Privilege vs 'Display' condition. A privilege is data secured data, i.e. the storage mechanism secures the access. Whereas a 'Display' condition can be used to further restrict the visibility of this page in the app, i.e. this is secured by the app, not cloud secured and so therefore theoretically this rule can bypassed, e.g. by a hacker
+(**) It's worth remembering that when a member is blocked, that person is not blocked from public view, as that person can always logoff and open the site anonymously.
+"""+ comment2;
+
 class ConditionsWidget extends StatefulWidget {
-  final bool isPage;  // Is page (or dialog)
+  final String ownerType;  // page, dialog, menu item
   final ConditionsModel value;
+  final String comment;
 
   // see firestore rules
   String? packageCondition;
@@ -22,7 +38,8 @@ class ConditionsWidget extends StatefulWidget {
   ConditionsWidget({
     Key? key,
     required this.value,
-    required this.isPage,
+    required this.ownerType,
+    required this.comment,
   }) : super(key: key);
 
   @override
@@ -38,16 +55,16 @@ class _ConditionPrivilegeState extends State<ConditionsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var prefix = widget.isPage ? 'page' : 'dialog';
+    var prefix = widget.ownerType;
     return topicContainer(context, title: 'Access rights', collapsible: true, collapsed: true, children: [
       getListTile(
         context,
-        leading: Icon(Icons.security),
+        leading: const Icon(Icons.security),
         title: ComboboxWidget(
           initialValue: (widget.value.privilegeLevelRequired == null)
               ? 0
               : widget.value.privilegeLevelRequired!.index,
-          options: [
+          options: const [
             'No Privilege Required',
             'Level 1 Privilege Required',
             'Level 2 Privilege Required',
@@ -67,7 +84,7 @@ class _ConditionPrivilegeState extends State<ConditionsWidget> {
       _aBitSpace(),
       getListTile(
         context,
-        leading: Icon(Icons.security),
+        leading: const Icon(Icons.security),
         title: PackageConditionWidget(
             initialPackageCondition: widget.value.packageCondition,
             packageInfos: AccessHelper.getAllPackageConditionsAsPackageInfos2(),
@@ -76,18 +93,18 @@ class _ConditionPrivilegeState extends State<ConditionsWidget> {
       _aBitSpace(),
       getListTile(
         context,
-        leading: Icon(Icons.security),
+        leading: const Icon(Icons.security),
         title: ComboboxWidget(
           initialValue: (widget.value.conditionOverride == null) || (widget.value.conditionOverride == ConditionOverride.Unknown)
               ? 0
               : widget.value.conditionOverride!.index + 1,
-          options: [
+          options: const [
             'Not set',
             'Exact Privilege',
             'Inclusive For Blocked Members',
             'Exclusive For Blocked Member',
           ],
-          descriptions: [
+          descriptions: const [
             'Override not set',
             'In normal circumstances, a member sees all pages with less or equal required privileges than the one this member has. However, if a page is indicated to be visible only for ExactPrivilege only, then those pages with less required privileges are not visible. An example to illustrate where this might work is when we want to create a welcome page for each specific privilege.',
             "Allow for blocked members to see this page (**). This can be used for example to allow blocked members to see his notifications and assignments, allowing to be informed about the fact that he's blocked and take action to fix it.",
@@ -101,9 +118,7 @@ class _ConditionPrivilegeState extends State<ConditionsWidget> {
         ),
       ),
       _aBitSpace(),
-      text(context,"(*) Privilege vs 'Display' condition. A privilege is data secured data, i.e. the storage mechanism secures the access. Whereas a 'Display' condition can be used to further restrict the visibility of this page in the app, i.e. this is secured by the app, not cloud secured and so therefore theoretically this rule can bypassed, e.g. by a hacker"),
-      _aBitSpace(),
-      text(context,"(**) It's worth remembering that when a member is blocked, that person is not blocked from public view, as that person can always logoff and open the site anonymously."),
+      text(context, widget.comment),
     ]);
   }
 }

@@ -128,7 +128,8 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
             state.pageModel.bodyComponents!,
             widget.widgetWidth,
           ),
-          ConditionsWidget(value: state.pageModel.conditions!, isPage: true),
+          ConditionsWidget(value: state.pageModel.conditions!, ownerType: 'page',
+              comment: pageAndDialogComment),
         ]);
       } else {
         return progressIndicator(context);

@@ -1,3 +1,4 @@
+import 'package:eliud_core/model/conditions_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
@@ -5,6 +6,7 @@ import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/style/frontend/has_text_form_field.dart';
 import 'package:eliud_core/style/style_registry.dart';
 import 'package:eliud_core/tools/icon_formfield.dart';
+import 'package:eliud_pkg_create/widgets/condition/conditions_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -39,6 +41,11 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.menuItemModel.action != null) {
+      widget.menuItemModel.action!.conditions = ConditionsModel(
+        privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
+      );
+    }
     _textController.text =
         widget.menuItemModel.text != null ? widget.menuItemModel.text! : '';
     _descriptionController.text = widget.menuItemModel.description != null
@@ -79,11 +86,19 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
           collapsible: true,
           collapsed: true,
           children: [IconField(widget.menuItemModel.icon, _onIconChanged)]),
-      topicContainer(context,
-          title: 'Action',
-          collapsible: true,
-          collapsed: true,
-          children: [_actionDescription(context),]),
+      if (widget.menuItemModel.action != null)
+        topicContainer(context,
+            title: 'Action',
+            collapsible: true,
+            collapsed: true,
+            children: [
+              _actionDescription(context),
+            ]),
+      if (widget.menuItemModel.action != null)
+        ConditionsWidget(
+            value: widget.menuItemModel.action!.conditions!,
+            ownerType: 'menu item',
+        comment: menuItemComment),
     ]);
   }
 

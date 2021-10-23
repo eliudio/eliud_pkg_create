@@ -32,12 +32,10 @@ class DialogCreateBloc extends Bloc<DialogCreateEvent, DialogCreateState> {
       // convention is that the ID of the appBar, drawers and home menu are the same ID as that of the app
       var _homeMenuId = homeMenuID(appId);
 
-      if (event.dialogModel.conditions == null) {
-        event.dialogModel.conditions = ConditionsModel(
+      event.dialogModel.conditions ??= ConditionsModel(
             privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
             packageCondition: '',
             conditionOverride: null);
-      }
       // the updates happen on a (deep) copy
       yield DialogCreateValidated(deepCopy(event.dialogModel));
     } else if (state is DialogCreateInitialised) {

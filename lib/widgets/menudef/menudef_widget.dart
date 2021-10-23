@@ -1,6 +1,4 @@
-import 'package:eliud_core/model/dialog_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
-import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
@@ -8,11 +6,9 @@ import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_tabs.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
-import 'package:eliud_core/style/style_registry.dart';
 import 'package:eliud_core/tools/etc.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/utils/popup_menu_item_choices.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eliud_core/core/access/bloc/access_bloc.dart';
@@ -33,7 +29,7 @@ class MenuDefCreateWidget extends StatefulWidget {
   final double widgetHeight;
 */
 
-  MenuDefCreateWidget._({
+  const MenuDefCreateWidget._({
     Key? key,
 /*
     required this.widgetWidth,
@@ -59,7 +55,7 @@ class MenuDefCreateWidget extends StatefulWidget {
         app,
         menuDefModel,
       )..add(MenuDefCreateInitialiseEvent(menuDefModel)),
-      child: MenuDefCreateWidget._(),
+      child: const MenuDefCreateWidget._(),
     );
   }
 }
@@ -91,7 +87,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                 Container(
                     height: height(),
                     child: SingleChildScrollView(
-                        physics: ScrollPhysics(),
+                        physics: const ScrollPhysics(),
                         child: Column(
                             children: state.menuDefModel.menuItems!.map((item) {
                           var theKey;
@@ -252,14 +248,11 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                 .add(
                                                     MenuDefRefreshWorkflows()))), //Icon(Icons.add),
                                     title: text(
-                                        context,
-                                        workflow != null
-                                            ? workflow.documentID!
-                                            : '?'));
+                                        context, workflow.documentID!));
                               })),
                       divider(context),
                       GestureDetector(
-                          child: Icon(Icons.add),
+                          child: const Icon(Icons.add),
                           onTap: () {
                             openWorkflow(
                                 context,

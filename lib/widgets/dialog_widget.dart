@@ -134,7 +134,8 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
             state.dialogModel.bodyComponents!,
             widget.widgetWidth,
           ),
-          ConditionsWidget(value: state.dialogModel.conditions!, isPage: false),
+          ConditionsWidget(value: state.dialogModel.conditions!, ownerType: 'dialog',
+              comment: pageAndDialogComment),
         ]);
       } else {
         return progressIndicator(context);
