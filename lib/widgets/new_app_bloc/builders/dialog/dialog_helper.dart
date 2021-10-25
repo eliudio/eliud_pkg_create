@@ -13,9 +13,7 @@ import 'package:eliud_pkg_text/model/html_component.dart';
 import 'package:eliud_pkg_text/model/html_model.dart';
 
 class DialogHelper {
-  final AppModel newApp;
+  final String appId;
 
-  DialogHelper(this.newApp);
-
-  String newAppId() => newApp.documentID!;
+  DialogHelper(this.appId);
 }

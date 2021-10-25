@@ -8,22 +8,22 @@ import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/page_model.dart';
-import 'package:eliud_pkg_create/widgets/new_app_bloc/tools/page/page_helper.dart';
+import 'page_helper.dart';
 import 'package:eliud_pkg_text/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_text/model/html_component.dart';
 import 'package:eliud_pkg_text/model/html_model.dart';
 
 
 class WelcomePageHelper extends PageHelper {
-  WelcomePageHelper(String pageId, AppModel newApp, MemberModel member, HomeMenuModel theHomeMenu, AppBarModel theAppBar, DrawerModel leftDrawer, DrawerModel rightDrawer
-      ) : super(pageId, newApp, member, theHomeMenu, theAppBar, leftDrawer, rightDrawer);
+  WelcomePageHelper(String pageId, String appId, String memberId, HomeMenuModel theHomeMenu, AppBarModel theAppBar, DrawerModel leftDrawer, DrawerModel rightDrawer
+      ) : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer);
 
   Future<PageModel> create() async {
     // welcome page
     var htmlComponentId = 'html_1';
-    await htmlRepository(appId: newAppId())!.add(HtmlModel(
+    await htmlRepository(appId: appId)!.add(HtmlModel(
       documentID: htmlComponentId,
-      appId: newAppId(),
+      appId: appId,
       name: 'html 1',
       html: '<p>Hello world</p>',
     ));
@@ -31,7 +31,7 @@ class WelcomePageHelper extends PageHelper {
     var page = PageModel(
       documentID: pageId,
       title: 'Welcome',
-      appId: newAppId(),
+      appId: appId,
       bodyComponents: [
         BodyComponentModel(
             documentID: "1",
@@ -46,7 +46,7 @@ class WelcomePageHelper extends PageHelper {
       conditions: ConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired),
     );
-    await pageRepository(appId: newAppId())!.add(page);
+    await pageRepository(appId: appId)!.add(page);
     return page;
   }
 }

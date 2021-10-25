@@ -9,7 +9,7 @@ import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
-import 'package:eliud_pkg_create/widgets/new_app_bloc/tools/page/page_helper.dart';
+import 'page_helper.dart';
 import 'package:eliud_pkg_etc/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_etc/model/policy_presentation_component.dart';
 import 'package:eliud_pkg_etc/model/policy_presentation_model.dart';
@@ -18,15 +18,15 @@ class PolicyPageHelper extends PageHelper {
   final PlatformMediumModel policy;
   final String title;
 
-  PolicyPageHelper(String pageId, AppModel newApp, MemberModel member, HomeMenuModel theHomeMenu, AppBarModel theAppBar, DrawerModel leftDrawer, DrawerModel rightDrawer, this.policy,
+  PolicyPageHelper(String pageId, String appId, String memberId, HomeMenuModel theHomeMenu, AppBarModel theAppBar, DrawerModel leftDrawer, DrawerModel rightDrawer, this.policy,
       this.title,
-      ) : super(pageId, newApp, member, theHomeMenu, theAppBar, leftDrawer, rightDrawer);
+      ) : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer);
 
 
   PolicyPresentationModel _getPesentationModel(PlatformMediumModel? policyModel) {
     return PolicyPresentationModel(
       documentID: policy.documentID,
-      appId: newAppId(),
+      appId: appId,
       description: title,
       policy: policyModel,
       conditions: ConditionsSimpleModel(
@@ -36,13 +36,13 @@ class PolicyPageHelper extends PageHelper {
   }
 
   Future<PolicyPresentationModel> _createPresentationComponent(PlatformMediumModel? policyModel) async {
-    return await policyPresentationRepository(appId: newAppId())!
+    return await policyPresentationRepository(appId: appId)!
         .add(_getPesentationModel(policyModel));
   }
 
   Future<PageModel> _setupPage() async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .pageRepository(newAppId())!
+        .pageRepository(appId)!
         .add(_page());
   }
 
@@ -56,7 +56,7 @@ class PolicyPageHelper extends PageHelper {
 
     return PageModel(
         documentID: pageId,
-        appId: newAppId(),
+        appId: appId,
         title: title,
         drawer: leftDrawer,
         endDrawer: rightDrawer,

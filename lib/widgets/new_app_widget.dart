@@ -108,6 +108,11 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           includeExamplePolicy: true,
                           includeSignoutButton: true,
                           includeFlushButton: true,
+                          includeWorkflowForManuallyPaidMembership: true,
+                          includeWorkflowForMembershipPaidByCard: true,
+                          includeWorkflowForManualPaymentCart: true,
+                          includeWorkflowForCreditCardPaymentCart: true,
+
                         ));
                         return false;
                       }

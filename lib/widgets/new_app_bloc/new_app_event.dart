@@ -2,6 +2,8 @@ import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:equatable/equatable.dart';
 
+import 'action_specification.dart';
+
 abstract class NewAppCreateEvent extends Equatable {
   @override
   List<Object?> get props => [];
@@ -26,14 +28,18 @@ class NewAppCreateEventInitialise extends NewAppCreateEvent {
 
 class NewAppCreateConfirm extends NewAppCreateEvent {
   final PublicMediumModel? logo;
-  final bool includeShop;
-  final bool includeWelcome;
-  final bool includeChat;
-  final bool includeFeed;
-  final bool includeMemberDashboard;
-  final bool includeExamplePolicy;
-  final bool includeSignoutButton;
-  final bool includeFlushButton;
+  final ActionSpecification includeShop;
+  final ActionSpecification includeWelcome;
+  final ActionSpecification includeChat;
+  final ActionSpecification includeFeed;
+  final ActionSpecification includeMemberDashboard;
+  final ActionSpecification includeExamplePolicy;
+  final ActionSpecification includeSignoutButton;
+  final ActionSpecification includeFlushButton;
+  final ActionSpecification includeWorkflowForManuallyPaidMembership;
+  final ActionSpecification includeWorkflowForMembershipPaidByCard;
+  final ActionSpecification includeWorkflowForManualPaymentCart;
+  final ActionSpecification includeWorkflowForCreditCardPaymentCart;
 
   NewAppCreateConfirm({
     required this.logo,
@@ -45,6 +51,10 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
     required this.includeExamplePolicy,
     required this.includeSignoutButton,
     required this.includeFlushButton,
+    required this.includeWorkflowForManuallyPaidMembership,
+    required this.includeWorkflowForMembershipPaidByCard,
+    required this.includeWorkflowForManualPaymentCart,
+    required this.includeWorkflowForCreditCardPaymentCart,
   });
 
   @override

@@ -414,6 +414,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  eliud_pkg_fundamentals:
+    dependency: transitive
+    description:
+      path: "../eliud_pkg_fundamentals"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   eliud_pkg_medium:
     dependency: "direct main"
     description:
@@ -422,7 +429,7 @@ packages:
     source: path
     version: "0.0.1"
   eliud_pkg_membership:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "../eliud_pkg_membership"
       relative: true
@@ -432,6 +439,20 @@ packages:
     dependency: transitive
     description:
       path: "../eliud_pkg_notifications"
+      relative: true
+    source: path
+    version: "0.0.1"
+  eliud_pkg_pay:
+    dependency: "direct main"
+    description:
+      path: "../eliud_pkg_pay"
+      relative: true
+    source: path
+    version: "0.0.1"
+  eliud_pkg_shop:
+    dependency: "direct main"
+    description:
+      path: "../eliud_pkg_shop"
       relative: true
     source: path
     version: "0.0.1"
@@ -800,6 +821,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.1+2"
+  getwidget:
+    dependency: transitive
+    description:
+      name: getwidget
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.4"
   glob:
     dependency: transitive
     description:
@@ -1267,6 +1295,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  stripe_payment:
+    dependency: transitive
+    description:
+      name: stripe_payment
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.4"
   synchronized:
     dependency: transitive
     description:

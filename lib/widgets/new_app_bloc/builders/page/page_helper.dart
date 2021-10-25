@@ -14,16 +14,12 @@ import 'package:eliud_pkg_text/model/html_model.dart';
 
 class PageHelper {
   final String pageId;
-  final AppModel newApp;
-  final MemberModel member;
+  final String appId;
+  final String memberId;
   final HomeMenuModel theHomeMenu;
   final AppBarModel theAppBar;
   final DrawerModel leftDrawer;
   final DrawerModel rightDrawer;
 
-  PageHelper(this.pageId, this.newApp, this.member, this.theHomeMenu, this.theAppBar, this.leftDrawer, this.rightDrawer);
-
-  String newAppId() => newApp.documentID!;
-
-  String memberId() => member.documentID!;
+  PageHelper(this.pageId, this.appId, this.memberId, this.theHomeMenu, this.theAppBar, this.leftDrawer, this.rightDrawer);
 }

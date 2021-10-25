@@ -4,6 +4,7 @@ import 'package:eliud_core/model/background_model.dart';
 import 'package:eliud_core/model/decoration_color_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
+import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
@@ -11,23 +12,17 @@ import 'package:eliud_core/style/tools/colors.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:flutter/material.dart';
 
+import 'link_specifications.dart';
 import 'other/menu_helper.dart';
+import 'with_menu.dart';
 
-class LeftDrawerHelper {
-  final String appId;
-  final PublicMediumModel? logo;
-  final String drawerId;
-  final String? policyPageId;
-  final String? shopPageId;
-  final String? feedPageId;
-  final String? welcomePageId;
-
-  LeftDrawerHelper(this.appId, {this.welcomePageId, this.policyPageId, this.logo, this.shopPageId, this.feedPageId, })
-      : drawerId = drawerID(appId, DrawerType.Left);
+class LeftDrawerHelper extends WithMenu {
+  LeftDrawerHelper(String appId, {required List<MenuItemModel> menuItems, PublicMediumModel? logo, }):
+        super(appId, menuItems: menuItems, name: 'Left drawer', identifier: drawerID(appId, DrawerType.Left), logo: logo);
 
   Future<DrawerModel> create() async {
     var drawerModel = DrawerModel(
-        documentID: drawerId,
+        documentID: identifier,
         appId: appId,
         name: 'Drawer',
         headerText: '',
@@ -35,7 +30,7 @@ class LeftDrawerHelper {
             logo != null ? _drawerHeaderBGOverride(logo) : null,
         headerHeight: 0,
         popupMenuBackgroundColor: EliudColors.red,
-        menu: await _drawerMenuDef());
+        menu: await menuDef());
 
     await drawerRepository(appId: appId)!.add(drawerModel);
     return drawerModel;
@@ -49,24 +44,5 @@ class LeftDrawerHelper {
         backgroundImage: logo);
     return backgroundModel;
   }
-
-  Future<MenuDefModel> _drawerMenuDef() async {
-    var menuDefModel = MenuDefModel(
-      documentID: drawerId,
-      name: 'Left drawer',
-      menuItems: [
-        if (welcomePageId != null)
-          menuItem(appId, welcomePageId, 'Welcome', Icons.rule),
-        if (policyPageId != null)
-          menuItem(appId, policyPageId, 'Policy', Icons.rule),
-        if (shopPageId != null)
-          menuItem(appId, shopPageId, 'Shop', Icons.rule),
-        if (feedPageId != null)
-          menuItem(appId, feedPageId, 'Feed', Icons.rule),
-      ],
-      admin: false,
-    );
-    await menuDefRepository(appId: appId)!.add(menuDefModel);
-    return menuDefModel;
-  }
 }
+

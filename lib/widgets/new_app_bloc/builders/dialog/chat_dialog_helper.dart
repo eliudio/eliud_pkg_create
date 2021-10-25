@@ -9,17 +9,8 @@ import 'package:eliud_pkg_chat/model/abstract_repository_singleton.dart';
 
 import 'dialog_helper.dart';
 
-class ChatDialogs {
-  final DialogModel hasUnreadChatDialog;
-  final DialogModel allMessagesHaveBeenReadChatDialog;
-
-  ChatDialogs(
-      {required this.hasUnreadChatDialog,
-      required this.allMessagesHaveBeenReadChatDialog});
-}
-
 class ChatDialogHelper extends DialogHelper {
-  ChatDialogHelper(AppModel newApp) : super(newApp);
+  ChatDialogHelper(String appId) : super(appId);
 
   // Security is setup to indicate if a page or dialog is accessible
   // For this reason we need 2 dialogs, one for unread and one for read chats
@@ -31,7 +22,7 @@ class ChatDialogHelper extends DialogHelper {
   Future<DialogModel> _setupDialog(
       String identifier, String packageCondition) async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .dialogRepository(newApp.documentID)!
+        .dialogRepository(appId)!
         .add(_dialog(identifier, packageCondition));
   }
 
@@ -44,7 +35,7 @@ class ChatDialogHelper extends DialogHelper {
 
     return DialogModel(
         documentID: identifier,
-        appId: newApp.documentID,
+        appId: appId,
         title: "Chat",
         layout: DialogLayout.ListView,
         conditions: ConditionsModel(
@@ -56,7 +47,7 @@ class ChatDialogHelper extends DialogHelper {
   ChatDashboardModel _chatModel() {
     return ChatDashboardModel(
       documentID: CHAT_ID,
-      appId: newApp.documentID,
+      appId: appId,
       description: "Chat",
       conditions: ConditionsSimpleModel(
           privilegeLevelRequired:
@@ -66,18 +57,15 @@ class ChatDialogHelper extends DialogHelper {
 
   Future<ChatDashboardModel> _setupChat() async {
     return await AbstractRepositorySingleton.singleton
-        .chatDashboardRepository(newApp.documentID)!
+        .chatDashboardRepository(appId)!
         .add(_chatModel());
   }
 
-  Future<ChatDialogs> create() async {
+  Future<void> create() async {
     await _setupChat();
-    var hasUnreadChatDialog = await _setupDialog(IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
+    await _setupDialog(IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
         ChatPackage.CONDITION_MEMBER_HAS_UNREAD_CHAT);
-    var allMessagesHaveBeenReadChatDialog = await _setupDialog(IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
+    await _setupDialog(IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
         ChatPackage.CONDITION_MEMBER_ALL_HAVE_BEEN_READ);
-    return ChatDialogs(
-        hasUnreadChatDialog: hasUnreadChatDialog,
-        allMessagesHaveBeenReadChatDialog: allMessagesHaveBeenReadChatDialog);
   }
 }

@@ -1,0 +1,63 @@
+import 'package:eliud_pkg_workflow/model/workflow_model.dart';
+
+class ActionSpecification {
+  final bool availableInLeftDrawer;
+  final bool availableInRightDrawer;
+  final bool availableInAppBar;
+  final bool availableInHomeMenu;
+  final bool available; // available but not from any menu
+
+  ActionSpecification(
+      {required this.availableInLeftDrawer,
+      required this.availableInRightDrawer,
+      required this.availableInAppBar,
+      required this.availableInHomeMenu,
+      required this.available});
+
+  bool shouldCreatePageDialogOrWorkflow() =>
+      availableInLeftDrawer ||
+      availableInRightDrawer ||
+      availableInHomeMenu ||
+      available;
+}
+
+enum ShopPaymentType { Manual, Card }
+
+class ShopActionSpecifications extends ActionSpecification {
+  final ShopPaymentType paymentType;
+
+  ShopActionSpecifications({
+    required this.paymentType,
+    required bool availableInLeftDrawer,
+    required bool availableInRightDrawer,
+    required bool availableInAppBar,
+    required bool availableInHomeMenu,
+    required bool available,
+  }) : super(
+      availableInLeftDrawer: availableInLeftDrawer,
+      availableInRightDrawer: availableInRightDrawer,
+      availableInAppBar: availableInAppBar,
+      availableInHomeMenu: availableInHomeMenu,
+      available: available);
+}
+
+enum JoinPaymentType { Manual, Card }
+
+class JoinActionSpecifications extends ActionSpecification {
+  final JoinPaymentType paymentType;
+
+  JoinActionSpecifications({
+    required this.paymentType,
+    required bool availableInLeftDrawer,
+    required bool availableInRightDrawer,
+    required bool availableInAppBar,
+    required bool availableInHomeMenu,
+    required bool available,
+  }) : super(
+      availableInLeftDrawer: availableInLeftDrawer,
+      availableInRightDrawer: availableInRightDrawer,
+      availableInAppBar: availableInAppBar,
+      availableInHomeMenu: availableInHomeMenu,
+      available: available);
+}
+
