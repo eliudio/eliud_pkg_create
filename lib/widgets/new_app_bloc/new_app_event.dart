@@ -28,7 +28,7 @@ class NewAppCreateEventInitialise extends NewAppCreateEvent {
 
 class NewAppCreateConfirm extends NewAppCreateEvent {
   final PublicMediumModel? logo;
-  final ActionSpecification includeShop;
+  final ShopActionSpecifications includeShop;
   final ActionSpecification includeWelcome;
   final ActionSpecification includeChat;
   final ActionSpecification includeFeed;
@@ -36,10 +36,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   final ActionSpecification includeExamplePolicy;
   final ActionSpecification includeSignoutButton;
   final ActionSpecification includeFlushButton;
-  final ActionSpecification includeWorkflowForManuallyPaidMembership;
-  final ActionSpecification includeWorkflowForMembershipPaidByCard;
-  final ActionSpecification includeWorkflowForManualPaymentCart;
-  final ActionSpecification includeWorkflowForCreditCardPaymentCart;
+  final JoinActionSpecifications includeJoinAction;
 
   NewAppCreateConfirm({
     required this.logo,
@@ -51,10 +48,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
     required this.includeExamplePolicy,
     required this.includeSignoutButton,
     required this.includeFlushButton,
-    required this.includeWorkflowForManuallyPaidMembership,
-    required this.includeWorkflowForMembershipPaidByCard,
-    required this.includeWorkflowForManualPaymentCart,
-    required this.includeWorkflowForCreditCardPaymentCart,
+    required this.includeJoinAction,
   });
 
   @override

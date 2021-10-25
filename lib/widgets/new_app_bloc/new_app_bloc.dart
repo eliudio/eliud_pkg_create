@@ -35,21 +35,18 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
     } else if (state is NewAppCreateInitialised) {
       var theState = state as NewAppCreateInitialised;
       if (event is NewAppCreateConfirm) {
-        NewAppHelper().createNewApp(theState.appToBeCreated, theState.member,
-            logo: theState.appToBeCreated.logo,
-            includeWelcome: event.includeWelcome,
-            includeShop: event.includeShop,
-            includeChat: event.includeChat,
-            includeFeed: event.includeFeed,
-            includeMemberDashboard: event.includeMemberDashboard,
-            includeExamplePolicy: event.includeExamplePolicy,
-            includeSignoutButton: event.includeSignoutButton,
-            includeFlushButton: event.includeFlushButton,
-            includeWorkflowForManuallyPaidMembership: event.includeWorkflowForManuallyPaidMembership,
-            includeWorkflowForMembershipPaidByCard: event.includeWorkflowForMembershipPaidByCard,
-            includeWorkflowForManualPaymentCart: event.includeWorkflowForManualPaymentCart,
-            includeWorkflowForCreditCardPaymentCart: event.includeWorkflowForCreditCardPaymentCart,
-        );
+        NewAppHelper(theState.appToBeCreated, theState.member,
+          logo: theState.appToBeCreated.logo,
+          welcomePageSpecifications: event.includeWelcome,
+          shopPageSpecifications: event.includeShop,
+          chatDialogSpecifications: event.includeChat,
+          feedPageSpecifications: event.includeFeed,
+          memberDashboardDialogSpecifications: event.includeMemberDashboard,
+          policySpecifications: event.includeExamplePolicy,
+          signoutButton: event.includeSignoutButton,
+          flushButton: event.includeFlushButton,
+          joinSpecification: event.includeJoinAction,
+        ).create();
       } else if (event is NewAppSwitchAppEvent) {
         yield SwitchApp(theState.appToBeCreated, theState.member);
       } else if (event is NewAppCreateProgressed) {
