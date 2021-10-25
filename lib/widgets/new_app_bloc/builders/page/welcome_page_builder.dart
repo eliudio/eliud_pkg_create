@@ -8,14 +8,14 @@ import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/page_model.dart';
-import 'page_helper.dart';
+import 'page_builder.dart';
 import 'package:eliud_pkg_text/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_text/model/html_component.dart';
 import 'package:eliud_pkg_text/model/html_model.dart';
 
 
-class WelcomePageHelper extends PageHelper {
-  WelcomePageHelper(String pageId, String appId, String memberId, HomeMenuModel theHomeMenu, AppBarModel theAppBar, DrawerModel leftDrawer, DrawerModel rightDrawer
+class WelcomePageBuilder extends PageBuilder {
+  WelcomePageBuilder(String pageId, String appId, String memberId, HomeMenuModel theHomeMenu, AppBarModel theAppBar, DrawerModel leftDrawer, DrawerModel rightDrawer
       ) : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer);
 
   Future<PageModel> create() async {

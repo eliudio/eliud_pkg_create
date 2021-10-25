@@ -8,12 +8,12 @@ import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_core/tools/storage/upload_info.dart';
 
-class PolicyMediumHelper {
+class PolicyMediumBuilder {
   final FeedbackProgress feedbackProgress;
   final String appId;
   final String memberId;
 
-  PolicyMediumHelper(this.feedbackProgress, this.appId, this.memberId);
+  PolicyMediumBuilder(this.feedbackProgress, this.appId, this.memberId);
 
 // Policy
   String policiesAssetLocation() =>

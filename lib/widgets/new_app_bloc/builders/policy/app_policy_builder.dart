@@ -8,12 +8,12 @@ import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_core/tools/storage/upload_info.dart';
 
-class AppPolicyHelper {
+class AppPolicyBuilder {
   final String appId;
   final String memberId;
   PlatformMediumModel policy;
 
-  AppPolicyHelper(this.appId, this.memberId, this.policy, );
+  AppPolicyBuilder(this.appId, this.memberId, this.policy, );
 
   Future<AppPolicyModel> _getAppPolicy() async {
     return AppPolicyModel(

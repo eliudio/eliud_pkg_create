@@ -30,14 +30,14 @@ class Workflows {
   });
 }
 
-class WorkflowHelper {
+class WorkflowBuilder {
   final String appId;
   final bool manuallyPaidMembership;
   final bool membershipPaidByCard;
   final bool manualPaymentCart;
   final bool creditCardPaymentCart;
 
-  WorkflowHelper(this.appId,
+  WorkflowBuilder(this.appId,
       {required this.manuallyPaidMembership,
       required this.membershipPaidByCard,
       required this.manualPaymentCart,

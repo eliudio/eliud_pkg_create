@@ -7,10 +7,10 @@ import 'package:eliud_pkg_notifications/model/notification_dashboard_component.d
 import 'package:eliud_pkg_notifications/model/notification_dashboard_model.dart';
 import 'package:eliud_pkg_notifications/notifications_package.dart';
 
-class NotificationDashboardHelper {
+class NotificationDashboardBuilder {
   String appId;
 
-  NotificationDashboardHelper(this.appId
+  NotificationDashboardBuilder(this.appId
       );
 
   Future<DialogModel> create() async {

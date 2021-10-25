@@ -5,8 +5,8 @@ import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/with_menu.dart';
 
-class HomeMenuHelper extends WithMenu {
-  HomeMenuHelper(String appId, {required List<MenuItemModel> menuItems, PublicMediumModel? logo, }):
+class HomeMenuBuilder extends WithMenu {
+  HomeMenuBuilder(String appId, {required List<MenuItemModel> menuItems, PublicMediumModel? logo, }):
         super(appId, menuItems: menuItems, name: 'Left drawer', identifier: homeMenuID(appId), logo: logo);
 
   Future<HomeMenuModel> create() async {

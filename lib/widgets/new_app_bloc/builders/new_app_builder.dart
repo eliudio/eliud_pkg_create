@@ -12,26 +12,30 @@ import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'package:eliud_pkg_workflow/tools/action/workflow_action_model.dart';
 import 'package:flutter/material.dart';
 import '../action_specification.dart';
-import 'app_bar_helper.dart';
-import 'dialog/chat_dialog_helper.dart';
-import 'home_menu_helper.dart';
-import 'left_drawer_helper.dart';
-import 'member_dashboard_helper.dart';
-import 'page/policy_page_helper.dart';
-import 'page/welcome_page_helper.dart';
-import 'policy/policy_medium_helper.dart';
-import 'right_drawer_helper.dart';
 import 'package:eliud_core/model/app_home_page_references_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/style/_default/default_style_family.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-import 'policy/app_policy_helper.dart';
-import 'workflow_helper.dart';
+
+import 'workflow_builder.dart';
+import 'app_bar_builder.dart';
+import 'home_menu_builder.dart';
+import 'left_drawer_builder.dart';
+import 'member_dashboard_builder.dart';
+import 'right_drawer_builder.dart';
+
+import 'dialog/chat_dialog_builder.dart';
+
+import 'page/policy_page_builder.dart';
+import 'page/welcome_page_builder.dart';
+
+import 'policy/policy_medium_builder.dart';
+import 'policy/app_policy_builder.dart';
 
 typedef bool Evaluate(ActionSpecification actionSpecification);
 
-class NewAppHelper {
+class NewAppBuilder {
   static String WELCOME_PAGE_ID = 'welcome';
   static String SHOP_PAGE_ID = 'shop';
   static String FEED_PAGE_ID = 'feed';
@@ -54,138 +58,134 @@ class NewAppHelper {
   late String memberId;
 
   final PublicMediumModel? logo;
+
   final ActionSpecification welcomePageSpecifications;
-  final ActionSpecification chatDialogSpecifications;
   final ShopActionSpecifications shopPageSpecifications;
   final ActionSpecification feedPageSpecifications;
+
+  final ActionSpecification chatDialogSpecifications;
   final ActionSpecification memberDashboardDialogSpecifications;
+
   final ActionSpecification policySpecifications;
+
   final JoinActionSpecifications joinSpecification;
   final ActionSpecification signoutButton;
   final ActionSpecification flushButton;
 
-  NewAppHelper(
-      this.app,
-      this.member, {
-        required this.logo,
-        required this.welcomePageSpecifications,
-        required this.chatDialogSpecifications,
-        required this.shopPageSpecifications,
-        required this.feedPageSpecifications,
-        required this.memberDashboardDialogSpecifications,
-        required this.policySpecifications,
-        required this.joinSpecification,
-        required this.signoutButton,
-        required this.flushButton,
-      }) {
+  NewAppBuilder(
+    this.app,
+    this.member, {
+    required this.logo,
+
+    required this.welcomePageSpecifications,
+    required this.shopPageSpecifications,
+    required this.feedPageSpecifications,
+
+    required this.chatDialogSpecifications,
+    required this.memberDashboardDialogSpecifications,
+
+    required this.policySpecifications,
+
+    required this.joinSpecification,
+    required this.signoutButton,
+    required this.flushButton,
+  }) {
     appId = app.documentID!;
     memberId = member.documentID!;
   }
 
   Future<AppModel> create() async {
-    Future<void> create() async {
-      var leftDrawer = await LeftDrawerHelper(appId,
-          logo: logo,
-          menuItems: geDrawerMenuItemsFor((value) => value
-              .availableInLeftDrawer))
-          .create();
+    // check if no errors, e.g. identifier should not exist
+    var homePageId = null;
 
-      var rightDrawer = await RightDrawerHelper(appId,
-          logo: logo,
-          menuItems: geDrawerMenuItemsFor((value) => value
-              .availableInRightDrawer))
-          .create();
+    var leftDrawer = await LeftDrawerBuilder(appId,
+            logo: logo,
+            menuItems:
+                geDrawerMenuItemsFor((value) => value.availableInLeftDrawer))
+        .create();
 
-      var theHomeMenu = await HomeMenuHelper(appId,
-          logo: logo,
-          menuItems: geDrawerMenuItemsFor((value) => value.availableInHomeMenu))
-          .create();
+    var rightDrawer = await RightDrawerBuilder(appId,
+            logo: logo,
+            menuItems:
+                geDrawerMenuItemsFor((value) => value.availableInRightDrawer))
+        .create();
 
-      var theAppBar = await AppBarHelper(appId,
-          logo: logo,
-          menuItems: geDrawerMenuItemsFor((value) => value.availableInAppBar))
-          .create();
+    var theHomeMenu = await HomeMenuBuilder(appId,
+            logo: logo,
+            menuItems:
+                geDrawerMenuItemsFor((value) => value.availableInHomeMenu))
+        .create();
 
-      // member dashboard
-      var memberDashboard = null;
-      if (memberDashboardDialogSpecifications
-          .shouldCreatePageDialogOrWorkflow()) {
-        memberDashboard = await MemberDashboardHelper(appId).create();
-      }
+    var theAppBar = await AppBarBuilder(appId,
+            logo: logo,
+            menuItems: geDrawerMenuItemsFor((value) => value.availableInAppBar))
+        .create();
+
+    // member dashboard
+    if (memberDashboardDialogSpecifications
+        .shouldCreatePageDialogOrWorkflow()) {
+      await MemberDashboardBuilder(appId).create();
+    }
+
+    // policy
+    var policyMedium;
+    var policyModel;
+    if (policySpecifications.shouldCreatePageDialogOrWorkflow()) {
+      // policy medium
+      policyMedium =
+          await PolicyMediumBuilder((value) => {}, appId, memberId).create();
 
       // policy
-      var policyMedium;
-      var policyModel;
-      if (policySpecifications.shouldCreatePageDialogOrWorkflow()) {
-        // policy medium
-        policyMedium =
-        await PolicyMediumHelper((value) => {}, appId, memberId).create();
+      policyModel =
+          await AppPolicyBuilder(appId, memberId, policyMedium).create();
 
-        // policy
-        policyModel =
-        await AppPolicyHelper(appId, memberId, policyMedium).create();
-
-        // policy page
-        await PolicyPageHelper(
-            POLICY_PAGE_ID,
-            appId,
-            memberId,
-            theHomeMenu,
-            theAppBar,
-            leftDrawer,
-            rightDrawer,
-            policyMedium,
-            'Policy')
-            .create();
-      }
-
-      // welcome page
-      if (welcomePageSpecifications.shouldCreatePageDialogOrWorkflow()) {
-        await WelcomePageHelper(
-            WELCOME_PAGE_ID,
-            appId,
-            memberId,
-            theHomeMenu,
-            theAppBar,
-            leftDrawer,
-            rightDrawer)
-            .create();
-      }
-
-      // chat
-      if (chatDialogSpecifications.shouldCreatePageDialogOrWorkflow()) {
-        await ChatDialogHelper(appId).create();
-      }
-
-      // join
-      var manuallyPaidMembership = false;
-      var membershipPaidByCard = false;
-      if (joinSpecification.shouldCreatePageDialogOrWorkflow()) {
-        if (joinSpecification.paymentType == JoinPaymentType.Manual) {
-          manuallyPaidMembership = true;
-        } else {
-          membershipPaidByCard = true;
-        }
-      }
-
-      // shop
-      var manualPaymentCart = false;
-      var creditCardPaymentCart = false;
-      if (shopPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
-        if (shopPageSpecifications.paymentType == ShopPaymentType.Manual) {
-          manualPaymentCart = true;
-        } else {
-          creditCardPaymentCart = true;
-        }
-      }
-
-      await WorkflowHelper(appId,
-          manuallyPaidMembership: manuallyPaidMembership,
-          membershipPaidByCard: membershipPaidByCard,
-          manualPaymentCart: manualPaymentCart,
-          creditCardPaymentCart: creditCardPaymentCart)
+      // policy page
+      await PolicyPageBuilder(POLICY_PAGE_ID, appId, memberId, theHomeMenu,
+              theAppBar, leftDrawer, rightDrawer, policyMedium, 'Policy')
           .create();
     }
+
+    // welcome page
+    if (welcomePageSpecifications.shouldCreatePageDialogOrWorkflow()) {
+      var welcomePage = await WelcomePageBuilder(WELCOME_PAGE_ID, appId, memberId, theHomeMenu,
+              theAppBar, leftDrawer, rightDrawer)
+          .create();
+      homePageId = welcomePage.documentID;
+    }
+
+    // chat
+    if (chatDialogSpecifications.shouldCreatePageDialogOrWorkflow()) {
+      await ChatDialogBuilder(appId).create();
+    }
+
+    // join
+    var manuallyPaidMembership = false;
+    var membershipPaidByCard = false;
+    if (joinSpecification.shouldCreatePageDialogOrWorkflow()) {
+      if (joinSpecification.paymentType == JoinPaymentType.Manual) {
+        manuallyPaidMembership = true;
+      } else {
+        membershipPaidByCard = true;
+      }
+    }
+
+    // shop
+    var manualPaymentCart = false;
+    var creditCardPaymentCart = false;
+    if (shopPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
+      if (shopPageSpecifications.paymentType == ShopPaymentType.Manual) {
+        manualPaymentCart = true;
+      } else {
+        creditCardPaymentCart = true;
+      }
+    }
+
+    await WorkflowBuilder(appId,
+            manuallyPaidMembership: manuallyPaidMembership,
+            membershipPaidByCard: membershipPaidByCard,
+            manualPaymentCart: manualPaymentCart,
+            creditCardPaymentCart: creditCardPaymentCart)
+        .create();
 
     // app
     var appModel = await appRepository()!.add(AppModel(
@@ -196,38 +196,34 @@ class NewAppHelper {
             app.styleFamily ?? DefaultStyleFamily.defaultStyleFamilyName,
         styleName: app.styleName ?? DefaultStyle.defaultStyleName,
         email: member.email,
-        policies: olicyModel,
+        policies: policyModel,
         description: 'Your new application',
         logo: logo,
         homePages: AppHomePageReferencesModel(
-          homePageBlockedMember: homePage.documentID,
-          homePagePublic: homePage.documentID,
-          homePageSubscribedMember: homePage.documentID,
-          homePageLevel1Member: homePage.documentID,
-          homePageLevel2Member: homePage.documentID,
-          homePageOwner: homePage.documentID,
+          homePageBlockedMember: homePageId,
+          homePagePublic: homePageId,
+          homePageSubscribedMember: homePageId,
+          homePageLevel1Member: homePageId,
+          homePageLevel2Member: homePageId,
+          homePageOwner: homePageId,
         )));
     return appModel;
   }
 
   List<MenuItemModel> geDrawerMenuItemsFor(Evaluate evaluate) {
-    var _welcomePageId = evaluate(welcomePageSpecifications)
-        ? WELCOME_PAGE_ID
-        : null;
-    var _shopPageId =
-    evaluate(shopPageSpecifications) ? SHOP_PAGE_ID : null;
-    var _feedPageId =
-    evaluate(feedPageSpecifications) ? FEED_PAGE_ID : null;
+    var _welcomePageId =
+        evaluate(welcomePageSpecifications) ? WELCOME_PAGE_ID : null;
+    var _shopPageId = evaluate(shopPageSpecifications) ? SHOP_PAGE_ID : null;
+    var _feedPageId = evaluate(feedPageSpecifications) ? FEED_PAGE_ID : null;
     var _memberDashboardDialogId = evaluate(memberDashboardDialogSpecifications)
         ? MEMBER_DASHBOARD_ID
         : null;
-    var _policyPageId =evaluate(policySpecifications) ? POLICY_PAGE_ID : null;
+    var _policyPageId = evaluate(policySpecifications) ? POLICY_PAGE_ID : null;
 
     var _hasUnreadChatDialogId = evaluate(chatDialogSpecifications)
         ? IDENTIFIER_MEMBER_HAS_UNREAD_CHAT
         : null;
-    var _allMessagesHaveBeenReadChatDialog =
-    evaluate(chatDialogSpecifications)
+    var _allMessagesHaveBeenReadChatDialog = evaluate(chatDialogSpecifications)
         ? IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ
         : null;
 
@@ -244,7 +240,7 @@ class NewAppHelper {
       if (_feedPageId != null) menuItemFeed(appId, _feedPageId, 'Feed'),
       if (_hasUnreadChatDialogId != null)
         MenuItemModel(
-            documentID: ChatDialogHelper.IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
+            documentID: ChatDialogBuilder.IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
             text: 'Chat',
             description: 'Some unread messages available',
             icon: IconModel(
@@ -254,12 +250,12 @@ class NewAppHelper {
                 dialogID: _hasUnreadChatDialogId,
                 conditions: ConditionsModel(
                     privilegeLevelRequired:
-                    PrivilegeLevelRequired.NoPrivilegeRequired,
+                        PrivilegeLevelRequired.NoPrivilegeRequired,
                     packageCondition:
-                    ChatPackage.CONDITION_MEMBER_HAS_UNREAD_CHAT))),
+                        ChatPackage.CONDITION_MEMBER_HAS_UNREAD_CHAT))),
       if (_allMessagesHaveBeenReadChatDialog != null)
         MenuItemModel(
-            documentID: ChatDialogHelper.IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
+            documentID: ChatDialogBuilder.IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
             text: 'Chat',
             description: 'Open chat',
             icon: IconModel(
@@ -269,15 +265,13 @@ class NewAppHelper {
                 dialogID: _allMessagesHaveBeenReadChatDialog,
                 conditions: ConditionsModel(
                     privilegeLevelRequired:
-                    PrivilegeLevelRequired.NoPrivilegeRequired,
+                        PrivilegeLevelRequired.NoPrivilegeRequired,
                     packageCondition:
-                    ChatPackage.CONDITION_MEMBER_ALL_HAVE_BEEN_READ))),
+                        ChatPackage.CONDITION_MEMBER_ALL_HAVE_BEEN_READ))),
       if (_signout) menuItemSignOut(appId),
     ];
   }
-
 }
-
 
 menuItem(appID, pageID, text, IconData iconData) => MenuItemModel(
     documentID: pageID,
@@ -295,7 +289,7 @@ menuItemSignOut(appID) => MenuItemModel(
         codePoint: Icons.power_settings_new.codePoint,
         fontFamily: Icons.settings.fontFamily),
     action:
-    InternalAction(appID, internalActionEnum: InternalActionEnum.Logout));
+        InternalAction(appID, internalActionEnum: InternalActionEnum.Logout));
 
 menuItemFlushCache(appID) => MenuItemModel(
     documentID: newRandomKey(),
@@ -305,7 +299,7 @@ menuItemFlushCache(appID) => MenuItemModel(
         codePoint: Icons.power_settings_new.codePoint,
         fontFamily: Icons.settings.fontFamily),
     action:
-    InternalAction(appID, internalActionEnum: InternalActionEnum.Flush));
+        InternalAction(appID, internalActionEnum: InternalActionEnum.Flush));
 
 menuItemManageAccount(appID, dialogID) => MenuItemModel(
     documentID: dialogID,
@@ -405,111 +399,102 @@ menuItemFollowRequestsPage(appID, pageID, privilegeLevelRequired) =>
             conditions: ConditionsModel(
                 privilegeLevelRequired: privilegeLevelRequired,
                 packageCondition:
-                FollowPackage.CONDITION_MEMBER_HAS_OPEN_REQUESTS)));
+                    FollowPackage.CONDITION_MEMBER_HAS_OPEN_REQUESTS)));
 
-menuItemFollowers(
-    appID, dialogID, privilegeLevelRequired) =>
-    MenuItemModel(
-        documentID: dialogID,
-        text: 'Followers',
-        description: 'Followers',
-        icon: IconModel(
-            codePoint: Icons.favorite_sharp.codePoint,
-            fontFamily: Icons.settings.fontFamily),
-        action: OpenDialog(appID,
-            dialogID: dialogID,
-            conditions: ConditionsModel(
-                privilegeLevelRequired: privilegeLevelRequired,
-                packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
+menuItemFollowers(appID, dialogID, privilegeLevelRequired) => MenuItemModel(
+    documentID: dialogID,
+    text: 'Followers',
+    description: 'Followers',
+    icon: IconModel(
+        codePoint: Icons.favorite_sharp.codePoint,
+        fontFamily: Icons.settings.fontFamily),
+    action: OpenDialog(appID,
+        dialogID: dialogID,
+        conditions: ConditionsModel(
+            privilegeLevelRequired: privilegeLevelRequired,
+            packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
-menuItemFollowersPage(appID, pageID, privilegeLevelRequired) =>
-    MenuItemModel(
-        documentID: pageID,
-        text: 'Followers',
-        description: 'Followers',
-        icon: IconModel(
-            codePoint: Icons.favorite_sharp.codePoint,
-            fontFamily: Icons.settings.fontFamily),
-        action: GotoPage(appID,
-            pageID: pageID,
-            conditions: ConditionsModel(
-                privilegeLevelRequired: privilegeLevelRequired,
-                packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
+menuItemFollowersPage(appID, pageID, privilegeLevelRequired) => MenuItemModel(
+    documentID: pageID,
+    text: 'Followers',
+    description: 'Followers',
+    icon: IconModel(
+        codePoint: Icons.favorite_sharp.codePoint,
+        fontFamily: Icons.settings.fontFamily),
+    action: GotoPage(appID,
+        pageID: pageID,
+        conditions: ConditionsModel(
+            privilegeLevelRequired: privilegeLevelRequired,
+            packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
-menuItemFollowing(
-    appID, dialogID, privilegeLevelRequired) =>
-    MenuItemModel(
-        documentID: dialogID,
-        text: 'Following',
-        description: 'Following',
-        icon: IconModel(
-            codePoint: Icons.favorite_sharp.codePoint,
-            fontFamily: Icons.settings.fontFamily),
-        action: OpenDialog(appID,
-            dialogID: dialogID,
-            conditions: ConditionsModel(
-                privilegeLevelRequired: privilegeLevelRequired,
-                packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
+menuItemFollowing(appID, dialogID, privilegeLevelRequired) => MenuItemModel(
+    documentID: dialogID,
+    text: 'Following',
+    description: 'Following',
+    icon: IconModel(
+        codePoint: Icons.favorite_sharp.codePoint,
+        fontFamily: Icons.settings.fontFamily),
+    action: OpenDialog(appID,
+        dialogID: dialogID,
+        conditions: ConditionsModel(
+            privilegeLevelRequired: privilegeLevelRequired,
+            packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
-menuItemFollowingPage(appID, pageID, privilegeLevelRequired) =>
-    MenuItemModel(
-        documentID: pageID,
-        text: 'Following',
-        description: 'Following',
-        icon: IconModel(
-            codePoint: Icons.favorite_sharp.codePoint,
-            fontFamily: Icons.settings.fontFamily),
-        action: GotoPage(appID,
-            pageID: pageID,
-            conditions: ConditionsModel(
-                privilegeLevelRequired: privilegeLevelRequired,
-                packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
+menuItemFollowingPage(appID, pageID, privilegeLevelRequired) => MenuItemModel(
+    documentID: pageID,
+    text: 'Following',
+    description: 'Following',
+    icon: IconModel(
+        codePoint: Icons.favorite_sharp.codePoint,
+        fontFamily: Icons.settings.fontFamily),
+    action: GotoPage(appID,
+        pageID: pageID,
+        conditions: ConditionsModel(
+            privilegeLevelRequired: privilegeLevelRequired,
+            packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
-menuItemAppMembers(appID, dialogID, privilegeLevelRequired) =>
-    MenuItemModel(
-        documentID: dialogID,
-        text: 'App Members',
-        description: 'Members of the app',
-        icon: IconModel(
-            codePoint: Icons.people.codePoint,
-            fontFamily: Icons.notifications.fontFamily),
-        action: OpenDialog(
-          appID,
-          conditions: ConditionsModel(
-              privilegeLevelRequired: privilegeLevelRequired,
-              packageCondition: CorePackage.MUST_BE_LOGGED_ON),
-          dialogID: dialogID,
-        ));
+menuItemAppMembers(appID, dialogID, privilegeLevelRequired) => MenuItemModel(
+    documentID: dialogID,
+    text: 'App Members',
+    description: 'Members of the app',
+    icon: IconModel(
+        codePoint: Icons.people.codePoint,
+        fontFamily: Icons.notifications.fontFamily),
+    action: OpenDialog(
+      appID,
+      conditions: ConditionsModel(
+          privilegeLevelRequired: privilegeLevelRequired,
+          packageCondition: CorePackage.MUST_BE_LOGGED_ON),
+      dialogID: dialogID,
+    ));
 
-menuItemAppMembersPage(appID, pageID, privilegeLevelRequired) =>
-    MenuItemModel(
-        documentID: pageID,
-        text: 'App Members',
-        description: 'Members of the app',
-        icon: IconModel(
-            codePoint: Icons.people.codePoint,
-            fontFamily: Icons.notifications.fontFamily),
-        action: GotoPage(
-          appID,
-          conditions: ConditionsModel(
-              privilegeLevelRequired: privilegeLevelRequired,
-              packageCondition: CorePackage.MUST_BE_LOGGED_ON),
-          pageID: pageID,
-        ));
+menuItemAppMembersPage(appID, pageID, privilegeLevelRequired) => MenuItemModel(
+    documentID: pageID,
+    text: 'App Members',
+    description: 'Members of the app',
+    icon: IconModel(
+        codePoint: Icons.people.codePoint,
+        fontFamily: Icons.notifications.fontFamily),
+    action: GotoPage(
+      appID,
+      conditions: ConditionsModel(
+          privilegeLevelRequired: privilegeLevelRequired,
+          packageCondition: CorePackage.MUST_BE_LOGGED_ON),
+      pageID: pageID,
+    ));
 
-menuItemFiendFriends(appID, dialogID, privilegeLevelRequired) =>
-    MenuItemModel(
-        documentID: dialogID,
-        text: 'Find friends',
-        description: 'Fiend friends',
-        icon: IconModel(
-            codePoint: Icons.favorite_sharp.codePoint,
-            fontFamily: Icons.settings.fontFamily),
-        action: OpenDialog(appID,
-            dialogID: dialogID,
-            conditions: ConditionsModel(
-                privilegeLevelRequired: privilegeLevelRequired,
-                packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
+menuItemFiendFriends(appID, dialogID, privilegeLevelRequired) => MenuItemModel(
+    documentID: dialogID,
+    text: 'Find friends',
+    description: 'Fiend friends',
+    icon: IconModel(
+        codePoint: Icons.favorite_sharp.codePoint,
+        fontFamily: Icons.settings.fontFamily),
+    action: OpenDialog(appID,
+        dialogID: dialogID,
+        conditions: ConditionsModel(
+            privilegeLevelRequired: privilegeLevelRequired,
+            packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
 menuItemFiendFriendsPage(appID, pageID, privilegeLevelRequired) =>
     MenuItemModel(

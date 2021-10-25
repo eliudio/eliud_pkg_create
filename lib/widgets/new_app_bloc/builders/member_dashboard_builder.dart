@@ -31,10 +31,10 @@ String deleteDataEmailMessage = """
 Sorry to see you go. Your account has been destroyed.
 """;
 
-class MemberDashboardHelper {
+class MemberDashboardBuilder {
   final String appId;
 
-  MemberDashboardHelper(this.appId);
+  MemberDashboardBuilder(this.appId);
 
   static String IDENTIFIER = "member_dashboard";
 

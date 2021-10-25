@@ -7,10 +7,10 @@ import 'package:eliud_pkg_chat/model/chat_dashboard_component.dart';
 import 'package:eliud_pkg_chat/model/chat_dashboard_model.dart';
 import 'package:eliud_pkg_chat/model/abstract_repository_singleton.dart';
 
-import 'dialog_helper.dart';
+import 'dialog_builder.dart';
 
-class ChatDialogHelper extends DialogHelper {
-  ChatDialogHelper(String appId) : super(appId);
+class ChatDialogBuilder extends DialogBuilder {
+  ChatDialogBuilder(String appId) : super(appId);
 
   // Security is setup to indicate if a page or dialog is accessible
   // For this reason we need 2 dialogs, one for unread and one for read chats

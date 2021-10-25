@@ -12,14 +12,8 @@ import 'package:eliud_pkg_text/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_text/model/html_component.dart';
 import 'package:eliud_pkg_text/model/html_model.dart';
 
-class PageHelper {
-  final String pageId;
+class DialogBuilder {
   final String appId;
-  final String memberId;
-  final HomeMenuModel theHomeMenu;
-  final AppBarModel theAppBar;
-  final DrawerModel leftDrawer;
-  final DrawerModel rightDrawer;
 
-  PageHelper(this.pageId, this.appId, this.memberId, this.theHomeMenu, this.theAppBar, this.leftDrawer, this.rightDrawer);
+  DialogBuilder(this.appId);
 }

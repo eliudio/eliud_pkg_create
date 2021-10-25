@@ -1,11 +1,11 @@
 import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 
 class ActionSpecification {
-  final bool availableInLeftDrawer;
-  final bool availableInRightDrawer;
-  final bool availableInAppBar;
-  final bool availableInHomeMenu;
-  final bool available; // available but not from any menu
+  bool availableInLeftDrawer;
+  bool availableInRightDrawer;
+  bool availableInAppBar;
+  bool availableInHomeMenu;
+  bool available; // available but not from any menu
 
   ActionSpecification(
       {required this.availableInLeftDrawer,

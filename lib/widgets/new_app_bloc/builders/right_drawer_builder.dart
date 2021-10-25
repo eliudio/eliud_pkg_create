@@ -20,8 +20,8 @@ import 'package:flutter/material.dart';
 
 import 'with_menu.dart';
 
-class RightDrawerHelper extends WithMenu {
-  RightDrawerHelper(String appId, {required List<MenuItemModel> menuItems, PublicMediumModel? logo, }):
+class RightDrawerBuilder extends WithMenu {
+  RightDrawerBuilder(String appId, {required List<MenuItemModel> menuItems, PublicMediumModel? logo, }):
         super(appId, menuItems: menuItems, name: 'Left drawer', identifier: drawerID(appId, DrawerType.Left), logo: logo);
 
   Future<DrawerModel> create() async {

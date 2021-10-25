@@ -9,8 +9,8 @@ import 'package:eliud_core/style/tools/colors.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'with_menu.dart';
 
-class LeftDrawerHelper extends WithMenu {
-  LeftDrawerHelper(String appId, {required List<MenuItemModel> menuItems, PublicMediumModel? logo, }):
+class LeftDrawerBuilder extends WithMenu {
+  LeftDrawerBuilder(String appId, {required List<MenuItemModel> menuItems, PublicMediumModel? logo, }):
         super(appId, menuItems: menuItems, name: 'Left drawer', identifier: drawerID(appId, DrawerType.Left), logo: logo);
 
   Future<DrawerModel> create() async {
