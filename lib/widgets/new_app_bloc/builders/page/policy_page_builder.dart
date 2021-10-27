@@ -1,4 +1,5 @@
-import 'package:eliud_core/model/abstract_repository_singleton.dart' as corerepo;
+import 'package:eliud_core/model/abstract_repository_singleton.dart'
+    as corerepo;
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/body_component_model.dart';
@@ -18,12 +19,21 @@ class PolicyPageBuilder extends PageBuilder {
   final PlatformMediumModel policy;
   final String title;
 
-  PolicyPageBuilder(String pageId, String appId, String memberId, HomeMenuModel theHomeMenu, AppBarModel theAppBar, DrawerModel leftDrawer, DrawerModel rightDrawer, this.policy,
-      this.title,
-      ) : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer);
+  PolicyPageBuilder(
+    String pageId,
+    String appId,
+    String memberId,
+    HomeMenuModel theHomeMenu,
+    AppBarModel theAppBar,
+    DrawerModel leftDrawer,
+    DrawerModel rightDrawer,
+    this.policy,
+    this.title,
+  ) : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+            rightDrawer);
 
-
-  PolicyPresentationModel _getPesentationModel(PlatformMediumModel? policyModel) {
+  PolicyPresentationModel _getPesentationModel(
+      PlatformMediumModel? policyModel) {
     return PolicyPresentationModel(
       documentID: policy.documentID,
       appId: appId,
@@ -31,11 +41,12 @@ class PolicyPageBuilder extends PageBuilder {
       policy: policyModel,
       conditions: ConditionsSimpleModel(
           privilegeLevelRequired:
-          PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
+              PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
     );
   }
 
-  Future<PolicyPresentationModel> _createPresentationComponent(PlatformMediumModel? policyModel) async {
+  Future<PolicyPresentationModel> _createPresentationComponent(
+      PlatformMediumModel? policyModel) async {
     return await policyPresentationRepository(appId: appId)!
         .add(_getPesentationModel(policyModel));
   }

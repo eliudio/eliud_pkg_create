@@ -1,0 +1,116 @@
+import 'package:eliud_core/model/abstract_repository_singleton.dart'
+    as corerepo;
+import 'package:eliud_core/model/app_bar_model.dart';
+import 'package:eliud_core/model/body_component_model.dart';
+import 'package:eliud_core/model/conditions_model.dart';
+import 'package:eliud_core/model/conditions_simple_model.dart';
+import 'package:eliud_core/model/drawer_model.dart';
+import 'package:eliud_core/model/home_menu_model.dart';
+import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_core/model/platform_medium_model.dart';
+import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
+import 'package:eliud_pkg_fundamentals/model/abstract_repository_singleton.dart';
+import 'package:eliud_pkg_fundamentals/model/booklet_component.dart';
+import 'package:eliud_pkg_fundamentals/model/booklet_model.dart';
+import 'package:eliud_pkg_fundamentals/model/link_model.dart';
+import 'package:eliud_pkg_fundamentals/model/section_model.dart';
+import 'page_builder.dart';
+
+class AboutPageBuilder extends PageBuilder {
+  final String componentId;
+  final String aboutAssetLocation;
+  final double imageWidth = 0.3;
+  final RelativeImagePosition imagePosition = RelativeImagePosition.Aside;
+  final SectionImageAlignment alignment = SectionImageAlignment.Left;
+
+  AboutPageBuilder(
+      this.componentId,
+    this.aboutAssetLocation,
+    String pageId,
+    String appId,
+    String memberId,
+    HomeMenuModel theHomeMenu,
+    AppBarModel theAppBar,
+    DrawerModel leftDrawer,
+    DrawerModel rightDrawer,
+  ) : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+            rightDrawer);
+
+  Future<PageModel> _setupPage() async {
+    return await corerepo.AbstractRepositorySingleton.singleton
+        .pageRepository(appId)!
+        .add(_page());
+  }
+
+  PageModel _page() {
+    List<BodyComponentModel> components = [];
+    components.add(BodyComponentModel(
+      documentID: "1",
+      componentName: AbstractBookletComponent.componentName,
+      componentId: componentId,
+    ));
+
+    return PageModel(
+        documentID: pageId,
+        appId: appId,
+        title: "About",
+        drawer: leftDrawer,
+        endDrawer: rightDrawer,
+        appBar: theAppBar,
+        homeMenu: theHomeMenu,
+        layout: PageLayout.ListView,
+        conditions: ConditionsModel(
+          privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
+        ),
+        bodyComponents: components);
+  }
+
+  Future<String?> _store(PlatformMediumModel platformMediumModel) async {
+    return (await AbstractRepositorySingleton.singleton
+            .bookletRepository(appId)!
+            .add(_header(platformMediumModel)))
+        .documentID;
+  }
+
+  Future<PlatformMediumModel> installAboutImage() async {
+    return await PlatformMediumHelper(appId, memberId,
+            PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple)
+        .createThumbnailUploadPhotoAsset(
+      newRandomKey(),
+      aboutAssetLocation,
+    );
+  }
+
+  BookletModel _header(PlatformMediumModel memberMediumModel) {
+    List<SectionModel> entries = [];
+    {
+      List<LinkModel> links = [];
+      entries.add(SectionModel(
+          documentID: "1",
+          title: "About me",
+          description: "Welcome to my new app. .\n\nMy name is X. .\n\nI am the founder of Y. I enjoy making nice things and people love my litte pieces of art. So, one day I decided to share my products with the wider world. That's how Y was created. I hope you enjoy my shop.\n\nX",
+          image: memberMediumModel,
+          imagePositionRelative: imagePosition,
+          imageAlignment: alignment,
+          imageWidth: imageWidth,
+          links: links));
+    }
+
+    return BookletModel(
+      documentID: componentId,
+      name: "About",
+      sections: entries,
+      appId: appId,
+      conditions: ConditionsSimpleModel(
+          privilegeLevelRequired:
+              PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
+    );
+  }
+
+  Future<PageModel> create() async {
+    var image = await installAboutImage();
+    await _store(image);
+    return await _setupPage();
+  }
+}

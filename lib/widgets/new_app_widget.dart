@@ -90,6 +90,13 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInHomeMenu: true,
     available: false,
   );
+  var aboutSpecifications = ActionSpecification(
+    availableInLeftDrawer: true,
+    availableInRightDrawer: false,
+    availableInAppBar: false,
+    availableInHomeMenu: true,
+    available: false,
+  );
   var feedSpecifications = ActionSpecification(
     availableInLeftDrawer: true,
     availableInRightDrawer: false,
@@ -193,6 +200,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                             .add(NewAppCreateConfirm(
                           logo: state.appToBeCreated.logo,
                           includeWelcome: welcomeSpecifications,
+                          aboutPageSpecifications: aboutSpecifications,
                           includeShop: shopActionSpecifications,
                           includeChat: chatSpecifications,
                           includeFeed: feedSpecifications,
@@ -272,9 +280,13 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   Widget _contents(BuildContext context, NewAppCreateInitialised state) {
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
       ActionSpecificationWidget(
-        enabled: false,
+          enabled: false,
           actionSpecification: welcomeSpecifications,
           label: 'Generate Welcome Page'),
+      ActionSpecificationWidget(
+          enabled: false,
+          actionSpecification: aboutSpecifications,
+          label: 'Generate About Page'),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: shopActionSpecifications,

@@ -1,4 +1,3 @@
-
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
@@ -13,10 +12,17 @@ import 'package:eliud_pkg_text/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_text/model/html_component.dart';
 import 'package:eliud_pkg_text/model/html_model.dart';
 
-
 class WelcomePageBuilder extends PageBuilder {
-  WelcomePageBuilder(String pageId, String appId, String memberId, HomeMenuModel theHomeMenu, AppBarModel theAppBar, DrawerModel leftDrawer, DrawerModel rightDrawer
-      ) : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer);
+  WelcomePageBuilder(
+      String pageId,
+      String appId,
+      String memberId,
+      HomeMenuModel theHomeMenu,
+      AppBarModel theAppBar,
+      DrawerModel leftDrawer,
+      DrawerModel rightDrawer)
+      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+            rightDrawer);
 
   Future<PageModel> create() async {
     // welcome page

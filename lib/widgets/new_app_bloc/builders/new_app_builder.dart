@@ -33,6 +33,7 @@ import 'feed/following_dashboard_page_builder.dart';
 import 'feed/invite_dashboard_page_builder.dart';
 import 'feed/membership_dashboard_page_builder.dart';
 import 'feed/profile_page_builder.dart';
+import 'page/about_page_builder.dart';
 import 'workflow_builder.dart';
 import 'app_bar_builder.dart';
 import 'home_menu_builder.dart';
@@ -54,6 +55,8 @@ typedef NewAppTask = Future<void> Function();
 
 class NewAppBuilder {
   static String WELCOME_PAGE_ID = 'welcome';
+  static String ABOUT_PAGE_ID = 'about';
+  static String ABOUT_ASSET_PATH = 'packages/eliud_pkg_create/assets/about.png';
   static String SHOP_PAGE_ID = 'shop';
   static String POLICY_PAGE_ID = 'policy';
   static String FEED_PAGE_ID = 'feed';
@@ -63,10 +66,6 @@ class NewAppBuilder {
   static String FOLLOWING_PAGE_ID = 'following';
   static String FIND_FRIEND_PAGE_ID = 'fiend_friends';
   static String APP_MEMBERS_PAGE_ID = 'app_members';
-/*
-  static String INVITE_PAGE_ID = "invite";
-  static String MEMBERSHIP_PAGE_ID = "membership";
-*/
 
   static String MEMBER_DASHBOARD_DIALOG_ID = 'member_dashboard';
   static String MEMBERSHIP_DASHBOARD_DIALOG_ID = 'membership_dashboard';
@@ -77,6 +76,7 @@ class NewAppBuilder {
   static String IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ = "chat_dialog_all_read";
 
   static String FEED_MENU_COMPONENT_IDENTIFIER = "feed_menu";
+  static String ABOUT_COMPONENT_IDENTIFIER = "about";
   static String FOLLOW_REQUEST_COMPONENT_ID = "follow_request";
   static String FEED_HEADER_COMPONENT_IDENTIFIER = "feed_header";
   static String FEED_PROFILE_COMPONENT_IDENTIFIER = "feed_profile";
@@ -103,6 +103,7 @@ class NewAppBuilder {
   PublicMediumModel? logo;
 
   final ActionSpecification welcomePageSpecifications;
+  final ActionSpecification aboutPageSpecifications;
   final ShopActionSpecifications shopPageSpecifications;
   final ActionSpecification feedPageSpecifications;
 
@@ -119,11 +120,13 @@ class NewAppBuilder {
   final ActionSpecification notificationDashboardDialogSpecifications;
   final ActionSpecification assignmentDashboardDialogSpecifications;
 
+
   NewAppBuilder(
     this.app,
     this.member, {
     required this.logo,
     required this.welcomePageSpecifications,
+    required this.aboutPageSpecifications,
     required this.shopPageSpecifications,
     required this.feedPageSpecifications,
     required this.chatDialogSpecifications,
@@ -299,6 +302,15 @@ class NewAppBuilder {
           ));
     }
 
+    if (aboutPageSpecifications
+        .shouldCreatePageDialogOrWorkflow()) {
+      tasks.add(() async {
+        await AboutPageBuilder(ABOUT_COMPONENT_IDENTIFIER, ABOUT_ASSET_PATH, ABOUT_PAGE_ID, appId,
+            memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+            .create();
+      });
+    }
+
     if (membershipDashboardDialogSpecifications
         .shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async => await MembershipDashboardDialogBuilder(
@@ -431,8 +443,8 @@ class NewAppBuilder {
   }
 
   List<MenuItemModel> getMenuItemsFor(Evaluate evaluate) {
-    var _welcomePageId =
-        evaluate(welcomePageSpecifications) ? WELCOME_PAGE_ID : null;
+    var _welcomePageId = evaluate(welcomePageSpecifications) ? WELCOME_PAGE_ID : null;
+    var _aboutPageId = evaluate(aboutPageSpecifications) ? ABOUT_PAGE_ID : null;
     var _shopPageId = evaluate(shopPageSpecifications) ? SHOP_PAGE_ID : null;
     var _feedPageId = evaluate(feedPageSpecifications) ? FEED_PAGE_ID : null;
 /*
@@ -478,6 +490,8 @@ class NewAppBuilder {
     return [
       if (_welcomePageId != null)
         menuItemWelcome(appId, _welcomePageId, 'Welcome'),
+      if (_welcomePageId != null)
+        menuItemAbout(appId, _aboutPageId, 'About'),
       if (_memberDashboardDialogId != null)
         menuItemManageAccount(appId, _memberDashboardDialogId),
       if (_policyPageId != null)
