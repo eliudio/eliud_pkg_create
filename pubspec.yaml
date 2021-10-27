@@ -73,3 +73,5 @@ flutter:
     - packages/eliud_pkg_create/assets/tired.png
     - packages/eliud_pkg_create/assets/about.png
     - packages/eliud_pkg_create/assets/blocked.png
+    - packages/eliud_pkg_create/assets/example_photo_1.jpg
+    - packages/eliud_pkg_create/assets/example_photo_2.jpg

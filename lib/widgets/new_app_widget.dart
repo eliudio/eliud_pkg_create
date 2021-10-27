@@ -104,6 +104,13 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInHomeMenu: true,
     available: false,
   );
+  var albumSpecifications = ActionSpecification(
+    availableInLeftDrawer: true,
+    availableInRightDrawer: false,
+    availableInAppBar: false,
+    availableInHomeMenu: true,
+    available: false,
+  );
   var feedSpecifications = ActionSpecification(
     availableInLeftDrawer: true,
     availableInRightDrawer: false,
@@ -209,6 +216,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           includeWelcome: welcomeSpecifications,
                           includeblocked: blockedSpecifications,
                           aboutPageSpecifications: aboutSpecifications,
+                          albumPageSpecifications: albumSpecifications,
                           includeShop: shopActionSpecifications,
                           includeChat: chatSpecifications,
                           includeFeed: feedSpecifications,
@@ -299,6 +307,10 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           enabled: true,
           actionSpecification: aboutSpecifications,
           label: 'Generate About Page'),
+      ActionSpecificationWidget(
+          enabled: true,
+          actionSpecification: albumSpecifications,
+          label: 'Generate Example Album Page'),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: shopActionSpecifications,

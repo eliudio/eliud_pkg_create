@@ -42,6 +42,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   final ActionSpecification notificationDashboardDialogSpecifications;
   final ActionSpecification assignmentDashboardDialogSpecifications;
   final ActionSpecification aboutPageSpecifications;
+  final ActionSpecification albumPageSpecifications;
 
   NewAppCreateConfirm({
     required this.logo,
@@ -59,6 +60,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
     required this.notificationDashboardDialogSpecifications,
     required this.assignmentDashboardDialogSpecifications,
     required this.aboutPageSpecifications,
+    required this.albumPageSpecifications,
   });
 
   @override

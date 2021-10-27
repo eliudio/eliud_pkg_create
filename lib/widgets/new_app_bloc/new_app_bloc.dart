@@ -42,6 +42,7 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
           notificationDashboardDialogSpecifications: event.notificationDashboardDialogSpecifications,
           assignmentDashboardDialogSpecifications: event.assignmentDashboardDialogSpecifications,
           aboutPageSpecifications: event.aboutPageSpecifications,
+          albumPageSpecifications: event.albumPageSpecifications,
         ).create(this);
       } else if (event is NewAppSwitchAppEvent) {
         yield SwitchApp(theState.appToBeCreated, theState.member);

@@ -1,6 +1,7 @@
 import 'package:eliud_core/core_package.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/access_model.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/album_page_builder.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/blocked_page_builder.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
 import 'package:eliud_core/model/conditions_model.dart';
@@ -57,9 +58,15 @@ typedef NewAppTask = Future<void> Function();
 class NewAppBuilder {
   static String WELCOME_PAGE_ID = 'welcome';
   static String BLOCKED_PAGE_ID = 'blocked';
+  static String ALBUM_PAGE_ID = 'album';
+  static String ALBUM_EXAMPLE1_PHOTO_ASSET_PATH =
+      'packages/eliud_pkg_create/assets/example_photo_1.jpg';
+  static String ALBUM_EXAMPLE2_PHOTO_ASSET_PATH =
+      'packages/eliud_pkg_create/assets/example_photo_2.jpg';
   static String ABOUT_PAGE_ID = 'about';
   static String ABOUT_ASSET_PATH = 'packages/eliud_pkg_create/assets/about.png';
-  static String BLOCKED_ASSET_PATH = 'packages/eliud_pkg_create/assets/blocked.png';
+  static String BLOCKED_ASSET_PATH =
+      'packages/eliud_pkg_create/assets/blocked.png';
   static String SHOP_PAGE_ID = 'shop';
   static String POLICY_PAGE_ID = 'policy';
   static String FEED_PAGE_ID = 'feed';
@@ -89,6 +96,7 @@ class NewAppBuilder {
   static String INVITE_COMPONENT_IDENTIFIER = "invite";
   static String MEMBERSHIP_COMPONENT_IDENTIFIER = "membership";
   static String PROFILE_COMPONENT_IDENTIFIER = "profile";
+  static String ALBUM_COMPONENT_IDENTIFIER = "album";
 
   static String MANUALLY_PAY_MEMBERSHIP_WORKFLOW_ID =
       'manually_paid_membership_workflow';
@@ -111,6 +119,7 @@ class NewAppBuilder {
   final ActionSpecification blockedPageSpecifications;
   final ShopActionSpecifications shopPageSpecifications;
   final ActionSpecification feedPageSpecifications;
+  final ActionSpecification albumPageSpecifications;
 
   final ActionSpecification chatDialogSpecifications;
   final ActionSpecification memberDashboardDialogSpecifications;
@@ -125,12 +134,12 @@ class NewAppBuilder {
   final ActionSpecification notificationDashboardDialogSpecifications;
   final ActionSpecification assignmentDashboardDialogSpecifications;
 
-
   NewAppBuilder(
     this.app,
     this.member, {
     required this.logo,
     required this.welcomePageSpecifications,
+    required this.albumPageSpecifications,
     required this.aboutPageSpecifications,
     required this.blockedPageSpecifications,
     required this.shopPageSpecifications,
@@ -171,8 +180,7 @@ class NewAppBuilder {
     var profilePageId;
     var feedPageId;
 
-    logo ??= await RandomLogo.getRandomPhoto(appId,
-          memberId, null);
+    logo ??= await RandomLogo.getRandomPhoto(appId, memberId, null);
 
     tasks.add(() async => await claimAccess(appId, memberId));
     tasks.add(() async => claimOwnerShipApplication(appId, memberId));
@@ -269,7 +277,7 @@ class NewAppBuilder {
             headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
           ));
       tasks.add(() async => await InviteDashboardPageBuilder(
-          FIND_FRIEND_PAGE_ID,
+                  FIND_FRIEND_PAGE_ID,
                   appId,
                   memberId,
                   theHomeMenu,
@@ -284,7 +292,7 @@ class NewAppBuilder {
             headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
           ));
       tasks.add(() async => await MembershipDashboardPageBuilder(
-          APP_MEMBERS_PAGE_ID,
+                  APP_MEMBERS_PAGE_ID,
                   appId,
                   memberId,
                   theHomeMenu,
@@ -309,20 +317,34 @@ class NewAppBuilder {
           ));
     }
 
-    if (aboutPageSpecifications
-        .shouldCreatePageDialogOrWorkflow()) {
+    if (aboutPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
-        await AboutPageBuilder(ABOUT_COMPONENT_IDENTIFIER, ABOUT_ASSET_PATH, ABOUT_PAGE_ID, appId,
-            memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+        await AboutPageBuilder(
+                ABOUT_COMPONENT_IDENTIFIER,
+                ABOUT_ASSET_PATH,
+                ABOUT_PAGE_ID,
+                appId,
+                memberId,
+                theHomeMenu,
+                theAppBar,
+                leftDrawer,
+                rightDrawer)
             .create();
       });
     }
 
-    if (blockedPageSpecifications
-        .shouldCreatePageDialogOrWorkflow()) {
+    if (blockedPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
-        var blockedPage = await BlockedPageBuilder(BLOCKED_COMPONENT_IDENTIFIER, BLOCKED_ASSET_PATH, BLOCKED_PAGE_ID, appId,
-            memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+        var blockedPage = await BlockedPageBuilder(
+                BLOCKED_COMPONENT_IDENTIFIER,
+                BLOCKED_ASSET_PATH,
+                BLOCKED_PAGE_ID,
+                appId,
+                memberId,
+                theHomeMenu,
+                theAppBar,
+                leftDrawer,
+                rightDrawer)
             .create();
         blockedPageId = blockedPage.documentID;
       });
@@ -377,9 +399,26 @@ class NewAppBuilder {
     if (welcomePageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
         var welcomePage = await WelcomePageBuilder(WELCOME_PAGE_ID, appId,
-            memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+                memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .create();
         homePageId = welcomePage.documentID;
+      });
+    }
+
+    if (albumPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
+      tasks.add(() async {
+        await AlbumPageBuilder(
+                ALBUM_COMPONENT_IDENTIFIER,
+                ALBUM_EXAMPLE1_PHOTO_ASSET_PATH,
+                ALBUM_EXAMPLE2_PHOTO_ASSET_PATH,
+                ALBUM_PAGE_ID,
+                appId,
+                memberId,
+                theHomeMenu,
+                theAppBar,
+                leftDrawer,
+                rightDrawer)
+            .create();
       });
     }
 
@@ -460,11 +499,14 @@ class NewAppBuilder {
   }
 
   List<MenuItemModel> getMenuItemsFor(Evaluate evaluate) {
-    var _welcomePageId = evaluate(welcomePageSpecifications) ? WELCOME_PAGE_ID : null;
-    var _blockedPageId = evaluate(blockedPageSpecifications) ? BLOCKED_PAGE_ID : null;
+    var _welcomePageId =
+        evaluate(welcomePageSpecifications) ? WELCOME_PAGE_ID : null;
+    var _blockedPageId =
+        evaluate(blockedPageSpecifications) ? BLOCKED_PAGE_ID : null;
     var _aboutPageId = evaluate(aboutPageSpecifications) ? ABOUT_PAGE_ID : null;
     var _shopPageId = evaluate(shopPageSpecifications) ? SHOP_PAGE_ID : null;
     var _feedPageId = evaluate(feedPageSpecifications) ? FEED_PAGE_ID : null;
+    var _albumPageId = evaluate(albumPageSpecifications) ? ALBUM_PAGE_ID : null;
 /*
     var _profilePageId = evaluate(feedPageSpecifications) ? PROFILE_PAGE_ID : null;
     var _followRequestPageId = evaluate(feedPageSpecifications) ? FOLLOW_REQUEST_PAGE_ID : null;
@@ -510,9 +552,8 @@ class NewAppBuilder {
         menuItemWelcome(appId, _welcomePageId, 'Welcome'),
       if (_blockedPageId != null)
         menuItem(appId, _blockedPageId, 'Blocked', Icons.do_not_disturb),
-
-      if (_welcomePageId != null)
-        menuItemAbout(appId, _aboutPageId, 'About'),
+      if (_aboutPageId != null) menuItemAbout(appId, _aboutPageId, 'About'),
+      if (_albumPageId != null) menuItemAbout(appId, _albumPageId, 'Album'),
       if (_memberDashboardDialogId != null)
         menuItemManageAccount(appId, _memberDashboardDialogId),
       if (_policyPageId != null)
@@ -604,7 +645,6 @@ class NewAppBuilder {
         privilegeLevel: PrivilegeLevel.OwnerPrivilege,
         points: 0));
   }
-
 }
 
 menuItem(appID, pageID, text, IconData iconData) => MenuItemModel(
