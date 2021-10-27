@@ -77,7 +77,7 @@ class BlockedPageBuilder extends PageBuilder {
       entries.add(SectionModel(
           documentID: "1",
           title: "Blocked!",
-          description: "Unfortunatly y  ou are blocked.\n\n\n...",
+          description: "Unfortunately you are blocked.",
           image: blockedImage,
           imagePositionRelative: RelativeImagePosition.Aside,
           imageAlignment: SectionImageAlignment.Right,
