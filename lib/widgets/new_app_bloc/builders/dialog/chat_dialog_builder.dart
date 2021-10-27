@@ -10,12 +10,13 @@ import 'package:eliud_pkg_chat/model/abstract_repository_singleton.dart';
 import 'dialog_builder.dart';
 
 class ChatDialogBuilder extends DialogBuilder {
-  ChatDialogBuilder(String appId) : super(appId);
+  final String identifierMemberHasUnreadChat;
+  final String identifierMemberAllHaveBeenRead;
+
+  ChatDialogBuilder(String appId, {required this.identifierMemberHasUnreadChat, required this.identifierMemberAllHaveBeenRead}) : super(appId, 'NA');
 
   // Security is setup to indicate if a page or dialog is accessible
   // For this reason we need 2 dialogs, one for unread and one for read chats
-  static String IDENTIFIER_MEMBER_HAS_UNREAD_CHAT = "chat_dialog_with_unread";
-  static String IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ = "chat_dialog_all_read";
 
   static String CHAT_ID = "chat";
 
@@ -63,9 +64,9 @@ class ChatDialogBuilder extends DialogBuilder {
 
   Future<void> create() async {
     await _setupChat();
-    await _setupDialog(IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
+    await _setupDialog(identifierMemberHasUnreadChat,
         ChatPackage.CONDITION_MEMBER_HAS_UNREAD_CHAT);
-    await _setupDialog(IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
+    await _setupDialog(identifierMemberAllHaveBeenRead,
         ChatPackage.CONDITION_MEMBER_ALL_HAVE_BEEN_READ);
   }
 }

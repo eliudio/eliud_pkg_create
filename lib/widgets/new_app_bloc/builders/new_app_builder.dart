@@ -1,9 +1,13 @@
 import 'package:eliud_core/core_package.dart';
+import 'package:eliud_core/model/abstract_repository_singleton.dart';
+import 'package:eliud_core/model/access_model.dart';
+import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
 import 'package:eliud_core/model/conditions_model.dart';
 import 'package:eliud_core/model/icon_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
+import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_chat/chat_package.dart';
 import 'package:eliud_pkg_follow/follow_package.dart';
@@ -18,31 +22,70 @@ import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/style/_default/default_style_family.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 
+import 'dialog/assignment_dialog_builder.dart';
+import 'dialog/member_dashboard_dialog_builder.dart';
+import 'dialog/membership_dashboard_dialog_builder.dart';
+import 'dialog/notification_dashboard_dialog_builder.dart';
+import 'feed/feed_page_builder.dart';
+import 'feed/follow_requests_dashboard_page_builder.dart';
+import 'feed/followers_dashboard_page_builder.dart';
+import 'feed/following_dashboard_page_builder.dart';
+import 'feed/invite_dashboard_page_builder.dart';
+import 'feed/membership_dashboard_page_builder.dart';
+import 'feed/profile_page_builder.dart';
 import 'workflow_builder.dart';
 import 'app_bar_builder.dart';
 import 'home_menu_builder.dart';
 import 'left_drawer_builder.dart';
-import 'member_dashboard_builder.dart';
 import 'right_drawer_builder.dart';
-
 import 'dialog/chat_dialog_builder.dart';
-
 import 'page/policy_page_builder.dart';
 import 'page/welcome_page_builder.dart';
-
 import 'policy/policy_medium_builder.dart';
 import 'policy/app_policy_builder.dart';
 
-typedef bool Evaluate(ActionSpecification actionSpecification);
+import '../new_app_bloc.dart';
+import '../new_app_event.dart';
+import '../new_app_state.dart';
+
+typedef Evaluate = bool Function(ActionSpecification actionSpecification);
+
+typedef NewAppTask = Future<void> Function();
 
 class NewAppBuilder {
   static String WELCOME_PAGE_ID = 'welcome';
   static String SHOP_PAGE_ID = 'shop';
-  static String FEED_PAGE_ID = 'feed';
-  static String MEMBER_DASHBOARD_ID = 'member_dashboard';
   static String POLICY_PAGE_ID = 'policy';
+  static String FEED_PAGE_ID = 'feed';
+  static String PROFILE_PAGE_ID = 'profile';
+  static String FOLLOW_REQUEST_PAGE_ID = 'follow_request';
+  static String FOLLOWERS_PAGE_ID = 'followers';
+  static String FOLLOWING_PAGE_ID = 'following';
+  static String FIND_FRIEND_PAGE_ID = 'fiend_friends';
+  static String APP_MEMBERS_PAGE_ID = 'app_members';
+/*
+  static String INVITE_PAGE_ID = "invite";
+  static String MEMBERSHIP_PAGE_ID = "membership";
+*/
+
+  static String MEMBER_DASHBOARD_DIALOG_ID = 'member_dashboard';
+  static String MEMBERSHIP_DASHBOARD_DIALOG_ID = 'membership_dashboard';
+  static String NOTIFICATION_DASHBOARD_DIALOG_ID = 'notification_dashboard';
+  static String ASSIGNMENT_DASHBOARD_DIALOG_ID = 'assignment_dashboard';
+
   static String IDENTIFIER_MEMBER_HAS_UNREAD_CHAT = "chat_dialog_with_unread";
   static String IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ = "chat_dialog_all_read";
+
+  static String FEED_MENU_COMPONENT_IDENTIFIER = "feed_menu";
+  static String FOLLOW_REQUEST_COMPONENT_ID = "follow_request";
+  static String FEED_HEADER_COMPONENT_IDENTIFIER = "feed_header";
+  static String FEED_PROFILE_COMPONENT_IDENTIFIER = "feed_profile";
+  static String FOLLOWERS_COMPONENT_IDENTIFIER = "followers";
+  static String FOLLOWING_COMPONENT_IDENTIFIER = "following";
+  static String INVITE_COMPONENT_IDENTIFIER = "invite";
+  static String MEMBERSHIP_COMPONENT_IDENTIFIER = "membership";
+  static String PROFILE_COMPONENT_IDENTIFIER = "profile";
+
   static String MANUALLY_PAY_MEMBERSHIP_WORKFLOW_ID =
       'manually_paid_membership_workflow';
   static String MEMBERSHIP_PAID_BY_CARD_WORKFLOW_ID =
@@ -57,7 +100,7 @@ class NewAppBuilder {
   late String appId;
   late String memberId;
 
-  final PublicMediumModel? logo;
+  PublicMediumModel? logo;
 
   final ActionSpecification welcomePageSpecifications;
   final ShopActionSpecifications shopPageSpecifications;
@@ -72,95 +115,255 @@ class NewAppBuilder {
   final ActionSpecification signoutButton;
   final ActionSpecification flushButton;
 
+  final ActionSpecification membershipDashboardDialogSpecifications;
+  final ActionSpecification notificationDashboardDialogSpecifications;
+  final ActionSpecification assignmentDashboardDialogSpecifications;
+
   NewAppBuilder(
     this.app,
     this.member, {
     required this.logo,
-
     required this.welcomePageSpecifications,
     required this.shopPageSpecifications,
     required this.feedPageSpecifications,
-
     required this.chatDialogSpecifications,
     required this.memberDashboardDialogSpecifications,
-
     required this.policySpecifications,
-
     required this.joinSpecification,
     required this.signoutButton,
     required this.flushButton,
+    required this.membershipDashboardDialogSpecifications,
+    required this.notificationDashboardDialogSpecifications,
+    required this.assignmentDashboardDialogSpecifications,
   }) {
     appId = app.documentID!;
     memberId = member.documentID!;
   }
 
-  Future<AppModel> create() async {
+  var homePageId;
+  var leftDrawer;
+  var rightDrawer;
+  var theHomeMenu;
+  var theAppBar;
+  var policyMedium;
+  var policyModel;
+
+  var manuallyPaidMembership = false;
+  var membershipPaidByCard = false;
+  var manualPaymentCart = false;
+  var creditCardPaymentCart = false;
+
+  var newlyCreatedApp;
+  var feedModel;
+
+  Future<AppModel> create(NewAppCreateBloc newAppCreateBloc) async {
+    List<NewAppTask> tasks = [];
+    var profilePageId;
+    var feedPageId;
+
+    logo ??= await RandomLogo.getRandomPhoto(appId,
+          memberId, null);
+
+    tasks.add(() async => await claimAccess(appId, memberId));
+    tasks.add(() async => claimOwnerShipApplication(appId, memberId));
+
     // check if no errors, e.g. identifier should not exist
-    var homePageId = null;
-
-    var leftDrawer = await LeftDrawerBuilder(appId,
+    tasks.add(() async => leftDrawer = await LeftDrawerBuilder(appId,
             logo: logo,
-            menuItems:
-                geDrawerMenuItemsFor((value) => value.availableInLeftDrawer))
-        .create();
+            menuItems: getMenuItemsFor((value) => value.availableInLeftDrawer))
+        .create());
 
-    var rightDrawer = await RightDrawerBuilder(appId,
+    tasks.add(() async => rightDrawer = await RightDrawerBuilder(appId,
             logo: logo,
-            menuItems:
-                geDrawerMenuItemsFor((value) => value.availableInRightDrawer))
-        .create();
+            menuItems: getMenuItemsFor((value) => value.availableInRightDrawer))
+        .create());
 
-    var theHomeMenu = await HomeMenuBuilder(appId,
+    tasks.add(() async => theHomeMenu = await HomeMenuBuilder(appId,
             logo: logo,
-            menuItems:
-                geDrawerMenuItemsFor((value) => value.availableInHomeMenu))
-        .create();
+            menuItems: getMenuItemsFor((value) => value.availableInHomeMenu))
+        .create());
 
-    var theAppBar = await AppBarBuilder(appId,
+    tasks.add(() async => theAppBar = await AppBarBuilder(appId,
             logo: logo,
-            menuItems: geDrawerMenuItemsFor((value) => value.availableInAppBar))
-        .create();
+            menuItems: getMenuItemsFor((value) => value.availableInAppBar))
+        .create());
 
-    // member dashboard
     if (memberDashboardDialogSpecifications
         .shouldCreatePageDialogOrWorkflow()) {
-      await MemberDashboardBuilder(appId).create();
+      tasks.add(() async =>
+          await MemberDashboardDialogBuilder(appId, MEMBER_DASHBOARD_DIALOG_ID)
+              .create());
     }
 
+    // Feed and profile page
+    if (feedPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
+      profilePageId = PROFILE_PAGE_ID;
+      feedPageId = FEED_PAGE_ID;
+      tasks.add(() async => feedModel = await FeedPageBuilder(FEED_PAGE_ID,
+              appId, memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+          .run(
+              feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
+              headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
+              profileComponentIdentifier: FEED_PROFILE_COMPONENT_IDENTIFIER,
+              feedPageId: FEED_PAGE_ID,
+              profilePageId: PROFILE_PAGE_ID,
+              followRequestPageId: FOLLOW_REQUEST_PAGE_ID,
+              followersPageId: FOLLOWERS_PAGE_ID,
+              followingPageId: FOLLOWING_PAGE_ID,
+              fiendFriendsPageId: FIND_FRIEND_PAGE_ID,
+              appMembersPageId: APP_MEMBERS_PAGE_ID));
+
+      tasks.add(() async => await FollowRequestsDashboardPageBuilder(
+                  FOLLOW_REQUEST_PAGE_ID,
+                  appId,
+                  memberId,
+                  theHomeMenu,
+                  theAppBar,
+                  leftDrawer,
+                  rightDrawer)
+              .run(
+            componentIdentifier: FOLLOW_REQUEST_COMPONENT_ID,
+            profilePageId: PROFILE_PAGE_ID,
+            feedPageId: FEED_PAGE_ID,
+            feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
+            headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
+          ));
+      tasks.add(() async => await FollowersDashboardPageBuilder(
+                  FOLLOWERS_PAGE_ID,
+                  appId,
+                  memberId,
+                  theHomeMenu,
+                  theAppBar,
+                  leftDrawer,
+                  rightDrawer)
+              .run(
+            componentIdentifier: FOLLOWERS_COMPONENT_IDENTIFIER,
+            profilePageId: PROFILE_PAGE_ID,
+            feedPageId: FEED_PAGE_ID,
+            feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
+            headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
+          ));
+      tasks.add(() async => await FollowingDashboardPageBuilder(
+                  FOLLOWING_PAGE_ID,
+                  appId,
+                  memberId,
+                  theHomeMenu,
+                  theAppBar,
+                  leftDrawer,
+                  rightDrawer)
+              .run(
+            componentIdentifier: FOLLOWING_COMPONENT_IDENTIFIER,
+            profilePageId: PROFILE_PAGE_ID,
+            feedPageId: FEED_PAGE_ID,
+            feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
+            headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
+          ));
+      tasks.add(() async => await InviteDashboardPageBuilder(
+          FIND_FRIEND_PAGE_ID,
+                  appId,
+                  memberId,
+                  theHomeMenu,
+                  theAppBar,
+                  leftDrawer,
+                  rightDrawer)
+              .run(
+            componentIdentifier: INVITE_COMPONENT_IDENTIFIER,
+            profilePageId: PROFILE_PAGE_ID,
+            feedPageId: FEED_PAGE_ID,
+            feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
+            headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
+          ));
+      tasks.add(() async => await MembershipDashboardPageBuilder(
+          APP_MEMBERS_PAGE_ID,
+                  appId,
+                  memberId,
+                  theHomeMenu,
+                  theAppBar,
+                  leftDrawer,
+                  rightDrawer)
+              .run(
+            componentIdentifier: MEMBERSHIP_COMPONENT_IDENTIFIER,
+            profilePageId: PROFILE_PAGE_ID,
+            feedPageId: FEED_PAGE_ID,
+            feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
+            headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
+          ));
+      tasks.add(() async => await ProfilePageBuilder(PROFILE_PAGE_ID, appId,
+                  memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+              .run(
+            feed: feedModel,
+            member: member,
+            feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
+            headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
+            profileComponentIdentifier: PROFILE_COMPONENT_IDENTIFIER,
+          ));
+    }
+
+    if (membershipDashboardDialogSpecifications
+        .shouldCreatePageDialogOrWorkflow()) {
+      tasks.add(() async => await MembershipDashboardDialogBuilder(
+              appId, MEMBERSHIP_DASHBOARD_DIALOG_ID,
+              profilePageId: profilePageId, feedPageId: feedPageId)
+          .create());
+    }
+
+    if (notificationDashboardDialogSpecifications
+        .shouldCreatePageDialogOrWorkflow()) {
+      tasks.add(() async => await NotificationDashboardDialogBuilder(
+              appId, NOTIFICATION_DASHBOARD_DIALOG_ID)
+          .create());
+    }
+
+    if (assignmentDashboardDialogSpecifications
+        .shouldCreatePageDialogOrWorkflow()) {
+      tasks.add(() async =>
+          await AssignmentDialogBuilder(appId, ASSIGNMENT_DASHBOARD_DIALOG_ID)
+              .create());
+    }
     // policy
-    var policyMedium;
-    var policyModel;
     if (policySpecifications.shouldCreatePageDialogOrWorkflow()) {
       // policy medium
-      policyMedium =
-          await PolicyMediumBuilder((value) => {}, appId, memberId).create();
+      tasks.add(() async => policyMedium =
+          await PolicyMediumBuilder((value) => {}, appId, memberId).create());
 
       // policy
-      policyModel =
-          await AppPolicyBuilder(appId, memberId, policyMedium).create();
+      tasks.add(() async => policyModel =
+          await AppPolicyBuilder(appId, memberId, policyMedium).create());
 
       // policy page
-      await PolicyPageBuilder(POLICY_PAGE_ID, appId, memberId, theHomeMenu,
-              theAppBar, leftDrawer, rightDrawer, policyMedium, 'Policy')
-          .create();
+      tasks.add(() async => await PolicyPageBuilder(
+              POLICY_PAGE_ID,
+              appId,
+              memberId,
+              theHomeMenu,
+              theAppBar,
+              leftDrawer,
+              rightDrawer,
+              policyMedium,
+              'Policy')
+          .create());
     }
 
     // welcome page
     if (welcomePageSpecifications.shouldCreatePageDialogOrWorkflow()) {
-      var welcomePage = await WelcomePageBuilder(WELCOME_PAGE_ID, appId, memberId, theHomeMenu,
-              theAppBar, leftDrawer, rightDrawer)
-          .create();
-      homePageId = welcomePage.documentID;
+      tasks.add(() async {
+        var welcomePage = await WelcomePageBuilder(WELCOME_PAGE_ID, appId,
+                memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+            .create();
+        homePageId = welcomePage.documentID;
+      });
     }
 
     // chat
     if (chatDialogSpecifications.shouldCreatePageDialogOrWorkflow()) {
-      await ChatDialogBuilder(appId).create();
+      tasks.add(() async => await ChatDialogBuilder(appId,
+              identifierMemberAllHaveBeenRead:
+                  IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
+              identifierMemberHasUnreadChat: IDENTIFIER_MEMBER_HAS_UNREAD_CHAT)
+          .create());
     }
 
     // join
-    var manuallyPaidMembership = false;
-    var membershipPaidByCard = false;
     if (joinSpecification.shouldCreatePageDialogOrWorkflow()) {
       if (joinSpecification.paymentType == JoinPaymentType.Manual) {
         manuallyPaidMembership = true;
@@ -170,8 +373,6 @@ class NewAppBuilder {
     }
 
     // shop
-    var manualPaymentCart = false;
-    var creditCardPaymentCart = false;
     if (shopPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       if (shopPageSpecifications.paymentType == ShopPaymentType.Manual) {
         manualPaymentCart = true;
@@ -180,15 +381,15 @@ class NewAppBuilder {
       }
     }
 
-    await WorkflowBuilder(appId,
+    tasks.add(() async => await WorkflowBuilder(appId,
             manuallyPaidMembership: manuallyPaidMembership,
             membershipPaidByCard: membershipPaidByCard,
             manualPaymentCart: manualPaymentCart,
             creditCardPaymentCart: creditCardPaymentCart)
-        .create();
+        .create());
 
     // app
-    var appModel = await appRepository()!.add(AppModel(
+    tasks.add(() async => newlyCreatedApp = await appRepository()!.add(AppModel(
         documentID: appId,
         title: 'New application',
         ownerID: memberId,
@@ -206,17 +407,62 @@ class NewAppBuilder {
           homePageLevel1Member: homePageId,
           homePageLevel2Member: homePageId,
           homePageOwner: homePageId,
-        )));
-    return appModel;
+        ))));
+
+    var progressManager = ProgressManager(tasks.length,
+        (progress) => newAppCreateBloc.add(NewAppCreateProgressed(progress)));
+
+    var currentTask = tasks[0];
+    currentTask().then((value) => tasks[1]);
+
+    for (var task in tasks) {
+      await task();
+      progressManager.progressedNextStep();
+      if (newAppCreateBloc.state is NewAppCreateCreateCancelled)
+        throw Exception("Process cancelled");
+    }
+
+    if (newlyCreatedApp != null) {
+      newAppCreateBloc.add(NewAppSwitchAppEvent());
+      return newlyCreatedApp;
+    } else {
+      throw Exception("no app created");
+    }
   }
 
-  List<MenuItemModel> geDrawerMenuItemsFor(Evaluate evaluate) {
+  List<MenuItemModel> getMenuItemsFor(Evaluate evaluate) {
     var _welcomePageId =
         evaluate(welcomePageSpecifications) ? WELCOME_PAGE_ID : null;
     var _shopPageId = evaluate(shopPageSpecifications) ? SHOP_PAGE_ID : null;
     var _feedPageId = evaluate(feedPageSpecifications) ? FEED_PAGE_ID : null;
+/*
+    var _profilePageId = evaluate(feedPageSpecifications) ? PROFILE_PAGE_ID : null;
+    var _followRequestPageId = evaluate(feedPageSpecifications) ? FOLLOW_REQUEST_PAGE_ID : null;
+    var _followersPageId = evaluate(feedPageSpecifications) ? FOLLOWERS_PAGE_ID : null;
+    var _followingPageId = evaluate(feedPageSpecifications) ? FOLLOWING_PAGE_ID : null;
+    var _findFriendPageId = evaluate(feedPageSpecifications) ? FIND_FRIEND_PAGE_ID : null;
+    var _appMembersPageId = evaluate(feedPageSpecifications) ? APP_MEMBERS_PAGE_ID : null;
+    var _invitePageId = evaluate(feedPageSpecifications) ? INVITE_PAGE_ID : null;
+    var _membershipPageId = evaluate(feedPageSpecifications) ? MEMBERSHIP_PAGE_ID : null;
+*/
+
+    var _membershipDashboardDialogId =
+        evaluate(membershipDashboardDialogSpecifications)
+            ? MEMBERSHIP_DASHBOARD_DIALOG_ID
+            : null;
+
+    var _notificationDashboardDialogId =
+        evaluate(notificationDashboardDialogSpecifications)
+            ? NOTIFICATION_DASHBOARD_DIALOG_ID
+            : null;
+
+    var _assignmentDasboardDialogId =
+        evaluate(assignmentDashboardDialogSpecifications)
+            ? ASSIGNMENT_DASHBOARD_DIALOG_ID
+            : null;
+
     var _memberDashboardDialogId = evaluate(memberDashboardDialogSpecifications)
-        ? MEMBER_DASHBOARD_ID
+        ? MEMBER_DASHBOARD_DIALOG_ID
         : null;
     var _policyPageId = evaluate(policySpecifications) ? POLICY_PAGE_ID : null;
 
@@ -238,9 +484,37 @@ class NewAppBuilder {
         menuItem(appId, _policyPageId, 'Policy', Icons.rule),
       if (_shopPageId != null) menuItemShop(appId, _shopPageId, 'Shop'),
       if (_feedPageId != null) menuItemFeed(appId, _feedPageId, 'Feed'),
+      if (_notificationDashboardDialogId != null)
+        MenuItemModel(
+            documentID: 'notifications',
+            text: 'Notifications',
+            description: 'Notifications',
+            icon: IconModel(
+                codePoint: Icons.notifications.codePoint,
+                fontFamily: Icons.notifications.fontFamily),
+            action:
+                OpenDialog(appId, dialogID: _notificationDashboardDialogId)),
+      if (_assignmentDasboardDialogId != null)
+        MenuItemModel(
+            documentID: 'assignments',
+            text: 'Assignments',
+            description: 'Assignments',
+            icon: IconModel(
+                codePoint: Icons.playlist_add_check.codePoint,
+                fontFamily: Icons.notifications.fontFamily),
+            action: OpenDialog(appId, dialogID: _assignmentDasboardDialogId)),
+      if (_membershipDashboardDialogId != null)
+        MenuItemModel(
+            documentID: '3',
+            text: 'Members',
+            description: 'Members',
+            icon: IconModel(
+                codePoint: Icons.people.codePoint,
+                fontFamily: Icons.notifications.fontFamily),
+            action: OpenDialog(appId, dialogID: _membershipDashboardDialogId)),
       if (_hasUnreadChatDialogId != null)
         MenuItemModel(
-            documentID: ChatDialogBuilder.IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
+            documentID: IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
             text: 'Chat',
             description: 'Some unread messages available',
             icon: IconModel(
@@ -255,7 +529,7 @@ class NewAppBuilder {
                         ChatPackage.CONDITION_MEMBER_HAS_UNREAD_CHAT))),
       if (_allMessagesHaveBeenReadChatDialog != null)
         MenuItemModel(
-            documentID: ChatDialogBuilder.IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
+            documentID: IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
             text: 'Chat',
             description: 'Open chat',
             icon: IconModel(
@@ -271,6 +545,31 @@ class NewAppBuilder {
       if (_signout) menuItemSignOut(appId),
     ];
   }
+
+  // Start the installation by claiming ownership of the app.
+  // Otherwise you won't be able to add data, given security depends on the ownerId of the app being allowed to add data to app's entities
+  // We do this twice: the first time before wiping the data. This is to assure that we can wipe
+  // The second time because the wipe has deleted the entry
+  // This process works except when the app was create by someone else before. In which case you must delete the app through console.firebase.google.com or by logging in as the owner of the app
+  Future<AppModel> claimOwnerShipApplication(
+      String appId, String ownerID) async {
+    // add the app
+    var application = AppModel(
+      documentID: appId,
+      ownerID: ownerID,
+    );
+    return await AbstractMainRepositorySingleton.singleton
+        .appRepository()!
+        .add(application);
+  }
+
+  Future<AccessModel> claimAccess(String appId, String ownerID) async {
+    return await accessRepository(appId: appId)!.add(AccessModel(
+        documentID: ownerID,
+        privilegeLevel: PrivilegeLevel.OwnerPrivilege,
+        points: 0));
+  }
+
 }
 
 menuItem(appID, pageID, text, IconData iconData) => MenuItemModel(
@@ -482,19 +781,6 @@ menuItemAppMembersPage(appID, pageID, privilegeLevelRequired) => MenuItemModel(
           packageCondition: CorePackage.MUST_BE_LOGGED_ON),
       pageID: pageID,
     ));
-
-menuItemFiendFriends(appID, dialogID, privilegeLevelRequired) => MenuItemModel(
-    documentID: dialogID,
-    text: 'Find friends',
-    description: 'Fiend friends',
-    icon: IconModel(
-        codePoint: Icons.favorite_sharp.codePoint,
-        fontFamily: Icons.settings.fontFamily),
-    action: OpenDialog(appID,
-        dialogID: dialogID,
-        conditions: ConditionsModel(
-            privilegeLevelRequired: privilegeLevelRequired,
-            packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
 menuItemFiendFriendsPage(appID, pageID, privilegeLevelRequired) =>
     MenuItemModel(

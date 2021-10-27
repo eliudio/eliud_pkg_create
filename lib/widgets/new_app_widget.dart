@@ -91,10 +91,10 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var feedSpecifications = ActionSpecification(
-    availableInLeftDrawer: false,
+    availableInLeftDrawer: true,
     availableInRightDrawer: false,
     availableInAppBar: false,
-    availableInHomeMenu: false,
+    availableInHomeMenu: true,
     available: false,
   );
   var chatSpecifications = ActionSpecification(
@@ -140,6 +140,30 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInHomeMenu: false,
     available: false,
   );
+  var membershipDashboardDialogSpecifications = JoinActionSpecifications(
+    paymentType: JoinPaymentType.Card,
+    availableInLeftDrawer: false,
+    availableInRightDrawer: false,
+    availableInAppBar: true,
+    availableInHomeMenu: false,
+    available: false,
+  );
+  var notificationDashboardDialogSpecifications = JoinActionSpecifications(
+    paymentType: JoinPaymentType.Card,
+    availableInLeftDrawer: false,
+    availableInRightDrawer: false,
+    availableInAppBar: true,
+    availableInHomeMenu: false,
+    available: false,
+  );
+  var assignmentDashboardDialogSpecifications = JoinActionSpecifications(
+    paymentType: JoinPaymentType.Card,
+    availableInLeftDrawer: false,
+    availableInRightDrawer: false,
+    availableInAppBar: true,
+    availableInHomeMenu: false,
+    available: false,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -177,22 +201,34 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           includeSignoutButton: signoutSpecifications,
                           includeFlushButton: flushSpecifications,
                           includeJoinAction: includeJoinAction,
+                          membershipDashboardDialogSpecifications: membershipDashboardDialogSpecifications,
+                          notificationDashboardDialogSpecifications: notificationDashboardDialogSpecifications,
+                          assignmentDashboardDialogSpecifications: assignmentDashboardDialogSpecifications,
                         ));
                         return false;
                       }
                     : null,
                 title: 'Create new App',
               ),
-              divider(context),
-              _general(context, state),
-              _contents(context, state),
-              _logo(state.appToBeCreated),
-              StyleSelectionWidget.getIt(
-                  context, state.appToBeCreated, false, true),
+              if (state is NewAppCreateAllowEnterDetails) enterDetails(state),
+              if (state is NewAppCreateCreateInProgress) _progress(state),
             ]));
       }
       return progressIndicator(context);
     });
+  }
+
+  Widget enterDetails(NewAppCreateInitialised state) {
+    return ListView(shrinkWrap: true, physics: ScrollPhysics(),
+        children: [
+        divider(context),
+        _general(context, state),
+        _contents(context, state),
+        _logo(state.appToBeCreated),
+        StyleSelectionWidget.getIt(
+            context, state.appToBeCreated, false, true),
+      ]
+    )   ;
   }
 
   Widget _logo(AppModel appModel) {
@@ -221,14 +257,16 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                   ),
                 ))
           ]);
-    } else if (state is NewAppCreateCreateInProgress) {
-      return Container(
-          height: 100,
-          width: widget.widgetWidth,
-          child: progressIndicatorWithValue(context, value: state.progress));
     } else {
       return text(context, 'no contents');
     }
+  }
+
+  Widget _progress(NewAppCreateCreateInProgress state) {
+    return Container(
+        height: 100,
+        width: widget.widgetWidth,
+        child: progressIndicatorWithValue(context, value: state.progress));
   }
 
   Widget _contents(BuildContext context, NewAppCreateInitialised state) {
@@ -271,6 +309,18 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           enabled: true,
           actionSpecification: includeJoinAction,
           label: 'Generate join button'),
+      ActionSpecificationWidget(
+          enabled: true,
+          actionSpecification: membershipDashboardDialogSpecifications,
+          label: 'Generate membership dashboard dialog'),
+      ActionSpecificationWidget(
+          enabled: true,
+          actionSpecification: notificationDashboardDialogSpecifications,
+          label: 'Generate notification dashboard dialog'),
+      ActionSpecificationWidget(
+          enabled: true,
+          actionSpecification: assignmentDashboardDialogSpecifications,
+          label: 'Generate assignment dashboard dialog'),
     ]);
   }
 }

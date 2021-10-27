@@ -7,6 +7,7 @@ import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
 import 'package:eliud_pkg_medium/platform/access_rights.dart';
 import 'package:eliud_pkg_medium/platform/medium_platform.dart';
 import 'package:flutter/material.dart';
@@ -24,26 +25,7 @@ class LogoWidget extends StatefulWidget {
 }
 
 class _LogoWidgetState extends State<LogoWidget> {
-  final _random = new Random();
   double? _progress;
-  static List<String> randomLogos = [
-    'packages/eliud_pkg_create/assets/annoyed.png',
-    'packages/eliud_pkg_create/assets/angry.png',
-    'packages/eliud_pkg_create/assets/embarassed.png',
-    'packages/eliud_pkg_create/assets/excited.png',
-    'packages/eliud_pkg_create/assets/frustrated.png',
-    'packages/eliud_pkg_create/assets/happy.png',
-    'packages/eliud_pkg_create/assets/lonely.png',
-    'packages/eliud_pkg_create/assets/loved.png',
-    'packages/eliud_pkg_create/assets/nervous.png',
-    'packages/eliud_pkg_create/assets/neutral.png',
-    'packages/eliud_pkg_create/assets/sad.png',
-    'packages/eliud_pkg_create/assets/scared.png',
-    'packages/eliud_pkg_create/assets/sick.png',
-    'packages/eliud_pkg_create/assets/stressed.png',
-    'packages/eliud_pkg_create/assets/surprised.png',
-    'packages/eliud_pkg_create/assets/tired.png',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -97,15 +79,8 @@ class _LogoWidgetState extends State<LogoWidget> {
                           _photoUploading,
                           allowCrop: false);
                     } else if (value == 2) {
-                      var newRandom =
-                          randomLogos[_random.nextInt(randomLogos.length)];
-                      var photo = await PublicMediumAccessRights()
-                          .getMediumHelper(
-                            widget.appModel.documentID!,
-                            widget.appModel.ownerID!,
-                          )
-                          .createThumbnailUploadPhotoAsset(newRandomKey(), newRandom,
-                              feedbackProgress: _photoUploading);
+                      var photo = await RandomLogo.getRandomPhoto(widget.appModel.documentID!,
+                          widget.appModel.ownerID!, _photoUploading);
                       _photoFeedbackFunction(widget.appModel, photo);
                     } else if (value == 3) {
                       _photoFeedbackFunction(widget.appModel, null);
@@ -131,7 +106,7 @@ class _LogoWidgetState extends State<LogoWidget> {
     });
   }
 
-  void _photoUploading(double? progress) {
+  void _photoUploading(dynamic progress) {
     if (progress != null) {}
     setState(() {
       _progress = progress;

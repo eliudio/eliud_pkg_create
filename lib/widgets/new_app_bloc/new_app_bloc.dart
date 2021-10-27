@@ -25,7 +25,8 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
     } else if (state is NewAppCreateInitialised) {
       var theState = state as NewAppCreateInitialised;
       if (event is NewAppCreateConfirm) {
-        await NewAppBuilder(theState.appToBeCreated, theState.member,
+        add(NewAppCreateProgressed(0));
+        NewAppBuilder(theState.appToBeCreated, theState.member,
           logo: theState.appToBeCreated.logo,
           welcomePageSpecifications: event.includeWelcome,
           shopPageSpecifications: event.includeShop,
@@ -36,8 +37,10 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
           signoutButton: event.includeSignoutButton,
           flushButton: event.includeFlushButton,
           joinSpecification: event.includeJoinAction,
-        ).create();
-        add(NewAppSwitchAppEvent());
+          membershipDashboardDialogSpecifications: event.membershipDashboardDialogSpecifications,
+          notificationDashboardDialogSpecifications: event.notificationDashboardDialogSpecifications,
+          assignmentDashboardDialogSpecifications: event.assignmentDashboardDialogSpecifications,
+        ).create(this);
       } else if (event is NewAppSwitchAppEvent) {
         yield SwitchApp(theState.appToBeCreated, theState.member);
       } else if (event is NewAppCreateProgressed) {

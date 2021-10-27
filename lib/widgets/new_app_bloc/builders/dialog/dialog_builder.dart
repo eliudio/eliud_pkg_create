@@ -14,6 +14,7 @@ import 'package:eliud_pkg_text/model/html_model.dart';
 
 class DialogBuilder {
   final String appId;
+  final String dialogDocumentId;
 
-  DialogBuilder(this.appId);
+  DialogBuilder(this.appId, this.dialogDocumentId);
 }

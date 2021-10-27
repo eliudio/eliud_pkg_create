@@ -7,18 +7,15 @@ import 'package:eliud_pkg_notifications/model/notification_dashboard_component.d
 import 'package:eliud_pkg_notifications/model/notification_dashboard_model.dart';
 import 'package:eliud_pkg_notifications/notifications_package.dart';
 
-class NotificationDashboardBuilder {
-  String appId;
+import 'dialog_builder.dart';
 
-  NotificationDashboardBuilder(this.appId
-      );
+class NotificationDashboardDialogBuilder extends DialogBuilder {
+  NotificationDashboardDialogBuilder(String appId, String dialogDocumentId) : super(appId, dialogDocumentId);
 
   Future<DialogModel> create() async {
     await _setupDashboard();
     return await _setupDialog();
   }
-
-  static String _IDENTIFIER = "notification_dashboard";
 
   Future<DialogModel> _setupDialog() async {
     return await corerepo.AbstractRepositorySingleton.singleton
@@ -31,10 +28,10 @@ class NotificationDashboardBuilder {
     components.add(BodyComponentModel(
         documentID: "1",
         componentName: AbstractNotificationDashboardComponent.componentName,
-        componentId: _IDENTIFIER));
+        componentId: dialogDocumentId));
 
     return DialogModel(
-        documentID: _IDENTIFIER,
+        documentID: dialogDocumentId,
         appId: appId,
         title: "Notifications",
         layout: DialogLayout.ListView,
@@ -49,7 +46,7 @@ class NotificationDashboardBuilder {
 
   NotificationDashboardModel _dashboardModel() {
     return NotificationDashboardModel(
-        documentID: _IDENTIFIER,
+        documentID: dialogDocumentId,
         appId: appId,
         description: "My Notifications",
         conditions: ConditionsSimpleModel(

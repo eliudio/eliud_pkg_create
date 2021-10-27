@@ -22,7 +22,7 @@ import 'with_menu.dart';
 
 class RightDrawerBuilder extends WithMenu {
   RightDrawerBuilder(String appId, {required List<MenuItemModel> menuItems, PublicMediumModel? logo, }):
-        super(appId, menuItems: menuItems, name: 'Left drawer', identifier: drawerID(appId, DrawerType.Left), logo: logo);
+        super(appId, menuItems: menuItems, name: 'Left drawer', identifier: drawerID(appId, DrawerType.Right), logo: logo);
 
   Future<DrawerModel> create() async {
     var drawerModel = DrawerModel(

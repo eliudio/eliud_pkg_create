@@ -5,6 +5,8 @@ import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/model/member_dashboard_component.dart';
 import 'package:eliud_core/model/model_export.dart';
 
+import 'dialog_builder.dart';
+
 String updateProfileText = '''
 Maintain your personal details here
 ''';
@@ -31,12 +33,8 @@ String deleteDataEmailMessage = """
 Sorry to see you go. Your account has been destroyed.
 """;
 
-class MemberDashboardBuilder {
-  final String appId;
-
-  MemberDashboardBuilder(this.appId);
-
-  static String IDENTIFIER = "member_dashboard";
+class MemberDashboardDialogBuilder extends DialogBuilder {
+  MemberDashboardDialogBuilder(String appId, String dialogDocumentId): super(appId, dialogDocumentId);
 
   Future<DialogModel> _setupDialog() async {
     return await corerepo.AbstractRepositorySingleton.singleton
@@ -49,10 +47,10 @@ class MemberDashboardBuilder {
     components.add(BodyComponentModel(
         documentID: "1",
         componentName: AbstractMemberDashboardComponent.componentName,
-        componentId: IDENTIFIER));
+        componentId: dialogDocumentId));
 
     return DialogModel(
-        documentID: IDENTIFIER,
+        documentID: dialogDocumentId,
         appId: appId,
         title: "Member dashboard",
         layout: DialogLayout.ListView,
@@ -65,7 +63,7 @@ class MemberDashboardBuilder {
 
   MemberDashboardModel _dashboardModel() {
     return MemberDashboardModel(
-        documentID: IDENTIFIER,
+        documentID: dialogDocumentId,
         appId: appId,
         description: "Member dashboard",
         updateProfileText: updateProfileText,
