@@ -1,6 +1,7 @@
 import 'package:eliud_core/core_package.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/access_model.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/blocked_page_builder.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
 import 'package:eliud_core/model/conditions_model.dart';
 import 'package:eliud_core/model/icon_model.dart';
@@ -55,8 +56,10 @@ typedef NewAppTask = Future<void> Function();
 
 class NewAppBuilder {
   static String WELCOME_PAGE_ID = 'welcome';
+  static String BLOCKED_PAGE_ID = 'blocked';
   static String ABOUT_PAGE_ID = 'about';
   static String ABOUT_ASSET_PATH = 'packages/eliud_pkg_create/assets/about.png';
+  static String BLOCKED_ASSET_PATH = 'packages/eliud_pkg_create/assets/blocked.png';
   static String SHOP_PAGE_ID = 'shop';
   static String POLICY_PAGE_ID = 'policy';
   static String FEED_PAGE_ID = 'feed';
@@ -77,6 +80,7 @@ class NewAppBuilder {
 
   static String FEED_MENU_COMPONENT_IDENTIFIER = "feed_menu";
   static String ABOUT_COMPONENT_IDENTIFIER = "about";
+  static String BLOCKED_COMPONENT_IDENTIFIER = "blocked";
   static String FOLLOW_REQUEST_COMPONENT_ID = "follow_request";
   static String FEED_HEADER_COMPONENT_IDENTIFIER = "feed_header";
   static String FEED_PROFILE_COMPONENT_IDENTIFIER = "feed_profile";
@@ -104,6 +108,7 @@ class NewAppBuilder {
 
   final ActionSpecification welcomePageSpecifications;
   final ActionSpecification aboutPageSpecifications;
+  final ActionSpecification blockedPageSpecifications;
   final ShopActionSpecifications shopPageSpecifications;
   final ActionSpecification feedPageSpecifications;
 
@@ -127,6 +132,7 @@ class NewAppBuilder {
     required this.logo,
     required this.welcomePageSpecifications,
     required this.aboutPageSpecifications,
+    required this.blockedPageSpecifications,
     required this.shopPageSpecifications,
     required this.feedPageSpecifications,
     required this.chatDialogSpecifications,
@@ -144,6 +150,7 @@ class NewAppBuilder {
   }
 
   var homePageId;
+  var blockedPageId;
   var leftDrawer;
   var rightDrawer;
   var theHomeMenu;
@@ -311,6 +318,16 @@ class NewAppBuilder {
       });
     }
 
+    if (blockedPageSpecifications
+        .shouldCreatePageDialogOrWorkflow()) {
+      tasks.add(() async {
+        var blockedPage = await BlockedPageBuilder(BLOCKED_COMPONENT_IDENTIFIER, BLOCKED_ASSET_PATH, BLOCKED_PAGE_ID, appId,
+            memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+            .create();
+        blockedPageId = blockedPage.documentID;
+      });
+    }
+
     if (membershipDashboardDialogSpecifications
         .shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async => await MembershipDashboardDialogBuilder(
@@ -360,7 +377,7 @@ class NewAppBuilder {
     if (welcomePageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
         var welcomePage = await WelcomePageBuilder(WELCOME_PAGE_ID, appId,
-                memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+            memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .create();
         homePageId = welcomePage.documentID;
       });
@@ -413,7 +430,7 @@ class NewAppBuilder {
         description: 'Your new application',
         logo: logo,
         homePages: AppHomePageReferencesModel(
-          homePageBlockedMember: homePageId,
+          homePageBlockedMember: blockedPageId ?? homePageId,
           homePagePublic: homePageId,
           homePageSubscribedMember: homePageId,
           homePageLevel1Member: homePageId,
@@ -444,6 +461,7 @@ class NewAppBuilder {
 
   List<MenuItemModel> getMenuItemsFor(Evaluate evaluate) {
     var _welcomePageId = evaluate(welcomePageSpecifications) ? WELCOME_PAGE_ID : null;
+    var _blockedPageId = evaluate(blockedPageSpecifications) ? BLOCKED_PAGE_ID : null;
     var _aboutPageId = evaluate(aboutPageSpecifications) ? ABOUT_PAGE_ID : null;
     var _shopPageId = evaluate(shopPageSpecifications) ? SHOP_PAGE_ID : null;
     var _feedPageId = evaluate(feedPageSpecifications) ? FEED_PAGE_ID : null;
@@ -490,6 +508,9 @@ class NewAppBuilder {
     return [
       if (_welcomePageId != null)
         menuItemWelcome(appId, _welcomePageId, 'Welcome'),
+      if (_blockedPageId != null)
+        menuItem(appId, _blockedPageId, 'Blocked', Icons.do_not_disturb),
+
       if (_welcomePageId != null)
         menuItemAbout(appId, _aboutPageId, 'About'),
       if (_memberDashboardDialogId != null)

@@ -30,6 +30,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   final PublicMediumModel? logo;
   final ShopActionSpecifications includeShop;
   final ActionSpecification includeWelcome;
+  final ActionSpecification includeblocked;
   final ActionSpecification includeChat;
   final ActionSpecification includeFeed;
   final ActionSpecification includeMemberDashboard;
@@ -46,6 +47,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
     required this.logo,
     required this.includeShop,
     required this.includeWelcome,
+    required this.includeblocked,
     required this.includeChat,
     required this.includeFeed,
     required this.includeMemberDashboard,

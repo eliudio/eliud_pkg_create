@@ -90,6 +90,13 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInHomeMenu: true,
     available: false,
   );
+  var blockedSpecifications = ActionSpecification(
+    availableInLeftDrawer: false,
+    availableInRightDrawer: false,
+    availableInAppBar: false,
+    availableInHomeMenu: false,
+    available: true,
+  );
   var aboutSpecifications = ActionSpecification(
     availableInLeftDrawer: true,
     availableInRightDrawer: false,
@@ -200,6 +207,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                             .add(NewAppCreateConfirm(
                           logo: state.appToBeCreated.logo,
                           includeWelcome: welcomeSpecifications,
+                          includeblocked: blockedSpecifications,
                           aboutPageSpecifications: aboutSpecifications,
                           includeShop: shopActionSpecifications,
                           includeChat: chatSpecifications,
@@ -280,11 +288,15 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   Widget _contents(BuildContext context, NewAppCreateInitialised state) {
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
       ActionSpecificationWidget(
-          enabled: false,
+          enabled: true,
           actionSpecification: welcomeSpecifications,
           label: 'Generate Welcome Page'),
       ActionSpecificationWidget(
-          enabled: false,
+          enabled: true,
+          actionSpecification: blockedSpecifications,
+          label: 'Generate Page for Blocked members'),
+      ActionSpecificationWidget(
+          enabled: true,
           actionSpecification: aboutSpecifications,
           label: 'Generate About Page'),
       ActionSpecificationWidget(

@@ -29,6 +29,7 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
         NewAppBuilder(theState.appToBeCreated, theState.member,
           logo: theState.appToBeCreated.logo,
           welcomePageSpecifications: event.includeWelcome,
+          blockedPageSpecifications: event.includeblocked,
           shopPageSpecifications: event.includeShop,
           chatDialogSpecifications: event.includeChat,
           feedPageSpecifications: event.includeFeed,
