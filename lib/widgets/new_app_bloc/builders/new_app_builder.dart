@@ -180,7 +180,15 @@ class NewAppBuilder {
     var profilePageId;
     var feedPageId;
 
-    logo ??= await RandomLogo.getRandomPhoto(appId, memberId, null);
+    tasks.add(() async {
+      if (logo == null) {
+        try {
+          logo = await RandomLogo.getRandomPhoto(appId, memberId, null);
+        } catch (_) {
+          //swallow. On web, today, this fails because we don't have access to asset files
+        }
+      }
+    });
 
     tasks.add(() async => await claimAccess(appId, memberId));
     tasks.add(() async => claimOwnerShipApplication(appId, memberId));

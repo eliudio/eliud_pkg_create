@@ -4,14 +4,10 @@ import 'package:eliud_core/core/access/bloc/access_state.dart';
 import 'package:eliud_core/core/widgets/alert_widget.dart';
 import 'package:eliud_core/model/app_list_bloc.dart';
 import 'package:eliud_core/model/app_list_state.dart';
-import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
-import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
-import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_create/widgets/app_widget.dart';
 import 'package:eliud_pkg_create/widgets/new_app_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +16,7 @@ import 'package:flutter/cupertino.dart';
 class PlayStore extends StatefulWidget {
   final PlayStoreModel playStoreModel;
 
-  PlayStore(this.playStoreModel);
+  const PlayStore(this.playStoreModel, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,7 +28,6 @@ class PlayStoreState extends State<PlayStore> {
   static double size = 100.0;
   PlayStoreState();
 
-  @override
   Widget alertWidget({title = String, content = String}) {
     return AlertWidget(title: title, content: content);
   }
@@ -49,12 +44,10 @@ class PlayStoreState extends State<PlayStore> {
           if (member != null) {
             components.add(GestureDetector(
                 onTap: () async {
-//                  createNewApp(context);
                   newApp(context);
                 },
                 child: Container(
-                  //                    color: Colors.red.withOpacity(.55),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       gradient: LinearGradient(
                           colors: [
                             Colors.orange,
@@ -67,9 +60,9 @@ class PlayStoreState extends State<PlayStore> {
                           end: Alignment.bottomRight,
                           stops: [0, 0.2, 0.5, 0.8]),
                     ),
-                    child: Icon(Icons.add))));
+                    child: const Icon(Icons.add))));
           }
-          state.values!.forEach((model) {
+          for (var model in state.values!) {
             if (!AccessBloc.isPlayStoreApp(context, model!.documentID!)) {
               components.add(GestureDetector(
                   onTap: () async {
@@ -78,20 +71,19 @@ class PlayStoreState extends State<PlayStore> {
                   },
                   child: Container(
                     color: Colors.red,
-                    child: ((model.logo != null) && (model.logo!.url != null)) ? Image.network(model.logo!.url!) : Icon(Icons.help),
+                    child: ((model.logo != null) && (model.logo!.url != null)) ? Image.network(model.logo!.url!) : const Icon(Icons.help),
                   )));
-              //components.add(Column(children: children));
             }
-          });
+          }
 
           return Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: GridView.extent(
                   maxCrossAxisExtent: size,
                   padding: const EdgeInsets.all(0),
                   mainAxisSpacing: 20,
                   crossAxisSpacing: 20,
-                  physics: ScrollPhysics(), // to disable GridView's scrolling
+                  physics: const ScrollPhysics(), // to disable GridView's scrolling
                   shrinkWrap: true,
                   children: components));
         } else {

@@ -7,19 +7,16 @@ import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/model_export.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/page_builder.dart';
-import 'package:eliud_pkg_feed/model/abstract_repository_singleton.dart';
-import 'package:eliud_pkg_feed/model/album_component.dart';
-import 'package:eliud_pkg_feed/model/album_model.dart';
-import 'package:eliud_pkg_feed/model/post_model.dart';
-import 'package:eliud_core/tools/storage/member_medium_helper.dart';
-import 'package:eliud_pkg_feed/model/abstract_repository_singleton.dart' as postRepo;
-import 'package:eliud_pkg_feed/model/post_medium_model.dart';
+import 'package:eliud_pkg_medium/model/abstract_repository_singleton.dart';
+import 'package:eliud_pkg_medium/model/album_component.dart';
+import 'package:eliud_pkg_medium/model/album_entry_model.dart';
+import 'package:eliud_pkg_medium/model/album_model.dart';
 
 class AlbumPageBuilder extends PageBuilder {
   final String examplePhoto1AssetPath;
   final String examplePhoto2AssetPath;
-//final String exampleVideoAssetPath;
   final String albumComponentIdentifier;
 
   AlbumPageBuilder(
@@ -65,11 +62,19 @@ class AlbumPageBuilder extends PageBuilder {
         bodyComponents: components);
   }
 
-  AlbumModel albumModel(PostModel postModel) {
+  Future<AlbumModel> albumModel() async {
+    var helper = ExampleAlbumHelper(
+        appId: appId,
+        memberId: memberId,
+        examplePhoto1AssetPath: examplePhoto1AssetPath,
+        examplePhoto2AssetPath: examplePhoto2AssetPath);
     return AlbumModel(
       documentID: albumComponentIdentifier,
       appId: appId,
-      post: postModel,
+      albumEntries: [
+        await helper.example1(),
+        await helper.example2(),
+      ],
       description: "Example Photos",
       conditions: ConditionsSimpleModel(
           privilegeLevelRequired:
@@ -77,98 +82,46 @@ class AlbumPageBuilder extends PageBuilder {
     );
   }
 
-  Future<AlbumModel> _setupAlbum(PostModel postModel) async {
-    return await albumRepository(appId: appId)!
-        .add(albumModel(postModel));
+  Future<AlbumModel> _setupAlbum() async {
+    return await albumRepository(appId: appId)!.add(await albumModel());
   }
 
   Future<PageModel> create() async {
-    PostModel photoAlbum = await ExamplePost(
-            appId: appId,
-            examplePhoto1AssetPath: examplePhoto1AssetPath,
-            examplePhoto2AssetPath: examplePhoto2AssetPath,
-//      exampleVideoAssetPath: exampleVideoAssetPath,
-    )
-        .photoAlbum(memberId);
-//    PostModel videoAlbum = await ExamplePost(newAppTools, installApp.appId).videoAlbum(member);
-    await _setupAlbum(photoAlbum);
+    await _setupAlbum();
     return await _setupPage();
   }
 }
 
-
-class ExamplePost {
+class ExampleAlbumHelper {
   final String appId;
+  final String memberId;
   final String examplePhoto1AssetPath;
   final String examplePhoto2AssetPath;
-//final String exampleVideoAssetPath;
 
-  ExamplePost({
+  ExampleAlbumHelper({
     required this.appId,
+    required this.memberId,
     required this.examplePhoto1AssetPath,
     required this.examplePhoto2AssetPath,
-    /*required this.exampleVideoAssetPath, */
   });
 
-  Future<PostModel> photoAlbum(String memberId) async {
-    return await postRepo.AbstractRepositorySingleton.singleton
-        .postRepository(appId)!
-        .add(
-      PostModel(
+  Future<AlbumEntryModel> example1() async {
+    return AlbumEntryModel(
         documentID: newRandomKey(),
-        authorId: memberId,
-        appId: appId,
-        archived: PostArchiveStatus.Active,
-        description: "These are my photos",
-        readAccess: ['PUBLIC', memberId],
-        memberMedia: [
-          PostMediumModel(
-              documentID: newRandomKey(),
-              memberMedium: await MemberMediumHelper(
-                  appId, memberId, ['PUBLIC', memberId])
-                  .createThumbnailUploadPhotoAsset(
-                newRandomKey(),
-                examplePhoto1AssetPath,
-              )),
-          PostMediumModel(
-              documentID: newRandomKey(),
-              memberMedium: await MemberMediumHelper(
-                  appId, memberId, ['PUBLIC', memberId])
-                  .createThumbnailUploadPhotoAsset(
-                newRandomKey(),
-                examplePhoto2AssetPath,
-              ))
-        ],
-      ),
-    );
+        name: 'example 1',
+        medium: await PlatformMediumHelper(appId, memberId,
+                PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple)
+            .createThumbnailUploadPhotoAsset(
+                newRandomKey(), examplePhoto1AssetPath));
   }
 
-/*
-  Future<PostModel> videoAlbum(String memberId) async {
-    var memberPublicInfo = await memberPublicInfoRepository()!.get(memberId);
-    return await postRepo.AbstractRepositorySingleton.singleton
-        .postRepository(appId)!
-        .add(
-          PostModel(
-            documentID: newRandomKey(),
-            authorId: memberPublicInfo!.documentID!,
-            appId: appId,
-            archived: PostArchiveStatus.Active,
-            description: "These are my videos",
-            readAccess: ['PUBLIC', memberId],
-            memberMedia: [
-              PostMediumModel(
-                documentID: newRandomKey(),
-                memberMedium: await MemberMediumHelper(
-                        appId, memberId!, ['PUBLIC', memberId])
-                    .createThumbnailUploadVideoAsset(
-                  newRandomKey(),
-                  exampleVideoAssetPath,
-                ),
-              )
-            ],
-          ),
-        );
+  Future<AlbumEntryModel> example2() async {
+    return AlbumEntryModel(
+        documentID: newRandomKey(),
+        name: 'example 2',
+        medium: await PlatformMediumHelper(appId, memberId,
+                PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple)
+            .createThumbnailUploadPhotoAsset(
+                newRandomKey(), examplePhoto2AssetPath));
   }
-*/
 }
