@@ -48,7 +48,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                           value: 1,
                           child: text(context, 'Upload logo'),
                         ),
-                    if (AbstractMediumPlatform.platform!.hasAccessToAssets()) PopupMenuItem(
+                    if (AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem()) PopupMenuItem(
                           value: 2,
                           child: text(context, 'Random logo'),
                         ),

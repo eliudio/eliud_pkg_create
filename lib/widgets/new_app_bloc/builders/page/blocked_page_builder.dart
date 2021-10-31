@@ -10,13 +10,14 @@ import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/page_builder.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/page_with_text.dart';
 import 'package:eliud_pkg_fundamentals/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_fundamentals/model/booklet_component.dart';
 import 'package:eliud_pkg_fundamentals/model/booklet_model.dart';
 import 'package:eliud_pkg_fundamentals/model/section_model.dart';
 
 class BlockedPageBuilder extends PageBuilder {
-  final String blockedAssetLocation;
+  final String? blockedAssetLocation;
   final String componentId;
 
   BlockedPageBuilder(
@@ -67,7 +68,7 @@ class BlockedPageBuilder extends PageBuilder {
             PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple)
         .createThumbnailUploadPhotoAsset(
       newRandomKey(),
-      blockedAssetLocation,
+      blockedAssetLocation!,
     );
   }
 
@@ -103,8 +104,22 @@ class BlockedPageBuilder extends PageBuilder {
   }
 
   Future<PageModel> create() async {
-    var blockedImage = await uploadBlockedImage();
-    await _setupBlocked(blockedImage);
-    return await _setupPage();
+    if (blockedAssetLocation != null) {
+      var blockedImage = await uploadBlockedImage();
+      await _setupBlocked(blockedImage);
+      return await _setupPage();
+    } else {
+      return PageWithTextBuilder(
+          'Blocked',
+          'You are blocked',
+          pageId,
+          appId,
+          memberId,
+          theHomeMenu,
+          theAppBar,
+          leftDrawer,
+          rightDrawer)
+          .create();
+    }
   }
 }

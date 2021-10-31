@@ -1,6 +1,7 @@
 import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 
 class ActionSpecification {
+  bool requiresAccessToLocalFileSystem;
   bool availableInLeftDrawer;
   bool availableInRightDrawer;
   bool availableInAppBar;
@@ -8,11 +9,13 @@ class ActionSpecification {
   bool available; // available but not from any menu
 
   ActionSpecification(
-      {required this.availableInLeftDrawer,
+      {
+        required this.requiresAccessToLocalFileSystem,
+        required this.availableInLeftDrawer,
       required this.availableInRightDrawer,
-      required this.availableInAppBar,
-      required this.availableInHomeMenu,
-      required this.available});
+        required this.availableInAppBar,
+        required this.availableInHomeMenu,
+        required this.available});
 
   bool shouldCreatePageDialogOrWorkflow() =>
       availableInLeftDrawer ||
@@ -28,12 +31,14 @@ class ShopActionSpecifications extends ActionSpecification {
 
   ShopActionSpecifications({
     required this.paymentType,
+    required bool requiresAccessToLocalFileSystem,
     required bool availableInLeftDrawer,
     required bool availableInRightDrawer,
     required bool availableInAppBar,
     required bool availableInHomeMenu,
     required bool available,
   }) : super(
+      requiresAccessToLocalFileSystem: requiresAccessToLocalFileSystem,
       availableInLeftDrawer: availableInLeftDrawer,
       availableInRightDrawer: availableInRightDrawer,
       availableInAppBar: availableInAppBar,
@@ -48,12 +53,14 @@ class JoinActionSpecifications extends ActionSpecification {
 
   JoinActionSpecifications({
     required this.paymentType,
+    required bool requiresAccessToLocalFileSystem,
     required bool availableInLeftDrawer,
     required bool availableInRightDrawer,
     required bool availableInAppBar,
     required bool availableInHomeMenu,
     required bool available,
   }) : super(
+      requiresAccessToLocalFileSystem: requiresAccessToLocalFileSystem,
       availableInLeftDrawer: availableInLeftDrawer,
       availableInRightDrawer: availableInRightDrawer,
       availableInAppBar: availableInAppBar,

@@ -8,7 +8,7 @@ import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/style/_default/default_style_family.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'builders/new_app_builder.dart';
+import 'builders/app_builder.dart';
 import 'new_app_event.dart';
 import 'new_app_state.dart';
 
@@ -26,7 +26,7 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
       var theState = state as NewAppCreateInitialised;
       if (event is NewAppCreateConfirm) {
         add(NewAppCreateProgressed(0));
-        NewAppBuilder(theState.appToBeCreated, theState.member,
+        AppBuilder(theState.appToBeCreated, theState.member,
           logo: theState.appToBeCreated.logo,
           welcomePageSpecifications: event.includeWelcome,
           blockedPageSpecifications: event.includeblocked,

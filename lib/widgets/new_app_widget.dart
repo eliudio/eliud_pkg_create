@@ -13,6 +13,7 @@ import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_bloc.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_event.dart';
 import 'package:eliud_pkg_create/widgets/style_selection_widget.dart';
+import 'package:eliud_pkg_medium/platform/medium_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,7 +76,9 @@ class NewAppCreateWidget extends StatefulWidget {
 }
 
 class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
+  static bool hasAccessToLocalFileSystem = AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem();
   var shopActionSpecifications = ShopActionSpecifications(
+    requiresAccessToLocalFileSystem: false,
     paymentType: ShopPaymentType.Card,
     availableInLeftDrawer: true,
     availableInRightDrawer: false,
@@ -84,6 +87,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var welcomeSpecifications = ActionSpecification(
+    requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: true,
     availableInRightDrawer: false,
     availableInAppBar: false,
@@ -91,6 +95,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var blockedSpecifications = ActionSpecification(
+    requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
     availableInAppBar: false,
@@ -98,6 +103,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: true,
   );
   var aboutSpecifications = ActionSpecification(
+    requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: true,
     availableInRightDrawer: false,
     availableInAppBar: false,
@@ -105,13 +111,15 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var albumSpecifications = ActionSpecification(
-    availableInLeftDrawer: true,
+    requiresAccessToLocalFileSystem: false,
+    availableInLeftDrawer: hasAccessToLocalFileSystem,
     availableInRightDrawer: false,
     availableInAppBar: false,
-    availableInHomeMenu: true,
+    availableInHomeMenu: hasAccessToLocalFileSystem,
     available: false,
   );
   var feedSpecifications = ActionSpecification(
+    requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: true,
     availableInRightDrawer: false,
     availableInAppBar: false,
@@ -119,6 +127,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var chatSpecifications = ActionSpecification(
+    requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
     availableInAppBar: true,
@@ -126,6 +135,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var memberDashboardSpecifications = ActionSpecification(
+    requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: false,
     availableInRightDrawer: true,
     availableInAppBar: false,
@@ -133,13 +143,15 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var examplePolicySpecifications = ActionSpecification(
-    availableInLeftDrawer: true,
+    requiresAccessToLocalFileSystem: false,
+    availableInLeftDrawer: hasAccessToLocalFileSystem,
     availableInRightDrawer: false,
     availableInAppBar: false,
     availableInHomeMenu: false,
     available: false,
   );
   var signoutSpecifications = ActionSpecification(
+    requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: false,
     availableInRightDrawer: true,
     availableInAppBar: false,
@@ -147,6 +159,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var flushSpecifications = ActionSpecification(
+    requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
     availableInAppBar: false,
@@ -154,6 +167,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var includeJoinAction = JoinActionSpecifications(
+    requiresAccessToLocalFileSystem: false,
     paymentType: JoinPaymentType.Card,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
@@ -162,6 +176,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var membershipDashboardDialogSpecifications = JoinActionSpecifications(
+    requiresAccessToLocalFileSystem: false,
     paymentType: JoinPaymentType.Card,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
@@ -170,6 +185,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var notificationDashboardDialogSpecifications = JoinActionSpecifications(
+    requiresAccessToLocalFileSystem: false,
     paymentType: JoinPaymentType.Card,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
@@ -178,6 +194,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
   var assignmentDashboardDialogSpecifications = JoinActionSpecifications(
+    requiresAccessToLocalFileSystem: false,
     paymentType: JoinPaymentType.Card,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
@@ -308,7 +325,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           actionSpecification: aboutSpecifications,
           label: 'Generate About Page'),
       ActionSpecificationWidget(
-          enabled: true,
+          enabled: hasAccessToLocalFileSystem,
           actionSpecification: albumSpecifications,
           label: 'Generate Example Album Page'),
       ActionSpecificationWidget(
@@ -329,7 +346,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           label: 'Generate Member Dashboard Dialog'),
 
       ActionSpecificationWidget(
-          enabled: true,
+          enabled: hasAccessToLocalFileSystem,
           actionSpecification: examplePolicySpecifications,
           label: 'Generate Example Policy'),
 
