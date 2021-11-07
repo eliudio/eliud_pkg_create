@@ -14,9 +14,6 @@ abstract class CreatorPackage extends Package {
   CreatorPackage() : super('eliud_pkg_fundamentals');
 
   @override
-  BlocProvider? createMainBloc(NavigatorBloc navigatorBloc, AccessBloc accessBloc) => null;
-
-  @override
   Future<bool?> isConditionOk(String packageCondition, AppModel app, MemberModel? member, bool isOwner, bool? isBlocked, PrivilegeLevel? privilegeLevel) async => null;
 
   @override
