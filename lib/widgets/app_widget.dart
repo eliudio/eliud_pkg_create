@@ -1,10 +1,7 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/app_policy_item_model.dart';
-import 'package:eliud_core/model/conditions_simple_model.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
-import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
@@ -15,15 +12,11 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/screen_size.dart';
-import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_core/tools/storage/public_medium_helper.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/page_widget.dart';
-import 'package:eliud_pkg_create/widgets/utils/combobox_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
-import 'package:eliud_pkg_medium/platform/access_rights.dart';
-import 'package:eliud_pkg_medium/platform/medium_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'app_bloc/app_bloc.dart';
@@ -42,6 +35,7 @@ typedef BlocProvider BlocProviderProvider(Widget child);
 
 void openApp(
   BuildContext context,
+  AppModel app,
   CanRefresh? canRefresh, {
   double? fraction,
 }) {
@@ -50,6 +44,7 @@ void openApp(
       widthFraction: fraction,
       child: AppCreateWidget.getIt(
         context,
+        app,
         false,
         canRefresh,
         fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
@@ -62,9 +57,11 @@ class AppCreateWidget extends StatefulWidget {
   final bool create;
   final double widgetWidth;
   final double widgetHeight;
+  final AppModel app;
 
   AppCreateWidget._({
     Key? key,
+    required this.app,
     required this.create,
     required this.widgetWidth,
     required this.widgetHeight,
@@ -75,13 +72,13 @@ class AppCreateWidget extends StatefulWidget {
     return _AppCreateWidgetState();
   }
 
-  static Widget getIt(BuildContext context, bool create, CanRefresh? canRefresh,
+  static Widget getIt(BuildContext context, AppModel app, bool create, CanRefresh? canRefresh,
       double widgetWidth, double widgetHeight) {
-    var app = AccessBloc.app(context);
     return BlocProvider<AppCreateBloc>(
-      create: (context) => AppCreateBloc(app!.documentID!, app, canRefresh)
+      create: (context) => AppCreateBloc(app.documentID!, app, canRefresh)
         ..add(AppCreateEventValidateEvent(app)),
       child: AppCreateWidget._(
+        app: app,
         create: create,
         widgetWidth: widgetWidth,
         widgetHeight: widgetHeight,
@@ -162,7 +159,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                             children: state.pages.map((item) {
                           return getListTile(context,
                               onTap: () => openPage(
-                                    context,
+                                    context,widget.app,
                                     false,
                                     item!,
                                     "Update page",
@@ -212,6 +209,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                       case 0:
                                         openPage(
                                           context,
+                                          widget.app,
                                           false,
                                           item!,
                                           "Update page",
@@ -256,8 +254,9 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         onTap: () {
                           openPage(
                               context,
+                              widget.app,
                               true,
-                              newPageDefaults(AccessBloc.appId(context)!),
+                              newPageDefaults(widget.app.documentID!),
                               'Create page');
                         })
                   ], shrinkWrap: true, physics: ScrollPhysics()),
@@ -278,6 +277,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                           return getListTile(context,
                               onTap: () => openDialog(
                                     context,
+                                    widget.app,
                                     false,
                                     item!,
                                     "Update dialog",
@@ -295,6 +295,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                     if (value == 0) {
                                       openDialog(
                                         context,
+                                        widget.app,
                                         false,
                                         item!,
                                         "Update dialog",
@@ -310,8 +311,9 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         onTap: () {
                           openDialog(
                               context,
+                              widget.app,
                               true,
-                              newDialogDefaults(AccessBloc.appId(context)!),
+                              newDialogDefaults(widget.app.documentID!),
                               'Create page');
                         })
                   ], shrinkWrap: true, physics: ScrollPhysics()),
@@ -456,6 +458,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                           label: 'Left drawer',
                           onPressed: () => openDrawer(
                               context,
+                              widget.app,
                               state.leftDrawerModel,
                               DecorationDrawerType.Left,
                               null,
@@ -464,12 +467,13 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                       button(context,
                           label: 'App Bar',
                           onPressed: () =>
-                              openAppBar(context, state.appBarModel, null)),
+                              openAppBar(context, widget.app, state.appBarModel, null)),
                       Spacer(),
                       button(context,
                           label: 'Right drawer',
                           onPressed: () => openDrawer(
                               context,
+                              widget.app,
                               state.rightDrawerModel,
                               DecorationDrawerType.Right,
                               null,
@@ -478,7 +482,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                       button(context,
                           label: 'Bottom navbar',
                           onPressed: () => openBottomNavBar(
-                              context, state.homeMenuModel, null)),
+                              context, widget.app, state.homeMenuModel, null)),
                       Spacer(),
                     ]))
               ]),

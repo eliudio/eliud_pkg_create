@@ -1,4 +1,4 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -22,13 +22,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'condition/conditions_widget.dart';
 
-void openPage(BuildContext context, bool create, PageModel model, String title,
+void openPage(BuildContext context, AppModel app, bool create, PageModel model, String title,
     {VoidCallback? callOnAction, double? fraction}) {
   openFlexibleDialog(context,
       includeHeading: false,
       widthFraction: fraction,
       child: PageCreateWidget.getIt(
         context,
+        app,
         callOnAction,
         model,
         create,
@@ -41,9 +42,11 @@ void openPage(BuildContext context, bool create, PageModel model, String title,
 class PageCreateWidget extends StatefulWidget {
   final double widgetWidth;
   final bool create;
+  final AppModel app;
 
   PageCreateWidget._({
     Key? key,
+    required this.app,
     required this.create,
     required this.widgetWidth,
   }) : super(key: key);
@@ -55,17 +58,18 @@ class PageCreateWidget extends StatefulWidget {
 
   static Widget getIt(
     BuildContext context,
+    AppModel app,
     VoidCallback? callOnAction,
     PageModel appBarModel,
     bool create,
     double widgetWidth,
   ) {
-    var app = AccessBloc.app(context);
     return BlocProvider<PageCreateBloc>(
       create: (context) =>
-          PageCreateBloc(app!.documentID!, appBarModel, callOnAction)
+          PageCreateBloc(app.documentID!, appBarModel, callOnAction)
             ..add(PageCreateEventValidateEvent(appBarModel)),
       child: PageCreateWidget._(
+        app: app,
         create: create,
         widgetWidth: widgetWidth,
       ),
@@ -125,6 +129,7 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
                 ]),
           BodyComponentsCreateWidget.getIt(
             context,
+            widget.app,
             state.pageModel.bodyComponents!,
             widget.widgetWidth,
           ),

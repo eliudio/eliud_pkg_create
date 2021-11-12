@@ -20,8 +20,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:eliud_core/style/style_registry.dart';
-import 'package:eliud_core/core/access/bloc/access_state.dart';
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/state/access_state.dart';
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 
 
 import 'package:eliud_pkg_create/model/play_store_list_bloc.dart';
@@ -117,7 +117,7 @@ return widgets;
                       items: items,
                       value: valueChosen,
                       hint: Text('Select a playStore'),
-                      onChanged: !accessState.memberIsOwner() ? null : _onChange,
+                      onChanged: !accessState.memberIsOwner(AccessBloc.currentAppId(context)) ? null : _onChange,
                     );
         if (false) {
           return Container(height:48, child: Center(child: button));

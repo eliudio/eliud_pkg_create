@@ -1,5 +1,6 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
-import 'package:eliud_core/core/access/bloc/access_state.dart';
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
+import 'package:eliud_core/core/blocs/access/state/access_state.dart';
 import 'package:eliud_core/core/widgets/alert_widget.dart';
 import 'package:eliud_core/model/app_list_bloc.dart';
 import 'package:eliud_core/model/app_list_event.dart';
@@ -40,24 +41,28 @@ class PlayStoreBase extends AbstractPlayStoreComponent {
   @override
   PlayStoreRepository getPlayStoreRepository(BuildContext context) {
     return AbstractRepositorySingleton.singleton
-        .playStoreRepository(AccessBloc.appId(context))!;
+        .playStoreRepository(AccessBloc.currentAppId(context))!;
   }
 
   @override
   Widget yourWidget(BuildContext context, PlayStoreModel? value) {
-    var state = AccessBloc.getState(context);
-    if (state is AppLoaded) {
-      var appId = state.app.documentID;
-      return BlocProvider<AppListBloc>(
-          create: (context) => AppListBloc(
-            detailed: true,
-            eliudQuery: null, // for now all
-            appRepository: appRepository(
-                appId: appId!)!,
-          )..add(LoadAppList()),
-          child: PlayStore(value!));
-    } else {
-      return progressIndicator(context);
-    }
+    return BlocBuilder<AccessBloc, AccessState>(
+        builder: (context, accessState) {
+          if (accessState is AccessDetermined) {
+            var appId = accessState.currentAppId();
+            return BlocProvider<AppListBloc>(
+                create: (context) =>
+                AppListBloc(
+                  detailed: true,
+                  eliudQuery: null, // for now all
+                  appRepository: appRepository(
+                      appId: appId)!,
+                )
+                  ..add(LoadAppList()),
+                child: PlayStore(value!));
+          } else {
+            return progressIndicator(context);
+          }
+        });
   }
 }

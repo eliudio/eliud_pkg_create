@@ -1,20 +1,13 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
-import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
-import 'package:eliud_pkg_medium/tools/media_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'appbar_bloc/appbar_bloc.dart';
-import 'appbar_bloc/appbar_event.dart';
-import 'appbar_bloc/appbar_state.dart';
 import 'bottom_navbar_bloc/bottom_navbar_bloc.dart';
 import 'bottom_navbar_bloc/bottom_navbar_event.dart';
 import 'bottom_navbar_bloc/bottom_navbar_state.dart';
@@ -26,6 +19,7 @@ typedef BlocProvider BlocProviderProvider(Widget child);
 
 void openBottomNavBar(
   BuildContext context,
+  AppModel app,
   HomeMenuModel model,
   CanRefresh? canRefresh, {
   double? fraction,
@@ -35,6 +29,7 @@ void openBottomNavBar(
       widthFraction: fraction,
       child: BottomNavBarCreateWidget.getIt(
         context,
+        app,
         canRefresh,
         model,
         fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
@@ -46,9 +41,11 @@ void openBottomNavBar(
 class BottomNavBarCreateWidget extends StatefulWidget {
   final double widgetWidth;
   final double widgetHeight;
+  final AppModel app;
 
   BottomNavBarCreateWidget._({
     Key? key,
+    required this.app,
     required this.widgetWidth,
     required this.widgetHeight,
   }) : super(key: key);
@@ -58,14 +55,14 @@ class BottomNavBarCreateWidget extends StatefulWidget {
     return _BottomNavBarCreateWidgetState();
   }
 
-  static Widget getIt(BuildContext context, CanRefresh? canRefresh,
+  static Widget getIt(BuildContext context, AppModel app, CanRefresh? canRefresh,
       HomeMenuModel homeMenuModel, double widgetWidth, double widgetHeight) {
-    var app = AccessBloc.app(context);
     return BlocProvider<BottomNavBarCreateBloc>(
       create: (context) =>
-          BottomNavBarCreateBloc(app!.documentID!, homeMenuModel, canRefresh)
+          BottomNavBarCreateBloc(app.documentID!, homeMenuModel, canRefresh)
             ..add(BottomNavBarCreateEventValidateEvent(homeMenuModel)),
       child: BottomNavBarCreateWidget._(
+        app: app,
         widgetWidth: widgetWidth,
         widgetHeight: widgetHeight,
       ),
@@ -103,6 +100,7 @@ class _BottomNavBarCreateWidgetState extends State<BottomNavBarCreateWidget> {
               divider(context),
               MenuDefCreateWidget.getIt(
                 context,
+                widget.app,
                 state.homeMenuModel
                     .menu!, /*widget.widgetWidth, widget.widgetHeight - 50*/
               )

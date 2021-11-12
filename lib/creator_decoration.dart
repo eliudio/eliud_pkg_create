@@ -1,4 +1,4 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/decoration/decoration.dart' as deco;
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
@@ -38,6 +38,8 @@ class CreatorDecoration extends deco.Decoration {
   CreateWidget createDecoratedAppBar(BuildContext context, Key? appBarKey,
       CreateWidget createOriginalAppBar, AppBarModel model) {
     if (!AccessBloc.isOwner(context)) return createOriginalAppBar;
+    var app = AccessBloc.currentApp(context);
+    var currentAccess = AccessBloc.getState(context);
 
     return (() {
       return MyDecoratedWidget<AppBarModel>(
@@ -54,7 +56,7 @@ class CreatorDecoration extends deco.Decoration {
                 context,
                 includeHeading: false,
                 widthFraction: .9,
-                child: PrivilegeWidget(),
+                child: PrivilegeWidget(app: app, currentAccess: currentAccess,),
               );
             }),
             ensureHeight: false,
@@ -64,7 +66,7 @@ class CreatorDecoration extends deco.Decoration {
         },
         model: model,
         action: SingleAction((canRefresh) {
-          openAppBar(context, model, canRefresh, fraction: fraction);
+          openAppBar(context, app, model, canRefresh, fraction: fraction);
         }),
         ensureHeight: false,
         initialPosition: InitialPosition.CenterCenter,
@@ -105,6 +107,7 @@ class CreatorDecoration extends deco.Decoration {
       CreateWidget createBottomNavigationBar,
       HomeMenuModel model) {
     if (!AccessBloc.isOwner(context)) return createBottomNavigationBar;
+    var app = AccessBloc.currentApp(context);
 
     return (() {
       return MyDecoratedWidget<HomeMenuModel>(
@@ -113,7 +116,7 @@ class CreatorDecoration extends deco.Decoration {
         createOriginalWidget: createBottomNavigationBar,
         model: model,
         action: SingleAction((canRefresh) {
-          openBottomNavBar(context, model, canRefresh, fraction: fraction);
+          openBottomNavBar(context, app, model, canRefresh, fraction: fraction);
         }),
         ensureHeight: false,
         initialPosition: InitialPosition.CenterTop,
@@ -130,6 +133,7 @@ class CreatorDecoration extends deco.Decoration {
       CreateWidget createOriginalDrawer,
       DrawerModel model) {
     if (!AccessBloc.isOwner(context)) return createOriginalDrawer;
+    var app = AccessBloc.currentApp(context);
 
     return (() {
       return MyDecoratedWidget<DrawerModel>(
@@ -139,7 +143,7 @@ class CreatorDecoration extends deco.Decoration {
         model: model,
         action: SingleAction((canRefresh) {
           openDrawer(
-              context, model, decorationDrawerType, canRefresh, fraction);
+              context, app, model, decorationDrawerType, canRefresh, fraction);
         }),
         ensureHeight: false,
         initialPosition: InitialPosition.CenterCenter,
@@ -152,6 +156,7 @@ class CreatorDecoration extends deco.Decoration {
   CreateWidget createDecoratedPage(BuildContext context, Key? originalPageKey,
       CreateWidget createOriginalPage, PageModel model) {
     if (!AccessBloc.isOwner(context)) return createOriginalPage;
+    var app = AccessBloc.currentApp(context);
 
     return (() {
       // Button for the decorator itself
@@ -180,13 +185,12 @@ class CreatorDecoration extends deco.Decoration {
               isCreationMode: _isCreationMode,
               originalWidgetKey: originalPageKey,
               createOriginalWidget: () {
-                var app = AccessBloc.app(context);
                 // Button for the app
                 return MyDecoratedWidget<AppModel>(
                   isCreationMode: _isCreationMode,
                   originalWidgetKey: originalPageKey,
                   createOriginalWidget: () {
-                    var app = AccessBloc.app(context);
+                    var app = AccessBloc.currentApp(context);
                     if (app != null) {
                       return MyDecoratedWidget2<PageModel>(
                         originalWidgetKey: originalPageKey,
@@ -207,7 +211,7 @@ class CreatorDecoration extends deco.Decoration {
                       return text(context, 'No app');
                     }
                   },
-                  model: app!,
+                  model: app,
                   action: SingleAction((canRefresh) {
                     openFlexibleDialog(
                       context,
@@ -215,6 +219,7 @@ class CreatorDecoration extends deco.Decoration {
                       widthFraction: fraction,
                       child: AppCreateWidget.getIt(
                         context,
+                        app,
                         false,
                         canRefresh,
                         fullScreenWidth(context) * fraction,
@@ -230,14 +235,15 @@ class CreatorDecoration extends deco.Decoration {
               model: model,
               action: MultipleActions([
                 ActionWithLabel('Update page', (canRefresh) {
-                  openPage(context, false, model, 'Update Page',
+                  openPage(context, app, false, model, 'Update Page',
                       callOnAction: () => canRefresh.refresh());
                 }),
                 ActionWithLabel('Create page', (canRefresh) {
                   openPage(
                       context,
+                      app,
                       true,
-                      newPageDefaults(AccessBloc.appId(context)!),
+                      newPageDefaults(AccessBloc.currentAppId(context)),
                       'Create page');
                 }),
               ]),
@@ -265,6 +271,7 @@ class CreatorDecoration extends deco.Decoration {
       deco.CreateWidget createOriginalDialog,
       DialogModel model) {
     if (!AccessBloc.isOwner(context)) return createOriginalDialog;
+    var app = AccessBloc.currentApp(context);
 
     return (() {
       return MyDecoratedWidget<DialogModel>(
@@ -274,12 +281,12 @@ class CreatorDecoration extends deco.Decoration {
         model: model,
         action: MultipleActions([
           ActionWithLabel('Update dialog', (canRefresh) {
-            openDialog(context, false, model, 'Update Page',
+            openDialog(context, app, false, model, 'Update Page',
                 callOnAction: () => canRefresh.refresh());
           }),
           ActionWithLabel('Create dialog', (canRefresh) {
-            openDialog(context, true,
-                newDialogDefaults(AccessBloc.appId(context)!), 'Create dialog');
+            openDialog(context, app, true,
+                newDialogDefaults(AccessBloc.currentAppId(context)), 'Create dialog');
           }),
         ]),
         ensureHeight: false,

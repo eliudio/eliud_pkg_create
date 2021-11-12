@@ -1,6 +1,4 @@
-import 'dart:math';
-
-import 'package:eliud_core/core/registry.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
@@ -11,7 +9,6 @@ import 'package:eliud_pkg_create/tools/help_functions.dart';
 import 'package:eliud_pkg_create/widgets/utils/popup_menu_item_choices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'bodycomponents__bloc/bodycomponents_create_bloc.dart';
 import 'bodycomponents__bloc/bodycomponents_create_event.dart';
@@ -33,11 +30,11 @@ class BodyComponentsCreateWidget extends StatefulWidget {
 
   static Widget getIt(
       BuildContext context,
+      AppModel app,
       List<BodyComponentModel> bodyComponents,
       double widgetWidth,
       /*double widgetHeight
       */) {
-    var app = AccessBloc.app(context);
     if (app == null) throw Exception("No app selected");
     return BlocProvider<BodyComponentsCreateBloc>(
       create: (context) => BodyComponentsCreateBloc(
@@ -59,8 +56,6 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
 
   @override
   Widget build(BuildContext context) {
-    var app = AccessBloc.app(context);
-    if (app == null) throw Exception("No app");
     return BlocBuilder<BodyComponentsCreateBloc, BodyComponentsCreateState>(
         builder: (context, state) {
       if (state is BodyComponentsCreateInitialised) {

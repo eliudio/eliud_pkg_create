@@ -1,5 +1,5 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
@@ -20,6 +20,7 @@ typedef BlocProvider BlocProviderProvider(Widget child);
 
 void openAppBar(
   BuildContext context,
+  AppModel app,
   AppBarModel model,
   CanRefresh? canRefresh, {
   double? fraction,
@@ -29,6 +30,7 @@ void openAppBar(
       widthFraction: fraction,
       child: AppBarCreateWidget.getIt(
         context,
+        app,
         canRefresh,
         model,
         fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
@@ -40,8 +42,10 @@ void openAppBar(
 class AppBarCreateWidget extends StatefulWidget {
   final double widgetWidth;
   final double widgetHeight;
+  final AppModel app;
 
   AppBarCreateWidget._({
+    required this.app,
     Key? key,
     required this.widgetWidth,
     required this.widgetHeight,
@@ -52,14 +56,14 @@ class AppBarCreateWidget extends StatefulWidget {
     return _AppBarCreateWidgetState();
   }
 
-  static Widget getIt(BuildContext context, CanRefresh? canRefresh,
+  static Widget getIt(BuildContext context, AppModel app, CanRefresh? canRefresh,
       AppBarModel appBarModel, double widgetWidth, double widgetHeight) {
-    var app = AccessBloc.app(context);
     return BlocProvider<AppBarCreateBloc>(
       create: (context) =>
-          AppBarCreateBloc(app!.documentID!, appBarModel, canRefresh)
+          AppBarCreateBloc(app.documentID!, appBarModel, canRefresh)
             ..add(AppBarCreateEventValidateEvent(appBarModel)),
       child: AppBarCreateWidget._(
+        app: app,
         widgetWidth: widgetWidth,
         widgetHeight: widgetHeight,
       ),
@@ -90,6 +94,7 @@ class _AppBarCreateWidgetState extends State<AppBarCreateWidget> {
           divider(context),
           MenuDefCreateWidget.getIt(
             context,
+            widget.app,
             state.appBarModel
                 .iconMenu!, /*widget.widgetWidth, widget.widgetHeight - 50*/
           )

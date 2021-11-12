@@ -1,4 +1,6 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
+import 'package:eliud_core/core/blocs/access/state/access_state.dart';
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/background_model.dart';
@@ -33,24 +35,27 @@ typedef BlocProvider BlocProviderProvider(Widget child);
 
 void openDrawer(
     BuildContext context,
+    AppModel app,
     DrawerModel model,
     DecorationDrawerType decorationDrawerType,
     CanRefresh? canRefresh,
     double fraction) {
-  openFlexibleDialog(context,
-      includeHeading: false,
-      widthFraction: fraction,
-      child: DrawerCreateWidget.getIt(
-        context,
-        canRefresh,
-        decorationDrawerType == DecorationDrawerType.Left
-            ? DrawerType.Left
-            : DrawerType.Right,
-        model,
-        fullScreenWidth(context) * fraction,
-        fullScreenHeight(context) - 100,
-      ),
-      );
+  openFlexibleDialog(
+    context,
+    includeHeading: false,
+    widthFraction: fraction,
+    child: DrawerCreateWidget.getIt(
+      context,
+      app,
+      canRefresh,
+      decorationDrawerType == DecorationDrawerType.Left
+          ? DrawerType.Left
+          : DrawerType.Right,
+      model,
+      fullScreenWidth(context) * fraction,
+      fullScreenHeight(context) - 100,
+    ),
+  );
 }
 
 enum DisplayCase {
@@ -63,9 +68,11 @@ enum DisplayCase {
 class DrawerCreateWidget extends StatefulWidget {
   final double widgetWidth;
   final double widgetHeight;
+  final AppModel app;
 
   DrawerCreateWidget._({
     Key? key,
+    required this.app,
     required this.widgetWidth,
     required this.widgetHeight,
   }) : super(key: key);
@@ -77,17 +84,18 @@ class DrawerCreateWidget extends StatefulWidget {
 
   static Widget getIt(
       BuildContext context,
+      AppModel app,
       CanRefresh? canRefresh,
       DrawerType drawerType,
       DrawerModel appBarModel,
       double widgetWidth,
       double widgetHeight) {
-    var app = AccessBloc.app(context);
     return BlocProvider<DrawerCreateBloc>(
       create: (context) => DrawerCreateBloc(
-          app!.documentID!, drawerType, appBarModel, canRefresh)
+          app.documentID!, drawerType, appBarModel, canRefresh)
         ..add(DrawerCreateEventValidateEvent(appBarModel)),
       child: DrawerCreateWidget._(
+        app: app,
         widgetWidth: widgetWidth,
         widgetHeight: widgetHeight,
       ),
@@ -100,61 +108,71 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var app = AccessBloc.app(context);
-    var memberID = AccessBloc.member(context)!.documentID!;
-    return BlocBuilder<DrawerCreateBloc, DrawerCreateState>(
-        builder: (context, state) {
-      if (state is DrawerCreateValidated) {
-        return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-          HeaderWidget(
-            cancelAction: () async {
-              BlocProvider.of<DrawerCreateBloc>(context)
-                  .add(DrawerCreateEventRevertChanges());
-              return true;
-            },
-            okAction: () async {
-              BlocProvider.of<DrawerCreateBloc>(context)
-                  .add(DrawerCreateEventApplyChanges(true));
-              return true;
-            },
-            title: 'Update drawer',
-          ),
-          topicContainer(context,
-              title: 'General',
-              collapsible: true,
-              collapsed: true,
-              children: [
-                getListTile(
-                  context,
-                  leading: Icon(Icons.description),
-                  title: dialogField(context,
-                      valueChanged: (value) =>
-                          state.drawerModel.headerText = value,
-                      initialValue: state.drawerModel.headerText,
-                      decoration: inputDecoration(context, "Header text")),
-                ),
-                _mediaButtons(context, state, app!, memberID),
-                getListTile(context,
-                    leading: Icon(Icons.description),
-                    title: dialogField(
-                      context,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 3,
-                      valueChanged: (value) =>
-                          state.drawerModel.secondHeaderText = value,
-                      initialValue: state.drawerModel.secondHeaderText,
-                      decoration: inputDecoration(
-                        context,
-                        'Second Header text',
-                      ),
-                    )),
-              ]),
-          MenuDefCreateWidget.getIt(
-            context,
-            state.drawerModel
-                .menu!, /*widget.widgetWidth, max(widget.widgetHeight - 300, 200)*/
-          )
-        ]);
+    return BlocBuilder<AccessBloc, AccessState>(
+        builder: (context, accessState) {
+      if (accessState is AccessDetermined) {
+        return BlocBuilder<DrawerCreateBloc, DrawerCreateState>(
+            builder: (context, state) {
+          if (state is DrawerCreateValidated) {
+            return ListView(
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                children: [
+                  HeaderWidget(
+                    cancelAction: () async {
+                      BlocProvider.of<DrawerCreateBloc>(context)
+                          .add(DrawerCreateEventRevertChanges());
+                      return true;
+                    },
+                    okAction: () async {
+                      BlocProvider.of<DrawerCreateBloc>(context)
+                          .add(DrawerCreateEventApplyChanges(true));
+                      return true;
+                    },
+                    title: 'Update drawer',
+                  ),
+                  topicContainer(context,
+                      title: 'General',
+                      collapsible: true,
+                      collapsed: true,
+                      children: [
+                        getListTile(
+                          context,
+                          leading: Icon(Icons.description),
+                          title: dialogField(context,
+                              valueChanged: (value) =>
+                                  state.drawerModel.headerText = value,
+                              initialValue: state.drawerModel.headerText,
+                              decoration:
+                                  inputDecoration(context, "Header text")),
+                        ),
+                        _mediaButtons(context, state, widget.app, accessState.getMember()!.documentID!),
+                        getListTile(context,
+                            leading: Icon(Icons.description),
+                            title: dialogField(
+                              context,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 3,
+                              valueChanged: (value) =>
+                                  state.drawerModel.secondHeaderText = value,
+                              initialValue: state.drawerModel.secondHeaderText,
+                              decoration: inputDecoration(
+                                context,
+                                'Second Header text',
+                              ),
+                            )),
+                      ]),
+                  MenuDefCreateWidget.getIt(
+                    context,
+                    widget.app,
+                    state.drawerModel
+                        .menu!, /*widget.widgetWidth, max(widget.widgetHeight - 300, 200)*/
+                  )
+                ]);
+          } else {
+            return progressIndicator(context);
+          }
+        });
       } else {
         return progressIndicator(context);
       }

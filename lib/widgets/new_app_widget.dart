@@ -1,6 +1,6 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
-import 'package:eliud_core/core/access/bloc/access_event.dart';
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
@@ -25,7 +25,7 @@ import 'new_app_bloc/new_app_state.dart';
 typedef BlocProvider BlocProviderProvider(Widget child);
 
 void newApp(
-  BuildContext context, {
+  BuildContext context, MemberModel member, AppModel app, {
   double? fraction,
 }) {
   openFlexibleDialog(
@@ -36,6 +36,8 @@ void newApp(
         width: 10,
         child: NewAppCreateWidget.getIt(
           context,
+          member,
+          app,
           fullScreenWidth(context) * ((fraction == null) ? .5 : fraction),
           fullScreenHeight(context) - 100,
         )),
@@ -58,9 +60,7 @@ class NewAppCreateWidget extends StatefulWidget {
   }
 
   static Widget getIt(
-      BuildContext context, double widgetWidth, double widgetHeight) {
-    var member = AccessBloc.member(context);
-    if (member != null) {
+      BuildContext context, MemberModel member, AppModel app, double widgetWidth, double widgetHeight) {
       return BlocProvider<NewAppCreateBloc>(
         create: (context) => NewAppCreateBloc()
           ..add(NewAppCreateEventInitialise('YOUR_APP_ID', member)),
@@ -69,9 +69,6 @@ class NewAppCreateWidget extends StatefulWidget {
           widgetHeight: widgetHeight,
         ),
       );
-    } else {
-      return text(context, "Member should be logged on");
-    }
   }
 }
 
@@ -208,8 +205,11 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     return BlocBuilder<NewAppCreateBloc, NewAppCreateState>(
         builder: (context, state) {
       if (state is SwitchApp) {
+        // todo: NEED TO ALLOW TO SWITCH APP
+/*
         BlocProvider.of<AccessBloc>(context)
             .add(SwitchAppEvent(state.appToBeCreated.documentID));
+*/
       } else if (state is NewAppCreateInitialised) {
         return Container(
             width: widget.widgetWidth,

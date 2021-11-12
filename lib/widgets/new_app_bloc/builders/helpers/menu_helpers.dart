@@ -28,16 +28,6 @@ menuItemSignOut(appID) => MenuItemModel(
     action:
         InternalAction(appID, internalActionEnum: InternalActionEnum.Logout));
 
-menuItemFlushCache(appID) => MenuItemModel(
-    documentID: newRandomKey(),
-    text: "Flush cache",
-    description: "Flush cache",
-    icon: IconModel(
-        codePoint: Icons.power_settings_new.codePoint,
-        fontFamily: Icons.settings.fontFamily),
-    action:
-        InternalAction(appID, internalActionEnum: InternalActionEnum.Flush));
-
 menuItemManageAccount(appID, dialogID) => MenuItemModel(
     documentID: dialogID,
     text: 'Manage your account',

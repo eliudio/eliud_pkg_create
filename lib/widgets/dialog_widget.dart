@@ -1,6 +1,5 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
-import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
@@ -13,8 +12,6 @@ import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/dialog_bloc/dialog_bloc.dart';
 import 'package:eliud_pkg_create/widgets/dialog_bloc/dialog_event.dart';
 import 'package:eliud_pkg_create/widgets/dialog_bloc/dialog_state.dart';
-import 'package:eliud_pkg_create/widgets/privilege_widget.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'bodycomponents/bodycomponents_widget.dart';
@@ -24,6 +21,7 @@ import 'condition/conditions_widget.dart';
 
 void openDialog(
   BuildContext context,
+  AppModel app,
   bool create,
   DialogModel model,
   String title, {
@@ -35,6 +33,7 @@ void openDialog(
       widthFraction: fraction,
       child: DialogCreateWidget.getIt(
         context,
+        app,
         callOnAction,
         model,
         create,
@@ -47,9 +46,11 @@ void openDialog(
 class DialogCreateWidget extends StatefulWidget {
   final double widgetWidth;
   final bool create;
+  final AppModel app;
 
   DialogCreateWidget._({
     Key? key,
+    required this.app,
     required this.create,
     required this.widgetWidth,
   }) : super(key: key);
@@ -61,17 +62,18 @@ class DialogCreateWidget extends StatefulWidget {
 
   static Widget getIt(
     BuildContext context,
+    AppModel app,
     VoidCallback? callOnAction,
     DialogModel appBarModel,
     bool create,
     double widgetWidth,
   ) {
-    var app = AccessBloc.app(context);
     return BlocProvider<DialogCreateBloc>(
       create: (context) =>
-          DialogCreateBloc(app!.documentID!, appBarModel, callOnAction)
+          DialogCreateBloc(app.documentID!, appBarModel, callOnAction)
             ..add(DialogCreateEventValidateEvent(appBarModel)),
       child: DialogCreateWidget._(
+        app: app,
         create: create,
         widgetWidth: widgetWidth,
       ),
@@ -131,6 +133,7 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
                 ]),
           BodyComponentsCreateWidget.getIt(
             context,
+            widget.app,
             state.dialogModel.bodyComponents!,
             widget.widgetWidth,
           ),

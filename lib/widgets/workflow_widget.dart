@@ -1,4 +1,4 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -27,13 +27,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'condition/conditions_widget.dart';
 
-void openWorkflow(BuildContext context, bool create, WorkflowModel model, String title,
+void openWorkflow(BuildContext context, AppModel app, bool create, WorkflowModel model, String title,
     {VoidCallback? callOnAction, double? fraction}) {
   openFlexibleDialog(context,
       includeHeading: false,
       widthFraction: fraction,
       child: WorkflowCreateWidget.getIt(
         context,
+        app,
         callOnAction,
         model,
         create,
@@ -46,9 +47,11 @@ void openWorkflow(BuildContext context, bool create, WorkflowModel model, String
 class WorkflowCreateWidget extends StatefulWidget {
   final double widgetWidth;
   final bool create;
+  final AppModel app;
 
   WorkflowCreateWidget._({
     Key? key,
+    required this.app,
     required this.create,
     required this.widgetWidth,
   }) : super(key: key);
@@ -60,17 +63,18 @@ class WorkflowCreateWidget extends StatefulWidget {
 
   static Widget getIt(
     BuildContext context,
+    AppModel app,
     VoidCallback? callOnAction,
       WorkflowModel appBarModel,
     bool create,
     double widgetWidth,
   ) {
-    var app = AccessBloc.app(context);
     return BlocProvider<WorkflowCreateBloc>(
       create: (context) =>
-      WorkflowCreateBloc(app!.documentID!, appBarModel, callOnAction)
+      WorkflowCreateBloc(app.documentID!, appBarModel, callOnAction)
             ..add(WorkflowCreateEventValidateEvent(appBarModel)),
       child: WorkflowCreateWidget._(
+        app: app,
         create: create,
         widgetWidth: widgetWidth,
       ),
@@ -125,6 +129,7 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
                 ]),
           WorkflowTasksCreateWidget.getIt(
             context,
+            widget.app,
             state.workflowModel.workflowTask!,
             widget.widgetWidth,
           ),

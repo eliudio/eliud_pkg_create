@@ -1,7 +1,7 @@
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
-import 'package:eliud_core/core/access/bloc/access_event.dart';
-import 'package:eliud_core/core/access/bloc/access_state.dart';
+import 'package:eliud_core/core/blocs/access/state/access_state.dart';
+import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
 import 'package:eliud_core/model/access_model.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
@@ -17,7 +17,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
  * Allows to change the privilege
  */
 class PrivilegeWidget extends StatefulWidget {
-  PrivilegeWidget({Key? key}) : super(key: key);
+  final AccessState currentAccess;
+  final AppModel app;
+  PrivilegeWidget({Key? key, required this.app, required this.currentAccess}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,11 +36,10 @@ class _PrivilegeWidgetState extends State<PrivilegeWidget> {
 
   void initState() {
     super.initState();
-    var currentAccess = AccessBloc.getState(context);
-    if (currentAccess is LoggedIn) {
-      var theAccess = currentAccess as LoggedIn;
-      isBlocked = theAccess.blocked;
-      currentLevel = theAccess.privilegeLevel;
+    if (widget.currentAccess is LoggedIn) {
+      var theAccess = widget.currentAccess as LoggedIn;
+      isBlocked = theAccess.isBlocked(widget.app.documentID!);
+      currentLevel = theAccess.getPrivilegeLevel(widget.app.documentID!);
       appLevel = 'Current level: ' + privStringValue(currentLevel);
       appBlocked = 'Blocked: ' + (isBlocked ? 'yes' : 'no');
     } else {
@@ -118,8 +119,11 @@ class _PrivilegeWidgetState extends State<PrivilegeWidget> {
             getPrivilegeOption(PrivilegeLevel.OwnerPrivilege),
             Center(
                 child: button(context, label: 'Simulate', onPressed: () {
+                  // todo: NEED TO ALLOW TO CHANGE PRIVILEGE
+/*
               BlocProvider.of<AccessBloc>(context).add(ChangePrivilegeEvent(
                   toPrivilegeLevel(_privSelectedRadioTile), isBlocked));
+*/
             }))
           ]),
     ], shrinkWrap: true, physics: ScrollPhysics());

@@ -1,3 +1,7 @@
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
+import 'package:eliud_core/core/blocs/access/state/access_state.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -11,7 +15,6 @@ import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/utils/popup_menu_item_choices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eliud_core/core/access/bloc/access_bloc.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:flutter/widgets.dart';
 
@@ -44,12 +47,11 @@ class MenuDefCreateWidget extends StatefulWidget {
 
   static Widget getIt(
       BuildContext context,
+      AppModel app,
       MenuDefModel
           menuDefModel /*,
       double widgetWidth, double widgetHeight*/
       ) {
-    var app = AccessBloc.app(context);
-    if (app == null) throw Exception("No app selected");
     return BlocProvider<MenuDefCreateBloc>(
       create: (context) => MenuDefCreateBloc(
         app,
@@ -69,239 +71,255 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
 
   @override
   Widget build(BuildContext context) {
-    var app = AccessBloc.app(context);
-    if (app == null) throw Exception("No app");
-    return BlocBuilder<MenuDefCreateBloc, MenuDefCreateState>(
-        builder: (context, state) {
-      if (state is MenuDefCreateInitialised) {
-        currentVisible = GlobalKey();
-        ensureCurrentIsVisible();
-        int count = 0;
-        int size = state.menuDefModel.menuItems!.length;
-        return Column(children: [
-          topicContainer(context,
-              title: 'Current menu items',
-              collapsible: true,
-              collapsed: true,
-              children: [
-                Container(
-                    height: height(),
-                    child: SingleChildScrollView(
-                        physics: const ScrollPhysics(),
-                        child: Column(
-                            children: state.menuDefModel.menuItems!.map((item) {
-                          var theKey;
-                          if (item == state.currentlySelected)
-                            theKey = currentVisible;
-                          count++;
-                          return ListTile(
-                              key: theKey,
-//                              onTap: () => details(item),
-                              leading: item.icon == null
-                                  ? text(context,
-                                      item.text == null ? "?" : item.text!)
-                                  : IconHelper.getIconFromModel(
-                                      iconModel: item.icon),
-                              trailing: PopupMenuItemChoices(
-                                isFirst: (count != 1),
-                                isLast: (count != size),
-                                actionUp: () =>
-                                    BlocProvider.of<MenuDefCreateBloc>(context)
+    return BlocBuilder<AccessBloc, AccessState>(
+        builder: (context, accessState) {
+      if (accessState is AccessDetermined) {
+        var app = accessState.currentApp;
+        return BlocBuilder<MenuDefCreateBloc, MenuDefCreateState>(
+            builder: (context, state) {
+          if (state is MenuDefCreateInitialised) {
+            currentVisible = GlobalKey();
+            ensureCurrentIsVisible();
+            int count = 0;
+            int size = state.menuDefModel.menuItems!.length;
+            return Column(children: [
+              topicContainer(context,
+                  title: 'Current menu items',
+                  collapsible: true,
+                  collapsed: true,
+                  children: [
+                    Container(
+                        height: height(),
+                        child: SingleChildScrollView(
+                            physics: const ScrollPhysics(),
+                            child: Column(
+                                children:
+                                    state.menuDefModel.menuItems!.map((item) {
+                              var theKey;
+                              if (item == state.currentlySelected)
+                                theKey = currentVisible;
+                              count++;
+                              return ListTile(
+                                  key: theKey,
+                                  //                              onTap: () => details(item),
+                                  leading: item.icon == null
+                                      ? text(context,
+                                          item.text == null ? "?" : item.text!)
+                                      : IconHelper.getIconFromModel(
+                                          iconModel: item.icon),
+                                  trailing: PopupMenuItemChoices(
+                                    isFirst: (count != 1),
+                                    isLast: (count != size),
+                                    actionUp: () => BlocProvider.of<
+                                            MenuDefCreateBloc>(context)
                                         .add(MenuDefMoveMenuItem(
                                             item, MoveMenuItemDirection.Up)),
-                                actionDown: () =>
-                                    BlocProvider.of<MenuDefCreateBloc>(context)
+                                    actionDown: () => BlocProvider.of<
+                                            MenuDefCreateBloc>(context)
                                         .add(MenuDefMoveMenuItem(
                                             item, MoveMenuItemDirection.Down)),
-                                actionDetails: () => details(item),
-                                actionDelete: () =>
-                                    BlocProvider.of<MenuDefCreateBloc>(context)
+                                    actionDetails: () => details(item),
+                                    actionDelete: () => BlocProvider.of<
+                                            MenuDefCreateBloc>(context)
                                         .add(MenuDefCreateDeleteMenuItem(item)),
-                              ),
-                              title: text(
-                                  context,
-                                  item.action != null
-                                      ? item.action!.describe()
-                                      : ''),
-                              subtitle: text(context,
-                                  item.text == null ? "?" : item.text!));
-                        }).toList())))
-              ]),
-          topicContainer(
-            context,
-            title: 'Available menu items',
-            collapsible: true,
-            collapsed: true,
-            children: [
-              Column(children: [
-                tabBar(context, items: items, tabController: _tabController!),
-                if (_tabController!.index == 0)
-                  Container(
-                    height: height(),
-                    child: ListView(children: [
+                                  ),
+                                  title: text(
+                                      context,
+                                      item.action != null
+                                          ? item.action!.describe()
+                                          : ''),
+                                  subtitle: text(context,
+                                      item.text == null ? "?" : item.text!));
+                            }).toList())))
+                  ]),
+              topicContainer(
+                context,
+                title: 'Available menu items',
+                collapsible: true,
+                collapsed: true,
+                children: [
+                  Column(children: [
+                    tabBar(context,
+                        items: items, tabController: _tabController!),
+                    if (_tabController!.index == 0)
                       Container(
-                          height: 200,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: ScrollPhysics(),
-                              itemCount: state.pages.length,
-                              itemBuilder: (context, position) {
-                                var page = state.pages[position];
-                                return ListTile(
-                                    trailing: availableMenuItemPopup(
-                                        MenuDefCreateAddMenuItemForPage(page!),
-                                        () => openPage(
-                                            context,
-                                            false,
-                                            page,
-                                            'Update page',
-                                            callOnAction: () => BlocProvider.of<
-                                                    MenuDefCreateBloc>(context)
-                                                .add(
-                                                    MenuDefRefreshPages()))), //Icon(Icons.add),
-                                    title: text(context, page.documentID!));
-                              })),
-                      divider(context),
-                      GestureDetector(
-                          child: Icon(Icons.add),
-                          onTap: () {
-                            openPage(
-                                context,
-                                true,
-                                newPageDefaults(AccessBloc.appId(context)!),
-                                'Create page',
-                                callOnAction: () =>
-                                    BlocProvider.of<MenuDefCreateBloc>(context)
-                                        .add(MenuDefRefreshPages()));
-                          })
-                    ], shrinkWrap: true, physics: ScrollPhysics()),
-                  ),
-                if (_tabController!.index == 1)
-                  Container(
-                    height: height(),
-                    child: ListView(children: [
+                        height: height(),
+                        child: ListView(children: [
+                          Container(
+                              height: 200,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const ScrollPhysics(),
+                                  itemCount: state.pages.length,
+                                  itemBuilder: (context, position) {
+                                    var page = state.pages[position];
+                                    return ListTile(
+                                        trailing: availableMenuItemPopup(
+                                            MenuDefCreateAddMenuItemForPage(
+                                                page!),
+                                            () => openPage(context, app, false, page,
+                                                'Update page',
+                                                callOnAction: () => BlocProvider
+                                                        .of<MenuDefCreateBloc>(
+                                                            context)
+                                                    .add(
+                                                        MenuDefRefreshPages()))),
+                                        //Icon(Icons.add),
+                                        title: text(context, page.documentID!));
+                                  })),
+                          divider(context),
+                          GestureDetector(
+                              child: const Icon(Icons.add),
+                              onTap: () {
+                                openPage(
+                                    context,
+                                    app,
+                                    true,
+                                    newPageDefaults(app.documentID!),
+                                    'Create page',
+                                    callOnAction: () =>
+                                        BlocProvider.of<MenuDefCreateBloc>(
+                                                context)
+                                            .add(MenuDefRefreshPages()));
+                              })
+                        ], shrinkWrap: true, physics: const ScrollPhysics()),
+                      ),
+                    if (_tabController!.index == 1)
                       Container(
-                          height: 200,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: ScrollPhysics(),
-                              itemCount: state.dialogs.length,
-                              itemBuilder: (context, position) {
-                                var dialog = state.dialogs[position];
-                                return ListTile(
-                                    trailing: availableMenuItemPopup(
-                                        MenuDefCreateAddMenuItemForDialog(
-                                            dialog!),
-                                        () => openDialog(
+                        height: height(),
+                        child: ListView(children: [
+                          Container(
+                              height: 200,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const ScrollPhysics(),
+                                  itemCount: state.dialogs.length,
+                                  itemBuilder: (context, position) {
+                                    var dialog = state.dialogs[position];
+                                    return ListTile(
+                                        trailing: availableMenuItemPopup(
+                                            MenuDefCreateAddMenuItemForDialog(
+                                                dialog!),
+                                            () => openDialog(context, app, true,
+                                                dialog, 'Update dialog',
+                                                callOnAction: () => BlocProvider
+                                                        .of<MenuDefCreateBloc>(
+                                                            context)
+                                                    .add(
+                                                        MenuDefRefreshDialogs()))),
+                                        //Icon(Icons.add),
+                                        title: text(
                                             context,
-                                            true,
-                                            dialog,
-                                            'Update dialog',
-                                            callOnAction: () => BlocProvider.of<
-                                                    MenuDefCreateBloc>(context)
-                                                .add(
-                                                    MenuDefRefreshDialogs()))), //Icon(Icons.add),
-                                    title: text(
-                                        context,
-                                        dialog != null
-                                            ? dialog.documentID!
-                                            : '?'));
-                              })),
-                      divider(context),
-                      GestureDetector(
-                          child: Icon(Icons.add),
-                          onTap: () {
-                            openDialog(
-                                context,
-                                true,
-                                newDialogDefaults(AccessBloc.appId(context)!),
-                                'Create dialog',
-                                callOnAction: () =>
-                                    BlocProvider.of<MenuDefCreateBloc>(context)
-                                        .add(MenuDefRefreshDialogs()));
-                          })
-                    ], shrinkWrap: true, physics: ScrollPhysics()),
-                  ),
-                if (_tabController!.index == 2)
-                  Container(
-                    height: height(),
-                    child: ListView(children: [
+                                            dialog != null
+                                                ? dialog.documentID!
+                                                : '?'));
+                                  })),
+                          divider(context),
+                          GestureDetector(
+                              child: const Icon(Icons.add),
+                              onTap: () {
+                                openDialog(
+                                    context, app,
+                                    true,
+                                    newDialogDefaults(
+                                        app.documentID!),
+                                    'Create dialog',
+                                    callOnAction: () =>
+                                        BlocProvider.of<MenuDefCreateBloc>(
+                                                context)
+                                            .add(MenuDefRefreshDialogs()));
+                              })
+                        ], shrinkWrap: true, physics: const ScrollPhysics()),
+                      ),
+                    if (_tabController!.index == 2)
                       Container(
-                          height: 200,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: ScrollPhysics(),
-                              itemCount: state.workflows.length,
-                              itemBuilder: (context, position) {
-                                var workflow = state.workflows[position];
-                                return ListTile(
-                                    trailing: availableMenuItemPopup(
-                                        MenuDefCreateAddMenuItemForWorkflow(
-                                            workflow!),
-                                        () => openWorkflow(
-                                            context,
-                                            false,
-                                            workflow,
-                                            'Update workflow',
-                                            callOnAction: () => BlocProvider.of<
-                                                    MenuDefCreateBloc>(context)
-                                                .add(
-                                                    MenuDefRefreshWorkflows()))), //Icon(Icons.add),
-                                    title: text(
-                                        context, workflow.documentID!));
-                              })),
-                      divider(context),
-                      GestureDetector(
-                          child: const Icon(Icons.add),
-                          onTap: () {
-                            openWorkflow(
-                                context,
-                                true,
-                                newWorkflowDefaults(AccessBloc.appId(context)!),
-                                'Create workflow',
-                                callOnAction: () =>
-                                    BlocProvider.of<MenuDefCreateBloc>(context)
-                                        .add(MenuDefRefreshWorkflows()));
-                          })
-                    ], shrinkWrap: true, physics: ScrollPhysics()),
-                  ),
-                if (_tabController!.index == 3)
-                  Container(
-                      height: height(),
-                      child: ListView(
-                        shrinkWrap: true,
-                        physics: ScrollPhysics(),
-                        children: [
-                          ListTile(
-                              trailing: GestureDetector(
-                                  onTap: () {
-                                    BlocProvider.of<MenuDefCreateBloc>(context)
-                                        .add(MenuDefCreateAddLogin());
-                                  },
-                                  child: Icon(Icons.add)),
-                              title: text(context, 'login')),
-                          ListTile(
-                              trailing: GestureDetector(
-                                  onTap: () {
-                                    BlocProvider.of<MenuDefCreateBloc>(context)
-                                        .add(MenuDefCreateAddLogout());
-                                  },
-                                  child: Icon(Icons.add)),
-                              title: text(context, 'logout')),
-                          ListTile(
-                              trailing: GestureDetector(
-                                  onTap: () {
-                                    BlocProvider.of<MenuDefCreateBloc>(context)
-                                        .add(MenuDefCreateAddOtherApps());
-                                  },
-                                  child: Icon(Icons.add)),
-                              title: text(context, 'other apps')),
-                        ],
-                      )),
-              ])
-            ],
-          )
-        ]);
+                        height: height(),
+                        child: ListView(children: [
+                          Container(
+                              height: 200,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const ScrollPhysics(),
+                                  itemCount: state.workflows.length,
+                                  itemBuilder: (context, position) {
+                                    var workflow = state.workflows[position];
+                                    return ListTile(
+                                        trailing: availableMenuItemPopup(
+                                            MenuDefCreateAddMenuItemForWorkflow(
+                                                workflow!),
+                                            () => openWorkflow(context, app, false,
+                                                workflow, 'Update workflow',
+                                                callOnAction: () => BlocProvider
+                                                        .of<MenuDefCreateBloc>(
+                                                            context)
+                                                    .add(
+                                                        MenuDefRefreshWorkflows()))),
+                                        //Icon(Icons.add),
+                                        title: text(
+                                            context, workflow.documentID!));
+                                  })),
+                          divider(context),
+                          GestureDetector(
+                              child: const Icon(Icons.add),
+                              onTap: () {
+                                openWorkflow(
+                                    context,
+                                    app,
+                                    true,
+                                    newWorkflowDefaults(
+                                        app.documentID!),
+                                    'Create workflow',
+                                    callOnAction: () =>
+                                        BlocProvider.of<MenuDefCreateBloc>(
+                                                context)
+                                            .add(MenuDefRefreshWorkflows()));
+                              })
+                        ], shrinkWrap: true, physics: const ScrollPhysics()),
+                      ),
+                    if (_tabController!.index == 3)
+                     Container(
+                          height: height(),
+                          child: ListView(
+                            shrinkWrap: true,
+                            physics: const ScrollPhysics(),
+                            children: [
+                              ListTile(
+                                  trailing: GestureDetector(
+                                      onTap: () {
+                                        BlocProvider.of<MenuDefCreateBloc>(
+                                                context)
+                                            .add(MenuDefCreateAddLogin());
+                                      },
+                                      child: const Icon(Icons.add)),
+                                  title: text(context, 'login')),
+                              ListTile(
+                                  trailing: GestureDetector(
+                                      onTap: () {
+                                        BlocProvider.of<MenuDefCreateBloc>(
+                                                context)
+                                            .add(MenuDefCreateAddLogout());
+                                      },
+                                      child: const Icon(Icons.add)),
+                                  title: text(context, 'logout')),
+                              ListTile(
+                                  trailing: GestureDetector(
+                                      onTap: () {
+                                        BlocProvider.of<MenuDefCreateBloc>(
+                                                context)
+                                            .add(MenuDefCreateAddOtherApps());
+                                      },
+                                      child: const Icon(Icons.add)),
+                                  title: text(context, 'other apps')),
+                            ],
+                          )),
+                  ])
+                ],
+              )
+            ]);
+          } else {
+            return progressIndicator(context);
+          }
+        });
       } else {
         return progressIndicator(context);
       }
@@ -311,7 +329,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
   PopupMenuButton<int> availableMenuItemPopup(
       MenuDefCreateEvent eventWhenAdded, VoidCallback updateAction) {
     return PopupMenuButton<int>(
-        child: Icon(Icons.more_vert),
+        child: const Icon(Icons.more_vert),
         elevation: 10,
         itemBuilder: (context) => [
               PopupMenuItem(
