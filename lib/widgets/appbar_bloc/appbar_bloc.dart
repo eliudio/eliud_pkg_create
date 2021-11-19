@@ -4,7 +4,6 @@ import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'appbar_event.dart';
 import 'appbar_state.dart';
 
@@ -12,9 +11,8 @@ class AppBarCreateBloc extends Bloc<AppBarCreateEvent, AppBarCreateState> {
   final AppBarModel originalAppBarModel;
   final AppBarModel appBarModelCurrentApp;
   final String appId;
-  final CanRefresh? canRefresh;
 
-  AppBarCreateBloc(this.appId, this.appBarModelCurrentApp, this.canRefresh)
+  AppBarCreateBloc(this.appId, this.appBarModelCurrentApp, )
       : originalAppBarModel = deepCopy(appId, appBarModelCurrentApp), super(AppBarCreateUninitialised());
 
   @override
@@ -47,16 +45,10 @@ class AppBarCreateBloc extends Bloc<AppBarCreateEvent, AppBarCreateState> {
                 .update(theState.appBarModel.iconMenu!);
           }
         }
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
       } else if (event is AppBarCreateEventRevertChanges) {
         // we could just refresh the app, give we haven't saved anything. However, more efficient is :
         appBarModelCurrentApp.iconMenu = originalAppBarModel.iconMenu;
         appBarModelCurrentApp.title = originalAppBarModel.title;
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
       }
     }
   }

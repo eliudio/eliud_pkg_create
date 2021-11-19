@@ -12,7 +12,6 @@ import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'app_event.dart';
 import 'app_state.dart';
 
@@ -20,9 +19,8 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
   final AppModel originalAppModel;
   final AppModel appModelCurrentApp;
   final String appId;
-  final CanRefresh? canRefresh;
 
-  AppCreateBloc(this.appId, this.appModelCurrentApp, this.canRefresh)
+  AppCreateBloc(this.appId, this.appModelCurrentApp, )
       : originalAppModel = deepCopy(appId, appModelCurrentApp),
         super(AppCreateUninitialised());
 
@@ -64,9 +62,6 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             await appRepository(appId: appId)!.update(theState.appModel);
           }
         }
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
       } else if (event is AppCreateEventRevertChanges) {
         // we could just refresh the app, give we haven't saved anything. However, more efficient is :
         appModelCurrentApp.email = originalAppModel.email;
@@ -79,9 +74,6 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
         appModelCurrentApp.routeAnimationDuration =
             originalAppModel.routeAnimationDuration;
         appModelCurrentApp.routeBuilder = originalAppModel.routeBuilder;
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
       }
     }
   }

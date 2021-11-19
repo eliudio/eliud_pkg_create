@@ -5,7 +5,6 @@ import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'bottom_navbar_bloc/bottom_navbar_bloc.dart';
@@ -20,8 +19,7 @@ typedef BlocProvider BlocProviderProvider(Widget child);
 void openBottomNavBar(
   BuildContext context,
   AppModel app,
-  HomeMenuModel model,
-  CanRefresh? canRefresh, {
+  HomeMenuModel model, {
   double? fraction,
 }) {
   openFlexibleDialog(context,
@@ -30,7 +28,6 @@ void openBottomNavBar(
       child: BottomNavBarCreateWidget.getIt(
         context,
         app,
-        canRefresh,
         model,
         fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
         fullScreenHeight(context) - 100,
@@ -55,11 +52,10 @@ class BottomNavBarCreateWidget extends StatefulWidget {
     return _BottomNavBarCreateWidgetState();
   }
 
-  static Widget getIt(BuildContext context, AppModel app, CanRefresh? canRefresh,
-      HomeMenuModel homeMenuModel, double widgetWidth, double widgetHeight) {
+  static Widget getIt(BuildContext context, AppModel app, HomeMenuModel homeMenuModel, double widgetWidth, double widgetHeight) {
     return BlocProvider<BottomNavBarCreateBloc>(
       create: (context) =>
-          BottomNavBarCreateBloc(app.documentID!, homeMenuModel, canRefresh)
+          BottomNavBarCreateBloc(app.documentID!, homeMenuModel)
             ..add(BottomNavBarCreateEventValidateEvent(homeMenuModel)),
       child: BottomNavBarCreateWidget._(
         app: app,

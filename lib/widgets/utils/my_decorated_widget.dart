@@ -1,16 +1,15 @@
 import 'package:eliud_core/decoration/decoration.dart' as deco;
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:eliud_pkg_etc/widgets/decorator/creator_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import '../../tools/constants.dart';
 
-typedef StateCallBack = void Function(CanRefresh canRefresh);
+typedef StateCallBack = void Function();
 
 abstract class Action {
-  void doIt(BuildContext context, double x, double y, CanRefresh canRefresh);
+  void doIt(BuildContext context, double x, double y);
 }
 
 class SingleAction extends Action {
@@ -19,8 +18,8 @@ class SingleAction extends Action {
   SingleAction(this.doThis);
 
   void doIt(
-      BuildContext context, double x, double y, CanRefresh canRefresh) async {
-    doThis(canRefresh);
+      BuildContext context, double x, double y, ) async {
+    doThis();
   }
 }
 
@@ -37,7 +36,7 @@ class MultipleActions extends Action {
   MultipleActions(this.doThis);
 
   void doIt(
-      BuildContext context, double x, double y, CanRefresh canRefresh) async {
+      BuildContext context, double x, double y, ) async {
     var value = await showMenu(
       context: context,
       position: RelativeRect.fromLTRB(x, y, x, y),
@@ -49,7 +48,7 @@ class MultipleActions extends Action {
     );
     for (var item in doThis) {
       if (item.label == value) {
-        item.doThis(canRefresh);
+        item.doThis();
       }
     }
   }
@@ -83,8 +82,7 @@ class MyDecoratedWidget<T> extends StatefulWidget {
   }
 }
 
-class _MyDecoratedDialogWidgetState extends State<MyDecoratedWidget>
-    with CanRefresh {
+class _MyDecoratedDialogWidgetState extends State<MyDecoratedWidget> {
   Offset? onTapPosition = null;
 
   @override
@@ -116,7 +114,7 @@ class _MyDecoratedDialogWidgetState extends State<MyDecoratedWidget>
                     onTapPosition == null
                         ? fullScreenHeight(context) / 2
                         : onTapPosition!.dy,
-                    this),
+                    ),
                 onTapDown: (TapDownDetails details) =>
                     onTapPosition = details.globalPosition);
           } else {
@@ -125,9 +123,4 @@ class _MyDecoratedDialogWidgetState extends State<MyDecoratedWidget>
         });
   }
 
-  @override
-  void refresh() {
-    setState(() {
-    });
-  }
 }

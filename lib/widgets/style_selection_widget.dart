@@ -18,7 +18,6 @@ import 'style_selection_bloc/style_selection_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 
 class StyleSelectionWidget extends StatefulWidget {
   static double SIZE_SMALL = 15;
@@ -31,9 +30,9 @@ class StyleSelectionWidget extends StatefulWidget {
 
   _StyleSelectionWidgetState createState() => _StyleSelectionWidgetState();
 
-  static Widget getIt(BuildContext context, AppModel app, bool withHeader, bool collapsed, {CanRefresh? canRefresh, }) {
+  static Widget getIt(BuildContext context, AppModel app, bool withHeader, bool collapsed,) {
     return BlocProvider<StyleSelectionBloc>(
-      create: (context) => StyleSelectionBloc(app, canRefresh)
+      create: (context) => StyleSelectionBloc(app)
         ..add(InitialiseStyleSelectionEvent(
             family: app.styleFamily, styleName: app.styleName)),
       child: StyleSelectionWidget._(withHeader, collapsed),
@@ -211,8 +210,6 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           if (widget.withHeader) HeaderWidget(
             cancelAction: () async {
-              BlocProvider.of<StyleSelectionBloc>(context)
-                  .add(StyleSelectionRevertChanges());
               return true;
             },
             okAction: () async {

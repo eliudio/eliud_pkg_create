@@ -1,7 +1,6 @@
 import 'package:eliud_core/decoration/decoration.dart' as deco;
 import 'package:eliud_pkg_create/tools/constants.dart';
 import 'package:eliud_pkg_etc/widgets/decorator/creator_button.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
@@ -34,12 +33,7 @@ class MyDecoratedWidget2<T> extends StatefulWidget {
 }
 
 class _MyDecoratedDialogWidgetState2
-    extends State<MyDecoratedWidget2> with CanRefresh {
-
-  void refresh() {
-    setState(() {
-    });
-  }
+    extends State<MyDecoratedWidget2> {
 
   void setTheState(VoidCallback fn) => super.setState(fn);
 

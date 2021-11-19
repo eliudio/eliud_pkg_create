@@ -5,38 +5,25 @@ import 'package:eliud_core/style/_default/default_style_family.dart';
 import 'package:eliud_core/style/style.dart';
 import 'package:eliud_core/style/style_family.dart';
 import 'package:eliud_core/style/style_registry.dart';
-import 'package:eliud_core/tools/firestore/firestore_tools.dart';
 import 'style_selection_event.dart';
 import 'style_selection_state.dart';
-import 'package:flutter/cupertino.dart';
 
-import 'package:eliud_core/tools/enums.dart';
-import 'package:eliud_core/tools/common_tools.dart';
 
-import 'package:eliud_core/model/rgb_model.dart';
 
-import 'package:eliud_core/tools/string_validator.dart';
 
-import 'package:eliud_core/model/repository_export.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_core/model/model_export.dart';
-import 'package:eliud_core/model/entity_export.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 
 class StyleSelectionBloc
     extends Bloc<StyleSelectionEvent, StyleSelectionState> {
-  String? originalStyleFamily;
   String? styleName;
   final AppModel app;
-  final CanRefresh? canRefresh;
 
-  StyleSelectionBloc(this.app, this.canRefresh) : super(StyleSelectionUninitialized());
+  StyleSelectionBloc(AppModel initialiseWithApp) : app = initialiseWithApp.copyWith(), super(StyleSelectionUninitialized());
   @override
   Stream<StyleSelectionState> mapEventToState(
       StyleSelectionEvent event) async* {
     if (event is InitialiseStyleSelectionEvent) {
-      originalStyleFamily = app.styleFamily;
       styleName = app.styleName;
       var styleFamily;
       if (event.family != null) {
@@ -108,15 +95,6 @@ class StyleSelectionBloc
         if (event.save) {
           appRepository(appId: app.documentID)!.update(app);
         }
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
-      } else if (event is StyleSelectionRevertChanges) {
-        app.styleFamily = originalStyleFamily;
-        app.styleName = styleName;
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
       }
     }
   }
@@ -124,9 +102,6 @@ class StyleSelectionBloc
   StyleSelectionInitializedWithSelection selectStyle(Style style, StyleSelectionInitialized state) {
     app.styleFamily = style.styleFamily.familyName;
     app.styleName = style.styleName;
-    if (canRefresh != null) {
-      canRefresh!.refresh();
-    }
     return StyleSelectionInitializedWithSelection(
         families: state.families,
         style: style,

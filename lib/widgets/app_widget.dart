@@ -16,7 +16,6 @@ import 'package:eliud_core/tools/storage/public_medium_helper.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'app_bloc/app_bloc.dart';
@@ -35,8 +34,7 @@ typedef BlocProvider BlocProviderProvider(Widget child);
 
 void openApp(
   BuildContext context,
-  AppModel app,
-  CanRefresh? canRefresh, {
+  AppModel app, {
   double? fraction,
 }) {
   openFlexibleDialog(context,
@@ -46,7 +44,6 @@ void openApp(
         context,
         app,
         false,
-        canRefresh,
         fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
         fullScreenHeight(context) - 100,
       ),
@@ -72,10 +69,10 @@ class AppCreateWidget extends StatefulWidget {
     return _AppCreateWidgetState();
   }
 
-  static Widget getIt(BuildContext context, AppModel app, bool create, CanRefresh? canRefresh,
+  static Widget getIt(BuildContext context, AppModel app, bool create,
       double widgetWidth, double widgetHeight) {
     return BlocProvider<AppCreateBloc>(
-      create: (context) => AppCreateBloc(app.documentID!, app, canRefresh)
+      create: (context) => AppCreateBloc(app.documentID!, app)
         ..add(AppCreateEventValidateEvent(app)),
       child: AppCreateWidget._(
         app: app,
@@ -461,13 +458,12 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               widget.app,
                               state.leftDrawerModel,
                               DecorationDrawerType.Left,
-                              null,
                               1)),
                       Spacer(),
                       button(context,
                           label: 'App Bar',
                           onPressed: () =>
-                              openAppBar(context, widget.app, state.appBarModel, null)),
+                              openAppBar(context, widget.app, state.appBarModel, )),
                       Spacer(),
                       button(context,
                           label: 'Right drawer',
@@ -476,13 +472,12 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               widget.app,
                               state.rightDrawerModel,
                               DecorationDrawerType.Right,
-                              null,
                               1)),
                       Spacer(),
                       button(context,
                           label: 'Bottom navbar',
                           onPressed: () => openBottomNavBar(
-                              context, widget.app, state.homeMenuModel, null)),
+                              context, widget.app, state.homeMenuModel, )),
                       Spacer(),
                     ]))
               ]),

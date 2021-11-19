@@ -51,7 +51,7 @@ class CreatorDecoration extends deco.Decoration {
             originalWidgetKey: appBarKey,
             createOriginalWidget: createOriginalAppBar,
             model: model,
-            action: SingleAction((canRefresh) {
+            action: SingleAction(() {
               openFlexibleDialog(
                 context,
                 includeHeading: false,
@@ -65,8 +65,8 @@ class CreatorDecoration extends deco.Decoration {
           );
         },
         model: model,
-        action: SingleAction((canRefresh) {
-          openAppBar(context, app, model, canRefresh, fraction: fraction);
+        action: SingleAction(() {
+          openAppBar(context, app, model, fraction: fraction);
         }),
         ensureHeight: false,
         initialPosition: InitialPosition.CenterCenter,
@@ -89,9 +89,8 @@ class CreatorDecoration extends deco.Decoration {
         originalWidgetKey: originalBodyComponentKey,
         createOriginalWidget: createBodyComponent,
         model: model,
-        action: SingleAction((canRefresh) {
-          updateComponent(context, model.componentName, model.componentId,
-              (_) => canRefresh.refresh());
+        action: SingleAction(() {
+          updateComponent(context, model.componentName, model.componentId, (status) {});
         }),
         ensureHeight: true,
         initialPosition: InitialPosition.LeftTop,
@@ -115,8 +114,8 @@ class CreatorDecoration extends deco.Decoration {
         originalWidgetKey: originalBottomNavigationBarKey,
         createOriginalWidget: createBottomNavigationBar,
         model: model,
-        action: SingleAction((canRefresh) {
-          openBottomNavBar(context, app, model, canRefresh, fraction: fraction);
+        action: SingleAction(() {
+          openBottomNavBar(context, app, model, fraction: fraction);
         }),
         ensureHeight: false,
         initialPosition: InitialPosition.CenterTop,
@@ -141,9 +140,9 @@ class CreatorDecoration extends deco.Decoration {
         originalWidgetKey: originalDrawerKey,
         createOriginalWidget: createOriginalDrawer,
         model: model,
-        action: SingleAction((canRefresh) {
+        action: SingleAction(() {
           openDrawer(
-              context, app, model, decorationDrawerType, canRefresh, fraction);
+              context, app, model, decorationDrawerType, fraction);
         }),
         ensureHeight: false,
         initialPosition: InitialPosition.CenterCenter,
@@ -201,7 +200,7 @@ class CreatorDecoration extends deco.Decoration {
                               widthFraction: .5,
                               includeHeading: false,
                               child:
-                              StyleSelectionWidget.getIt(context, app, true, false, canRefresh: state),
+                              StyleSelectionWidget.getIt(context, app, true, false, ),
                               title: 'Style');
                         },
                         ensureHeight: false,
@@ -212,7 +211,7 @@ class CreatorDecoration extends deco.Decoration {
                     }
                   },
                   model: app,
-                  action: SingleAction((canRefresh) {
+                  action: SingleAction(() {
                     openFlexibleDialog(
                       context,
                       includeHeading: false,
@@ -221,7 +220,6 @@ class CreatorDecoration extends deco.Decoration {
                         context,
                         app,
                         false,
-                        canRefresh,
                         fullScreenWidth(context) * fraction,
                         fullScreenHeight(context) - 100,
                       ),
@@ -234,11 +232,10 @@ class CreatorDecoration extends deco.Decoration {
               },
               model: model,
               action: MultipleActions([
-                ActionWithLabel('Update page', (canRefresh) {
-                  openPage(context, app, false, model, 'Update Page',
-                      callOnAction: () => canRefresh.refresh());
+                ActionWithLabel('Update page', () {
+                  openPage(context, app, false, model, 'Update Page',);
                 }),
-                ActionWithLabel('Create page', (canRefresh) {
+                ActionWithLabel('Create page', () {
                   openPage(
                       context,
                       app,
@@ -280,11 +277,10 @@ class CreatorDecoration extends deco.Decoration {
         createOriginalWidget: createOriginalDialog,
         model: model,
         action: MultipleActions([
-          ActionWithLabel('Update dialog', (canRefresh) {
-            openDialog(context, app, false, model, 'Update Page',
-                callOnAction: () => canRefresh.refresh());
+          ActionWithLabel('Update dialog', () {
+            openDialog(context, app, false, model, 'Update Page',);
           }),
-          ActionWithLabel('Create dialog', (canRefresh) {
+          ActionWithLabel('Create dialog', () {
             openDialog(context, app, true,
                 newDialogDefaults(AccessBloc.currentAppId(context)), 'Create dialog');
           }),

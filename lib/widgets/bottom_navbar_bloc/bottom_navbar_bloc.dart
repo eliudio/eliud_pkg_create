@@ -5,7 +5,6 @@ import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 
 import 'bottom_navbar_event.dart';
 import 'bottom_navbar_state.dart';
@@ -14,9 +13,8 @@ class BottomNavBarCreateBloc extends Bloc<BottomNavBarCreateEvent, BottomNavBarC
   final HomeMenuModel originalBottomNavBarModel;
   final HomeMenuModel bottomNavModelCurrentApp;
   final String appId;
-  final CanRefresh? canRefresh;
 
-  BottomNavBarCreateBloc(this.appId, this.bottomNavModelCurrentApp, this.canRefresh)
+  BottomNavBarCreateBloc(this.appId, this.bottomNavModelCurrentApp, )
       : originalBottomNavBarModel = deepCopy(appId, bottomNavModelCurrentApp), super(BottomNavBarCreateUninitialised());
 
   @override
@@ -49,15 +47,9 @@ class BottomNavBarCreateBloc extends Bloc<BottomNavBarCreateEvent, BottomNavBarC
                 .update(theState.homeMenuModel.menu!);
           }
         }
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
       } else if (event is BottomNavBarCreateEventRevertChanges) {
         // we could just refresh the app, give we haven't saved anything. However, more efficient is :
         bottomNavModelCurrentApp.menu = originalBottomNavBarModel.menu;
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
       }
     }
   }

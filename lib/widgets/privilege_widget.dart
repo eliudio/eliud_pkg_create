@@ -9,7 +9,6 @@ import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/style/style_registry.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -19,7 +19,6 @@ import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/utils/styles.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:eliud_pkg_medium/platform/access_rights.dart';
 import 'package:eliud_pkg_medium/platform/medium_platform.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,6 @@ void openDrawer(
     AppModel app,
     DrawerModel model,
     DecorationDrawerType decorationDrawerType,
-    CanRefresh? canRefresh,
     double fraction) {
   openFlexibleDialog(
     context,
@@ -47,7 +45,6 @@ void openDrawer(
     child: DrawerCreateWidget.getIt(
       context,
       app,
-      canRefresh,
       decorationDrawerType == DecorationDrawerType.Left
           ? DrawerType.Left
           : DrawerType.Right,
@@ -85,14 +82,13 @@ class DrawerCreateWidget extends StatefulWidget {
   static Widget getIt(
       BuildContext context,
       AppModel app,
-      CanRefresh? canRefresh,
       DrawerType drawerType,
       DrawerModel appBarModel,
       double widgetWidth,
       double widgetHeight) {
     return BlocProvider<DrawerCreateBloc>(
       create: (context) => DrawerCreateBloc(
-          app.documentID!, drawerType, appBarModel, canRefresh)
+          app.documentID!, drawerType, appBarModel, )
         ..add(DrawerCreateEventValidateEvent(appBarModel)),
       child: DrawerCreateWidget._(
         app: app,

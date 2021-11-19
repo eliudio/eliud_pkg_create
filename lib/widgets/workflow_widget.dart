@@ -18,7 +18,6 @@ import 'package:eliud_pkg_create/widgets/workflow_bloc/workflow_bloc.dart';
 import 'package:eliud_pkg_create/widgets/workflow_bloc/workflow_event.dart';
 import 'package:eliud_pkg_create/widgets/workflow_bloc/workflow_state.dart';
 import 'package:eliud_pkg_create/widgets/workflowtasks/workflowtasks_widget.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

@@ -9,7 +9,6 @@ import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'drawer_event.dart';
 import 'drawer_state.dart';
 
@@ -18,9 +17,8 @@ class DrawerCreateBloc extends Bloc<DrawerCreateEvent, DrawerCreateState> {
   final DrawerModel drawerModelCurrentApp;
   final String appId;
   final DrawerType drawerType;
-  final CanRefresh? canRefresh;
 
-  DrawerCreateBloc(this.appId, this.drawerType, this.drawerModelCurrentApp, this.canRefresh)
+  DrawerCreateBloc(this.appId, this.drawerType, this.drawerModelCurrentApp, )
       : originalDrawerModel = deepCopy(appId, drawerType, drawerModelCurrentApp), super(DrawerCreateUninitialised());
 
   @override
@@ -67,18 +65,12 @@ class DrawerCreateBloc extends Bloc<DrawerCreateEvent, DrawerCreateState> {
             }
           }
         }
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
       } else if (event is DrawerCreateEventRevertChanges) {
         // we could just refresh the app, give we haven't saved anything. However, more efficient is :
         drawerModelCurrentApp.menu = originalDrawerModel.menu;
         drawerModelCurrentApp.headerText = originalDrawerModel.headerText;
         drawerModelCurrentApp.headerBackgroundOverride = originalDrawerModel.headerBackgroundOverride;
         drawerModelCurrentApp.secondHeaderText = originalDrawerModel.secondHeaderText;
-        if (canRefresh != null) {
-          canRefresh!.refresh();
-        }
       }
     }
   }

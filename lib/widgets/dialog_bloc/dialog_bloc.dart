@@ -11,7 +11,6 @@ import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/material.dart';
 import 'dialog_event.dart';
 import 'dialog_state.dart';

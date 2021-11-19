@@ -9,7 +9,6 @@ import 'package:eliud_core/model/page_repository.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
 import 'package:eliud_core/tools/etc.dart';
 import 'package:eliud_core/tools/random.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:eliud_pkg_workflow/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_workflow/tools/action/workflow_action_model.dart';
 import 'package:flutter/material.dart';

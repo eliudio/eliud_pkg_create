@@ -11,20 +11,16 @@ import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/material.dart';
 import 'page_event.dart';
 import 'page_state.dart';
 
 class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
-  final PageModel originalPageModel;
-  final PageModel pageModelCurrentApp;
   final String appId;
   final VoidCallback? callOnAction;
 
-  PageCreateBloc(this.appId, this.pageModelCurrentApp, this.callOnAction)
-      : originalPageModel = deepCopy(pageModelCurrentApp),
-        super(PageCreateUninitialised());
+  PageCreateBloc(this.appId, PageModel initialiseWithPage, this.callOnAction)
+      : super(PageCreateUninitialised());
 
   @override
   Stream<PageCreateState> mapEventToState(PageCreateEvent event) async* {
@@ -77,12 +73,10 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
         }
       }
 
-      if (event.pageModel.conditions == null) {
-        event.pageModel.conditions = ConditionsModel(
+      event.pageModel.conditions ??= ConditionsModel(
             privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
             packageCondition: '',
             conditionOverride: null);
-      }
       // the updates happen on a (deep) copy
       yield PageCreateValidated(deepCopy(event.pageModel));
     } else if (state is PageCreateInitialised) {
@@ -141,11 +135,6 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
               .update(theState.pageModel);
         }
 
-        if (callOnAction != null) {
-          callOnAction!();
-        }
-      } else if (event is PageCreateEventRevertChanges) {
-        // we could just refresh the app, give we haven't saved anything. However, more efficient is :
         if (callOnAction != null) {
           callOnAction!();
         }

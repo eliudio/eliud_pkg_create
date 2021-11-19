@@ -40,16 +40,3 @@ class PageCreateEventApplyChanges extends PageCreateEvent {
           other is PageCreateEventApplyChanges &&
               save == other.save;
 }
-
-class PageCreateEventRevertChanges extends PageCreateEvent {
-  PageCreateEventRevertChanges();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is PageCreateEventRevertChanges;
-}
-

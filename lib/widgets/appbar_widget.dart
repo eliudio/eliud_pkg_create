@@ -6,7 +6,6 @@ import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'appbar_bloc/appbar_bloc.dart';
@@ -21,8 +20,7 @@ typedef BlocProvider BlocProviderProvider(Widget child);
 void openAppBar(
   BuildContext context,
   AppModel app,
-  AppBarModel model,
-  CanRefresh? canRefresh, {
+  AppBarModel model,{
   double? fraction,
 }) {
   openFlexibleDialog(context,
@@ -31,7 +29,6 @@ void openAppBar(
       child: AppBarCreateWidget.getIt(
         context,
         app,
-        canRefresh,
         model,
         fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
         fullScreenHeight(context) - 100,
@@ -56,11 +53,11 @@ class AppBarCreateWidget extends StatefulWidget {
     return _AppBarCreateWidgetState();
   }
 
-  static Widget getIt(BuildContext context, AppModel app, CanRefresh? canRefresh,
+  static Widget getIt(BuildContext context, AppModel app,
       AppBarModel appBarModel, double widgetWidth, double widgetHeight) {
     return BlocProvider<AppBarCreateBloc>(
       create: (context) =>
-          AppBarCreateBloc(app.documentID!, appBarModel, canRefresh)
+          AppBarCreateBloc(app.documentID!, appBarModel, )
             ..add(AppBarCreateEventValidateEvent(appBarModel)),
       child: AppBarCreateWidget._(
         app: app,

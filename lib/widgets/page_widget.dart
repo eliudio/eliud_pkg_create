@@ -14,7 +14,6 @@ import 'package:eliud_pkg_create/widgets/page_bloc/page_bloc.dart';
 import 'package:eliud_pkg_create/widgets/page_bloc/page_event.dart';
 import 'package:eliud_pkg_create/widgets/page_bloc/page_state.dart';
 import 'package:eliud_pkg_create/widgets/privilege_widget.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/can_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'bodycomponents/bodycomponents_widget.dart';
@@ -91,8 +90,6 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           HeaderWidget(
             cancelAction: () async {
-              BlocProvider.of<PageCreateBloc>(context)
-                  .add(PageCreateEventRevertChanges());
               return true;
             },
             okAction: () async {

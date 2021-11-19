@@ -93,15 +93,3 @@ class StyleSelectionApplyChanges extends StyleSelectionEvent {
           other is StyleSelectionApplyChanges &&
               save == other.save;
 }
-
-class StyleSelectionRevertChanges extends StyleSelectionEvent {
-  StyleSelectionRevertChanges();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is StyleSelectionRevertChanges;
-}
