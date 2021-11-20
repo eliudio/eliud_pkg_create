@@ -40,16 +40,3 @@ class DrawerCreateEventApplyChanges extends DrawerCreateEvent {
           other is DrawerCreateEventApplyChanges &&
               save == other.save;
 }
-
-class DrawerCreateEventRevertChanges extends DrawerCreateEvent {
-  DrawerCreateEventRevertChanges();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is DrawerCreateEventRevertChanges;
-}
-

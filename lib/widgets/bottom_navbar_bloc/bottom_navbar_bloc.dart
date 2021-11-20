@@ -10,12 +10,11 @@ import 'bottom_navbar_event.dart';
 import 'bottom_navbar_state.dart';
 
 class BottomNavBarCreateBloc extends Bloc<BottomNavBarCreateEvent, BottomNavBarCreateState> {
-  final HomeMenuModel originalBottomNavBarModel;
-  final HomeMenuModel bottomNavModelCurrentApp;
+  final HomeMenuModel bottomNavModel;
   final String appId;
 
-  BottomNavBarCreateBloc(this.appId, this.bottomNavModelCurrentApp, )
-      : originalBottomNavBarModel = deepCopy(appId, bottomNavModelCurrentApp), super(BottomNavBarCreateUninitialised());
+  BottomNavBarCreateBloc(this.appId, HomeMenuModel initialiseWithBottomNav, )
+      : bottomNavModel = deepCopy(appId, initialiseWithBottomNav), super(BottomNavBarCreateUninitialised());
 
   @override
   Stream<BottomNavBarCreateState> mapEventToState(BottomNavBarCreateEvent event) async* {
@@ -25,31 +24,28 @@ class BottomNavBarCreateBloc extends Bloc<BottomNavBarCreateEvent, BottomNavBarC
     } else if (state is BottomNavBarCreateInitialised) {
       var theState = state as BottomNavBarCreateInitialised;
       if (event is BottomNavBarCreateEventApplyChanges) {
-        bottomNavModelCurrentApp.menu = theState.homeMenuModel.menu;
+        bottomNavModel.menu = theState.homeMenuModel.menu;
         if (event.save) {
-          var homeMenu = await homeMenuRepository(appId: bottomNavModelCurrentApp.appId)!
+          var homeMenu = await homeMenuRepository(appId: bottomNavModel.appId)!
               .get(theState.homeMenuModel.documentID);
           if (homeMenu == null) {
-            await homeMenuRepository(appId: bottomNavModelCurrentApp.appId)!
+            await homeMenuRepository(appId: bottomNavModel.appId)!
                 .add(theState.homeMenuModel);
           } else {
-            await homeMenuRepository(appId: bottomNavModelCurrentApp.appId)!
+            await homeMenuRepository(appId: bottomNavModel.appId)!
                 .update(theState.homeMenuModel);
           }
 
-          var menuDef = await menuDefRepository(appId: bottomNavModelCurrentApp.appId)!
+          var menuDef = await menuDefRepository(appId: bottomNavModel.appId)!
               .get(theState.homeMenuModel.menu!.documentID);
           if (menuDef == null) {
-            await menuDefRepository(appId: bottomNavModelCurrentApp.appId)!
+            await menuDefRepository(appId: bottomNavModel.appId)!
                 .add(theState.homeMenuModel.menu!);
           } else {
-            await menuDefRepository(appId: bottomNavModelCurrentApp.appId)!
+            await menuDefRepository(appId: bottomNavModel.appId)!
                 .update(theState.homeMenuModel.menu!);
           }
         }
-      } else if (event is BottomNavBarCreateEventRevertChanges) {
-        // we could just refresh the app, give we haven't saved anything. However, more efficient is :
-        bottomNavModelCurrentApp.menu = originalBottomNavBarModel.menu;
       }
     }
   }

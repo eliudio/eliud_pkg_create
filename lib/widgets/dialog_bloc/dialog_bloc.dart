@@ -1,28 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
-import 'package:eliud_core/model/background_model.dart';
 import 'package:eliud_core/model/conditions_model.dart';
-import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
-import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
-import 'package:eliud_core/style/frontend/has_drawer.dart';
-import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:flutter/material.dart';
 import 'dialog_event.dart';
 import 'dialog_state.dart';
 
 class DialogCreateBloc extends Bloc<DialogCreateEvent, DialogCreateState> {
-  final DialogModel originalDialogModel;
-  final DialogModel dialogModelCurrentApp;
+  final DialogModel dialogModel;
   final String appId;
-  final VoidCallback? callOnAction;
 
-  DialogCreateBloc(this.appId, this.dialogModelCurrentApp, this.callOnAction)
-      : originalDialogModel = deepCopy(dialogModelCurrentApp),
+  DialogCreateBloc(this.appId, DialogModel initialiseWithDialog)
+      : dialogModel = deepCopy(initialiseWithDialog),
         super(DialogCreateUninitialised());
 
   @override
@@ -32,9 +21,9 @@ class DialogCreateBloc extends Bloc<DialogCreateEvent, DialogCreateState> {
       var _homeMenuId = homeMenuID(appId);
 
       event.dialogModel.conditions ??= ConditionsModel(
-            privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
-            packageCondition: '',
-            conditionOverride: null);
+          privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
+          packageCondition: '',
+          conditionOverride: null);
       // the updates happen on a (deep) copy
       yield DialogCreateValidated(deepCopy(event.dialogModel));
     } else if (state is DialogCreateInitialised) {
@@ -49,13 +38,6 @@ class DialogCreateBloc extends Bloc<DialogCreateEvent, DialogCreateState> {
           await dialogRepository(appId: theState.dialogModel.appId)!
               .update(theState.dialogModel);
         }
-
-        if (callOnAction != null)
-          callOnAction!();
-      } else if (event is DialogCreateEventRevertChanges) {
-        // we could just refresh the app, give we haven't saved anything. However, more efficient is :
-        if (callOnAction != null)
-          callOnAction!();
       }
     }
   }

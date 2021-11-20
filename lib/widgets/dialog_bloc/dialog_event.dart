@@ -40,16 +40,3 @@ class DialogCreateEventApplyChanges extends DialogCreateEvent {
           other is DialogCreateEventApplyChanges &&
               save == other.save;
 }
-
-class DialogCreateEventRevertChanges extends DialogCreateEvent {
-  DialogCreateEventRevertChanges();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is DialogCreateEventRevertChanges;
-}
-

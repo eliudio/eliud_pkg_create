@@ -6,13 +6,12 @@ import 'workflow_event.dart';
 import 'workflow_state.dart';
 
 class WorkflowCreateBloc extends Bloc<WorkflowCreateEvent, WorkflowCreateState> {
-  final WorkflowModel originalWorkflowModel;
-  final WorkflowModel workflowModelCurrentApp;
+  final WorkflowModel workflowModel;
   final String appId;
   final VoidCallback? callOnAction;
 
-  WorkflowCreateBloc(this.appId, this.workflowModelCurrentApp, this.callOnAction)
-      : originalWorkflowModel = deepCopy(workflowModelCurrentApp),
+  WorkflowCreateBloc(this.appId, WorkflowModel initialiseWithWorkflowModel, this.callOnAction)
+      : workflowModel = deepCopy(initialiseWithWorkflowModel),
         super(WorkflowCreateUninitialised());
 
   @override
@@ -22,8 +21,8 @@ class WorkflowCreateBloc extends Bloc<WorkflowCreateEvent, WorkflowCreateState> 
     } else if (state is WorkflowCreateInitialised) {
       var theState = state as WorkflowCreateInitialised;
       if (event is WorkflowCreateEventApplyChanges) {
-        workflowModelCurrentApp.name = theState.workflowModel.name;
-        workflowModelCurrentApp.workflowTask = theState.workflowModel.workflowTask;
+        workflowModel.name = theState.workflowModel.name;
+        workflowModel.workflowTask = theState.workflowModel.workflowTask;
         if (event.save) {
           var wf = await workflowRepository(appId: appId)!
               .get(theState.workflowModel.documentID);
@@ -34,13 +33,6 @@ class WorkflowCreateBloc extends Bloc<WorkflowCreateEvent, WorkflowCreateState> 
           }
         }
 
-        if (callOnAction != null) {
-          callOnAction!();
-        }
-      } else if (event is WorkflowCreateEventRevertChanges) {
-        // we could just refresh the app, give we haven't saved anything. However, more efficient is :
-        workflowModelCurrentApp.name = originalWorkflowModel.name;
-        workflowModelCurrentApp.workflowTask = originalWorkflowModel.workflowTask;
         if (callOnAction != null) {
           callOnAction!();
         }

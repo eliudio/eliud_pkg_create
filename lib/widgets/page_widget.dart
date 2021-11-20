@@ -22,14 +22,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'condition/conditions_widget.dart';
 
 void openPage(BuildContext context, AppModel app, bool create, PageModel model, String title,
-    {VoidCallback? callOnAction, double? fraction}) {
+    {double? fraction}) {
   openFlexibleDialog(context,
       includeHeading: false,
       widthFraction: fraction,
       child: PageCreateWidget.getIt(
         context,
         app,
-        callOnAction,
         model,
         create,
         fullScreenWidth(context) * (fraction ?? 1),
@@ -58,14 +57,13 @@ class PageCreateWidget extends StatefulWidget {
   static Widget getIt(
     BuildContext context,
     AppModel app,
-    VoidCallback? callOnAction,
     PageModel appBarModel,
     bool create,
     double widgetWidth,
   ) {
     return BlocProvider<PageCreateBloc>(
       create: (context) =>
-          PageCreateBloc(app.documentID!, appBarModel, callOnAction)
+          PageCreateBloc(app.documentID!, appBarModel, )
             ..add(PageCreateEventValidateEvent(appBarModel)),
       child: PageCreateWidget._(
         app: app,

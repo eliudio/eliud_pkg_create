@@ -90,8 +90,6 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           HeaderWidget(
             cancelAction: () async {
-              BlocProvider.of<WorkflowCreateBloc>(context)
-                  .add(WorkflowCreateEventRevertChanges());
               return true;
             },
             okAction: () async {

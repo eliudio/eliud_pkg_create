@@ -67,36 +67,6 @@ class MenuDefCreateAddMenuItemForWorkflow extends MenuDefCreateEvent {
           other is MenuDefCreateAddMenuItemForWorkflow && workflowModel == other.workflowModel;
 }
 
-class MenuDefRefreshDialogs extends MenuDefCreateEvent {
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is MenuDefRefreshDialogs;
-}
-
-class MenuDefRefreshWorkflows extends MenuDefCreateEvent {
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is MenuDefRefreshWorkflows;
-}
-
-class MenuDefRefreshPages extends MenuDefCreateEvent {
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is MenuDefRefreshPages;
-}
-
 class MenuDefCreateAddLogin extends MenuDefCreateEvent {
   @override
   List<Object?> get props => [];

@@ -77,8 +77,6 @@ class _AppBarCreateWidgetState extends State<AppBarCreateWidget> {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           HeaderWidget(
             cancelAction: () async {
-              BlocProvider.of<AppBarCreateBloc>(context)
-                  .add(AppBarCreateEventRevertChanges());
               return true;
             },
             okAction: () async {

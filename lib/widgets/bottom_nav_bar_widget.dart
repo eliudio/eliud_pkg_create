@@ -78,8 +78,6 @@ class _BottomNavBarCreateWidgetState extends State<BottomNavBarCreateWidget> {
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
               HeaderWidget(
                 cancelAction: () async {
-                  BlocProvider.of<BottomNavBarCreateBloc>(context)
-                      .add(BottomNavBarCreateEventRevertChanges());
                   return true;
                 },
                 okAction: () async {

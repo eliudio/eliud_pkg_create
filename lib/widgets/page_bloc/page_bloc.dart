@@ -1,25 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
-import 'package:eliud_core/model/background_model.dart';
 import 'package:eliud_core/model/conditions_model.dart';
-import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/page_model.dart';
-import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
-import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:flutter/material.dart';
 import 'page_event.dart';
 import 'page_state.dart';
 
 class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
   final String appId;
-  final VoidCallback? callOnAction;
 
-  PageCreateBloc(this.appId, PageModel initialiseWithPage, this.callOnAction)
+  PageCreateBloc(this.appId, PageModel initialiseWithPage, )
       : super(PageCreateUninitialised());
 
   @override
@@ -133,10 +124,6 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
         } else {
           await pageRepository(appId: theState.pageModel.appId)!
               .update(theState.pageModel);
-        }
-
-        if (callOnAction != null) {
-          callOnAction!();
         }
       }
     }

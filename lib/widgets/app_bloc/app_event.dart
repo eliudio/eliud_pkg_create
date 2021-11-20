@@ -41,15 +41,3 @@ class AppCreateEventApplyChanges extends AppCreateEvent {
               save == other.save;
 }
 
-class AppCreateEventRevertChanges extends AppCreateEvent {
-  AppCreateEventRevertChanges();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is AppCreateEventRevertChanges;
-}
-

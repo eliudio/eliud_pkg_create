@@ -39,16 +39,3 @@ class WorkflowCreateEventApplyChanges extends WorkflowCreateEvent {
           other is WorkflowCreateEventApplyChanges &&
               save == other.save;
 }
-
-class WorkflowCreateEventRevertChanges extends WorkflowCreateEvent {
-  WorkflowCreateEventRevertChanges();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is WorkflowCreateEventRevertChanges;
-}
-

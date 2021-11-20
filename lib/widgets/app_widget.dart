@@ -96,8 +96,6 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           HeaderWidget(
             cancelAction: () async {
-              BlocProvider.of<AppCreateBloc>(context)
-                  .add(AppCreateEventRevertChanges());
               return true;
             },
             okAction: () async {
@@ -243,7 +241,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                     }
                                   }),
                               title: text(
-                                  context, item != null ? item.title! : '?'));
+                                  context, ((item != null) && (item.title != null)) ? item.title! : '?'));
                         }).toList())),
                     divider(context),
                     GestureDetector(

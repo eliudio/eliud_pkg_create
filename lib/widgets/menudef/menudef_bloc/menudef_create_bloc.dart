@@ -28,29 +28,11 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
   Stream<MenuDefCreateState> mapEventToState(MenuDefCreateEvent event) async* {
     if (event is MenuDefCreateInitialiseEvent) {
       var appId = app.documentID;
-      var pages = await pageRepository(appId: appId)!.valuesList();
-      var dialogs = await dialogRepository(appId: appId)!.valuesList();
-      var workflows = await workflowRepository(appId: appId)!.valuesList();
       yield MenuDefCreateInitialised(
-          menuDefModel: event.menuDefModel, pages: pages, dialogs: dialogs, workflows: workflows);
+          menuDefModel: event.menuDefModel, );
     } else if (state is MenuDefCreateInitialised) {
       var appId = app.documentID;
-      if (event is MenuDefRefreshPages) {
-        MenuDefCreateInitialised theState = state as MenuDefCreateInitialised;
-        var pages = await pageRepository(appId: app.documentID)!
-            .valuesList();
-        yield theState.copyWith(pages: pages);
-      } else if (event is MenuDefRefreshDialogs) {
-        MenuDefCreateInitialised theState = state as MenuDefCreateInitialised;
-        var dialogs = await dialogRepository(appId: app.documentID)!
-            .valuesList();
-        yield theState.copyWith(dialogs: dialogs);
-      } else if (event is MenuDefRefreshWorkflows) {
-        MenuDefCreateInitialised theState = state as MenuDefCreateInitialised;
-        var workflows = await workflowRepository(appId: app.documentID)!
-            .valuesList();
-        yield theState.copyWith(workflows: workflows);
-      } else if (event is MenuDefCreateDeleteMenuItem) {
+      if (event is MenuDefCreateDeleteMenuItem) {
         yield _newStateDeleteItem(event.menuItemModel);
         apply();
       } else if (event is MenuDefCreateAddLogin) {

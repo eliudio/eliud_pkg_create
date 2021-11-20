@@ -16,12 +16,11 @@ import 'app_event.dart';
 import 'app_state.dart';
 
 class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
-  final AppModel originalAppModel;
-  final AppModel appModelCurrentApp;
+  final AppModel appModel;
   final String appId;
 
-  AppCreateBloc(this.appId, this.appModelCurrentApp, )
-      : originalAppModel = deepCopy(appId, appModelCurrentApp),
+  AppCreateBloc(this.appId, AppModel initialiseWithApp, )
+      : appModel = deepCopy(appId, initialiseWithApp),
         super(AppCreateUninitialised());
 
   @override
@@ -43,16 +42,16 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       var theState = state as AppCreateInitialised;
       if (event is AppCreateEventApplyChanges) {
         // check other blocks for implementation
-        appModelCurrentApp.email = theState.appModel.email;
-        appModelCurrentApp.description = theState.appModel.description;
-        appModelCurrentApp.policies = theState.appModel.policies;
-        appModelCurrentApp.title = theState.appModel.title;
-        appModelCurrentApp.logo = theState.appModel.logo;
-        appModelCurrentApp.homePages = theState.appModel.homePages;
-        appModelCurrentApp.appStatus = theState.appModel.appStatus;
-        appModelCurrentApp.routeAnimationDuration =
+        appModel.email = theState.appModel.email;
+        appModel.description = theState.appModel.description;
+        appModel.policies = theState.appModel.policies;
+        appModel.title = theState.appModel.title;
+        appModel.logo = theState.appModel.logo;
+        appModel.homePages = theState.appModel.homePages;
+        appModel.appStatus = theState.appModel.appStatus;
+        appModel.routeAnimationDuration =
             theState.appModel.routeAnimationDuration;
-        appModelCurrentApp.routeBuilder = theState.appModel.routeBuilder;
+        appModel.routeBuilder = theState.appModel.routeBuilder;
         if (event.save) {
           var app = await appRepository(appId: appId)!
               .get(theState.appModel.documentID);
@@ -62,18 +61,6 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             await appRepository(appId: appId)!.update(theState.appModel);
           }
         }
-      } else if (event is AppCreateEventRevertChanges) {
-        // we could just refresh the app, give we haven't saved anything. However, more efficient is :
-        appModelCurrentApp.email = originalAppModel.email;
-        appModelCurrentApp.description = originalAppModel.description;
-        appModelCurrentApp.policies = originalAppModel.policies;
-        appModelCurrentApp.title = originalAppModel.title;
-        appModelCurrentApp.logo = originalAppModel.logo;
-        appModelCurrentApp.homePages = originalAppModel.homePages;
-        appModelCurrentApp.appStatus = originalAppModel.appStatus;
-        appModelCurrentApp.routeAnimationDuration =
-            originalAppModel.routeAnimationDuration;
-        appModelCurrentApp.routeBuilder = originalAppModel.routeBuilder;
       }
     }
   }

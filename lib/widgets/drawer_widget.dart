@@ -116,8 +116,6 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                 children: [
                   HeaderWidget(
                     cancelAction: () async {
-                      BlocProvider.of<DrawerCreateBloc>(context)
-                          .add(DrawerCreateEventRevertChanges());
                       return true;
                     },
                     okAction: () async {

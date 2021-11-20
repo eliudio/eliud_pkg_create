@@ -13,13 +13,12 @@ import 'drawer_event.dart';
 import 'drawer_state.dart';
 
 class DrawerCreateBloc extends Bloc<DrawerCreateEvent, DrawerCreateState> {
-  final DrawerModel originalDrawerModel;
-  final DrawerModel drawerModelCurrentApp;
+  final DrawerModel drawerModel;
   final String appId;
   final DrawerType drawerType;
 
-  DrawerCreateBloc(this.appId, this.drawerType, this.drawerModelCurrentApp, )
-      : originalDrawerModel = deepCopy(appId, drawerType, drawerModelCurrentApp), super(DrawerCreateUninitialised());
+  DrawerCreateBloc(this.appId, this.drawerType, DrawerModel initialiseWithDrawerModel, )
+      : drawerModel = deepCopy(appId, drawerType, initialiseWithDrawerModel), super(DrawerCreateUninitialised());
 
   @override
   Stream<DrawerCreateState> mapEventToState(DrawerCreateEvent event) async* {
@@ -29,28 +28,28 @@ class DrawerCreateBloc extends Bloc<DrawerCreateEvent, DrawerCreateState> {
     } else if (state is DrawerCreateInitialised) {
       var theState = state as DrawerCreateInitialised;
       if (event is DrawerCreateEventApplyChanges) {
-        drawerModelCurrentApp.menu = theState.drawerModel.menu;
-        drawerModelCurrentApp.headerText = theState.drawerModel.headerText;
-        drawerModelCurrentApp.headerBackgroundOverride = theState.drawerModel.headerBackgroundOverride;
-        drawerModelCurrentApp.secondHeaderText = theState.drawerModel.secondHeaderText;
+        drawerModel.menu = theState.drawerModel.menu;
+        drawerModel.headerText = theState.drawerModel.headerText;
+        drawerModel.headerBackgroundOverride = theState.drawerModel.headerBackgroundOverride;
+        drawerModel.secondHeaderText = theState.drawerModel.secondHeaderText;
         if (event.save) {
-          var drawer = await drawerRepository(appId: drawerModelCurrentApp.appId)!
+          var drawer = await drawerRepository(appId: drawerModel.appId)!
               .get(theState.drawerModel.documentID);
           if (drawer == null) {
-            await drawerRepository(appId: drawerModelCurrentApp.appId)!
+            await drawerRepository(appId: drawerModel.appId)!
                 .add(theState.drawerModel);
           } else {
-            await drawerRepository(appId: drawerModelCurrentApp.appId)!
+            await drawerRepository(appId: drawerModel.appId)!
                 .update(theState.drawerModel);
           }
 
-          var menuDef = await menuDefRepository(appId: drawerModelCurrentApp.appId)!
+          var menuDef = await menuDefRepository(appId: drawerModel.appId)!
               .get(theState.drawerModel.menu!.documentID);
           if (menuDef == null) {
-            await menuDefRepository(appId: drawerModelCurrentApp.appId)!
+            await menuDefRepository(appId: drawerModel.appId)!
                 .add(theState.drawerModel.menu!);
           } else {
-            await menuDefRepository(appId: drawerModelCurrentApp.appId)!
+            await menuDefRepository(appId: drawerModel.appId)!
                 .update(theState.drawerModel.menu!);
           }
 
@@ -65,12 +64,6 @@ class DrawerCreateBloc extends Bloc<DrawerCreateEvent, DrawerCreateState> {
             }
           }
         }
-      } else if (event is DrawerCreateEventRevertChanges) {
-        // we could just refresh the app, give we haven't saved anything. However, more efficient is :
-        drawerModelCurrentApp.menu = originalDrawerModel.menu;
-        drawerModelCurrentApp.headerText = originalDrawerModel.headerText;
-        drawerModelCurrentApp.headerBackgroundOverride = originalDrawerModel.headerBackgroundOverride;
-        drawerModelCurrentApp.secondHeaderText = originalDrawerModel.secondHeaderText;
       }
     }
   }

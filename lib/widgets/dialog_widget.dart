@@ -25,7 +25,6 @@ void openDialog(
   bool create,
   DialogModel model,
   String title, {
-  VoidCallback? callOnAction,
   double? fraction = 1,
 }) {
   openFlexibleDialog(context,
@@ -34,7 +33,6 @@ void openDialog(
       child: DialogCreateWidget.getIt(
         context,
         app,
-        callOnAction,
         model,
         create,
         fullScreenWidth(context) * (fraction ?? 1),
@@ -63,14 +61,13 @@ class DialogCreateWidget extends StatefulWidget {
   static Widget getIt(
     BuildContext context,
     AppModel app,
-    VoidCallback? callOnAction,
     DialogModel appBarModel,
     bool create,
     double widgetWidth,
   ) {
     return BlocProvider<DialogCreateBloc>(
       create: (context) =>
-          DialogCreateBloc(app.documentID!, appBarModel, callOnAction)
+          DialogCreateBloc(app.documentID!, appBarModel, )
             ..add(DialogCreateEventValidateEvent(appBarModel)),
       child: DialogCreateWidget._(
         app: app,
@@ -95,8 +92,6 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           HeaderWidget(
             cancelAction: () async {
-              BlocProvider.of<DialogCreateBloc>(context)
-                  .add(DialogCreateEventRevertChanges());
               return true;
             },
             okAction: () async {

@@ -41,15 +41,3 @@ class BottomNavBarCreateEventApplyChanges extends BottomNavBarCreateEvent {
               save == other.save;
 }
 
-class BottomNavBarCreateEventRevertChanges extends BottomNavBarCreateEvent {
-  BottomNavBarCreateEventRevertChanges();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is BottomNavBarCreateEventRevertChanges;
-}
-
