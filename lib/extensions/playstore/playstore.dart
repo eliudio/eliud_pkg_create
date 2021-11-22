@@ -35,6 +35,7 @@ class PlayStoreState extends State<PlayStore> {
 
   @override
   Widget build(BuildContext context) {
+    var currentAppId = AccessBloc.currentAppId(context);
     return BlocBuilder<AccessBloc, AccessState>(
         builder: (context, accessState) {
       if (accessState is AccessDetermined) {
@@ -67,8 +68,7 @@ class PlayStoreState extends State<PlayStore> {
                       child: const Icon(Icons.add))));
             }
             for (var model in state.values!) {
-              // todo: isPlaystore?
-              if (model != null) {
+              if ((model != null) && (model.documentID != currentAppId)) {
                 components.add(GestureDetector(
                     onTap: () async {
                       EliudRouter.Router.navigateTo(context,
