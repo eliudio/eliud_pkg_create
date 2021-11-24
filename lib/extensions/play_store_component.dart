@@ -20,8 +20,8 @@ import 'package:eliud_pkg_create/model/play_store_repository.dart';
 
 class PlayStoreComponentConstructorDefault implements ComponentConstructor {
   @override
-  Widget createNew({Key? key, required String id, Map<String, dynamic>? parameters}) {
-    return PlayStoreBase(id, key: key);
+  Widget createNew({Key? key, required String appId, required String id, Map<String, dynamic>? parameters}) {
+    return PlayStoreBase(id: id, appId: appId, key: key);
   }
 
   @override
@@ -29,27 +29,16 @@ class PlayStoreComponentConstructorDefault implements ComponentConstructor {
 }
 
 class PlayStoreBase extends AbstractPlayStoreComponent {
-  final String? id;
+  final String id;
 
-  PlayStoreBase(this.id, {Key? key, }) : super(key: key, playStoreID: id);
-
-  @override
-  Widget alertWidget({title = String, content = String}) {
-    return AlertWidget(title: title, content: content);
-  }
-
-  @override
-  PlayStoreRepository getPlayStoreRepository(BuildContext context) {
-    return AbstractRepositorySingleton.singleton
-        .playStoreRepository(AccessBloc.currentAppId(context))!;
-  }
+  PlayStoreBase({required String appId, required this.id, Key? key, }) : super(key: key, theAppId: appId, playStoreId: id);
 
   @override
   Widget yourWidget(BuildContext context, PlayStoreModel? value) {
     return BlocBuilder<AccessBloc, AccessState>(
         builder: (context, accessState) {
           if (accessState is AccessDetermined) {
-            var appId = accessState.currentAppId();
+            var appId = accessState.currentAppId(context);
             return BlocProvider<AppListBloc>(
                 create: (context) =>
                 AppListBloc(

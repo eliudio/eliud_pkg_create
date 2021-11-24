@@ -197,10 +197,6 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
 
   @override
   Widget build(BuildContext context) {
-/*
-    var app = AccessBloc.app(context);
-    if (app == null) throw Exception("No app");
-*/
     return BlocBuilder<StyleSelectionBloc, StyleSelectionState>(
         builder: (context, state) {
       if (state is StyleSelectionInitialized) {

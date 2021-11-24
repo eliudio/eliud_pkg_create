@@ -74,6 +74,7 @@ class PlayStoreForm extends StatelessWidget {
     var accessState = AccessBloc.getState(context);
     var app = AccessBloc.currentApp(context);
     if (app == null) return Text("No app available");
+    var appId = app.documentID!;
     if (formAction == FormAction.ShowData) {
       return BlocProvider<PlayStoreFormBloc >(
             create: (context) => PlayStoreFormBloc(AccessBloc.currentAppId(context),
@@ -143,6 +144,7 @@ class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
   Widget build(BuildContext context) {
     var app = AccessBloc.currentApp(context);
     if (app == null) return Text('No app available');
+    var appId = app.documentID!;
     var accessState = AccessBloc.getState(context);
     return BlocBuilder<PlayStoreFormBloc, PlayStoreFormState>(builder: (context, state) {
       if (state is PlayStoreFormUninitialized) return Center(
@@ -198,7 +200,7 @@ class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
 
         children.add(
 
-                DropdownButtonComponentFactory().createNew(id: "backgrounds", value: _itemBackground, trigger: _onItemBackgroundSelected, optional: true),
+                DropdownButtonComponentFactory().createNew(appId: appId, id: "backgrounds", value: _itemBackground, trigger: _onItemBackgroundSelected, optional: true),
           );
 
 

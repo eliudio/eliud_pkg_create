@@ -95,7 +95,7 @@ class _AppBarCreateWidgetState extends State<AppBarCreateWidget> {
           )
         ]);
       } else {
-        return progressIndicator(context);
+        return Center(child: CircularProgressIndicator());
       }
     });
   }

@@ -35,9 +35,9 @@ class PlayStoreComponentPermissionDenied extends PlayStoreComponentState {
 }
 
 class PlayStoreComponentLoaded extends PlayStoreComponentState {
-  final PlayStoreModel? value;
+  final PlayStoreModel value;
 
-  const PlayStoreComponentLoaded({ this.value });
+  const PlayStoreComponentLoaded({ required this.value });
 
   PlayStoreComponentLoaded copyWith({ PlayStoreModel? copyThis }) {
     return PlayStoreComponentLoaded(value: copyThis ?? this.value);
