@@ -29,7 +29,7 @@ void newApp(
   double? fraction,
 }) {
   openFlexibleDialog(
-    context,
+    context,app.documentID! + '/_newapp',
     includeHeading: false,
     widthFraction: fraction == null ? .5 : fraction,
     child: Container(

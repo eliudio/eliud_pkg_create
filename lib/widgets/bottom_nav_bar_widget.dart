@@ -22,7 +22,7 @@ void openBottomNavBar(
   HomeMenuModel model, {
   double? fraction,
 }) {
-  openFlexibleDialog(context,
+  openFlexibleDialog(context,app.documentID! + '/_bottomnavbar',
       includeHeading: false,
       widthFraction: fraction,
       child: BottomNavBarCreateWidget.getIt(

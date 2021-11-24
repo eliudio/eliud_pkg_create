@@ -27,7 +27,7 @@ void openDialog(
   String title, {
   double? fraction = 1,
 }) {
-  openFlexibleDialog(context,
+  openFlexibleDialog(context,app.documentID! + '/_dialog',
       includeHeading: false,
       widthFraction: fraction,
       child: DialogCreateWidget.getIt(

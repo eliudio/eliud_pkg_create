@@ -53,7 +53,7 @@ class CreatorDecoration extends deco.Decoration {
             model: model,
             action: SingleAction(() {
               openFlexibleDialog(
-                context,
+                context, app.documentID! + '/_appbar',
                 includeHeading: false,
                 widthFraction: .9,
                 child: PrivilegeWidget(app: app, currentAccess: currentAccess,),
@@ -196,7 +196,7 @@ class CreatorDecoration extends deco.Decoration {
                         createOriginalWidget: createOriginalPage,
                         model: model,
                         action: (state) {
-                          openComplexDialog(context,
+                          openComplexDialog(context, app.documentID! + '/_style',
                               widthFraction: .5,
                               includeHeading: false,
                               child:
@@ -213,7 +213,7 @@ class CreatorDecoration extends deco.Decoration {
                   model: app,
                   action: SingleAction(() {
                     openFlexibleDialog(
-                      context,
+                      context, app.documentID! + '/_appcreate',
                       includeHeading: false,
                       widthFraction: fraction,
                       child: AppCreateWidget.getIt(

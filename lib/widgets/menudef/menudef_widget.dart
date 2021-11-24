@@ -152,7 +152,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                 MenuDefCreateBloc>(context)
                                             .add(MenuDefMoveMenuItem(item,
                                                 MoveMenuItemDirection.Down)),
-                                        actionDetails: () => details(item),
+                                        actionDetails: () => details(appId, item),
                                         actionDelete: () => BlocProvider.of<
                                                 MenuDefCreateBloc>(context)
                                             .add(MenuDefCreateDeleteMenuItem(
@@ -425,9 +425,9 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
         });
   }
 
-  void details(MenuItemModel menuItemModel) {
+  void details(String appId, MenuItemModel menuItemModel) {
     var toUpdate = menuItemModel.copyWith();
-    openFlexibleDialog(context,
+    openFlexibleDialog(context,appId + '/_error',
         title: 'Update Menu Item',
         widthFraction: .5,
         child: MenuItemWidget(menuItemModel: toUpdate),

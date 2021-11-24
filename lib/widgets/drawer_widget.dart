@@ -39,7 +39,7 @@ void openDrawer(
     DecorationDrawerType decorationDrawerType,
     double fraction) {
   openFlexibleDialog(
-    context,
+    context,app.documentID! + '/_drawer',
     includeHeading: false,
     widthFraction: fraction,
     child: DrawerCreateWidget.getIt(

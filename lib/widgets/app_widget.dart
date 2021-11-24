@@ -1,3 +1,4 @@
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/app_policy_item_model.dart';
@@ -37,7 +38,7 @@ void openApp(
   AppModel app, {
   double? fraction,
 }) {
-  openFlexibleDialog(context,
+  openFlexibleDialog(context,app.documentID! + '/_app',
       includeHeading: false,
       widthFraction: fraction,
       child: AppCreateWidget.getIt(
@@ -362,7 +363,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                             .remove(item);
                                       });
                                     } else if (value == 1) {
-                                      openEntryDialog(context,
+                                      var appId = AccessBloc.currentAppId(context);
+                                      openEntryDialog(context,appId + '/_createdivider',
                                           title: 'Provide new name for policy',
                                           hintText: 'Policy name',
                                           initialValue: item.name ?? '',

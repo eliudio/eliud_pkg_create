@@ -28,7 +28,7 @@ import 'condition/conditions_widget.dart';
 
 void openWorkflow(BuildContext context, AppModel app, bool create, WorkflowModel model, String title,
     {VoidCallback? callOnAction, double? fraction}) {
-  openFlexibleDialog(context,
+  openFlexibleDialog(context, app.documentID! + '/_workflow',
       includeHeading: false,
       widthFraction: fraction,
       child: WorkflowCreateWidget.getIt(

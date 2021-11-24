@@ -23,7 +23,7 @@ void openAppBar(
   AppBarModel model,{
   double? fraction,
 }) {
-  openFlexibleDialog(context,
+  openFlexibleDialog(context, app.documentID! + '/_appbar',
       includeHeading: false,
       widthFraction: fraction,
       child: AppBarCreateWidget.getIt(

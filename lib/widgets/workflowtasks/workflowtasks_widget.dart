@@ -158,8 +158,9 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
   }
 
   void details(BuildContext context, WorkflowTaskModel? workflowTaskModel/*, EditorFeedback feedback*/) {
+    var appId = AccessBloc.currentAppId(context);
     openComplexDialog(
-      context,
+      context, appId + '/_createdivider',
       title: 'Create divider',
       includeHeading: false,
       widthFraction: .9,

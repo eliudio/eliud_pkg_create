@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
@@ -8,13 +6,10 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/style/style.dart';
 import 'package:eliud_core/style/style_family.dart';
-import 'package:eliud_core/style/style_registry.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
-import 'new_app_bloc/new_app_state.dart';
 import 'style_selection_bloc/style_selection_bloc.dart';
 import 'style_selection_bloc/style_selection_event.dart';
 import 'style_selection_bloc/style_selection_state.dart';
-import 'style_selection_bloc/style_selection_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,8 +20,9 @@ class StyleSelectionWidget extends StatefulWidget {
 
   final bool withHeader;
   final bool collapsed;
+  final String appId;
 
-  StyleSelectionWidget._(this.withHeader, this.collapsed);
+  StyleSelectionWidget._(this.appId, this.withHeader, this.collapsed);
 
   _StyleSelectionWidgetState createState() => _StyleSelectionWidgetState();
 
@@ -35,7 +31,7 @@ class StyleSelectionWidget extends StatefulWidget {
       create: (context) => StyleSelectionBloc(app)
         ..add(InitialiseStyleSelectionEvent(
             family: app.styleFamily, styleName: app.styleName)),
-      child: StyleSelectionWidget._(withHeader, collapsed),
+      child: StyleSelectionWidget._(app.documentID!, withHeader, collapsed),
     );
   }
 }
@@ -159,7 +155,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                       .add(StyleUpdatedEvent(style: style));
 */
                 } else if (value == 3) {
-                  openEntryDialog(context,
+                  openEntryDialog(context, widget.appId + '/_stylename',
                       title: 'Provide new name for copy of style',
                       hintText: 'Style name',
                       ackButtonLabel: 'Copy',
@@ -172,13 +168,13 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                 } else if (value == 4) {
                   if (isCurrent) {
                     openMessageDialog(
-                      context,
+                      context, widget.appId + '/_error',
                       title: 'Error',
                       message:
                           'This is the current style of the app, unable to delete',
                     );
                   } else {
-                    openAckNackDialog(context,
+                    openAckNackDialog(context, widget.appId + '/_delete',
                         title: 'Confirm',
                         message: 'Confirm deleting style ' +
                             style.styleFamily.familyName +

@@ -23,7 +23,7 @@ import 'condition/conditions_widget.dart';
 
 void openPage(BuildContext context, AppModel app, bool create, PageModel model, String title,
     {double? fraction}) {
-  openFlexibleDialog(context,
+  openFlexibleDialog(context,app.documentID! + '/_page',
       includeHeading: false,
       widthFraction: fraction,
       child: PageCreateWidget.getIt(
