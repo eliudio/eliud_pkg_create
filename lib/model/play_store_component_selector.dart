@@ -35,10 +35,11 @@ class PlayStoreComponentSelector extends ComponentSelector {
   @override
   Widget createSelectWidget(BuildContext context, double height,
       SelectComponent selected, editorConstructor) {
+    var appId = AccessBloc.currentAppId(context);
     return BlocProvider<PlayStoreListBloc>(
           create: (context) => PlayStoreListBloc(
             playStoreRepository:
-                playStoreRepository(appId: AccessBloc.currentAppId(context))!,
+                playStoreRepository(appId: appId)!,
           )..add(LoadPlayStoreList()),
       child: SelectPlayStoreWidget(
           height: height,

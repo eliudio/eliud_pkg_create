@@ -95,7 +95,6 @@ class _PluginsWidgetState extends State<PluginsWidget>
     var plugin = widget.pluginsWidthComponents[selectedItem];
     if (plugin.componentSpec.length > selectedInnerItem) {
       var component = plugin.componentSpec[selectedInnerItem];
-      return Text(component.name);
       return Container(
           height: widget.widgetHeight,
           width: oneUnitwidth() * 2,

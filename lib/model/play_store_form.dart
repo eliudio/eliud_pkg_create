@@ -77,7 +77,7 @@ class PlayStoreForm extends StatelessWidget {
     var appId = app.documentID!;
     if (formAction == FormAction.ShowData) {
       return BlocProvider<PlayStoreFormBloc >(
-            create: (context) => PlayStoreFormBloc(AccessBloc.currentAppId(context),
+            create: (context) => PlayStoreFormBloc(appId,
                                        formAction: formAction,
 
                                                 )..add(InitialisePlayStoreFormEvent(value: value)),
@@ -86,7 +86,7 @@ class PlayStoreForm extends StatelessWidget {
           );
     } if (formAction == FormAction.ShowPreloadedData) {
       return BlocProvider<PlayStoreFormBloc >(
-            create: (context) => PlayStoreFormBloc(AccessBloc.currentAppId(context),
+            create: (context) => PlayStoreFormBloc(appId,
                                        formAction: formAction,
 
                                                 )..add(InitialisePlayStoreFormNoLoadEvent(value: value)),
@@ -97,7 +97,7 @@ class PlayStoreForm extends StatelessWidget {
       return Scaffold(
         appBar: StyleRegistry.registry().styleWithContext(context).adminFormStyle().appBarWithString(context, title: formAction == FormAction.UpdateAction ? 'Update PlayStore' : 'Add PlayStore'),
         body: BlocProvider<PlayStoreFormBloc >(
-            create: (context) => PlayStoreFormBloc(AccessBloc.currentAppId(context),
+            create: (context) => PlayStoreFormBloc(appId,
                                        formAction: formAction,
 
                                                 )..add((formAction == FormAction.UpdateAction ? InitialisePlayStoreFormEvent(value: value) : InitialiseNewPlayStoreFormEvent())),
