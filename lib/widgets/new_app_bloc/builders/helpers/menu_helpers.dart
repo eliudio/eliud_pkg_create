@@ -1,5 +1,5 @@
 import 'package:eliud_core/core_package.dart';
-import 'package:eliud_core/model/conditions_model.dart';
+import 'package:eliud_core/model/display_conditions_model.dart';
 import 'package:eliud_core/model/icon_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
@@ -37,7 +37,7 @@ menuItemManageAccount(appID, dialogID) => MenuItemModel(
         fontFamily: Icons.settings.fontFamily),
     action: OpenDialog(appID,
         dialogID: dialogID,
-        conditions: ConditionsModel(
+        conditions: DisplayConditionsModel(
             privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
             packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
@@ -123,7 +123,7 @@ menuItemFollowRequestsPage(appID, pageID, privilegeLevelRequired) =>
             fontFamily: Icons.notifications.fontFamily),
         action: GotoPage(appID,
             pageID: pageID,
-            conditions: ConditionsModel(
+            conditions: DisplayConditionsModel(
                 privilegeLevelRequired: privilegeLevelRequired,
                 packageCondition:
                     FollowPackage.CONDITION_MEMBER_HAS_OPEN_REQUESTS)));
@@ -137,7 +137,7 @@ menuItemFollowers(appID, dialogID, privilegeLevelRequired) => MenuItemModel(
         fontFamily: Icons.settings.fontFamily),
     action: OpenDialog(appID,
         dialogID: dialogID,
-        conditions: ConditionsModel(
+        conditions: DisplayConditionsModel(
             privilegeLevelRequired: privilegeLevelRequired,
             packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
@@ -150,7 +150,7 @@ menuItemFollowersPage(appID, pageID, privilegeLevelRequired) => MenuItemModel(
         fontFamily: Icons.settings.fontFamily),
     action: GotoPage(appID,
         pageID: pageID,
-        conditions: ConditionsModel(
+        conditions: DisplayConditionsModel(
             privilegeLevelRequired: privilegeLevelRequired,
             packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
@@ -163,7 +163,7 @@ menuItemFollowing(appID, dialogID, privilegeLevelRequired) => MenuItemModel(
         fontFamily: Icons.settings.fontFamily),
     action: OpenDialog(appID,
         dialogID: dialogID,
-        conditions: ConditionsModel(
+        conditions: DisplayConditionsModel(
             privilegeLevelRequired: privilegeLevelRequired,
             packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
@@ -176,7 +176,7 @@ menuItemFollowingPage(appID, pageID, privilegeLevelRequired) => MenuItemModel(
         fontFamily: Icons.settings.fontFamily),
     action: GotoPage(appID,
         pageID: pageID,
-        conditions: ConditionsModel(
+        conditions: DisplayConditionsModel(
             privilegeLevelRequired: privilegeLevelRequired,
             packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
@@ -189,7 +189,7 @@ menuItemAppMembers(appID, dialogID, privilegeLevelRequired) => MenuItemModel(
         fontFamily: Icons.notifications.fontFamily),
     action: OpenDialog(
       appID,
-      conditions: ConditionsModel(
+      conditions: DisplayConditionsModel(
           privilegeLevelRequired: privilegeLevelRequired,
           packageCondition: CorePackage.MUST_BE_LOGGED_ON),
       dialogID: dialogID,
@@ -204,7 +204,7 @@ menuItemAppMembersPage(appID, pageID, privilegeLevelRequired) => MenuItemModel(
         fontFamily: Icons.notifications.fontFamily),
     action: GotoPage(
       appID,
-      conditions: ConditionsModel(
+      conditions: DisplayConditionsModel(
           privilegeLevelRequired: privilegeLevelRequired,
           packageCondition: CorePackage.MUST_BE_LOGGED_ON),
       pageID: pageID,
@@ -220,7 +220,7 @@ menuItemFiendFriendsPage(appID, pageID, privilegeLevelRequired) =>
             fontFamily: Icons.settings.fontFamily),
         action: GotoPage(appID,
             pageID: pageID,
-            conditions: ConditionsModel(
+            conditions: DisplayConditionsModel(
                 privilegeLevelRequired: privilegeLevelRequired,
                 packageCondition: CorePackage.MUST_BE_LOGGED_ON)));
 
@@ -230,7 +230,7 @@ menuItemJoin(appID, WorkflowModel workflowModel) => MenuItemModel(
     description: "Request membership",
     icon: null,
     action: WorkflowActionModel(appID,
-        conditions: ConditionsModel(
+        conditions: DisplayConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
           packageCondition: MembershipPackage.MEMBER_HAS_NO_MEMBERSHIP_YET,
         ),

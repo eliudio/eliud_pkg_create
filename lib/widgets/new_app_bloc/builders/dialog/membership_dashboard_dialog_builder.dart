@@ -2,9 +2,7 @@ import 'package:eliud_core/model/abstract_repository_singleton.dart'
     as corerepo;
 import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/model/model_export.dart';
-import 'package:eliud_core/tools/action/action_model.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/helpers/profile_and_feed_to_action.dart';
-import 'package:eliud_pkg_etc/model/member_action_model.dart';
 import 'package:eliud_pkg_membership/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_membership/model/membership_dashboard_component.dart';
 import 'package:eliud_pkg_membership/model/membership_dashboard_model.dart';
@@ -35,8 +33,8 @@ class MembershipDashboardDialogBuilder extends DialogBuilder {
         appId: appId,
         title: "Membership dashboard",
         layout: DialogLayout.ListView,
-        conditions: ConditionsModel(
-          privilegeLevelRequired: PrivilegeLevelRequired.OwnerPrivilegeRequired,
+        conditions: StorageConditionsModel(
+          privilegeLevelRequired: PrivilegeLevelRequiredSimple.OwnerPrivilegeRequiredSimple,
         ),
         bodyComponents: components);
   }
@@ -47,7 +45,7 @@ class MembershipDashboardDialogBuilder extends DialogBuilder {
         appId: appId,
         description: "Members",
         memberActions: ProfileAndFeedToAction.getMemberActionModels(appId, profilePageId, feedPageId),
-        conditions: ConditionsSimpleModel(
+        conditions: StorageConditionsModel(
             privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
         ),
     );

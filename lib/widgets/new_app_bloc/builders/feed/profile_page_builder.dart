@@ -68,9 +68,9 @@ class ProfilePageBuilder extends PageBuilder {
         appBar: theAppBar,
         homeMenu: theHomeMenu,
         layout: PageLayout.ListView,
-        conditions: ConditionsModel(
+        conditions: StorageConditionsModel(
           privilegeLevelRequired:
-              PrivilegeLevelRequired.Level1PrivilegeRequired,
+              PrivilegeLevelRequiredSimple.Level1PrivilegeRequiredSimple,
         ),
         bodyComponents: components);
   }
@@ -82,7 +82,7 @@ class ProfilePageBuilder extends PageBuilder {
       feed: feed,
       appId: appId,
       description: "My Profile",
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired:
               PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
     );

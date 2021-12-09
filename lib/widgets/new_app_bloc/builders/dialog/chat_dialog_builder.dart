@@ -39,9 +39,6 @@ class ChatDialogBuilder extends DialogBuilder {
         appId: appId,
         title: "Chat",
         layout: DialogLayout.ListView,
-        conditions: ConditionsModel(
-            privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
-            packageCondition: packageCondition),
         bodyComponents: components);
   }
 
@@ -50,7 +47,7 @@ class ChatDialogBuilder extends DialogBuilder {
       documentID: CHAT_ID,
       appId: appId,
       description: "Chat",
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired:
               PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
     );

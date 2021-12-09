@@ -112,7 +112,7 @@ class FeedMenu {
       menuOtherMember: menuOtherMember,
       //itemColor: EliudColors.black,
       //selectedItemColor: EliudColors.red,
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired:
               PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
     );

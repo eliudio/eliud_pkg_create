@@ -55,9 +55,9 @@ class AlbumPageBuilder extends PageBuilder {
         appBar: theAppBar,
         homeMenu: theHomeMenu,
         layout: PageLayout.ListView,
-        conditions: ConditionsModel(
+        conditions: StorageConditionsModel(
           privilegeLevelRequired:
-              PrivilegeLevelRequired.Level1PrivilegeRequired,
+              PrivilegeLevelRequiredSimple.Level1PrivilegeRequiredSimple,
         ),
         bodyComponents: components);
   }
@@ -76,7 +76,7 @@ class AlbumPageBuilder extends PageBuilder {
         await helper.example2(),
       ],
       description: "Example Photos",
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired:
               PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
     );

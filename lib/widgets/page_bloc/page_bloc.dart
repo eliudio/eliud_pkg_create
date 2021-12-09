@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/conditions_model.dart';
 import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'page_event.dart';
@@ -64,10 +64,8 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
         }
       }
 
-      event.pageModel.conditions ??= ConditionsModel(
-            privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
-            packageCondition: '',
-            conditionOverride: null);
+      event.pageModel.conditions ??= StorageConditionsModel(
+            privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,);
       // the updates happen on a (deep) copy
       yield PageCreateValidated(deepCopy(event.pageModel));
     } else if (state is PageCreateInitialised) {

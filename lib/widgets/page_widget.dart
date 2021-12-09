@@ -19,7 +19,7 @@ import 'package:flutter/widgets.dart';
 import 'bodycomponents/bodycomponents_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'condition/conditions_widget.dart';
+import 'condition/storage_conditions_widget.dart';
 
 void openPage(BuildContext context, AppModel app, bool create, PageModel model, String title,
     {double? fraction}) {
@@ -128,8 +128,7 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
             state.pageModel.bodyComponents!,
             widget.widgetWidth,
           ),
-          ConditionsWidget(value: state.pageModel.conditions!, ownerType: 'page',
-              comment: pageAndDialogComment),
+          StorageConditionsWidget(value: state.pageModel.conditions!, ownerType: 'page'),
         ]);
       } else {
         return progressIndicator(context);

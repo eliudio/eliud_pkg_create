@@ -3,13 +3,12 @@ import 'package:eliud_core/model/abstract_repository_singleton.dart'
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/body_component_model.dart';
-import 'package:eliud_core/model/conditions_model.dart';
-import 'package:eliud_core/model/conditions_simple_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
+import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'page_builder.dart';
 import 'package:eliud_pkg_etc/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_etc/model/policy_presentation_component.dart';
@@ -39,7 +38,7 @@ class PolicyPageBuilder extends PageBuilder {
       appId: appId,
       description: title,
       policy: policyModel,
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired:
               PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
     );
@@ -74,8 +73,8 @@ class PolicyPageBuilder extends PageBuilder {
         appBar: theAppBar,
         homeMenu: theHomeMenu,
         layout: PageLayout.ListView,
-        conditions: ConditionsModel(
-          privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
+        conditions: StorageConditionsModel(
+          privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
         ),
         bodyComponents: components);
   }

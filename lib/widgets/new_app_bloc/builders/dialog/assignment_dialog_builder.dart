@@ -25,10 +25,8 @@ class AssignmentDialogBuilder  extends DialogBuilder {
         appId: appId,
         title: "Assignments",
         layout: DialogLayout.ListView,
-        conditions: ConditionsModel(
-            privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
-            packageCondition: WorkflowPackage.CONDITION_MUST_HAVE_ASSIGNMENTS,
-            conditionOverride: ConditionOverride.InclusiveForBlockedMembers // allow blocked members to see
+        conditions: StorageConditionsModel(
+            privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
         ),
         bodyComponents: components);
   }
@@ -38,7 +36,7 @@ class AssignmentDialogBuilder  extends DialogBuilder {
         documentID: dialogDocumentId,
         appId: appId,
         description: "My Assignments",
-        conditions: ConditionsSimpleModel(
+        conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
         ),
     );

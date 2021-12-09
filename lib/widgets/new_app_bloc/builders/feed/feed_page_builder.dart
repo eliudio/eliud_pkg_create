@@ -59,9 +59,9 @@ class FeedPageBuilder extends PageBuilder {
         appBar: theAppBar,
         homeMenu: theHomeMenu,
         layout: PageLayout.ListView,
-        conditions: ConditionsModel(
+        conditions: StorageConditionsModel(
           privilegeLevelRequired:
-              PrivilegeLevelRequired.Level1PrivilegeRequired,
+              PrivilegeLevelRequiredSimple.Level1PrivilegeRequiredSimple,
         ),
         bodyComponents: components);
   }
@@ -78,7 +78,7 @@ class FeedPageBuilder extends PageBuilder {
       audioPost: false,
       albumPost: true,
       articlePost: true,
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired:
               PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
     );

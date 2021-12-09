@@ -26,7 +26,7 @@ class PlayStoreEntity {
   final String? appId;
   final String? description;
   final String? itemBackgroundId;
-  final ConditionsSimpleEntity? conditions;
+  final StorageConditionsEntity? conditions;
 
   PlayStoreEntity({this.appId, this.description, this.itemBackgroundId, this.conditions, });
 
@@ -45,7 +45,7 @@ class PlayStoreEntity {
     var conditionsFromMap;
     conditionsFromMap = map['conditions'];
     if (conditionsFromMap != null)
-      conditionsFromMap = ConditionsSimpleEntity.fromMap(conditionsFromMap);
+      conditionsFromMap = StorageConditionsEntity.fromMap(conditionsFromMap);
 
     return PlayStoreEntity(
       appId: map['appId'], 

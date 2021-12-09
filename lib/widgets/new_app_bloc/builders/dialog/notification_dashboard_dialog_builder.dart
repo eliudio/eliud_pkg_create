@@ -5,7 +5,6 @@ import 'package:eliud_core/model/model_export.dart';
 import 'package:eliud_pkg_notifications/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_notifications/model/notification_dashboard_component.dart';
 import 'package:eliud_pkg_notifications/model/notification_dashboard_model.dart';
-import 'package:eliud_pkg_notifications/notifications_package.dart';
 
 import 'dialog_builder.dart';
 
@@ -35,11 +34,8 @@ class NotificationDashboardDialogBuilder extends DialogBuilder {
         appId: appId,
         title: "Notifications",
         layout: DialogLayout.ListView,
-        conditions: ConditionsModel(
-          privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
-          packageCondition:
-              NotificationsPackage.CONDITION_MEMBER_HAS_UNREAD_NOTIFICATIONS,
-          conditionOverride: ConditionOverride.InclusiveForBlockedMembers // allow blocked members to see
+        conditions: StorageConditionsModel(
+          privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
         ),
         bodyComponents: components);
   }
@@ -49,7 +45,7 @@ class NotificationDashboardDialogBuilder extends DialogBuilder {
         documentID: dialogDocumentId,
         appId: appId,
         description: "My Notifications",
-        conditions: ConditionsSimpleModel(
+        conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
         ),
     );

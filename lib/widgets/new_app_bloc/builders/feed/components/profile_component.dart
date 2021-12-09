@@ -14,7 +14,7 @@ class ProfileComponent {
       appId: appId,
       feed: feed,
       description: "Profile",
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
       ),
     );

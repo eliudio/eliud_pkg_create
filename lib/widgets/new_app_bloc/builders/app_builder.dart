@@ -1,11 +1,12 @@
 import 'package:eliud_core/core_package.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
+import 'package:eliud_pkg_notifications/notifications_package.dart';
 import 'package:eliud_core/model/access_model.dart';
+import 'package:eliud_core/model/display_conditions_model.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/album_page_builder.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/blocked_page_builder.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/page_with_text.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
-import 'package:eliud_core/model/conditions_model.dart';
 import 'package:eliud_core/model/icon_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
@@ -18,6 +19,7 @@ import 'package:eliud_pkg_medium/platform/medium_platform.dart';
 import 'package:eliud_pkg_membership/membership_package.dart';
 import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'package:eliud_pkg_workflow/tools/action/workflow_action_model.dart';
+import 'package:eliud_pkg_workflow/workflow_package.dart';
 import 'package:flutter/material.dart';
 import '../action_specification.dart';
 import 'package:eliud_core/model/app_home_page_references_model.dart';
@@ -620,7 +622,13 @@ class AppBuilder {
                 codePoint: Icons.notifications.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
             action:
-                OpenDialog(appId, dialogID: _notificationDashboardDialogId)),
+                OpenDialog(appId, dialogID: _notificationDashboardDialogId,
+                conditions: DisplayConditionsModel(
+                    packageCondition:
+                    NotificationsPackage.CONDITION_MEMBER_HAS_UNREAD_NOTIFICATIONS,
+                    conditionOverride: ConditionOverride.InclusiveForBlockedMembers // allow blocked members to see
+                )
+                )),
       if (_assignmentDasboardDialogId != null)
         MenuItemModel(
             documentID: 'assignments',
@@ -629,7 +637,12 @@ class AppBuilder {
             icon: IconModel(
                 codePoint: Icons.playlist_add_check.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
-            action: OpenDialog(appId, dialogID: _assignmentDasboardDialogId)),
+            action: OpenDialog(appId, dialogID: _assignmentDasboardDialogId,
+            conditions: DisplayConditionsModel(
+                packageCondition: WorkflowPackage.CONDITION_MUST_HAVE_ASSIGNMENTS,
+                conditionOverride: ConditionOverride.InclusiveForBlockedMembers // allow blocked members to see
+            )
+            )),
       if (_membershipDashboardDialogId != null)
         MenuItemModel(
             documentID: '3',
@@ -649,7 +662,7 @@ class AppBuilder {
                 fontFamily: Icons.notifications.fontFamily),
             action: OpenDialog(appId,
                 dialogID: _hasUnreadChatDialogId,
-                conditions: ConditionsModel(
+                conditions: DisplayConditionsModel(
                     privilegeLevelRequired:
                         PrivilegeLevelRequired.NoPrivilegeRequired,
                     packageCondition:
@@ -664,7 +677,7 @@ class AppBuilder {
                 fontFamily: Icons.notifications.fontFamily),
             action: OpenDialog(appId,
                 dialogID: _allMessagesHaveBeenReadChatDialog,
-                conditions: ConditionsModel(
+                conditions: DisplayConditionsModel(
                     privilegeLevelRequired:
                         PrivilegeLevelRequired.NoPrivilegeRequired,
                     packageCondition:

@@ -17,7 +17,7 @@ import 'package:flutter/widgets.dart';
 import 'bodycomponents/bodycomponents_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'condition/conditions_widget.dart';
+import 'condition/storage_conditions_widget.dart';
 
 void openDialog(
   BuildContext context,
@@ -132,8 +132,7 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
             state.dialogModel.bodyComponents!,
             widget.widgetWidth,
           ),
-          ConditionsWidget(value: state.dialogModel.conditions!, ownerType: 'dialog',
-              comment: pageAndDialogComment),
+          StorageConditionsWidget(value: state.dialogModel.conditions!, ownerType: 'dialog'),
         ]);
       } else {
         return progressIndicator(context);

@@ -55,8 +55,8 @@ class BlockedPageBuilder extends PageBuilder {
         appBar: theAppBar,
         homeMenu: theHomeMenu,
         layout: PageLayout.ListView,
-        conditions: ConditionsModel(
-          privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
+        conditions: StorageConditionsModel(
+          privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
         ),
         bodyComponents: components);
   }
@@ -91,7 +91,7 @@ class BlockedPageBuilder extends PageBuilder {
       name: "Blocked!",
       sections: entries,
       appId: appId,
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired:
               PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
     );

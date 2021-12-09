@@ -1,5 +1,5 @@
 import 'package:eliud_core/core/blocs/access/helper/access_helpers.dart';
-import 'package:eliud_core/model/conditions_model.dart';
+import 'package:eliud_core/model/display_conditions_model.dart';
 import 'package:eliud_core/package/packages.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
@@ -10,44 +10,28 @@ import 'package:flutter/src/widgets/framework.dart';
 
 import '../utils/combobox_widget.dart';
 
-const comment2 = """
-(**) It's worth remembering that when a member is blocked, that person is not blocked from public view, as that person can always logoff and open the site anonymously.
+const String _menuItemComment = """
+A menu item condition allows to limit access to a menu item. This is a display only condition to improve user experience. To limit access to the data, set the (privilege) condition on the level of the page / dialog / component itself.
 """;
 
-const String menuItemComment = """
-A menu item condition allows to limit access to a menu item. However, because access conditions can also be specified on the level of a page / dialog, in case a menu item refers to a page or dialog, it's condition also depends on that page / dialog condition. Because of this, we recommend not to use conditions on the level of menu item for a page or dialog and use it for workflows or other actions, e.g. login/logout, ...
-
-(*) Privilege and display conditions for menu items are both display only conditions, in contrast to conditions for pages and dialogs. If you want to protect you data, set the privilege of the page, dialog and most importantly the component itself, which is where your actual data sits.
-""" +
-    comment2;
-
+/*
 const String pageAndDialogComment = """
 (*) Privilege vs 'Display' condition. A privilege is data secured data, i.e. the storage mechanism secures the access. Whereas a 'Display' condition can be used to further restrict the visibility of this page in the app, i.e. this is secured by the app, not cloud secured and so therefore theoretically this rule can bypassed, e.g. by a hacker
 (**) It's worth remembering that when a member is blocked, that person is not blocked from public view, as that person can always logoff and open the site anonymously.
-""" +
-    comment2;
+""";
+*/
 
-class ConditionsWidget extends StatefulWidget {
-  final String ownerType; // page, dialog, menu item
-  final ConditionsModel value;
-  final String comment;
+class DisplayConditionsWidget extends StatefulWidget {
+  final DisplayConditionsModel value;
 
-  // see firestore rules
-  String? packageCondition;
-
-  // see firestore rules
-  ConditionOverride? conditionOverride;
-
-  ConditionsWidget({
+  DisplayConditionsWidget({
     Key? key,
     required this.value,
-    required this.ownerType,
-    required this.comment,
   }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _ConditionPrivilegeState();
+    return _DisplayConditionState();
   }
 }
 
@@ -73,14 +57,11 @@ List<PackageInfo2> getAllPackageConditionsAsPackageInfos2() {
   return packageInfos;
 }
 
-class _ConditionPrivilegeState extends State<ConditionsWidget> {
-  _ConditionPrivilegeState();
-
+class _DisplayConditionState extends State<DisplayConditionsWidget> {
   Widget _aBitSpace() => Container(height: 15);
 
   @override
   Widget build(BuildContext context) {
-    var prefix = widget.ownerType;
     return topicContainer(context,
         title: 'Access rights',
         collapsible: true,
@@ -100,18 +81,10 @@ class _ConditionPrivilegeState extends State<ConditionsWidget> {
                 'Owner Required'
               ],
               descriptions: [
-                'Make this ' +
-                    prefix +
-                    ' accessible for the public, as well as subscribed members',
-                'Make this ' +
-                    prefix +
-                    ' accessible for level 1 members, i.e. subscribed members with a level 1 access',
-                'Make this ' +
-                    prefix +
-                    ' accessible for level 2 members, i.e. subscribed members with a level 2 access',
-                'Make this ' +
-                    prefix +
-                    ' only accessible to you, as the owner ',
+                'Make this menu item accessible for the public, as well as subscribed members',
+                'Make this menu item accessible for level 1 members, i.e. subscribed members with a level 1 access',
+                'Make this menu item accessible for level 2 members, i.e. subscribed members with a level 2 access',
+                'Make this menu item only accessible to you, as the owner ',
               ],
               feedback: (value) => widget.value.privilegeLevelRequired =
                   toPrivilegeLevelRequired(value),
@@ -157,7 +130,7 @@ class _ConditionPrivilegeState extends State<ConditionsWidget> {
             ),
           ),
           _aBitSpace(),
-          text(context, widget.comment),
+          text(context, _menuItemComment),
         ]);
   }
 }

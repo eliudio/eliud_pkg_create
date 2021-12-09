@@ -25,7 +25,7 @@ class FollowingDashboard {
         description: title,
         view: view,
         memberActions: ProfileAndFeedToAction.getMemberActionModels(appId, profilePageId, feedPageId),
-        conditions: ConditionsSimpleModel(
+        conditions: StorageConditionsModel(
             privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
         ),
     );
@@ -55,7 +55,7 @@ class FollowRequestDashboard {
       appId: appId,
       description: "Follow requests",
       memberActions: ProfileAndFeedToAction.getMemberActionModels(appId, profilePageId, feedPageId),
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
       ),
     );
@@ -85,7 +85,7 @@ class InviteDashboard {
       appId: appId,
       description: "Follow members",
       memberActions: ProfileAndFeedToAction.getMemberActionModels(appId, profilePageId, feedPageId),
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
       ),
     );
@@ -116,7 +116,7 @@ class MembershipDashboard {
       appId: appId,
       description: "Members",
       memberActions: ProfileAndFeedToAction.getMemberActionModels(appId, profilePageId, feedPageId),
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
       ),
     );

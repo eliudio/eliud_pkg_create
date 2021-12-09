@@ -14,7 +14,7 @@ class HeaderComponent {
       feed: feed,
       appId: appId,
       description: "Header",
-      conditions: ConditionsSimpleModel(
+      conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
       ),
     );

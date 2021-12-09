@@ -40,13 +40,13 @@ class PlayStoreModel {
   String? appId;
   String? description;
   BackgroundModel? itemBackground;
-  ConditionsSimpleModel? conditions;
+  StorageConditionsModel? conditions;
 
   PlayStoreModel({this.documentID, this.appId, this.description, this.itemBackground, this.conditions, })  {
     assert(documentID != null);
   }
 
-  PlayStoreModel copyWith({String? documentID, String? appId, String? description, BackgroundModel? itemBackground, ConditionsSimpleModel? conditions, }) {
+  PlayStoreModel copyWith({String? documentID, String? appId, String? description, BackgroundModel? itemBackground, StorageConditionsModel? conditions, }) {
     return PlayStoreModel(documentID: documentID ?? this.documentID, appId: appId ?? this.appId, description: description ?? this.description, itemBackground: itemBackground ?? this.itemBackground, conditions: conditions ?? this.conditions, );
   }
 
@@ -86,7 +86,7 @@ class PlayStoreModel {
           appId: entity.appId, 
           description: entity.description, 
           conditions: 
-            ConditionsSimpleModel.fromEntity(entity.conditions), 
+            StorageConditionsModel.fromEntity(entity.conditions), 
     );
   }
 
@@ -111,7 +111,7 @@ class PlayStoreModel {
           description: entity.description, 
           itemBackground: itemBackgroundHolder, 
           conditions: 
-            await ConditionsSimpleModel.fromEntityPlus(entity.conditions, appId: appId), 
+            await StorageConditionsModel.fromEntityPlus(entity.conditions, appId: appId), 
     );
   }
 

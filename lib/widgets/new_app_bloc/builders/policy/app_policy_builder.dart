@@ -1,7 +1,6 @@
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/app_policy_item_model.dart';
 import 'package:eliud_core/model/app_policy_model.dart';
-import 'package:eliud_core/model/conditions_simple_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/tools/random.dart';

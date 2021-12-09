@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/conditions_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
+import 'package:eliud_core/model/display_conditions_model.dart';
+import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'dialog_event.dart';
 import 'dialog_state.dart';
@@ -20,10 +21,8 @@ class DialogCreateBloc extends Bloc<DialogCreateEvent, DialogCreateState> {
       // convention is that the ID of the appBar, drawers and home menu are the same ID as that of the app
       var _homeMenuId = homeMenuID(appId);
 
-      event.dialogModel.conditions ??= ConditionsModel(
-          privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
-          packageCondition: '',
-          conditionOverride: null);
+      event.dialogModel.conditions ??= StorageConditionsModel(
+          privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple);
       // the updates happen on a (deep) copy
       yield DialogCreateValidated(deepCopy(event.dialogModel));
     } else if (state is DialogCreateInitialised) {

@@ -108,7 +108,7 @@ class ChangedPlayStoreItemBackground extends PlayStoreFormEvent {
 }
 
 class ChangedPlayStoreConditions extends PlayStoreFormEvent {
-  final ConditionsSimpleModel? value;
+  final StorageConditionsModel? value;
 
   ChangedPlayStoreConditions({this.value});
 

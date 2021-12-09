@@ -54,10 +54,6 @@ class MemberDashboardDialogBuilder extends DialogBuilder {
         appId: appId,
         title: "Member dashboard",
         layout: DialogLayout.ListView,
-        conditions: ConditionsModel(
-            privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
-            packageCondition: CorePackage.MUST_BE_LOGGED_ON
-        ),
         bodyComponents: components);
   }
 
@@ -72,7 +68,7 @@ class MemberDashboardDialogBuilder extends DialogBuilder {
         retrieveDataEmailSubject: retrieveDataEmailSubject,
         deleteDataEmailSubject: deleteDataEmailSubject,
         deleteDataEmailMessage: deleteDataEmailMessage,
-        conditions: ConditionsSimpleModel(
+        conditions: StorageConditionsModel(
             privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
         ),
     );
