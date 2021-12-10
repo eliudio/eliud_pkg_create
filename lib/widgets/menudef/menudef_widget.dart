@@ -104,7 +104,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
         child: BlocBuilder<AccessBloc, AccessState>(
             builder: (context, accessState) {
           if (accessState is AccessDetermined) {
-            var app = accessState.currentApp(context);
+            var app = accessState.currentApp;
             return BlocBuilder<MenuDefCreateBloc, MenuDefCreateState>(
                 builder: (context, state) {
               if (state is MenuDefCreateInitialised) {

@@ -38,7 +38,7 @@ class PlayStoreBase extends AbstractPlayStoreComponent {
     return BlocBuilder<AccessBloc, AccessState>(
         builder: (context, accessState) {
           if (accessState is AccessDetermined) {
-            var appId = accessState.currentAppId(context);
+            var appId = accessState.currentApp.documentID!;
             return BlocProvider<AppListBloc>(
                 create: (context) =>
                 AppListBloc(

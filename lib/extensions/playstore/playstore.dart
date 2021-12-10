@@ -40,7 +40,7 @@ class PlayStoreState extends State<PlayStore> {
         builder: (context, accessState) {
       if (accessState is AccessDetermined) {
         var member = accessState.getMember();
-        var app = accessState.currentApp(context);
+        var app = accessState.currentApp;
         var appID = app.documentID!;
         return BlocBuilder<AppListBloc, AppListState>(
             builder: (context, state) {
