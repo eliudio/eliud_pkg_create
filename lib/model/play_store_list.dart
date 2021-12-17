@@ -155,7 +155,7 @@ class PlayStoreListWidgetState extends State<PlayStoreListWidget> {
               BlocProvider.of<PlayStoreListBloc>(context)
                   .add(DeletePlayStoreList(value: value));
               Scaffold.of(context).showSnackBar(DeleteSnackBar(
-                message: "PlayStore " + value.,
+                message: "PlayStore " + value.documentID,
                 onUndo: () => BlocProvider.of<PlayStoreListBloc>(context)
                     .add(AddPlayStoreList(value: value)),
               ));
@@ -168,7 +168,7 @@ class PlayStoreListWidgetState extends State<PlayStoreListWidget> {
                       if (removedItem != null) {
                         Scaffold.of(context).showSnackBar(
                           DeleteSnackBar(
-                        message: "PlayStore " + value.,
+                        message: "PlayStore " + value.documentID,
                             onUndo: () => BlocProvider.of<PlayStoreListBloc>(context)
                                 .add(AddPlayStoreList(value: value)),
                           ),
