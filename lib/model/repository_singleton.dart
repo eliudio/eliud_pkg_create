@@ -26,7 +26,7 @@ class RepositorySingleton extends AbstractRepositorySingleton {
     var _playStoreRepository = HashMap<String, PlayStoreRepository>();
 
     PlayStoreRepository? playStoreRepository(String? appId) {
-      if ((appId != null) && (_playStoreRepository[appId] == null)) _playStoreRepository[appId] = PlayStoreCache(PlayStoreFirestore(appRepository()!.getSubCollection(appId, 'playstore'), appId));
+      if ((appId != null) && (_playStoreRepository[appId] == null)) _playStoreRepository[appId] = PlayStoreCache(PlayStoreFirestore(() => appRepository()!.getSubCollection(appId, 'playstore'), appId));
       return _playStoreRepository[appId];
     }
 
