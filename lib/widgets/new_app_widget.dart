@@ -1,4 +1,5 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/access_event.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -14,6 +15,7 @@ import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_bloc.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_event.dart';
 import 'package:eliud_pkg_create/widgets/style_selection_widget.dart';
 import 'package:eliud_pkg_medium/platform/medium_platform.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -205,11 +207,8 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     return BlocBuilder<NewAppCreateBloc, NewAppCreateState>(
         builder: (context, state) {
       if (state is SwitchApp) {
-        // todo: NEED TO ALLOW TO SWITCH APP
-/*
         BlocProvider.of<AccessBloc>(context)
-            .add(SwitchAppEvent(state.appToBeCreated.documentID));
-*/
+            .add(SwitchAppWithIDEvent(appId: state.appToBeCreated.documentID!, goHome: true));
       } else if (state is NewAppCreateInitialised) {
         return Container(
             width: widget.widgetWidth,
@@ -311,69 +310,70 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   }
 
   Widget _contents(BuildContext context, NewAppCreateInitialised state) {
+    var suffix = !hasAccessToLocalFileSystem ? ' (not available on web)' : '';
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: welcomeSpecifications,
-          label: 'Generate Welcome Page'),
+          label: 'Generate Welcome Page' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: blockedSpecifications,
-          label: 'Generate Page for Blocked members'),
+          label: 'Generate Page for Blocked members' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: aboutSpecifications,
-          label: 'Generate About Page'),
+          label: 'Generate About Page' + suffix),
       ActionSpecificationWidget(
           enabled: hasAccessToLocalFileSystem,
           actionSpecification: albumSpecifications,
-          label: 'Generate Example Album Page'),
+          label: 'Generate Example Album Page' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: shopActionSpecifications,
-          label: 'Generate Shop'),
+          label: 'Generate Shop' + suffix),
       ActionSpecificationWidget(
           enabled: true,
-          actionSpecification: feedSpecifications, label: 'Generate Feed'),
+          actionSpecification: feedSpecifications, label: 'Generate Feed' + suffix),
 
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: chatSpecifications,
-          label: 'Generate Chat Dialog '),
+          label: 'Generate Chat Dialog' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: memberDashboardSpecifications,
-          label: 'Generate Member Dashboard Dialog'),
+          label: 'Generate Member Dashboard Dialog' + suffix),
 
       ActionSpecificationWidget(
           enabled: hasAccessToLocalFileSystem,
           actionSpecification: examplePolicySpecifications,
-          label: 'Generate Example Policy'),
+          label: 'Generate Example Policy' + suffix),
 
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: signoutSpecifications,
-          label: 'Generate signout button'),
+          label: 'Generate signout button' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: flushSpecifications,
-          label: 'Generate flush button'),
+          label: 'Generate flush button' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: includeJoinAction,
-          label: 'Generate join button'),
+          label: 'Generate join button' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: membershipDashboardDialogSpecifications,
-          label: 'Generate membership dashboard dialog'),
+          label: 'Generate membership dashboard dialog' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: notificationDashboardDialogSpecifications,
-          label: 'Generate notification dashboard dialog'),
+          label: 'Generate notification dashboard dialog' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: assignmentDashboardDialogSpecifications,
-          label: 'Generate assignment dashboard dialog'),
+          label: 'Generate assignment dashboard dialog' + suffix),
     ]);
   }
 }

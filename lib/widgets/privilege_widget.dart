@@ -1,3 +1,5 @@
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/access_event.dart';
 import 'package:eliud_core/core/blocs/access/state/access_state.dart';
 import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
 import 'package:eliud_core/model/access_model.dart';
@@ -18,7 +20,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class PrivilegeWidget extends StatefulWidget {
   final AccessState currentAccess;
   final AppModel app;
-  PrivilegeWidget({Key? key, required this.app, required this.currentAccess}) : super(key: key);
+  PrivilegeWidget({Key? key, required this.app, required this.currentAccess})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -118,11 +121,10 @@ class _PrivilegeWidgetState extends State<PrivilegeWidget> {
             getPrivilegeOption(PrivilegeLevel.OwnerPrivilege),
             Center(
                 child: button(context, label: 'Simulate', onPressed: () {
-                  // todo: NEED TO ALLOW TO CHANGE PRIVILEGE
-/*
-              BlocProvider.of<AccessBloc>(context).add(ChangePrivilegeEvent(
-                  toPrivilegeLevel(_privSelectedRadioTile), isBlocked));
-*/
+              BlocProvider.of<AccessBloc>(context).add(PrivilegeChangedEvent(
+                  widget.app,
+                  toPrivilegeLevel(_privSelectedRadioTile),
+                  isBlocked));
             }))
           ]),
     ], shrinkWrap: true, physics: ScrollPhysics());

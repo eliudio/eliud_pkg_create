@@ -98,7 +98,7 @@ class _MyDecoratedDialogWidgetState extends State<MyDecoratedWidget> {
                 icon: Icon(
                   Icons.edit,
                   color: Constants.ICON_COLOR,
-                  size: 15,
+                  size: CreatorButton.BUTTON_HEIGHT * .7,
                 ),
                 borderColor: Constants.BORDER_COLOR,
                 ensureHeight: widget.ensureHeight,
