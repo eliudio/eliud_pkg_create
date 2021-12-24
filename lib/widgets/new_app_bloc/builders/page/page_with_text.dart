@@ -35,7 +35,7 @@ class PageWithTextBuilder extends PageBuilder {
       documentID: htmlComponentId,
       appId: appId,
       name: 'html 1',
-      html: '<p>$text</p>',
+      html: '<html><p>$text</p></html>',
       conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
       ),

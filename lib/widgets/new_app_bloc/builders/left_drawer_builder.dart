@@ -14,13 +14,18 @@ class LeftDrawerBuilder extends WithMenu {
         super(appId, menuItems: menuItems, name: 'Left drawer', identifier: drawerID(appId, DrawerType.Left), logo: logo);
 
   Future<DrawerModel> create() async {
+    var headerBackgroundOverride;
+    if (logo != null) {
+      headerBackgroundOverride = _drawerHeaderBGOverride(logo);
+      await backgroundRepository()!.add(headerBackgroundOverride);
+    }
+
     var drawerModel = DrawerModel(
         documentID: identifier,
         appId: appId,
         name: 'Drawer',
         headerText: '',
-        headerBackgroundOverride:
-            logo != null ? _drawerHeaderBGOverride(logo) : null,
+        headerBackgroundOverride:headerBackgroundOverride,
         headerHeight: 0,
         popupMenuBackgroundColor: EliudColors.red,
         menu: await menuDef());

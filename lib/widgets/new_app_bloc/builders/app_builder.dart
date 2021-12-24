@@ -202,6 +202,14 @@ class AppBuilder {
       });
     }
 
+    // create the app
+    tasks.add(() async {
+      newlyCreatedApp = await appRepository()!.add(AppModel(
+          documentID: appId,
+          title: 'New application',
+          ownerID: memberId,));
+    });
+
     tasks.add(() async {
       print("claimAccess");
       await claimAccess(appId, memberId);
@@ -509,7 +517,7 @@ class AppBuilder {
     // app
     tasks.add(() async {
       print("App");
-      newlyCreatedApp = await appRepository()!.add(AppModel(
+      newlyCreatedApp = await appRepository()!.update(AppModel(
           documentID: appId,
           title: 'New application',
           ownerID: memberId,
