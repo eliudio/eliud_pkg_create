@@ -28,6 +28,13 @@ menuItemSignOut(appID) => MenuItemModel(
     action:
         InternalAction(appID, internalActionEnum: InternalActionEnum.Logout));
 
+menuItemSignIn(appID) => MenuItemModel(
+    documentID: newRandomKey(),
+    text: "Sign in",
+    description: "Sign in",
+    action:
+    InternalAction(appID, internalActionEnum: InternalActionEnum.Login));
+
 menuItemManageAccount(appID, dialogID) => MenuItemModel(
     documentID: dialogID,
     text: 'Manage your account',

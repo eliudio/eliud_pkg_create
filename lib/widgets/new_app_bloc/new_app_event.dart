@@ -35,6 +35,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   final ActionSpecification includeFeed;
   final ActionSpecification includeMemberDashboard;
   final ActionSpecification includeExamplePolicy;
+  final ActionSpecification includeSigninButton;
   final ActionSpecification includeSignoutButton;
   final ActionSpecification includeFlushButton;
   final JoinActionSpecifications includeJoinAction;
@@ -53,6 +54,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
     required this.includeFeed,
     required this.includeMemberDashboard,
     required this.includeExamplePolicy,
+    required this.includeSigninButton,
     required this.includeSignoutButton,
     required this.includeFlushButton,
     required this.includeJoinAction,

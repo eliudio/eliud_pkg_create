@@ -541,7 +541,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                 context,
                 initialValue: app.email,
                 valueChanged: (value) {
-                  app.title = value;
+                  app.email = value;
                 },
                 decoration: const InputDecoration(
                   hintText: 'Email',

@@ -132,6 +132,7 @@ class AppBuilder {
   final ActionSpecification policySpecifications;
 
   final JoinActionSpecifications joinSpecification;
+  final ActionSpecification signinButton;
   final ActionSpecification signoutButton;
   final ActionSpecification flushButton;
 
@@ -153,6 +154,7 @@ class AppBuilder {
     required this.memberDashboardDialogSpecifications,
     required this.policySpecifications,
     required this.joinSpecification,
+    required this.signinButton,
     required this.signoutButton,
     required this.flushButton,
     required this.membershipDashboardDialogSpecifications,
@@ -607,6 +609,7 @@ class AppBuilder {
         : null;
 
     var _signout = evaluate(signoutButton);
+    var _signin = evaluate(signinButton);
 
     return [
       if (_welcomePageId != null)
@@ -692,6 +695,7 @@ class AppBuilder {
                     packageCondition:
                         ChatPackage.CONDITION_MEMBER_ALL_HAVE_BEEN_READ))),
       if (_signout) menuItemSignOut(appId),
+      if (_signin) menuItemSignIn(appId),
     ];
   }
 

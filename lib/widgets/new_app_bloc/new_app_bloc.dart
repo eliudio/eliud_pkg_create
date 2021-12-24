@@ -35,6 +35,7 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
           feedPageSpecifications: event.includeFeed,
           memberDashboardDialogSpecifications: event.includeMemberDashboard,
           policySpecifications: event.includeExamplePolicy,
+          signinButton: event.includeSigninButton,
           signoutButton: event.includeSignoutButton,
           flushButton: event.includeFlushButton,
           joinSpecification: event.includeJoinAction,

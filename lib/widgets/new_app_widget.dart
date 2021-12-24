@@ -157,6 +157,14 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInHomeMenu: false,
     available: false,
   );
+  var signinSpecifications = ActionSpecification(
+    requiresAccessToLocalFileSystem: false,
+    availableInLeftDrawer: false,
+    availableInRightDrawer: false,
+    availableInAppBar: true,
+    availableInHomeMenu: false,
+    available: false,
+  );
   var flushSpecifications = ActionSpecification(
     requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: false,
@@ -238,6 +246,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           includeFeed: feedSpecifications,
                           includeMemberDashboard: memberDashboardSpecifications,
                           includeExamplePolicy: examplePolicySpecifications,
+                          includeSigninButton: signinSpecifications,
                           includeSignoutButton: signoutSpecifications,
                           includeFlushButton: flushSpecifications,
                           includeJoinAction: includeJoinAction,
@@ -350,6 +359,10 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           actionSpecification: examplePolicySpecifications,
           label: 'Generate Example Policy' + suffix),
 
+      ActionSpecificationWidget(
+          enabled: true,
+          actionSpecification: signinSpecifications,
+          label: 'Generate signin button' + suffix),
       ActionSpecificationWidget(
           enabled: true,
           actionSpecification: signoutSpecifications,

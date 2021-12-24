@@ -7,7 +7,7 @@ import 'package:eliud_core/model/app_list_event.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/tools/component/component_constructor.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-import 'package:eliud_pkg_create/extensions/playstore/playstore.dart';
+import 'package:eliud_pkg_create/extensions/widgets/playstore.dart';
 import 'package:eliud_pkg_create/model/play_store_list_bloc.dart';
 import 'package:eliud_pkg_create/model/play_store_list_event.dart';
 import 'package:flutter/material.dart';

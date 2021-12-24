@@ -6,13 +6,12 @@ import 'package:eliud_core/core/widgets/alert_widget.dart';
 import 'package:eliud_core/model/app_list_bloc.dart';
 import 'package:eliud_core/model/app_list_state.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
-import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
 import 'package:eliud_pkg_create/widgets/new_app_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/cupertino.dart';
+import 'dart:ui';
 
 class PlayStore extends StatefulWidget {
   final PlayStoreModel playStoreModel;
@@ -68,19 +67,41 @@ class PlayStoreState extends State<PlayStore> {
                       child: const Icon(Icons.add))));
             }
             for (var model in state.values!) {
-              if ((model != null) && (model.documentID != currentAppId)) {
-                components.add(GestureDetector(
-                    onTap: () async {
-                      EliudRouter.Router.navigateTo(context,
-                          SwitchApp(appID, toAppID: model.documentID!));
-                    },
-                    child: Container(
-                      color: Colors.red,
-                      child:
-                          ((model.logo != null) && (model.logo!.url != null))
-                              ? Image.network(model.logo!.url!)
-                              : const Icon(Icons.help),
-                    )));
+              if (model != null) {
+                var logo = Container(
+                  color: Colors.red,
+                  child: ((model.logo != null) && (model.logo!.url != null))
+                      ? Image.network(model.logo!.url!)
+                      : const Icon(Icons.help),
+                );
+                Widget component;
+                if (model.documentID != currentAppId) {
+                  component = GestureDetector(
+                      onTap: () async {
+                        EliudRouter.Router.navigateTo(context,
+                            SwitchApp(appID, toAppID: model.documentID!));
+                      },
+                      child: logo);
+                } else {
+                  component = Stack(children: [
+                    logo,
+                    Center(
+                        child: ClipRect(
+                            child: SizedBox(
+                                height: size,
+                                width: size,
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 5,
+                                    sigmaY: 5,
+                                  ),
+                                  child: Container(
+                                    color: Colors.black.withOpacity(.3),
+                                  ),
+                                )))),
+                  ]);
+                }
+                components.add(component);
               }
             }
 
