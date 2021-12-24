@@ -18,6 +18,7 @@ import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
+import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/utils/styles.dart';
 import 'package:eliud_pkg_medium/platform/access_rights.dart';
 import 'package:eliud_pkg_medium/platform/medium_platform.dart';
@@ -32,14 +33,11 @@ import 'menudef/menudef_widget.dart';
 
 typedef BlocProvider BlocProviderProvider(Widget child);
 
-void openDrawer(
-    BuildContext context,
-    AppModel app,
-    DrawerModel model,
-    DecorationDrawerType decorationDrawerType,
-    double fraction) {
+void openDrawer(BuildContext context, AppModel app, DrawerModel model,
+    DecorationDrawerType decorationDrawerType, double fraction) {
   openFlexibleDialog(
-    context,app.documentID! + '/_drawer',
+    context,
+    app.documentID! + '/_drawer',
     includeHeading: false,
     widthFraction: fraction,
     child: DrawerCreateWidget.getIt(
@@ -79,17 +77,14 @@ class DrawerCreateWidget extends StatefulWidget {
     return _DrawerCreateWidgetState();
   }
 
-  static Widget getIt(
-      BuildContext context,
-      AppModel app,
-      DrawerType drawerType,
-      DrawerModel appBarModel,
-      double widgetWidth,
-      double widgetHeight) {
+  static Widget getIt(BuildContext context, AppModel app, DrawerType drawerType,
+      DrawerModel appBarModel, double widgetWidth, double widgetHeight) {
     return BlocProvider<DrawerCreateBloc>(
       create: (context) => DrawerCreateBloc(
-          app.documentID!, drawerType, appBarModel, )
-        ..add(DrawerCreateEventValidateEvent(appBarModel)),
+        app.documentID!,
+        drawerType,
+        appBarModel,
+      )..add(DrawerCreateEventValidateEvent(appBarModel)),
       child: DrawerCreateWidget._(
         app: app,
         widgetWidth: widgetWidth,
@@ -140,7 +135,8 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                               decoration:
                                   inputDecoration(context, "Header text")),
                         ),
-                        _mediaButtons(context, state, widget.app, accessState.getMember()!.documentID!),
+                        _mediaButtons(context, state, widget.app,
+                            accessState.getMember()!.documentID!),
                         getListTile(context,
                             leading: Icon(Icons.description),
                             title: dialogField(
@@ -318,6 +314,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
               drawerModel.headerBackgroundOverride =
                   drawerModel.headerBackgroundOverride == null
                       ? BackgroundModel(
+                          appId: widget.app.documentID!,
                           documentID: newRandomKey(),
                           useProfilePhotoAsBackground: true)
                       : drawerModel.headerBackgroundOverride!.copyWith(
@@ -336,6 +333,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
         drawerModel.headerBackgroundOverride =
             drawerModel.headerBackgroundOverride == null
                 ? BackgroundModel(
+                    appId: widget.app.documentID!,
                     documentID: newRandomKey(),
                     backgroundImage: publicMediumModel)
                 : drawerModel.headerBackgroundOverride!.copyWith(

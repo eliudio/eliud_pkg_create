@@ -632,6 +632,7 @@ class AppBuilder {
             action:
                 OpenDialog(appId, dialogID: _notificationDashboardDialogId,
                 conditions: DisplayConditionsModel(
+                  privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
                     packageCondition:
                     NotificationsPackage.CONDITION_MEMBER_HAS_UNREAD_NOTIFICATIONS,
                     conditionOverride: ConditionOverride.InclusiveForBlockedMembers // allow blocked members to see

@@ -54,12 +54,12 @@ class DrawerCreateBloc extends Bloc<DrawerCreateEvent, DrawerCreateState> {
           }
 
           if (theState.drawerModel.headerBackgroundOverride != null) {
-            var value = await backgroundRepository()!.get(theState.drawerModel.headerBackgroundOverride!.documentID);
+            var value = await backgroundRepository(appId: appId)!.get(theState.drawerModel.headerBackgroundOverride!.documentID);
             if (value == null) {
-              await backgroundRepository()!.add(
+              await backgroundRepository(appId: appId)!.add(
                   theState.drawerModel.headerBackgroundOverride!);
             } else {
-              await backgroundRepository()!.update(
+              await backgroundRepository(appId: appId)!.update(
                   theState.drawerModel.headerBackgroundOverride!);
             }
           }
