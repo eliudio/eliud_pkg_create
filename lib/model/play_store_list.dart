@@ -46,6 +46,7 @@ import 'play_store_form.dart';
 typedef PlayStoreWidgetProvider(PlayStoreModel? value);
 
 class PlayStoreListWidget extends StatefulWidget with HasFab {
+  AppModel app;
   BackgroundModel? listBackground;
   PlayStoreWidgetProvider? widgetProvider;
   bool? readOnly;
@@ -53,7 +54,7 @@ class PlayStoreListWidget extends StatefulWidget with HasFab {
   PlayStoreListWidgetState? state;
   bool? isEmbedded;
 
-  PlayStoreListWidget({ Key? key, this.readOnly, this.form, this.widgetProvider, this.isEmbedded, this.listBackground }): super(key: key);
+  PlayStoreListWidget({ Key? key, required this.app, this.readOnly, this.form, this.widgetProvider, this.isEmbedded, this.listBackground }): super(key: key);
 
   @override
   PlayStoreListWidgetState createState() {
@@ -73,14 +74,14 @@ class PlayStoreListWidget extends StatefulWidget with HasFab {
 class PlayStoreListWidgetState extends State<PlayStoreListWidget> {
   @override
   Widget? fab(BuildContext aContext, AccessState accessState) {
-    return !accessState.memberIsOwner(AccessBloc.currentAppId(context)) 
+    return !accessState.memberIsOwner(widget.app.documentID!) 
       ? null
-      : StyleRegistry.registry().styleWithContext(context).adminListStyle().floatingActionButton(context, 'PageFloatBtnTag', Icon(Icons.add),
+      : StyleRegistry.registry().styleWithApp(widget.app).adminListStyle().floatingActionButton(widget.app, context, 'PageFloatBtnTag', Icon(Icons.add),
       onPressed: () {
         Navigator.of(context).push(
-          pageRouteBuilder(AccessBloc.currentApp(context), page: BlocProvider.value(
+          pageRouteBuilder(widget.app, page: BlocProvider.value(
               value: BlocProvider.of<PlayStoreListBloc>(context),
-              child: PlayStoreForm(
+              child: PlayStoreForm(app:widget.app,
                   value: null,
                   formAction: FormAction.AddAction)
           )),
@@ -96,20 +97,20 @@ class PlayStoreListWidgetState extends State<PlayStoreListWidget> {
       if (accessState is AccessDetermined) {
         return BlocBuilder<PlayStoreListBloc, PlayStoreListState>(builder: (context, state) {
           if (state is PlayStoreListLoading) {
-            return StyleRegistry.registry().styleWithContext(context).adminListStyle().progressIndicator(context);
+            return StyleRegistry.registry().styleWithApp(widget.app).adminListStyle().progressIndicator(widget.app, context);
           } else if (state is PlayStoreListLoaded) {
             final values = state.values;
             if ((widget.isEmbedded != null) && widget.isEmbedded!) {
               var children = <Widget>[];
               children.add(theList(context, values, accessState));
               children.add(
-                  StyleRegistry.registry().styleWithContext(context).adminFormStyle().button(
+                  StyleRegistry.registry().styleWithApp(widget.app).adminFormStyle().button(widget.app,
                       context, label: 'Add',
                       onPressed: () {
                         Navigator.of(context).push(
-                                  pageRouteBuilder(accessState.currentApp, page: BlocProvider.value(
+                                  pageRouteBuilder(widget.app, page: BlocProvider.value(
                                       value: BlocProvider.of<PlayStoreListBloc>(context),
-                                      child: PlayStoreForm(
+                                      child: PlayStoreForm(app:widget.app,
                                           value: null,
                                           formAction: FormAction.AddAction)
                                   )),
@@ -126,20 +127,20 @@ class PlayStoreListWidgetState extends State<PlayStoreListWidget> {
               return theList(context, values, accessState);
             }
           } else {
-            return StyleRegistry.registry().styleWithContext(context).adminListStyle().progressIndicator(context);
+            return StyleRegistry.registry().styleWithApp(widget.app).adminListStyle().progressIndicator(widget.app, context);
           }
         });
       } else {
-        return StyleRegistry.registry().styleWithContext(context).adminListStyle().progressIndicator(context);
+        return StyleRegistry.registry().styleWithApp(widget.app).adminListStyle().progressIndicator(widget.app, context);
       }
     });
   }
   
   Widget theList(BuildContext context, values, AccessState accessState) {
     return Container(
-      decoration: widget.listBackground == null ? StyleRegistry.registry().styleWithContext(context).adminListStyle().boxDecorator(context, accessState.getMember()) : BoxDecorationHelper.boxDecoration(accessState.getMember(), widget.listBackground),
+      decoration: widget.listBackground == null ? StyleRegistry.registry().styleWithApp(widget.app).adminListStyle().boxDecorator(widget.app, context, accessState.getMember()) : BoxDecorationHelper.boxDecoration(accessState.getMember(), widget.listBackground),
       child: ListView.separated(
-        separatorBuilder: (context, index) => StyleRegistry.registry().styleWithContext(context).adminListStyle().divider(context),
+        separatorBuilder: (context, index) => StyleRegistry.registry().styleWithApp(widget.app).adminListStyle().divider(widget.app, context),
         shrinkWrap: true,
         physics: ScrollPhysics(),
         itemCount: values.length,
@@ -148,7 +149,7 @@ class PlayStoreListWidgetState extends State<PlayStoreListWidget> {
           
           if (widget.widgetProvider != null) return widget.widgetProvider!(value);
 
-          return PlayStoreListItem(
+          return PlayStoreListItem(app: widget.app,
             value: value,
 //            app: accessState.app,
             onDismissed: (direction) {
@@ -162,7 +163,7 @@ class PlayStoreListWidgetState extends State<PlayStoreListWidget> {
             },
             onTap: () async {
                                    final removedItem = await Navigator.of(context).push(
-                        pageRouteBuilder(AccessBloc.currentApp(context), page: BlocProvider.value(
+                        pageRouteBuilder(widget.app, page: BlocProvider.value(
                               value: BlocProvider.of<PlayStoreListBloc>(context),
                               child: getForm(value, FormAction.UpdateAction))));
                       if (removedItem != null) {
@@ -184,7 +185,7 @@ class PlayStoreListWidgetState extends State<PlayStoreListWidget> {
   
   Widget? getForm(value, action) {
     if (widget.form == null) {
-      return PlayStoreForm(value: value, formAction: action);
+      return PlayStoreForm(app:widget.app, value: value, formAction: action);
     } else {
       return null;
     }
@@ -195,12 +196,14 @@ class PlayStoreListWidgetState extends State<PlayStoreListWidget> {
 
 
 class PlayStoreListItem extends StatelessWidget {
+  final AppModel app;
   final DismissDirectionCallback onDismissed;
   final GestureTapCallback onTap;
   final PlayStoreModel value;
 
   PlayStoreListItem({
     Key? key,
+    required this.app,
     required this.onDismissed,
     required this.onTap,
     required this.value,
@@ -213,8 +216,8 @@ class PlayStoreListItem extends StatelessWidget {
       onDismissed: onDismissed,
       child: ListTile(
         onTap: onTap,
-        title: value.documentID != null ? Center(child: StyleRegistry.registry().styleWithContext(context).frontEndStyle().textStyle().text(context, value.documentID!)) : Container(),
-        subtitle: value.description != null ? Center(child: StyleRegistry.registry().styleWithContext(context).frontEndStyle().textStyle().text(context, value.description!)) : Container(),
+        title: value.documentID != null ? Center(child: StyleRegistry.registry().styleWithApp(app).frontEndStyle().textStyle().text(app, context, value.documentID!)) : Container(),
+        subtitle: value.description != null ? Center(child: StyleRegistry.registry().styleWithApp(app).frontEndStyle().textStyle().text(app, context, value.description!)) : Container(),
       ),
     );
   }

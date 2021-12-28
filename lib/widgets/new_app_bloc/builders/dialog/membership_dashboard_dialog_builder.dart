@@ -12,12 +12,12 @@ class MembershipDashboardDialogBuilder extends DialogBuilder {
   final String? profilePageId;
   final String? feedPageId;
 
-  MembershipDashboardDialogBuilder(String appId, String dialogDocumentId, {required this.profilePageId, required this.feedPageId})
-      : super(appId, dialogDocumentId);
+  MembershipDashboardDialogBuilder(AppModel app, String dialogDocumentId, {required this.profilePageId, required this.feedPageId})
+      : super(app, dialogDocumentId);
 
   Future<DialogModel> _setupDialog() async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .dialogRepository(appId)!
+        .dialogRepository(app.documentID!)!
         .add(_dialog());
   }
 
@@ -30,7 +30,7 @@ class MembershipDashboardDialogBuilder extends DialogBuilder {
 
     return DialogModel(
         documentID: dialogDocumentId,
-        appId: appId,
+        appId: app.documentID!,
         title: "Membership dashboard",
         layout: DialogLayout.ListView,
         conditions: StorageConditionsModel(
@@ -42,9 +42,9 @@ class MembershipDashboardDialogBuilder extends DialogBuilder {
   MembershipDashboardModel _dashboardModel() {
     return MembershipDashboardModel(
         documentID: dialogDocumentId,
-        appId: appId,
+        appId: app.documentID!,
         description: "Members",
-        memberActions: ProfileAndFeedToAction.getMemberActionModels(appId, profilePageId, feedPageId),
+        memberActions: ProfileAndFeedToAction.getMemberActionModels(app, profilePageId, feedPageId),
         conditions: StorageConditionsModel(
             privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
         ),
@@ -53,7 +53,7 @@ class MembershipDashboardDialogBuilder extends DialogBuilder {
 
   Future<MembershipDashboardModel> _setupDashboard() async {
     return await AbstractRepositorySingleton.singleton
-        .membershipDashboardRepository(appId)!
+        .membershipDashboardRepository(app.documentID!)!
         .add(_dashboardModel());
   }
 

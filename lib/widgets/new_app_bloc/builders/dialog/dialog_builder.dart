@@ -1,6 +1,8 @@
+import 'package:eliud_core/model/app_model.dart';
+
 class DialogBuilder {
-  final String appId;
+  final AppModel app;
   final String dialogDocumentId;
 
-  DialogBuilder(this.appId, this.dialogDocumentId);
+  DialogBuilder(this.app, this.dialogDocumentId);
 }

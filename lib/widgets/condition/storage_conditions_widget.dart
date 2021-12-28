@@ -1,3 +1,4 @@
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
@@ -13,11 +14,13 @@ A privilege is data secured data, i.e. the storage mechanism secures the access.
 """;
 
 class StorageConditionsWidget extends StatefulWidget {
+  final AppModel app;
   final String ownerType; // page, dialog
   final StorageConditionsModel value;
 
   StorageConditionsWidget({
     Key? key,
+    required this.app,
     required this.value,
     required this.ownerType,
   }) : super(key: key);
@@ -34,15 +37,15 @@ class _StorageConditionState extends State<StorageConditionsWidget> {
   @override
   Widget build(BuildContext context) {
     var prefix = widget.ownerType;
-    return topicContainer(context,
+    return topicContainer(widget.app, context,
         title: 'Access rights',
         collapsible: true,
         collapsed: true,
         children: [
           getListTile(
-            context,
+            context,widget.app,
             leading: const Icon(Icons.security),
-            title: ComboboxWidget(
+            title: ComboboxWidget(app: widget.app,
               initialValue: (widget.value.privilegeLevelRequired == null)
                   ? 0
                   : widget.value.privilegeLevelRequired!.index,
@@ -72,7 +75,7 @@ class _StorageConditionState extends State<StorageConditionsWidget> {
             ),
           ),
           _aBitSpace(),
-          text(context, _pageAndDialogComment),
+          text(widget.app, context, _pageAndDialogComment),
         ]);
   }
 }

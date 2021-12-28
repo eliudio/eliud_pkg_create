@@ -38,17 +38,20 @@ void openApp(
   AppModel app, {
   double? fraction,
 }) {
-  openFlexibleDialog(context,app.documentID! + '/_app',
-      includeHeading: false,
-      widthFraction: fraction,
-      child: AppCreateWidget.getIt(
-        context,
-        app,
-        false,
-        fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
-        fullScreenHeight(context) - 100,
-      ),
-      );
+  openFlexibleDialog(
+    app,
+    context,
+    app.documentID! + '/_app',
+    includeHeading: false,
+    widthFraction: fraction,
+    child: AppCreateWidget.getIt(
+      context,
+      app,
+      false,
+      fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
+      fullScreenHeight(context) - 100,
+    ),
+  );
 }
 
 class AppCreateWidget extends StatefulWidget {
@@ -96,6 +99,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
       if (state is AppCreateValidated) {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           HeaderWidget(
+            app: widget.app,
             cancelAction: () async {
               return true;
             },
@@ -106,42 +110,43 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
             },
             title: 'App',
           ),
-          divider(context),
+          divider(widget.app, context),
           _general(context, state.appModel, widget.create),
-          LogoWidget(appModel: state.appModel, collapsed: true),
-          topicContainer(context,
+          LogoWidget(app: state.appModel, collapsed: true),
+          topicContainer(widget.app, context,
               title: 'Home pages',
               collapsible: true,
               collapsed: true,
               children: [
-                getListTile(context,
-                    title: text(context, 'Public'),
-                    trailing: text(context,
+                getListTile(context, widget.app,
+                    title: text(widget.app, context, 'Public'),
+                    trailing: text(widget.app, context,
                         state.appModel.homePages!.homePagePublic ?? '')),
-                getListTile(context,
-                    title: text(context, 'Subscribed'),
+                getListTile(context, widget.app,
+                    title: text(widget.app, context, 'Subscribed'),
                     trailing: text(
+                        widget.app,
                         context,
                         state.appModel.homePages!.homePageSubscribedMember ??
                             '')),
-                getListTile(context,
-                    title: text(context, 'Level 1'),
-                    trailing: text(context,
+                getListTile(context, widget.app,
+                    title: text(widget.app, context, 'Level 1'),
+                    trailing: text(widget.app, context,
                         state.appModel.homePages!.homePageLevel1Member ?? '')),
-                getListTile(context,
-                    title: text(context, 'Level 2'),
-                    trailing: text(context,
+                getListTile(context, widget.app,
+                    title: text(widget.app, context, 'Level 2'),
+                    trailing: text(widget.app, context,
                         state.appModel.homePages!.homePageLevel2Member ?? '')),
-                getListTile(context,
-                    title: text(context, 'Blocked'),
-                    trailing: text(context,
+                getListTile(context, widget.app,
+                    title: text(widget.app, context, 'Blocked'),
+                    trailing: text(widget.app, context,
                         state.appModel.homePages!.homePageBlockedMember ?? '')),
-                getListTile(context,
-                    title: text(context, 'Owner'),
-                    trailing: text(context,
+                getListTile(context, widget.app,
+                    title: text(widget.app, context, 'Owner'),
+                    trailing: text(widget.app, context,
                         state.appModel.homePages!.homePageOwner ?? '')),
               ]),
-          topicContainer(context,
+          topicContainer(widget.app, context,
               title: 'Pages',
               collapsible: true,
               collapsed: true,
@@ -153,9 +158,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         width: widget.widgetWidth,
                         child: ListView(
                             children: state.pages.map((item) {
-                          return getListTile(context,
+                          return getListTile(context, widget.app,
                               onTap: () => openPage(
-                                    context,widget.app,
+                                    context,
+                                    widget.app,
                                     false,
                                     item!,
                                     "Update page",
@@ -166,37 +172,38 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                   itemBuilder: (context) => [
                                         PopupMenuItem(
                                           value: 0,
-                                          child: text(context, 'Details'),
+                                          child: text(
+                                              widget.app, context, 'Details'),
                                         ),
                                         PopupMenuDivider(),
                                         PopupMenuItem(
                                           value: 1,
-                                          child: text(context,
+                                          child: text(widget.app, context,
                                               'Set as public homepage'),
                                         ),
                                         PopupMenuItem(
                                           value: 2,
-                                          child: text(context,
+                                          child: text(widget.app, context,
                                               'Set as homepage for subscribed member'),
                                         ),
                                         PopupMenuItem(
                                           value: 3,
-                                          child: text(context,
+                                          child: text(widget.app, context,
                                               'Set as homepage for suscribed member, level 1'),
                                         ),
                                         PopupMenuItem(
                                           value: 4,
-                                          child: text(context,
+                                          child: text(widget.app, context,
                                               'Set as homepage for suscribed member, level 2'),
                                         ),
                                         PopupMenuItem(
                                           value: 5,
-                                          child: text(context,
+                                          child: text(widget.app, context,
                                               'Set as homepage for blocked member'),
                                         ),
                                         PopupMenuItem(
                                           value: 6,
-                                          child: text(context,
+                                          child: text(widget.app, context,
                                               'Set as homepage for owner'),
                                         ),
                                       ],
@@ -242,9 +249,13 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                     }
                                   }),
                               title: text(
-                                  context, ((item != null) && (item.title != null)) ? item.title! : '?'));
+                                  widget.app,
+                                  context,
+                                  ((item != null) && (item.title != null))
+                                      ? item.title!
+                                      : '?'));
                         }).toList())),
-                    divider(context),
+                    divider(widget.app, context),
                     GestureDetector(
                         child: Icon(Icons.add),
                         onTap: () {
@@ -258,7 +269,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                   ], shrinkWrap: true, physics: ScrollPhysics()),
                 ),
               ]),
-          topicContainer(context,
+          topicContainer(widget.app, context,
               title: 'Dialogs',
               collapsible: true,
               collapsed: true,
@@ -270,7 +281,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         width: widget.widgetWidth,
                         child: ListView(
                             children: state.dialogs.map((item) {
-                          return getListTile(context,
+                          return getListTile(context, widget.app,
                               onTap: () => openDialog(
                                     context,
                                     widget.app,
@@ -284,7 +295,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                   itemBuilder: (context) => [
                                         PopupMenuItem(
                                           value: 0,
-                                          child: text(context, 'Details'),
+                                          child: text(
+                                              widget.app, context, 'Details'),
                                         ),
                                       ],
                                   onSelected: (value) {
@@ -298,10 +310,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                       );
                                     }
                                   }),
-                              title: text(
-                                  context, item != null ? item.title! : '?'));
+                              title: text(widget.app, context,
+                                  item != null ? item.title! : '?'));
                         }).toList())),
-                    divider(context),
+                    divider(widget.app, context),
                     GestureDetector(
                         child: Icon(Icons.add),
                         onTap: () {
@@ -315,14 +327,15 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                   ], shrinkWrap: true, physics: ScrollPhysics()),
                 ),
               ]),
-          topicContainer(context,
+          topicContainer(widget.app, context,
               title: 'Policies',
               collapsible: true,
               collapsed: true,
               children: [
-                getListTile(context,
+                getListTile(context, widget.app,
                     leading: Icon(Icons.description),
                     title: dialogField(
+                      widget.app,
                       context,
                       initialValue: state.appModel.policies!.comments,
                       valueChanged: (value) {
@@ -342,18 +355,20 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         child: ListView(
                             children:
                                 state.appModel.policies!.policies!.map((item) {
-                          return getListTile(context,
+                          return getListTile(context, widget.app,
                               trailing: PopupMenuButton<int>(
                                   child: Icon(Icons.more_vert),
                                   elevation: 10,
                                   itemBuilder: (context) => [
                                         PopupMenuItem(
                                           value: 0,
-                                          child: text(context, 'Delete'),
+                                          child: text(
+                                              widget.app, context, 'Delete'),
                                         ),
                                         PopupMenuItem(
                                           value: 1,
-                                          child: text(context, 'Rename'),
+                                          child: text(
+                                              widget.app, context, 'Rename'),
                                         ),
                                       ],
                                   onSelected: (value) {
@@ -363,8 +378,11 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                             .remove(item);
                                       });
                                     } else if (value == 1) {
-                                      var appId = AccessBloc.currentAppId(context);
-                                      openEntryDialog(context,appId + '/_createdivider',
+                                      openEntryDialog(
+                                          widget.app,
+                                          context,
+                                          widget.app.documentID! +
+                                              '/_createdivider',
                                           title: 'Provide new name for policy',
                                           hintText: 'Policy name',
                                           initialValue: item.name ?? '',
@@ -379,14 +397,15 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                       });
                                     }
                                   }),
-                              title: text(
-                                  context, item != null ? item.name! : '?'));
+                              title: text(widget.app, context,
+                                  item != null ? item.name! : '?'));
                         }).toList())),
-                    divider(context),
+                    divider(widget.app, context),
                     _progressPolicy != null
                         ? Container(
                             height: 50,
-                            child: progressIndicatorWithValue(context,
+                            child: progressIndicatorWithValue(
+                                widget.app, context,
                                 value: _progressPolicy!))
                         : GestureDetector(
                             child: Icon(Icons.add),
@@ -400,14 +419,14 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                 if (path != null) {
                                   var documentId = newRandomKey();
                                   await PublicMediumHelper(
-                                          state.appModel.documentID!,
-                                          state.appModel.ownerID!,)
-                                      .createThumbnailUploadPdfFile(
-                                          documentId, path, documentId,
-                                          feedbackFunction: (pdf) =>
-                                              _pdfFeedbackFunction(
-                                                  state.appModel, pdf),
-                                          feedbackProgress: _policyUploading);
+                                    state.appModel,
+                                    state.appModel.ownerID!,
+                                  ).createThumbnailUploadPdfFile(
+                                      documentId, path, documentId,
+                                      feedbackFunction: (pdf) =>
+                                          _pdfFeedbackFunction(
+                                              state.appModel, pdf),
+                                      feedbackProgress: _policyUploading);
                                 }
                               }
                             })
@@ -441,7 +460,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                 )
               ]),
 */
-          topicContainer(context,
+          topicContainer(widget.app, context,
               title: 'Navigation',
               collapsible: true,
               collapsed: true,
@@ -451,7 +470,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                     width: widget.widgetWidth,
                     child: Row(children: [
                       Spacer(),
-                      button(context,
+                      button(widget.app, context,
                           label: 'Left drawer',
                           onPressed: () => openDrawer(
                               context,
@@ -460,12 +479,15 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               DecorationDrawerType.Left,
                               1)),
                       Spacer(),
-                      button(context,
+                      button(widget.app, context,
                           label: 'App Bar',
-                          onPressed: () =>
-                              openAppBar(context, widget.app, state.appBarModel, )),
+                          onPressed: () => openAppBar(
+                                context,
+                                widget.app,
+                                state.appBarModel,
+                              )),
                       Spacer(),
-                      button(context,
+                      button(widget.app, context,
                           label: 'Right drawer',
                           onPressed: () => openDrawer(
                               context,
@@ -474,30 +496,34 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               DecorationDrawerType.Right,
                               1)),
                       Spacer(),
-                      button(context,
+                      button(widget.app, context,
                           label: 'Bottom navbar',
                           onPressed: () => openBottomNavBar(
-                              context, widget.app, state.homeMenuModel, )),
+                                context,
+                                widget.app,
+                                state.homeMenuModel,
+                              )),
                       Spacer(),
                     ]))
               ]),
         ]);
       } else {
-        return progressIndicator(context);
+        return progressIndicator(widget.app, context);
       }
     });
   }
 
   Widget _general(BuildContext context, AppModel app, bool create) {
-    return topicContainer(context,
+    return topicContainer(widget.app, context,
         title: 'General',
         collapsible: true,
         collapsed: true,
         children: [
-          getListTile(context,
+          getListTile(context, widget.app,
               leading: Icon(Icons.vpn_key),
               title: create
                   ? dialogField(
+                      widget.app,
                       context,
                       initialValue: app.documentID,
                       valueChanged: (value) {
@@ -508,10 +534,11 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         labelText: 'Identifier',
                       ),
                     )
-                  : text(context, app.documentID!)),
-          getListTile(context,
+                  : text(widget.app, context, app.documentID!)),
+          getListTile(context, widget.app,
               leading: Icon(Icons.description),
               title: dialogField(
+                widget.app,
                 context,
                 initialValue: app.title,
                 valueChanged: (value) {
@@ -522,9 +549,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                   labelText: 'Title',
                 ),
               )),
-          getListTile(context,
+          getListTile(context, widget.app,
               leading: Icon(Icons.description),
               title: dialogField(
+                widget.app,
                 context,
                 initialValue: app.description,
                 valueChanged: (value) {
@@ -535,9 +563,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                   labelText: 'Description',
                 ),
               )),
-          getListTile(context,
+          getListTile(context, widget.app,
               leading: Icon(Icons.email),
               title: dialogField(
+                widget.app,
                 context,
                 initialValue: app.email,
                 valueChanged: (value) {

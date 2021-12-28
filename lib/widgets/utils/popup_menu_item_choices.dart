@@ -1,8 +1,10 @@
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class PopupMenuItemChoices extends StatefulWidget {
+  final AppModel app;
   final bool isFirst;
   final bool isLast;
   final VoidCallback actionUp;
@@ -11,7 +13,7 @@ class PopupMenuItemChoices extends StatefulWidget {
   final VoidCallback actionDelete;
 
   PopupMenuItemChoices({
-    Key? key, required this.isFirst, required this.isLast, required this.actionUp, required this.actionDown, required this.actionDetails, required this.actionDelete,
+    Key? key, required this.app, required this.isFirst, required this.isLast, required this.actionUp, required this.actionDown, required this.actionDetails, required this.actionDelete,
   }) : super(key: key);
 
   @override
@@ -27,20 +29,20 @@ class _PopupMenuItemChoicesState extends State<PopupMenuItemChoices> {
       if (widget.isFirst)
         PopupMenuItem(
           value: 1,
-          child: text(context, 'Move up'),
+          child: text(widget.app, context, 'Move up'),
         ),
       if (widget.isLast)
         PopupMenuItem(
           value: 2,
-          child: text(context, 'Move down'),
+          child: text(widget.app, context, 'Move down'),
         ),
       PopupMenuItem(
         value: 3,
-        child: text(context, 'Details'),
+        child: text(widget.app, context, 'Details'),
       ),
       PopupMenuItem(
         value: 4,
-        child: text(context, 'Delete'),
+        child: text(widget.app, context, 'Delete'),
       ),
     ];
     return PopupMenuButton<int>(

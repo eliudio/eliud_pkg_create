@@ -23,7 +23,7 @@ void openAppBar(
   AppBarModel model,{
   double? fraction,
 }) {
-  openFlexibleDialog(context, app.documentID! + '/_appbar',
+  openFlexibleDialog(app, context, app.documentID! + '/_appbar',
       includeHeading: false,
       widthFraction: fraction,
       child: AppBarCreateWidget.getIt(
@@ -75,7 +75,7 @@ class _AppBarCreateWidgetState extends State<AppBarCreateWidget> {
         builder: (context, state) {
       if (state is AppBarCreateValidated) {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-          HeaderWidget(
+          HeaderWidget(app: widget.app,
             cancelAction: () async {
               return true;
             },
@@ -86,7 +86,7 @@ class _AppBarCreateWidgetState extends State<AppBarCreateWidget> {
             },
             title: 'AppBar',
           ),
-          divider(context),
+          divider(widget.app, context),
           MenuDefCreateWidget.getIt(
             context,
             widget.app,

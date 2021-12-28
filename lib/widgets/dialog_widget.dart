@@ -27,7 +27,7 @@ void openDialog(
   String title, {
   double? fraction = 1,
 }) {
-  openFlexibleDialog(context,app.documentID! + '/_dialog',
+  openFlexibleDialog(app, context, app.documentID! + '/_dialog',
       includeHeading: false,
       widthFraction: fraction,
       child: DialogCreateWidget.getIt(
@@ -90,7 +90,7 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
         builder: (context, state) {
       if (state is DialogCreateValidated) {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-          HeaderWidget(
+          HeaderWidget(app: widget.app,
             cancelAction: () async {
               return true;
             },
@@ -103,18 +103,18 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
                 ? 'Create new dialog'
                 : 'Change dialog ' + state.dialogModel.documentID!,
           ),
-          divider(context),
+          divider(widget.app, context),
           if (widget.create)
-            topicContainer(context,
+            topicContainer(widget.app, context,
                 title: 'General',
                 collapsible: true,
                 collapsed: true,
                 children: [
-                  getListTile(context,
+                  getListTile(context,widget.app,
                       leading: Icon(Icons.vpn_key),
                       title: widget.create
-                          ? dialogField(
-                              context,
+                          ? dialogField(widget.app,
+                        context,
                               initialValue: state.dialogModel.documentID,
                               valueChanged: (value) {
                                 state.dialogModel.documentID = value;
@@ -124,7 +124,7 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
                                 labelText: 'Identifier',
                               ),
                             )
-                          : text(context, state.dialogModel.documentID!))
+                          : text(widget.app, context, state.dialogModel.documentID!))
                 ]),
           BodyComponentsCreateWidget.getIt(
             context,
@@ -132,10 +132,10 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
             state.dialogModel.bodyComponents!,
             widget.widgetWidth,
           ),
-          StorageConditionsWidget(value: state.dialogModel.conditions!, ownerType: 'dialog'),
+          StorageConditionsWidget(app: widget.app, value: state.dialogModel.conditions!, ownerType: 'dialog'),
         ]);
       } else {
-        return progressIndicator(context);
+        return progressIndicator(widget.app, context);
       }
     });
   }

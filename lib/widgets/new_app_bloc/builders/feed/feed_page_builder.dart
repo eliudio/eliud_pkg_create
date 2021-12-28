@@ -20,18 +20,18 @@ import 'components/profile_component.dart';
 class FeedPageBuilder extends PageBuilder {
   FeedPageBuilder(
       String pageId,
-      String appId,
+      AppModel app,
       String memberId,
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer)
-      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+      : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> _setupPage({required String feedMenuComponentIdentifier, required String headerComponentIdentifier}) async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .pageRepository(appId)!
+        .pageRepository(app.documentID!)!
         .add(_page(feedMenuComponentIdentifier: feedMenuComponentIdentifier, headerComponentIdentifier: headerComponentIdentifier));
   }
 
@@ -52,7 +52,7 @@ class FeedPageBuilder extends PageBuilder {
 
     return PageModel(
         documentID: pageId,
-        appId: appId,
+        appId: app.documentID!,
         title: "Feed",
         drawer: leftDrawer,
         endDrawer: rightDrawer,
@@ -69,7 +69,7 @@ class FeedPageBuilder extends PageBuilder {
   FeedModel feedModel() =>
      FeedModel(
       documentID: pageId,
-      appId: appId,
+      appId: app.documentID!,
       description: "My Feed",
       thumbImage: ThumbStyle.Thumbs,
       photoPost: true,
@@ -85,7 +85,7 @@ class FeedPageBuilder extends PageBuilder {
 
   Future<FeedModel> _setupFeed() async {
     return await AbstractRepositorySingleton.singleton
-        .feedRepository(appId)!
+        .feedRepository(app.documentID!)!
         .add(feedModel());
   }
 
@@ -103,7 +103,7 @@ class FeedPageBuilder extends PageBuilder {
       required String appMembersPageId}) async {
     var feed = await _setupFeed();
     await FeedMenu(
-      appId,
+      app,
       feedPageId: feedPageId,
       profilePageId: profilePageId,
       followRequestPageId: followRequestPageId,
@@ -112,8 +112,8 @@ class FeedPageBuilder extends PageBuilder {
       fiendFriendsPageId: fiendFriendsPageId,
       appMembersPageId: appMembersPageId,
     ).run(feed: feed, feedMenuComponentIdentifier: feedMenuComponentIdentifier);
-    await ProfileComponent(appId).run(feed: feed, profileComponentId: profileComponentIdentifier);
-    await HeaderComponent(appId)
+    await ProfileComponent(app.documentID!).run(feed: feed, profileComponentId: profileComponentIdentifier);
+    await HeaderComponent(app.documentID!)
         .run(feed: feed, headerComponentIdentifier: headerComponentIdentifier);
 
     // Specific to feed page

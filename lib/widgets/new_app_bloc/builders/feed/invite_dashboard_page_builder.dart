@@ -14,13 +14,13 @@ import 'other_feed_pages_builder.dart';
 class InviteDashboardPageBuilder extends OtherFeedPageBuilder {
   InviteDashboardPageBuilder(
       String pageId,
-      String appId,
+      AppModel app,
       String memberId,
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer)
-      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+      : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> run(
@@ -29,7 +29,7 @@ class InviteDashboardPageBuilder extends OtherFeedPageBuilder {
       required String headerComponentIdentifier,
       required String profilePageId,
       required String feedPageId}) async {
-    await InviteDashboard(appId, componentIdentifier, profilePageId, feedPageId)
+    await InviteDashboard(app, componentIdentifier, profilePageId, feedPageId)
         .run();
     return await doIt(
         componentName: AbstractInviteDashboardComponent.componentName,

@@ -16,8 +16,10 @@ import 'bodycomponents__bloc/bodycomponents_create_state.dart';
 
 class BodyComponentsCreateWidget extends StatefulWidget {
   final double widgetWidth;
+  final AppModel app;
 
   BodyComponentsCreateWidget._({
+    required this.app,
     Key? key,
     required this.widgetWidth,
 
@@ -41,7 +43,7 @@ class BodyComponentsCreateWidget extends StatefulWidget {
         app,
         bodyComponents,
       )..add(BodyComponentsCreateInitialiseEvent(bodyComponents)),
-      child: BodyComponentsCreateWidget._(
+      child: BodyComponentsCreateWidget._(app: app,
         widgetWidth: widgetWidth,
 
       ),
@@ -65,7 +67,7 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
         int size = state.bodyComponentModels.length;
         return Column(
           children: [
-            topicContainer(context,
+            topicContainer(widget.app, context,
                 title: 'Components',
                 collapsible: true,
                 collapsed: true,
@@ -81,10 +83,10 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
                             if (item == state.currentlySelected)
                               theKey = currentVisible;
                             count++;
-                            return getListTile(context,
+                            return getListTile(context,widget.app,
                                 key: theKey,
                                 onTap: () => details(context, item),
-                                trailing: PopupMenuItemChoices(
+                                trailing: PopupMenuItemChoices(app: widget.app,
                                   isFirst: (count != 1),
                                   isLast: (count != size),
                                   actionUp: () =>
@@ -103,19 +105,19 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
                                       .add(BodyComponentsCreateDeleteMenuItem(
                                           item)),
                                 ),
-                                title: text(
+                                title: text(widget.app,
                                     context,
                                     item.componentName! +
                                         " - " +
                                         item.componentId!));
                           }).toList())))
                 ]),
-            topicContainer(context,
+            topicContainer(widget.app, context,
                 title: 'Available components',
                 collapsible: true,
                 collapsed: true,
                 children: [
-                  PluginsWidget(
+                  PluginsWidget(app: widget.app,
                     widgetHeight: 200, //max(heightUnit() * 2, 150) - 10,
                     widgetWidth: widget.widgetWidth,
                     pluginsWidthComponents: state.pluginWithComponents,
@@ -124,13 +126,13 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
           ],
         );
       } else {
-        return progressIndicator(context);
+        return progressIndicator(widget.app, context);
       }
     });
   }
 
   void details(BuildContext context, BodyComponentModel bodyComponentModel) {
-    updateComponent(context, bodyComponentModel.componentName,
+    updateComponent(context, widget.app, bodyComponentModel.componentName,
         bodyComponentModel.componentId, (_) {});
   }
 

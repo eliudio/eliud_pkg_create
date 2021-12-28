@@ -19,21 +19,21 @@ class PageWithTextBuilder extends PageBuilder {
       this.title,
       this.text,
       String pageId,
-      String appId,
+      AppModel app,
       String memberId,
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer)
-      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+      : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> create() async {
     // welcome page
     var htmlComponentId = pageId;
-    await htmlRepository(appId: appId)!.add(HtmlModel(
+    await htmlRepository(appId: app.documentID!)!.add(HtmlModel(
       documentID: htmlComponentId,
-      appId: appId,
+      appId: app.documentID!,
       name: 'html 1',
       html: '<html><p>$text</p></html>',
       conditions: StorageConditionsModel(
@@ -44,7 +44,7 @@ class PageWithTextBuilder extends PageBuilder {
     var page = PageModel(
       documentID: pageId,
       title: title,
-      appId: appId,
+      appId: app.documentID!,
       bodyComponents: [
         BodyComponentModel(
             documentID: "1",
@@ -59,7 +59,7 @@ class PageWithTextBuilder extends PageBuilder {
       conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
     );
-    await pageRepository(appId: appId)!.add(page);
+    await pageRepository(appId: app.documentID!)!.add(page);
     return page;
   }
 }

@@ -41,7 +41,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               documentID: newRandomKey(),
               text: 'Sign in',
               description: 'Sign in',
-              action: InternalAction(appId!,
+              action: InternalAction(app,
                   internalActionEnum: InternalActionEnum.Login)),
         );
         apply();
@@ -51,7 +51,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               documentID: newRandomKey(),
               text: 'Sign out',
               description: 'Sign out',
-              action: InternalAction(appId!,
+              action: InternalAction(app,
                   internalActionEnum: InternalActionEnum.Logout)),
         );
         apply();
@@ -61,7 +61,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               documentID: newRandomKey(),
               text: 'Other apps',
               description: 'Other apps',
-              action: InternalAction(appId!,
+              action: InternalAction(app,
                   internalActionEnum: InternalActionEnum.OtherApps)),
         );
         apply();
@@ -74,7 +74,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               icon: IconModel(
                   codePoint: Icons.favorite_border.codePoint,
                   fontFamily: Icons.settings.fontFamily),
-              action: GotoPage(appId!, pageID: event.pageModel.documentID!)),
+              action: GotoPage(app, pageID: event.pageModel.documentID!)),
         );
         apply();
       } else if (event is MenuDefCreateAddMenuItemForDialog) {
@@ -86,7 +86,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               icon: IconModel(
                   codePoint: Icons.favorite_border.codePoint,
                   fontFamily: Icons.settings.fontFamily),
-              action: OpenDialog(appId!, dialogID: event.dialogModel.documentID!)),
+              action: OpenDialog(app, dialogID: event.dialogModel.documentID!)),
         );
         apply();
       } else if (event is MenuDefCreateAddMenuItemForWorkflow) {
@@ -98,7 +98,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               icon: IconModel(
                   codePoint: Icons.favorite_border.codePoint,
                   fontFamily: Icons.settings.fontFamily),
-              action: WorkflowActionModel(appId!, workflow: event.workflowModel)),
+              action: WorkflowActionModel(app, workflow: event.workflowModel)),
         );
         apply();
       } else if (event is MenuDefMoveMenuItem) {

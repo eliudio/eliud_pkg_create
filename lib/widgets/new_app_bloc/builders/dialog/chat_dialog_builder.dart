@@ -13,7 +13,7 @@ class ChatDialogBuilder extends DialogBuilder {
   final String identifierMemberHasUnreadChat;
   final String identifierMemberAllHaveBeenRead;
 
-  ChatDialogBuilder(String appId, {required this.identifierMemberHasUnreadChat, required this.identifierMemberAllHaveBeenRead}) : super(appId, 'NA');
+  ChatDialogBuilder(AppModel app, {required this.identifierMemberHasUnreadChat, required this.identifierMemberAllHaveBeenRead}) : super(app, 'NA');
 
   // Security is setup to indicate if a page or dialog is accessible
   // For this reason we need 2 dialogs, one for unread and one for read chats
@@ -23,7 +23,7 @@ class ChatDialogBuilder extends DialogBuilder {
   Future<DialogModel> _setupDialog(
       String identifier, String packageCondition) async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .dialogRepository(appId)!
+        .dialogRepository(app.documentID!)!
         .add(_dialog(identifier, packageCondition));
   }
 
@@ -36,7 +36,7 @@ class ChatDialogBuilder extends DialogBuilder {
 
     return DialogModel(
         documentID: identifier,
-        appId: appId,
+        appId: app.documentID!,
         title: "Chat",
         layout: DialogLayout.ListView,
         bodyComponents: components);
@@ -45,7 +45,7 @@ class ChatDialogBuilder extends DialogBuilder {
   ChatDashboardModel _chatModel() {
     return ChatDashboardModel(
       documentID: CHAT_ID,
-      appId: appId,
+      appId: app.documentID!,
       description: "Chat",
       conditions: StorageConditionsModel(
           privilegeLevelRequired:
@@ -55,7 +55,7 @@ class ChatDialogBuilder extends DialogBuilder {
 
   Future<ChatDashboardModel> _setupChat() async {
     return await AbstractRepositorySingleton.singleton
-        .chatDashboardRepository(appId)!
+        .chatDashboardRepository(app.documentID!)!
         .add(_chatModel());
   }
 

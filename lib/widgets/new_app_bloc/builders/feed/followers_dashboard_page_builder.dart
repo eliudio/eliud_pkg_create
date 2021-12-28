@@ -14,13 +14,13 @@ import 'other_feed_pages_builder.dart';
 class FollowersDashboardPageBuilder extends OtherFeedPageBuilder {
   FollowersDashboardPageBuilder(
       String pageId,
-      String appId,
+      AppModel app,
       String memberId,
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer)
-      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+      : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> run(
@@ -29,7 +29,7 @@ class FollowersDashboardPageBuilder extends OtherFeedPageBuilder {
       required String headerComponentIdentifier,
       required String profilePageId,
       required String feedPageId}) async {
-    await FollowingDashboard(appId, componentIdentifier, "Followers",
+    await FollowingDashboard(app, componentIdentifier, "Followers",
             FollowingView.Followers, profilePageId, feedPageId)
         .run();
     return await doIt(

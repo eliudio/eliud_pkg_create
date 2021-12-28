@@ -1,3 +1,4 @@
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 typedef Feedback(int value);
 
 class ComboboxWidget extends StatefulWidget {
+  final AppModel app;
   final int? initialValue;
   final Feedback feedback;
   final List<String> options;
@@ -13,6 +15,7 @@ class ComboboxWidget extends StatefulWidget {
 
   ComboboxWidget({
     Key? key,
+    required this.app,
     required this.initialValue,
     required this.feedback,
     required this.options,
@@ -46,7 +49,7 @@ class _ComboboxWidgetState extends State<ComboboxWidget> {
     for (int i = 0; i < widget.options.length; i++) {
       dropdownMenuItems.add(
         DropdownMenuItem<int>(
-            value: i, child: text(context, widget.options[i])),
+            value: i, child: text(widget.app, context, widget.options[i])),
       );
     }
 
@@ -59,20 +62,20 @@ class _ComboboxWidgetState extends State<ComboboxWidget> {
       children: [
         Align(
             alignment: Alignment.centerLeft,
-            child: inputDecorationLabel(context, widget.title, maxLines: 5)),
+            child: inputDecorationLabel(widget.app, context, widget.title, maxLines: 5)),
         Align(alignment: Alignment.centerLeft, child: DropdownButton<int>(
           isDense: false,
           isExpanded: false,
           items: dropdownMenuItems,
           value: selected,
-          hint: text(context, widget.title),
+          hint: text(widget.app, context, widget.title),
           onChanged: (value) => _onChange(value),
         ) ),
         if (widget.descriptions != null) Container(width: 30),
         if (widget.descriptions != null)
           Align(
               alignment: Alignment.centerLeft,
-              child: text(context, widget.descriptions![selected], maxLines: 5))
+              child: text(widget.app, context, widget.descriptions![selected], maxLines: 5))
       ],
     );
   }

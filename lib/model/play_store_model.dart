@@ -78,7 +78,7 @@ class PlayStoreModel {
     );
   }
 
-  static PlayStoreModel? fromEntity(String documentID, PlayStoreEntity? entity) {
+  static Future<PlayStoreModel?> fromEntity(String documentID, PlayStoreEntity? entity) async {
     if (entity == null) return null;
     var counter = 0;
     return PlayStoreModel(
@@ -86,7 +86,7 @@ class PlayStoreModel {
           appId: entity.appId, 
           description: entity.description, 
           conditions: 
-            StorageConditionsModel.fromEntity(entity.conditions), 
+            await StorageConditionsModel.fromEntity(entity.conditions), 
     );
   }
 

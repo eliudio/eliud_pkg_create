@@ -19,7 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void openWorkflow(BuildContext context, AppModel app, bool create, WorkflowModel model, String title,
     {VoidCallback? callOnAction, double? fraction}) {
-  openFlexibleDialog(context, app.documentID! + '/_workflow',
+  openFlexibleDialog(app,context, app.documentID! + '/_workflow',
       includeHeading: false,
       widthFraction: fraction,
       child: WorkflowCreateWidget.getIt(
@@ -79,7 +79,7 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
         builder: (context, state) {
       if (state is WorkflowCreateValidated) {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-          HeaderWidget(
+          HeaderWidget(app: widget.app,
             cancelAction: () async {
               return true;
             },
@@ -92,17 +92,17 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
                 ? 'Create new Workflow'
                 : 'Change Workflow ' + state.workflowModel.documentID!,
           ),
-          divider(context),
+          divider(widget.app,context),
           if (widget.create)
-            topicContainer(context,
+            topicContainer(widget.app,context,
                 title: 'General',
                 collapsible: true,
                 collapsed: true,
                 children: [
-                  getListTile(context,
+                  getListTile(context,widget.app,
                       leading: Icon(Icons.vpn_key),
                       title: widget.create
-                          ? dialogField(
+                          ? dialogField(widget.app,
                               context,
                               initialValue: state.workflowModel.documentID,
                               valueChanged: (value) {
@@ -113,7 +113,7 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
                                 labelText: 'Identifier',
                               ),
                             )
-                          : text(context, state.workflowModel.documentID!))
+                          : text(widget.app,context, state.workflowModel.documentID!))
                 ]),
           WorkflowTasksCreateWidget.getIt(
             context,
@@ -123,7 +123,7 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
           ),
         ]);
       } else {
-        return progressIndicator(context);
+        return progressIndicator(widget.app,context);
       }
     });
   }

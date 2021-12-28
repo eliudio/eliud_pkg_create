@@ -1,6 +1,7 @@
 import 'package:eliud_core/model/abstract_repository_singleton.dart'
     as corerepo;
 import 'package:eliud_core/model/app_bar_model.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
@@ -28,18 +29,18 @@ class AboutPageBuilder extends PageBuilder {
       this.componentId,
     this.aboutAssetLocation,
     String pageId,
-    String appId,
+    AppModel app,
     String memberId,
     HomeMenuModel theHomeMenu,
     AppBarModel theAppBar,
     DrawerModel leftDrawer,
     DrawerModel rightDrawer,
-  ) : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+  ) : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> _setupPage() async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .pageRepository(appId)!
+        .pageRepository(app.documentID!)!
         .add(_page());
   }
 
@@ -53,7 +54,7 @@ class AboutPageBuilder extends PageBuilder {
 
     return PageModel(
         documentID: pageId,
-        appId: appId,
+        appId: app.documentID!,
         title: "About",
         drawer: leftDrawer,
         endDrawer: rightDrawer,
@@ -68,13 +69,13 @@ class AboutPageBuilder extends PageBuilder {
 
   Future<String?> _store(PlatformMediumModel platformMediumModel) async {
     return (await AbstractRepositorySingleton.singleton
-            .bookletRepository(appId)!
+            .bookletRepository(app.documentID!)!
             .add(_header(platformMediumModel)))
         .documentID;
   }
 
   Future<PlatformMediumModel> installAboutImage() async {
-    return await PlatformMediumHelper(appId, memberId,
+    return await PlatformMediumHelper(app, memberId,
             PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple)
         .createThumbnailUploadPhotoAsset(
       newRandomKey(),
@@ -104,7 +105,7 @@ class AboutPageBuilder extends PageBuilder {
       documentID: componentId,
       name: "About",
       sections: entries,
-      appId: appId,
+      appId: app.documentID!,
       conditions: StorageConditionsModel(
           privilegeLevelRequired:
               PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
@@ -121,7 +122,7 @@ class AboutPageBuilder extends PageBuilder {
           title,
           description,
           pageId,
-          appId,
+          app,
           memberId,
           theHomeMenu,
           theAppBar,

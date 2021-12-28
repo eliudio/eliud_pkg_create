@@ -1,24 +1,17 @@
-import 'package:eliud_core/core_package.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_notifications/notifications_package.dart';
 import 'package:eliud_core/model/access_model.dart';
 import 'package:eliud_core/model/display_conditions_model.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/album_page_builder.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/blocked_page_builder.dart';
-import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/page_with_text.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
 import 'package:eliud_core/model/icon_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
-import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_chat/chat_package.dart';
-import 'package:eliud_pkg_follow/follow_package.dart';
 import 'package:eliud_pkg_medium/platform/medium_platform.dart';
-import 'package:eliud_pkg_membership/membership_package.dart';
-import 'package:eliud_pkg_workflow/model/workflow_model.dart';
-import 'package:eliud_pkg_workflow/tools/action/workflow_action_model.dart';
 import 'package:eliud_pkg_workflow/workflow_package.dart';
 import 'package:flutter/material.dart';
 import '../action_specification.dart';
@@ -196,7 +189,7 @@ class AppBuilder {
         print("Logo");
         if (logo == null) {
           try {
-            logo = await RandomLogo.getRandomPhoto(appId, memberId, null);
+            logo = await RandomLogo.getRandomPhoto(app, memberId, null);
           } catch (_) {
             //swallow. On web, today, this fails because we don't have access to asset files
           }
@@ -224,7 +217,7 @@ class AppBuilder {
     // check if no errors, e.g. identifier should not exist
     tasks.add(() async {
       print("leftDrawer");
-      leftDrawer = await LeftDrawerBuilder(appId,
+      leftDrawer = await LeftDrawerBuilder(app,
           logo: logo,
           menuItems:
               getMenuItemsFor((value) => value.availableInLeftDrawer)).create();
@@ -232,7 +225,7 @@ class AppBuilder {
 
     tasks.add(() async {
       print("rightDrawer");
-      rightDrawer = await RightDrawerBuilder(appId,
+      rightDrawer = await RightDrawerBuilder(app,
               logo: logo,
               menuItems:
                   getMenuItemsFor((value) => value.availableInRightDrawer))
@@ -241,7 +234,7 @@ class AppBuilder {
 
     tasks.add(() async {
       print("HomeMenu");
-      theHomeMenu = await HomeMenuBuilder(appId,
+      theHomeMenu = await HomeMenuBuilder(app,
               logo: logo,
               menuItems: getMenuItemsFor((value) => value.availableInHomeMenu))
           .create();
@@ -249,7 +242,7 @@ class AppBuilder {
 
     tasks.add(() async {
       print("AppBar");
-      theAppBar = await AppBarBuilder(appId,
+      theAppBar = await AppBarBuilder(app,
               logo: logo,
               menuItems: getMenuItemsFor((value) => value.availableInAppBar))
           .create();
@@ -259,7 +252,7 @@ class AppBuilder {
         .shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
         print("member dashboard");
-        await MemberDashboardDialogBuilder(appId, MEMBER_DASHBOARD_DIALOG_ID)
+        await MemberDashboardDialogBuilder(app, MEMBER_DASHBOARD_DIALOG_ID)
             .create();
       });
     }
@@ -270,7 +263,7 @@ class AppBuilder {
       feedPageId = FEED_PAGE_ID;
       tasks.add(() async {
         print("feedModel");
-        feedModel = await FeedPageBuilder(FEED_PAGE_ID, appId, memberId,
+        feedModel = await FeedPageBuilder(FEED_PAGE_ID, app, memberId,
                 theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .run(
                 feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
@@ -287,7 +280,7 @@ class AppBuilder {
 
       tasks.add(() async {
         print("Follow Request");
-        await FollowRequestsDashboardPageBuilder(FOLLOW_REQUEST_PAGE_ID, appId,
+        await FollowRequestsDashboardPageBuilder(FOLLOW_REQUEST_PAGE_ID, app,
                 memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .run(
           componentIdentifier: FOLLOW_REQUEST_COMPONENT_ID,
@@ -299,7 +292,7 @@ class AppBuilder {
       });
       tasks.add(() async {
         print("Followers Dashboard");
-        await FollowersDashboardPageBuilder(FOLLOWERS_PAGE_ID, appId, memberId,
+        await FollowersDashboardPageBuilder(FOLLOWERS_PAGE_ID, app, memberId,
                 theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .run(
           componentIdentifier: FOLLOWERS_COMPONENT_IDENTIFIER,
@@ -311,7 +304,7 @@ class AppBuilder {
       });
       tasks.add(() async {
         print("Following Dashboard");
-        await FollowingDashboardPageBuilder(FOLLOWING_PAGE_ID, appId, memberId,
+        await FollowingDashboardPageBuilder(FOLLOWING_PAGE_ID, app, memberId,
                 theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .run(
           componentIdentifier: FOLLOWING_COMPONENT_IDENTIFIER,
@@ -323,7 +316,7 @@ class AppBuilder {
       });
       tasks.add(() async {
         print("Invite Dashboard");
-        await InviteDashboardPageBuilder(FIND_FRIEND_PAGE_ID, appId, memberId,
+        await InviteDashboardPageBuilder(FIND_FRIEND_PAGE_ID, app, memberId,
                 theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .run(
           componentIdentifier: INVITE_COMPONENT_IDENTIFIER,
@@ -335,7 +328,7 @@ class AppBuilder {
       });
       tasks.add(() async {
         print("Membership Dashboard");
-        await MembershipDashboardPageBuilder(APP_MEMBERS_PAGE_ID, appId,
+        await MembershipDashboardPageBuilder(APP_MEMBERS_PAGE_ID, app,
                 memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .run(
           componentIdentifier: MEMBERSHIP_COMPONENT_IDENTIFIER,
@@ -347,7 +340,7 @@ class AppBuilder {
       });
       tasks.add(() async {
         print("Profile Page");
-        await ProfilePageBuilder(PROFILE_PAGE_ID, appId, memberId, theHomeMenu,
+        await ProfilePageBuilder(PROFILE_PAGE_ID, app, memberId, theHomeMenu,
                 theAppBar, leftDrawer, rightDrawer)
             .run(
           feed: feedModel,
@@ -366,7 +359,7 @@ class AppBuilder {
               ABOUT_COMPONENT_IDENTIFIER,
               hasAccessToLocalFileSystem ? ABOUT_ASSET_PATH : null,
               ABOUT_PAGE_ID,
-              appId,
+              app,
               memberId,
               theHomeMenu,
               theAppBar,
@@ -383,7 +376,7 @@ class AppBuilder {
               BLOCKED_COMPONENT_IDENTIFIER,
               hasAccessToLocalFileSystem ? BLOCKED_ASSET_PATH : null,
               BLOCKED_PAGE_ID,
-              appId,
+              app,
               memberId,
               theHomeMenu,
               theAppBar,
@@ -398,7 +391,7 @@ class AppBuilder {
         .shouldCreatePageDialogOrWorkflow()) {
       print("Membership Dashboard");
       tasks.add(() async => await MembershipDashboardDialogBuilder(
-              appId, MEMBERSHIP_DASHBOARD_DIALOG_ID,
+              app, MEMBERSHIP_DASHBOARD_DIALOG_ID,
               profilePageId: profilePageId, feedPageId: feedPageId)
           .create());
     }
@@ -408,7 +401,7 @@ class AppBuilder {
       tasks.add(() async {
         print("Notification Dashboard");
         await NotificationDashboardDialogBuilder(
-                appId, NOTIFICATION_DASHBOARD_DIALOG_ID)
+                app, NOTIFICATION_DASHBOARD_DIALOG_ID)
             .create();
       });
     }
@@ -417,7 +410,7 @@ class AppBuilder {
         .shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
         print("Assignment Dialog");
-        await AssignmentDialogBuilder(appId, ASSIGNMENT_DASHBOARD_DIALOG_ID)
+        await AssignmentDialogBuilder(app, ASSIGNMENT_DASHBOARD_DIALOG_ID)
             .create();
       });
     }
@@ -427,7 +420,7 @@ class AppBuilder {
       tasks.add(() async {
         print("Policy Medium");
         policyMedium =
-            await PolicyMediumBuilder((value) => {}, appId, memberId).create();
+            await PolicyMediumBuilder((value) => {}, app, memberId).create();
       });
 
       // policy
@@ -440,7 +433,7 @@ class AppBuilder {
       // policy page
       tasks.add(() async {
         print("Policy Page");
-        await PolicyPageBuilder(POLICY_PAGE_ID, appId, memberId, theHomeMenu,
+        await PolicyPageBuilder(POLICY_PAGE_ID, app, memberId, theHomeMenu,
                 theAppBar, leftDrawer, rightDrawer, policyMedium, 'Policy')
             .create();
       });
@@ -450,7 +443,7 @@ class AppBuilder {
     if (welcomePageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
         print("Welcome Page");
-        var welcomePage = await WelcomePageBuilder(WELCOME_PAGE_ID, appId,
+        var welcomePage = await WelcomePageBuilder(WELCOME_PAGE_ID, app,
                 memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .create();
         homePageId = welcomePage.documentID;
@@ -465,7 +458,7 @@ class AppBuilder {
                 ALBUM_EXAMPLE1_PHOTO_ASSET_PATH,
                 ALBUM_EXAMPLE2_PHOTO_ASSET_PATH,
                 ALBUM_PAGE_ID,
-                appId,
+                app,
                 memberId,
                 theHomeMenu,
                 theAppBar,
@@ -479,7 +472,7 @@ class AppBuilder {
     if (chatDialogSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
         print("Chat dialog");
-        await ChatDialogBuilder(appId,
+        await ChatDialogBuilder(app,
                 identifierMemberAllHaveBeenRead:
                     IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ,
                 identifierMemberHasUnreadChat:
@@ -546,8 +539,14 @@ class AppBuilder {
     var currentTask = tasks[0];
     currentTask().then((value) => tasks[1]);
 
+    int i = 0;
     for (var task in tasks) {
-      await task();
+      i++;
+      try {
+        await task();
+      } catch (e) {
+        print('Exception running task ' + i.toString() + ', error: ' + e.toString());
+      }
       progressManager.progressedNextStep();
       if (newAppCreateBloc.state is NewAppCreateCreateCancelled)
         throw Exception("Process cancelled");
@@ -613,17 +612,17 @@ class AppBuilder {
 
     return [
       if (_welcomePageId != null)
-        menuItemWelcome(appId, _welcomePageId, 'Welcome'),
+        menuItemWelcome(app, _welcomePageId, 'Welcome'),
       if (_blockedPageId != null)
-        menuItem(appId, _blockedPageId, 'Blocked', Icons.do_not_disturb),
-      if (_aboutPageId != null) menuItemAbout(appId, _aboutPageId, 'About'),
-      if (_albumPageId != null) menuItemAbout(appId, _albumPageId, 'Album'),
+        menuItem(app, _blockedPageId, 'Blocked', Icons.do_not_disturb),
+      if (_aboutPageId != null) menuItemAbout(app, _aboutPageId, 'About'),
+      if (_albumPageId != null) menuItemAbout(app, _albumPageId, 'Album'),
       if (_memberDashboardDialogId != null)
-        menuItemManageAccount(appId, _memberDashboardDialogId),
+        menuItemManageAccount(app, _memberDashboardDialogId),
       if (_policyPageId != null)
-        menuItem(appId, _policyPageId, 'Policy', Icons.rule),
-      if (_shopPageId != null) menuItemShop(appId, _shopPageId, 'Shop'),
-      if (_feedPageId != null) menuItemFeed(appId, _feedPageId, 'Feed'),
+        menuItem(app, _policyPageId, 'Policy', Icons.rule),
+      if (_shopPageId != null) menuItemShop(app, _shopPageId, 'Shop'),
+      if (_feedPageId != null) menuItemFeed(app, _feedPageId, 'Feed'),
       if (_notificationDashboardDialogId != null)
         MenuItemModel(
             documentID: 'notifications',
@@ -633,7 +632,7 @@ class AppBuilder {
                 codePoint: Icons.notifications.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
             action:
-                OpenDialog(appId, dialogID: _notificationDashboardDialogId,
+                OpenDialog(app, dialogID: _notificationDashboardDialogId,
                 conditions: DisplayConditionsModel(
                   privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
                     packageCondition:
@@ -649,7 +648,7 @@ class AppBuilder {
             icon: IconModel(
                 codePoint: Icons.playlist_add_check.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
-            action: OpenDialog(appId, dialogID: _assignmentDasboardDialogId,
+            action: OpenDialog(app, dialogID: _assignmentDasboardDialogId,
             conditions: DisplayConditionsModel(
                 packageCondition: WorkflowPackage.CONDITION_MUST_HAVE_ASSIGNMENTS,
                 conditionOverride: ConditionOverride.InclusiveForBlockedMembers // allow blocked members to see
@@ -663,7 +662,7 @@ class AppBuilder {
             icon: IconModel(
                 codePoint: Icons.people.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
-            action: OpenDialog(appId, dialogID: _membershipDashboardDialogId)),
+            action: OpenDialog(app, dialogID: _membershipDashboardDialogId)),
       if (_hasUnreadChatDialogId != null)
         MenuItemModel(
             documentID: IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,
@@ -672,7 +671,7 @@ class AppBuilder {
             icon: IconModel(
                 codePoint: Icons.chat_bubble_rounded.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
-            action: OpenDialog(appId,
+            action: OpenDialog(app,
                 dialogID: _hasUnreadChatDialogId,
                 conditions: DisplayConditionsModel(
                     privilegeLevelRequired:
@@ -687,15 +686,15 @@ class AppBuilder {
             icon: IconModel(
                 codePoint: Icons.chat_bubble_outline_rounded.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
-            action: OpenDialog(appId,
+            action: OpenDialog(app,
                 dialogID: _allMessagesHaveBeenReadChatDialog,
                 conditions: DisplayConditionsModel(
                     privilegeLevelRequired:
                         PrivilegeLevelRequired.NoPrivilegeRequired,
                     packageCondition:
                         ChatPackage.CONDITION_MEMBER_ALL_HAVE_BEEN_READ))),
-      if (_signout) menuItemSignOut(appId),
-      if (_signin) menuItemSignIn(appId),
+      if (_signout) menuItemSignOut(app),
+      if (_signin) menuItemSignIn(app),
     ];
   }
 

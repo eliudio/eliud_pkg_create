@@ -24,18 +24,18 @@ class AlbumPageBuilder extends PageBuilder {
       this.examplePhoto1AssetPath,
       this.examplePhoto2AssetPath,
       String pageId,
-      String appId,
+      AppModel app,
       String memberId,
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer)
-      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+      : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> _setupPage() async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .pageRepository(appId)!
+        .pageRepository(app.documentID!)!
         .add(_page());
   }
 
@@ -48,7 +48,7 @@ class AlbumPageBuilder extends PageBuilder {
 
     return PageModel(
         documentID: pageId,
-        appId: appId,
+        appId: app.documentID!,
         title: "Album",
         drawer: leftDrawer,
         endDrawer: rightDrawer,
@@ -64,13 +64,13 @@ class AlbumPageBuilder extends PageBuilder {
 
   Future<AlbumModel> albumModel() async {
     var helper = ExampleAlbumHelper(
-        appId: appId,
+        app: app,
         memberId: memberId,
         examplePhoto1AssetPath: examplePhoto1AssetPath,
         examplePhoto2AssetPath: examplePhoto2AssetPath);
     return AlbumModel(
       documentID: albumComponentIdentifier,
-      appId: appId,
+      appId: app.documentID!,
       albumEntries: [
         await helper.example1(),
         await helper.example2(),
@@ -83,7 +83,7 @@ class AlbumPageBuilder extends PageBuilder {
   }
 
   Future<AlbumModel> _setupAlbum() async {
-    return await albumRepository(appId: appId)!.add(await albumModel());
+    return await albumRepository(appId: app.documentID!)!.add(await albumModel());
   }
 
   Future<PageModel> create() async {
@@ -93,13 +93,13 @@ class AlbumPageBuilder extends PageBuilder {
 }
 
 class ExampleAlbumHelper {
-  final String appId;
+  final AppModel app;
   final String memberId;
   final String examplePhoto1AssetPath;
   final String examplePhoto2AssetPath;
 
   ExampleAlbumHelper({
-    required this.appId,
+    required this.app,
     required this.memberId,
     required this.examplePhoto1AssetPath,
     required this.examplePhoto2AssetPath,
@@ -109,7 +109,7 @@ class ExampleAlbumHelper {
     return AlbumEntryModel(
         documentID: newRandomKey(),
         name: 'example 1',
-        medium: await PlatformMediumHelper(appId, memberId,
+        medium: await PlatformMediumHelper(app, memberId,
                 PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple)
             .createThumbnailUploadPhotoAsset(
                 newRandomKey(), examplePhoto1AssetPath));
@@ -119,7 +119,7 @@ class ExampleAlbumHelper {
     return AlbumEntryModel(
         documentID: newRandomKey(),
         name: 'example 2',
-        medium: await PlatformMediumHelper(appId, memberId,
+        medium: await PlatformMediumHelper(app, memberId,
                 PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple)
             .createThumbnailUploadPhotoAsset(
                 newRandomKey(), examplePhoto2AssetPath));

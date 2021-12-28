@@ -34,11 +34,11 @@ Sorry to see you go. Your account has been destroyed.
 """;
 
 class MemberDashboardDialogBuilder extends DialogBuilder {
-  MemberDashboardDialogBuilder(String appId, String dialogDocumentId): super(appId, dialogDocumentId);
+  MemberDashboardDialogBuilder(AppModel app, String dialogDocumentId): super(app, dialogDocumentId);
 
   Future<DialogModel> _setupDialog() async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .dialogRepository(appId)!
+        .dialogRepository(app.documentID!)!
         .add(_dialog());
   }
 
@@ -51,7 +51,7 @@ class MemberDashboardDialogBuilder extends DialogBuilder {
 
     return DialogModel(
         documentID: dialogDocumentId,
-        appId: appId,
+        appId: app.documentID!,
         title: "Member dashboard",
         layout: DialogLayout.ListView,
         bodyComponents: components);
@@ -60,7 +60,7 @@ class MemberDashboardDialogBuilder extends DialogBuilder {
   MemberDashboardModel _dashboardModel() {
     return MemberDashboardModel(
         documentID: dialogDocumentId,
-        appId: appId,
+        appId: app.documentID!,
         description: "Member dashboard",
         updateProfileText: updateProfileText,
         retrieveDataText: retrieveDataText,
@@ -76,7 +76,7 @@ class MemberDashboardDialogBuilder extends DialogBuilder {
 
   Future<MemberDashboardModel> _setupDashboard() async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .memberDashboardRepository(appId)!
+        .memberDashboardRepository(app.documentID!)!
         .add(_dashboardModel());
   }
 

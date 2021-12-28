@@ -1,3 +1,4 @@
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
@@ -11,12 +12,14 @@ import 'bodycomponents__bloc/bodycomponents_create_event.dart';
 import 'bodycomponents__bloc/bodycomponents_create_state.dart';
 
 class PluginsWidget extends StatefulWidget {
+  final AppModel app;
   final double widgetWidth;
   final double widgetHeight;
   List<PluginWithComponents> pluginsWidthComponents;
 
   PluginsWidget({
     Key? key,
+    required this.app,
     required this.pluginsWidthComponents,
     required this.widgetWidth,
     required this.widgetHeight,
@@ -40,20 +43,20 @@ class _PluginsWidgetState extends State<PluginsWidget>
 
     if (items != null) {
       for (int i = 0; i < items!.length; i++) {
-        listItems.add(getListTile(context,
+        listItems.add(getListTile(context, widget.app,
             title: i == selectedItem
-                ? highLight1(context, items![i])
-                : text(context, items![i]),
+                ? highLight1(widget.app, context, items![i])
+                : text(widget.app, context, items![i]),
             onTap: () => _handleSelection(i)));
       }
     }
 
     if (innerItems != null) {
       for (int i = 0; i < innerItems!.length; i++) {
-        innerListItems.add(getListTile(context,
+        innerListItems.add(getListTile(context, widget.app,
             title: i == selectedInnerItem
-                ? highLight1(context, innerItems![i])
-                : text(context, innerItems![i]),
+                ? highLight1(widget.app, context, innerItems![i])
+                : text(widget.app, context, innerItems![i]),
             onTap: () => _handleInnerSelection(i)));
       }
     }
@@ -64,7 +67,7 @@ class _PluginsWidgetState extends State<PluginsWidget>
           width: oneUnitwidth(),
           child: ListView(
               shrinkWrap: true, physics: ScrollPhysics(), children: listItems)),
-      verticalDivider(context, widget.widgetHeight),
+      verticalDivider(widget.app, context, widget.widgetHeight),
       Container(
           height: widget.widgetHeight,
           width: oneUnitwidth(),
@@ -72,7 +75,7 @@ class _PluginsWidgetState extends State<PluginsWidget>
               shrinkWrap: true,
               physics: ScrollPhysics(),
               children: innerListItems)),
-      verticalDivider(context, widget.widgetHeight),
+      verticalDivider(widget.app, context, widget.widgetHeight),
       _selector(context),
     ]);
   }
@@ -99,7 +102,7 @@ class _PluginsWidgetState extends State<PluginsWidget>
           height: widget.widgetHeight,
           width: oneUnitwidth() * 2,
           child: component.selector.createSelectWidget(
-              context,
+              context,widget.app,
               widget.widgetHeight,
                   (componentId) => _selectedItem(componentId),
               component.editor));

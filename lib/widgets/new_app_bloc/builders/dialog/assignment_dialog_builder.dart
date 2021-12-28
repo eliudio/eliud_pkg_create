@@ -9,10 +9,10 @@ import 'package:eliud_pkg_workflow/workflow_package.dart';
 import 'dialog_builder.dart';
 
 class AssignmentDialogBuilder  extends DialogBuilder {
-  AssignmentDialogBuilder(String appId, String dialogDocumentId) : super(appId, dialogDocumentId);
+  AssignmentDialogBuilder(AppModel app, String dialogDocumentId) : super(app, dialogDocumentId);
 
   Future<DialogModel> _setupDialog() async {
-    return await corerepo.AbstractRepositorySingleton.singleton.dialogRepository(appId)!.add(_dialog());
+    return await corerepo.AbstractRepositorySingleton.singleton.dialogRepository(app.documentID!)!.add(_dialog());
   }
 
   DialogModel _dialog() {
@@ -22,7 +22,7 @@ class AssignmentDialogBuilder  extends DialogBuilder {
 
     return DialogModel(
         documentID: dialogDocumentId,
-        appId: appId,
+        appId: app.documentID!,
         title: "Assignments",
         layout: DialogLayout.ListView,
         conditions: StorageConditionsModel(
@@ -34,7 +34,7 @@ class AssignmentDialogBuilder  extends DialogBuilder {
   AssignmentViewModel _assignmentViewModel() {
     return AssignmentViewModel(
         documentID: dialogDocumentId,
-        appId: appId,
+        appId: app.documentID!,
         description: "My Assignments",
         conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
@@ -43,7 +43,7 @@ class AssignmentDialogBuilder  extends DialogBuilder {
   }
 
   Future<AssignmentViewModel> _setupAssignmentView() async {
-    return await AbstractRepositorySingleton.singleton.assignmentViewRepository(appId)!.add(_assignmentViewModel());
+    return await AbstractRepositorySingleton.singleton.assignmentViewRepository(app.documentID!)!.add(_assignmentViewModel());
   }
 
   Future<DialogModel> create() async {

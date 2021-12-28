@@ -20,7 +20,7 @@ class PolicyPageBuilder extends PageBuilder {
 
   PolicyPageBuilder(
     String pageId,
-    String appId,
+    AppModel app,
     String memberId,
     HomeMenuModel theHomeMenu,
     AppBarModel theAppBar,
@@ -28,14 +28,14 @@ class PolicyPageBuilder extends PageBuilder {
     DrawerModel rightDrawer,
     this.policy,
     this.title,
-  ) : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+  ) : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   PolicyPresentationModel _getPesentationModel(
       PlatformMediumModel? policyModel) {
     return PolicyPresentationModel(
       documentID: policy.documentID,
-      appId: appId,
+      appId: app.documentID!,
       description: title,
       policy: policyModel,
       conditions: StorageConditionsModel(
@@ -46,13 +46,13 @@ class PolicyPageBuilder extends PageBuilder {
 
   Future<PolicyPresentationModel> _createPresentationComponent(
       PlatformMediumModel? policyModel) async {
-    return await policyPresentationRepository(appId: appId)!
+    return await policyPresentationRepository(appId: app.documentID!)!
         .add(_getPesentationModel(policyModel));
   }
 
   Future<PageModel> _setupPage() async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .pageRepository(appId)!
+        .pageRepository(app.documentID!)!
         .add(_page());
   }
 
@@ -66,7 +66,7 @@ class PolicyPageBuilder extends PageBuilder {
 
     return PageModel(
         documentID: pageId,
-        appId: appId,
+        appId: app.documentID!,
         title: title,
         drawer: leftDrawer,
         endDrawer: rightDrawer,

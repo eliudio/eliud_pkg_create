@@ -13,13 +13,13 @@ import 'package:eliud_pkg_feed/model/header_component.dart';
 class OtherFeedPageBuilder extends PageBuilder {
   OtherFeedPageBuilder(
       String pageId,
-      String appId,
+      AppModel app,
       String memberId,
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer)
-      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+      : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> _setupPage(
@@ -29,7 +29,7 @@ class OtherFeedPageBuilder extends PageBuilder {
       required String componentIdentifier,
       required String title}) async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .pageRepository(appId)!
+        .pageRepository(app.documentID!)!
         .add(_page(
             componentName: componentName,
             feedMenuComponentIdentifier: feedMenuComponentIdentifier,
@@ -60,7 +60,7 @@ class OtherFeedPageBuilder extends PageBuilder {
 
     return PageModel(
         documentID: pageId,
-        appId: appId,
+        appId: app.documentID!,
         title: title,
         drawer: leftDrawer,
         endDrawer: rightDrawer,

@@ -30,7 +30,7 @@ void newApp(
   BuildContext context, MemberModel member, AppModel app, {
   double? fraction,
 }) {
-  openFlexibleDialog(
+  openFlexibleDialog(app,
     context,app.documentID! + '/_newapp',
     includeHeading: false,
     widthFraction: fraction == null ? .5 : fraction,
@@ -47,11 +47,13 @@ void newApp(
 }
 
 class NewAppCreateWidget extends StatefulWidget {
+  final AppModel app;
   final double widgetWidth;
   final double widgetHeight;
 
   NewAppCreateWidget._({
     Key? key,
+    required this.app,
     required this.widgetWidth,
     required this.widgetHeight,
   }) : super(key: key);
@@ -67,6 +69,7 @@ class NewAppCreateWidget extends StatefulWidget {
         create: (context) => NewAppCreateBloc()
           ..add(NewAppCreateEventInitialise('YOUR_APP_ID', member)),
         child: NewAppCreateWidget._(
+          app:app,
           widgetWidth: widgetWidth,
           widgetHeight: widgetHeight,
         ),
@@ -223,6 +226,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
             child:
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
               HeaderWidget(
+                app: widget.app,
                 cancelAction: () async {
                   if (state is NewAppCreateCreateInProgress) {
                     BlocProvider.of<NewAppCreateBloc>(context)
@@ -263,14 +267,14 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
               if (state is NewAppCreateCreateInProgress) _progress(state),
             ]));
       }
-      return progressIndicator(context);
+      return progressIndicator(widget.app, context);
     });
   }
 
   Widget enterDetails(NewAppCreateInitialised state) {
     return ListView(shrinkWrap: true, physics: ScrollPhysics(),
         children: [
-        divider(context),
+        divider(widget.app, context),
         _general(context, state),
         _contents(context, state),
         _logo(state.appToBeCreated),
@@ -281,20 +285,20 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   }
 
   Widget _logo(AppModel appModel) {
-    return LogoWidget(appModel: appModel, collapsed: false);
+    return LogoWidget(app: appModel, collapsed: false);
   }
 
   Widget _general(BuildContext context, NewAppCreateInitialised state) {
     if (state is NewAppCreateAllowEnterDetails) {
-      return topicContainer(context,
+      return topicContainer(widget.app, context,
           width: widget.widgetWidth,
           title: 'General',
           collapsible: true,
           collapsed: false,
           children: [
-            getListTile(context,
+            getListTile(context,widget.app,
                 leading: Icon(Icons.vpn_key),
-                title: dialogField(
+                title: dialogField(widget.app,
                   context,
                   initialValue: state.appToBeCreated.documentID,
                   valueChanged: (value) {
@@ -307,7 +311,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                 ))
           ]);
     } else {
-      return text(context, 'no contents');
+      return text(widget.app, context, 'no contents');
     }
   }
 
@@ -315,75 +319,75 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     return Container(
         height: 100,
         width: widget.widgetWidth,
-        child: progressIndicatorWithValue(context, value: state.progress));
+        child: progressIndicatorWithValue(widget.app, context, value: state.progress));
   }
 
   Widget _contents(BuildContext context, NewAppCreateInitialised state) {
     var suffix = !hasAccessToLocalFileSystem ? ' (not available on web)' : '';
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: welcomeSpecifications,
           label: 'Generate Welcome Page' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: blockedSpecifications,
           label: 'Generate Page for Blocked members' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: aboutSpecifications,
           label: 'Generate About Page' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: hasAccessToLocalFileSystem,
           actionSpecification: albumSpecifications,
           label: 'Generate Example Album Page' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: shopActionSpecifications,
           label: 'Generate Shop' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: feedSpecifications, label: 'Generate Feed' + suffix),
 
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: chatSpecifications,
           label: 'Generate Chat Dialog' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: memberDashboardSpecifications,
           label: 'Generate Member Dashboard Dialog' + suffix),
 
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: hasAccessToLocalFileSystem,
           actionSpecification: examplePolicySpecifications,
           label: 'Generate Example Policy' + suffix),
 
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: signinSpecifications,
           label: 'Generate signin button' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: signoutSpecifications,
           label: 'Generate signout button' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: flushSpecifications,
           label: 'Generate flush button' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: includeJoinAction,
           label: 'Generate join button' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: membershipDashboardDialogSpecifications,
           label: 'Generate membership dashboard dialog' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: notificationDashboardDialogSpecifications,
           label: 'Generate notification dashboard dialog' + suffix),
-      ActionSpecificationWidget(
+      ActionSpecificationWidget(app: widget.app,
           enabled: true,
           actionSpecification: assignmentDashboardDialogSpecifications,
           label: 'Generate assignment dashboard dialog' + suffix),
@@ -392,12 +396,14 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
 }
 
 class ActionSpecificationWidget extends StatefulWidget {
+  final AppModel app;
   final String label;
   final bool enabled;
   final ActionSpecification actionSpecification;
 
   ActionSpecificationWidget({
     Key? key,
+    required this.app,
     required this.label,
     required this.enabled,
     required this.actionSpecification,
@@ -412,12 +418,12 @@ class ActionSpecificationWidget extends StatefulWidget {
 class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
   @override
   Widget build(BuildContext context) {
-    return topicContainer(context,
+    return topicContainer(widget.app, context,
         title: widget.label,
         collapsible: true,
         collapsed: true,
         children: [
-          checkboxListTile(
+          checkboxListTile(widget.app,
               context,
               'AppBar',
               widget.actionSpecification.availableInAppBar,
@@ -429,7 +435,7 @@ class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
                       });
                     }
                   : null),
-          checkboxListTile(
+          checkboxListTile(widget.app,
               context,
               'Home menu',
               widget.actionSpecification.availableInHomeMenu,
@@ -441,7 +447,7 @@ class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
                       });
                     }
                   : null),
-          checkboxListTile(
+          checkboxListTile(widget.app,
               context,
               'Left drawer',
               widget.actionSpecification.availableInLeftDrawer,
@@ -453,7 +459,7 @@ class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
                       });
                     }
                   : null),
-          checkboxListTile(
+          checkboxListTile(widget.app,
               context,
               'Right drawer',
               widget.actionSpecification.availableInRightDrawer,
@@ -465,7 +471,7 @@ class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
                       });
                     }
                   : null),
-          checkboxListTile(
+          checkboxListTile(widget.app,
               context,
               'Available (not through menu)',
               widget.actionSpecification.available,

@@ -18,11 +18,11 @@ class StyleSelectionWidget extends StatefulWidget {
   static double SIZE_SMALL = 15;
   static double SIZE_BIG = 18;
 
+  final AppModel app;
   final bool withHeader;
   final bool collapsed;
-  final String appId;
 
-  StyleSelectionWidget._(this.appId, this.withHeader, this.collapsed);
+  StyleSelectionWidget._(this.app, this.withHeader, this.collapsed);
 
   _StyleSelectionWidgetState createState() => _StyleSelectionWidgetState();
 
@@ -31,7 +31,7 @@ class StyleSelectionWidget extends StatefulWidget {
       create: (context) => StyleSelectionBloc(app)
         ..add(InitialiseStyleSelectionEvent(
             family: app.styleFamily, styleName: app.styleName)),
-      child: StyleSelectionWidget._(app.documentID!, withHeader, collapsed),
+      child: StyleSelectionWidget._(app, withHeader, collapsed),
     );
   }
 }
@@ -56,7 +56,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
             buttons.add(ListTile(
               leading: Icon(Icons.add),
               title: GestureDetector(
-                  child: text(
+                  child: text(widget.app,
                     context,
                     'Add',
                   ),
@@ -68,15 +68,15 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                     // use the styleFamily.defaultNew(new name)
                     // use the style.update(context) to update the style
                   }),
-              subtitle: text(context, "Add a new style"),
+              subtitle: text(widget.app,context, "Add a new style"),
             ));
           }
           return ExpansionTile(
             iconColor: Colors.black,
             collapsedIconColor: Colors.black,
             title: isCurrent
-                ? highLight1(context, '${childDocuments[position].familyName}')
-                : text(context, '${childDocuments[position].familyName}'),
+                ? highLight1(widget.app,context, '${childDocuments[position].familyName}')
+                : text(widget.app,context, '${childDocuments[position].familyName}'),
             onExpansionChanged: (value) {
               setState(() {});
             },
@@ -97,8 +97,8 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
           leading: Icon(Icons.arrow_right_alt),
           title: PopupMenuButton<int>(
               child: isCurrent
-                  ? highLight1(context, '${style.styleName}')
-                  : text(context, '${style.styleName}'),
+                  ? highLight1(widget.app,context, '${style.styleName}')
+                  : text(widget.app,context, '${style.styleName}'),
               elevation: 10,
               itemBuilder: (context) => [
                     PopupMenuItem(
@@ -149,13 +149,13 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                   BlocProvider.of<StyleSelectionBloc>(context)
                       .add(SelectStyleEvent(style: style));
                 } else if (value == 2) {
-                  style.update(context);
+                  style.update(widget.app, context);
 /*
                   BlocProvider.of<StyleSelectionBloc>(context)
                       .add(StyleUpdatedEvent(style: style));
 */
                 } else if (value == 3) {
-                  openEntryDialog(context, widget.appId + '/_stylename',
+                  openEntryDialog(widget.app,context, widget.app.documentID! + '/_stylename',
                       title: 'Provide new name for copy of style',
                       hintText: 'Style name',
                       ackButtonLabel: 'Copy',
@@ -167,14 +167,14 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                   });
                 } else if (value == 4) {
                   if (isCurrent) {
-                    openMessageDialog(
-                      context, widget.appId + '/_error',
+                    openMessageDialog(widget.app,
+                      context, widget.app.documentID! + '/_error',
                       title: 'Error',
                       message:
                           'This is the current style of the app, unable to delete',
                     );
                   } else {
-                    openAckNackDialog(context, widget.appId + '/_delete',
+                    openAckNackDialog(widget.app,context, widget.app.documentID! + '/_delete',
                         title: 'Confirm',
                         message: 'Confirm deleting style ' +
                             style.styleFamily.familyName +
@@ -200,7 +200,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
 //            width: widget.widgetWidth,
             child:
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-          if (widget.withHeader) HeaderWidget(
+          if (widget.withHeader) HeaderWidget(app: widget.app,
             cancelAction: () async {
               return true;
             },
@@ -211,8 +211,8 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
             },
             title: 'Change style',
           ),
-          divider(context),
-          topicContainer(context,
+          divider(widget.app,context),
+          topicContainer(widget.app,context,
               title: 'Styles',
               collapsible: true,
               collapsed: widget.collapsed,
@@ -234,7 +234,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
               ]),
         ]));
       } else {
-        return progressIndicator(context);
+        return progressIndicator(widget.app,context);
       }
     });
   }

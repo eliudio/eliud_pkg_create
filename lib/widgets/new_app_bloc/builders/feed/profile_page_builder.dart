@@ -18,13 +18,13 @@ import 'package:eliud_pkg_feed/model/profile_model.dart';
 class ProfilePageBuilder extends PageBuilder {
   ProfilePageBuilder(
       String pageId,
-      String appId,
+      AppModel app,
       String memberId,
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer)
-      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+      : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> _setupPage({
@@ -33,7 +33,7 @@ class ProfilePageBuilder extends PageBuilder {
     required String headerComponentIdentifier,
   }) async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .pageRepository(appId)!
+        .pageRepository(app.documentID!)!
         .add(_page(
           profileComponentIdentifier: profileComponentIdentifier,
           feedMenuComponentIdentifier: feedMenuComponentIdentifier,
@@ -61,7 +61,7 @@ class ProfilePageBuilder extends PageBuilder {
 
     return PageModel(
         documentID: pageId,
-        appId: appId,
+        appId: app.documentID!,
         title: "Profile",
         drawer: leftDrawer,
         endDrawer: rightDrawer,
@@ -80,7 +80,7 @@ class ProfilePageBuilder extends PageBuilder {
     return ProfileModel(
       documentID: profileComponentIdentifier,
       feed: feed,
-      appId: appId,
+      appId: app.documentID!,
       description: "My Profile",
       conditions: StorageConditionsModel(
           privilegeLevelRequired:
@@ -92,7 +92,7 @@ class ProfilePageBuilder extends PageBuilder {
       {required FeedModel feed,
       required String profileComponentIdentifier}) async {
     return await AbstractRepositorySingleton.singleton
-        .profileRepository(appId)!
+        .profileRepository(app.documentID!)!
         .add(profileModel(
             feed: feed,
             profileComponentIdentifier: profileComponentIdentifier));

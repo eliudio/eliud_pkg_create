@@ -14,10 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class LogoWidget extends StatefulWidget {
-  final AppModel appModel;
+  final AppModel app;
   final bool collapsed;
 
-  const LogoWidget({Key? key, required this.appModel, required this.collapsed})
+  const LogoWidget({Key? key, required this.app, required this.collapsed})
       : super(key: key);
 
   @override
@@ -29,12 +29,12 @@ class _LogoWidgetState extends State<LogoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return topicContainer(context,
+    return topicContainer(widget.app, context,
         title: 'Logo',
         collapsible: true,
         collapsed: widget.collapsed,
         children: [
-          getListTile(context,
+          getListTile(context,widget.app,
               trailing: PopupMenuButton<int>(
                   child: Icon(Icons.more_vert),
                   elevation: 10,
@@ -42,57 +42,57 @@ class _LogoWidgetState extends State<LogoWidget> {
                         if (AbstractMediumPlatform.platform!.hasCamera())
                           PopupMenuItem(
                             value: 0,
-                            child: text(context, 'Take photo'),
+                            child: text(widget.app, context, 'Take photo'),
                           ),
                         PopupMenuItem(
                           value: 1,
-                          child: text(context, 'Upload logo'),
+                          child: text(widget.app, context, 'Upload logo'),
                         ),
                     if (AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem()) PopupMenuItem(
                           value: 2,
-                          child: text(context, 'Random logo'),
+                          child: text(widget.app, context, 'Random logo'),
                         ),
                         PopupMenuItem(
                           value: 3,
-                          child: text(context, 'Clear image'),
+                          child: text(widget.app, context, 'Clear image'),
                         ),
                       ],
                   onSelected: (value) async {
                     if (value == 0) {
                       AbstractMediumPlatform.platform!.takePhoto(
                           context,
-                          widget.appModel.documentID!,
-                          widget.appModel.ownerID!,
+                          widget.app,
+                          widget.app.ownerID!,
                           PublicMediumAccessRights(),
                           (photo) =>
-                              _photoFeedbackFunction(widget.appModel, photo),
+                              _photoFeedbackFunction(widget.app, photo),
                           _photoUploading,
                           allowCrop: false);
                     } else if (value == 1) {
                       AbstractMediumPlatform.platform!.uploadPhoto(
                           context,
-                          widget.appModel.documentID!,
-                          widget.appModel.ownerID!,
+                          widget.app,
+                          widget.app.ownerID!,
                           PublicMediumAccessRights(),
                           (photo) =>
-                              _photoFeedbackFunction(widget.appModel, photo),
+                              _photoFeedbackFunction(widget.app, photo),
                           _photoUploading,
                           allowCrop: false);
                     } else if (value == 2) {
-                      var photo = await RandomLogo.getRandomPhoto(widget.appModel.documentID!,
-                          widget.appModel.ownerID!, _photoUploading);
-                      _photoFeedbackFunction(widget.appModel, photo);
+                      var photo = await RandomLogo.getRandomPhoto(widget.app,
+                          widget.app.ownerID!, _photoUploading);
+                      _photoFeedbackFunction(widget.app, photo);
                     } else if (value == 3) {
-                      _photoFeedbackFunction(widget.appModel, null);
+                      _photoFeedbackFunction(widget.app, null);
                     }
                   }),
               title: _progress != null
-                  ? progressIndicatorWithValue(context, value: _progress!)
-                  : widget.appModel.logo == null ||
-                          widget.appModel.logo!.url == null
-                      ? Center(child: text(context, 'No image set'))
+                  ? progressIndicatorWithValue(widget.app, context, value: _progress!)
+                  : widget.app.logo == null ||
+                          widget.app.logo!.url == null
+                      ? Center(child: text(widget.app, context, 'No image set'))
                       : Image.network(
-                          widget.appModel.logo!.url!,
+                          widget.app.logo!.url!,
                           height: 100,
                         ))
         ]);

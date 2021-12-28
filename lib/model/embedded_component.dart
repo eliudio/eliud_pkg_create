@@ -17,6 +17,7 @@
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/common_tools.dart';
 import 'package:eliud_core/tools/query/query_tools.dart';
+import 'package:eliud_core/model/app_model.dart';
 
 import 'dart:async';
 

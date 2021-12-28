@@ -35,7 +35,7 @@ typedef BlocProvider BlocProviderProvider(Widget child);
 
 void openDrawer(BuildContext context, AppModel app, DrawerModel model,
     DecorationDrawerType decorationDrawerType, double fraction) {
-  openFlexibleDialog(
+  openFlexibleDialog(app,
     context,
     app.documentID! + '/_drawer',
     includeHeading: false,
@@ -109,7 +109,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                 shrinkWrap: true,
                 physics: ScrollPhysics(),
                 children: [
-                  HeaderWidget(
+                  HeaderWidget(app: widget.app,
                     cancelAction: () async {
                       return true;
                     },
@@ -120,33 +120,33 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                     },
                     title: 'Update drawer',
                   ),
-                  topicContainer(context,
+                  topicContainer(widget.app, context,
                       title: 'General',
                       collapsible: true,
                       collapsed: true,
                       children: [
                         getListTile(
-                          context,
+                          context,widget.app,
                           leading: Icon(Icons.description),
-                          title: dialogField(context,
+                          title: dialogField(widget.app,context,
                               valueChanged: (value) =>
                                   state.drawerModel.headerText = value,
                               initialValue: state.drawerModel.headerText,
                               decoration:
-                                  inputDecoration(context, "Header text")),
+                                  inputDecoration(widget.app,context, "Header text")),
                         ),
                         _mediaButtons(context, state, widget.app,
                             accessState.getMember()!.documentID!),
-                        getListTile(context,
+                        getListTile(context,widget.app,
                             leading: Icon(Icons.description),
-                            title: dialogField(
+                            title: dialogField(widget.app,
                               context,
                               keyboardType: TextInputType.multiline,
                               maxLines: 3,
                               valueChanged: (value) =>
                                   state.drawerModel.secondHeaderText = value,
                               initialValue: state.drawerModel.secondHeaderText,
-                              decoration: inputDecoration(
+                              decoration: inputDecoration(widget.app,
                                 context,
                                 'Second Header text',
                               ),
@@ -160,11 +160,11 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                   )
                 ]);
           } else {
-            return progressIndicator(context);
+            return progressIndicator(widget.app,context);
           }
         });
       } else {
-        return progressIndicator(context);
+        return progressIndicator(widget.app,context);
       }
     });
   }
@@ -195,7 +195,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
 
     switch (displayCase) {
       case DisplayCase.ShowProgress:
-        return progressIndicatorWithValue(context, value: _progress!);
+        return progressIndicatorWithValue(widget.app,context, value: _progress!);
       case DisplayCase.ShowMemberProfilePhoto:
         return _listTileWithMemberPhoto(context, memberId, state.drawerModel);
       case DisplayCase.ShowUrlPhoto:
@@ -228,19 +228,19 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
   Widget _listTileWithMemberPhoto(
       BuildContext context, String ownerId, DrawerModel drawerModel) {
     return _listTile(context,
-        widget1: text(context, 'Using member profile photo'),
+        widget1: text(widget.app,context, 'Using member profile photo'),
         widget2: _clearButton(drawerModel.headerBackgroundOverride!));
   }
 
   Widget _listTile(BuildContext context,
       {required Widget widget1, Widget? widget2}) {
-    return getListTile(context,
+    return getListTile(context,widget.app,
         leading: Icon(Icons.add_a_photo),
         title: Container(
           padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
           child:
               ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-            inputDecorationLabel(context, 'Header image / logo'),
+            inputDecorationLabel(widget.app,context, 'Header image / logo'),
             Row(children: [
               widget1,
               Spacer(),
@@ -259,7 +259,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
   }
 
   Widget _clearButton(BackgroundModel backgroundModel) {
-    return iconButton(context, icon: Icon(Icons.clear), onPressed: () {
+    return iconButton(widget.app,context, icon: Icon(Icons.clear), onPressed: () {
       setState(() {
         backgroundModel.backgroundImage = null;
         backgroundModel.useProfilePhotoAsBackground = null;
@@ -275,13 +275,13 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
     var items = <PopupMenuItem<int>>[];
     if (AbstractMediumPlatform.platform!.hasCamera()) {
       items.add(
-        PopupMenuItem<int>(child: text(context, 'Take photo'), value: 0),
+        PopupMenuItem<int>(child: text(widget.app,context, 'Take photo'), value: 0),
       );
     }
     items.add(
-        new PopupMenuItem<int>(child: text(context, 'Upload photo'), value: 1));
+        new PopupMenuItem<int>(child: text(widget.app,context, 'Upload photo'), value: 1));
     items.add(new PopupMenuItem<int>(
-        child: text(context, 'Use member profile photo'), value: 2));
+        child: text(widget.app,context, 'Use member profile photo'), value: 2));
     return PopupMenuButton(
         tooltip: 'Add photo',
         padding: EdgeInsets.all(0.0),
@@ -291,7 +291,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
           if (choice == 0) {
             AbstractMediumPlatform.platform!.takePhoto(
                 context,
-                drawerModel.appId!,
+                widget.app,
                 ownerId,
                 PublicMediumAccessRights(),
                 (photo) => _photoFeedbackFunction(drawerModel, photo),
@@ -301,7 +301,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
           if (choice == 1) {
             AbstractMediumPlatform.platform!.uploadPhoto(
                 context,
-                drawerModel.appId!,
+                widget.app,
                 ownerId,
                 PlatformMediumAccessRights(
                     PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),

@@ -10,7 +10,7 @@ import 'package:eliud_pkg_feed/model/feed_model.dart';
 import 'package:flutter/material.dart';
 
 class FeedMenu {
-  final String appId;
+  final AppModel app;
   final String feedPageId;
   final String profilePageId;
   final String followRequestPageId;
@@ -19,7 +19,7 @@ class FeedMenu {
   final String fiendFriendsPageId;
   final String appMembersPageId;
 
-  FeedMenu(this.appId,
+  FeedMenu(this.app,
       {required this.feedPageId,
       required this.profilePageId,
       required this.followRequestPageId,
@@ -38,7 +38,7 @@ class FeedMenu {
       icon: IconModel(
           codePoint: Icons.people.codePoint,
           fontFamily: Icons.settings.fontFamily),
-      action: GotoPage(appId, pageID: feedPageId));
+      action: GotoPage(app, pageID: feedPageId));
 
   MenuItemModel profileMenuItem() => MenuItemModel(
       documentID: '2',
@@ -47,26 +47,26 @@ class FeedMenu {
       icon: IconModel(
           codePoint: Icons.person.codePoint,
           fontFamily: Icons.settings.fontFamily),
-      action: GotoPage(appId, pageID: profilePageId));
+      action: GotoPage(app, pageID: profilePageId));
 
   MenuDefModel menuDefCurrentMember() {
     var menuItems = <MenuItemModel>[
       feedMenuItem(),
       profileMenuItem(),
-      menuItemFollowRequestsPage(appId, followRequestPageId,
+      menuItemFollowRequestsPage(app, followRequestPageId,
           PrivilegeLevelRequired.NoPrivilegeRequired),
       menuItemFollowersPage(
-          appId, followersPageId, PrivilegeLevelRequired.NoPrivilegeRequired),
+          app, followersPageId, PrivilegeLevelRequired.NoPrivilegeRequired),
       menuItemFollowingPage(
-          appId, followingPageId, PrivilegeLevelRequired.NoPrivilegeRequired),
-      menuItemFiendFriendsPage(appId, fiendFriendsPageId,
+          app, followingPageId, PrivilegeLevelRequired.NoPrivilegeRequired),
+      menuItemFiendFriendsPage(app, fiendFriendsPageId,
           PrivilegeLevelRequired.NoPrivilegeRequired),
-      menuItemAppMembersPage(appId, appMembersPageId,
+      menuItemAppMembersPage(app, appMembersPageId,
           PrivilegeLevelRequired.OwnerPrivilegeRequired),
     ];
     MenuDefModel menu = MenuDefModel(
         documentID: FEED_MENU_ID_CURRENT_MEMBER,
-        appId: appId,
+        appId: app.documentID!,
         name: "Current Member Feed Menu",
         menuItems: menuItems);
     return menu;
@@ -79,7 +79,7 @@ class FeedMenu {
     ];
     MenuDefModel menu = MenuDefModel(
         documentID: FEED_MENU_ID_OTHER_MEMBER,
-        appId: appId,
+        appId: app.documentID!,
         name: "Other Member Feed Menu",
         menuItems: menuItems);
     return menu;
@@ -87,13 +87,13 @@ class FeedMenu {
 
   Future<MenuDefModel> createMenuDefCurrentMember() async {
     return await coreRepo.AbstractRepositorySingleton.singleton
-        .menuDefRepository(appId)!
+        .menuDefRepository(app.documentID!)!
         .add(menuDefCurrentMember());
   }
 
   Future<MenuDefModel> createMenuDefOtherMember() async {
     return await coreRepo.AbstractRepositorySingleton.singleton
-        .menuDefRepository(appId)!
+        .menuDefRepository(app.documentID!)!
         .add(menuDefOtherMember());
   }
 
@@ -105,7 +105,7 @@ class FeedMenu {
   }) {
     return FeedMenuModel(
       documentID: feedMenuComponentIdentifier,
-      appId: appId,
+      appId: app.documentID!,
       description: "Feed Menu",
       feed: feed,
       menuCurrentMember: menuCurrentMember,
@@ -125,7 +125,7 @@ class FeedMenu {
     required MenuDefModel menuOtherMember,
   }) async {
     return await AbstractRepositorySingleton.singleton
-        .feedMenuRepository(appId)!
+        .feedMenuRepository(app.documentID!)!
         .add(feedMenuModel(
             feed: feed,
             feedMenuComponentIdentifier: feedMenuComponentIdentifier,

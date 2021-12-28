@@ -1,3 +1,4 @@
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
@@ -12,12 +13,14 @@ import 'package:eliud_pkg_workflow/tools/task/task_model_registry.dart';
 import 'package:flutter/material.dart';
 
 class WorkflowTaskWidget extends StatefulWidget {
+  final AppModel app;
   final WorkflowTaskModel model;
   final bool create;
   final EditorFeedback? feedback;
 
   WorkflowTaskWidget(
       {Key? key,
+      required this.app,
       required this.model,
       required this.create,
       required this.feedback})
@@ -43,7 +46,7 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
       }
     }
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-      HeaderWidget(
+      HeaderWidget(app: widget.app,
         title: 'Divider',
         okAction: () async {
           if (widget.feedback != null) {
@@ -55,15 +58,15 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
           return true;
         },
       ),
-      topicContainer(context,
+      topicContainer(widget.app, context,
           title: 'General',
           collapsible: true,
           collapsed: true,
           children: [
-            getListTile(context,
+            getListTile(context, widget.app,
                 leading: Icon(Icons.vpn_key),
                 title: widget.create
-                    ? dialogField(
+                    ? dialogField(widget.app,
                         context,
                         initialValue: widget.model.documentID,
                         valueChanged: (value) {
@@ -74,10 +77,10 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
                           labelText: 'Identifier',
                         ),
                       )
-                    : text(context, widget.model.documentID!)),
-            getListTile(context,
+                    : text(widget.app, context, widget.model.documentID!)),
+            getListTile(context, widget.app,
                 leading: Icon(Icons.description),
-                title: dialogField(
+                title: dialogField(widget.app,
                   context,
                   initialValue: widget.model.task!.description,
                   valueChanged: (value) {
@@ -89,9 +92,10 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
                   ),
                 )),
             getListTile(
-              context,
+              context, widget.app,
               leading: Icon(Icons.description),
               title: ComboboxWidget(
+                app: widget.app,
                 initialValue: (widget.model.task!.executeInstantly == null)
                     ? 0
                     : (widget.model.task!.executeInstantly ? 0 : 1),
@@ -105,12 +109,12 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
               ),
             ),
           ]),
-      topicContainer(context,
+      topicContainer(widget.app, context,
           title: 'Confirm message',
           collapsible: true,
           collapsed: true,
           children: [
-            checkboxListTile(
+            checkboxListTile(widget.app,
                 context, 'Include', widget.model.confirmMessage != null,
                 (value) {
                   setState(() {
@@ -125,9 +129,9 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
                   });
             }),
             if (widget.model.confirmMessage != null)
-              getListTile(context,
+              getListTile(context, widget.app,
                   leading: const Icon(Icons.description),
-                  title: dialogField(
+                  title: dialogField(widget.app,
                     context,
                     initialValue: (widget.model.confirmMessage!.message == null)
                         ? ''
@@ -142,9 +146,10 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
                   )),
             if (widget.model.confirmMessage != null)
               getListTile(
-                context,
+                context, widget.app,
                 leading: const Icon(Icons.security),
                 title: ComboboxWidget(
+                  app: widget.app,
                   initialValue: (widget.model.confirmMessage!.addressee == null)
                       ? 0
                       : widget.model.confirmMessage!.addressee!.index,
@@ -166,12 +171,12 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
                 ),
               ),
           ]),
-      topicContainer(context,
+      topicContainer(widget.app, context,
           title: 'Reject message',
           collapsible: true,
           collapsed: true,
           children: [
-            checkboxListTile(
+            checkboxListTile(widget.app,
                 context, 'Include', widget.model.rejectMessage != null,
                     (value) {
                   setState(() {
@@ -186,9 +191,9 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
                   });
                 }),
             if (widget.model.rejectMessage != null)
-             getListTile(context,
+             getListTile(context,widget.app,
                 leading: const Icon(Icons.description),
-                title: dialogField(
+                title: dialogField(widget.app,
                   context,
                   initialValue: (widget.model.rejectMessage == null ||
                           widget.model.rejectMessage!.message == null)
@@ -204,9 +209,9 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
                 )),
             if (widget.model.rejectMessage != null)
               getListTile(
-              context,
+              context,widget.app,
               leading: const Icon(Icons.security),
-              title: ComboboxWidget(
+              title: ComboboxWidget(app: widget.app,
                 initialValue: (widget.model.rejectMessage!.addressee == null)
                     ? 0
                     : widget.model.rejectMessage!.addressee!.index,
@@ -228,15 +233,15 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
               ),
             ),
           ]),
-      topicContainer(context,
+      topicContainer(widget.app,context,
           title: 'Task responsible',
           collapsible: true,
           collapsed: true,
           children: [
             getListTile(
-              context,
+              context,widget.app,
               leading: const Icon(Icons.security),
-              title: ComboboxWidget(
+              title: ComboboxWidget(app: widget.app,
                 initialValue: (widget.model.responsible == null)
                     ? 0
                     : widget.model.responsible!.index,
@@ -258,15 +263,15 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
               ),
             ),
           ]),
-      topicContainer(context,
+      topicContainer(widget.app,context,
           title: 'Task',
           collapsible: true,
           collapsed: true,
           children: [
             getListTile(
-              context,
+              context,widget.app,
               leading: Icon(Icons.security),
-              title: StringComboboxWidget(
+              title: StringComboboxWidget(app: widget.app,
                 initialValue: widget.model.task!.identifier,
                 options: taskIdentifiers,
                 feedback: (value) {

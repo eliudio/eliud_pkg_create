@@ -9,7 +9,7 @@ import 'package:eliud_pkg_notifications/model/notification_dashboard_model.dart'
 import 'dialog_builder.dart';
 
 class NotificationDashboardDialogBuilder extends DialogBuilder {
-  NotificationDashboardDialogBuilder(String appId, String dialogDocumentId) : super(appId, dialogDocumentId);
+  NotificationDashboardDialogBuilder(AppModel app, String dialogDocumentId) : super(app, dialogDocumentId);
 
   Future<DialogModel> create() async {
     await _setupDashboard();
@@ -18,7 +18,7 @@ class NotificationDashboardDialogBuilder extends DialogBuilder {
 
   Future<DialogModel> _setupDialog() async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .dialogRepository(appId)!
+        .dialogRepository(app.documentID!)!
         .add(_dialog());
   }
 
@@ -31,7 +31,7 @@ class NotificationDashboardDialogBuilder extends DialogBuilder {
 
     return DialogModel(
         documentID: dialogDocumentId,
-        appId: appId,
+        appId: app.documentID!,
         title: "Notifications",
         layout: DialogLayout.ListView,
         conditions: StorageConditionsModel(
@@ -43,7 +43,7 @@ class NotificationDashboardDialogBuilder extends DialogBuilder {
   NotificationDashboardModel _dashboardModel() {
     return NotificationDashboardModel(
         documentID: dialogDocumentId,
-        appId: appId,
+        appId: app.documentID!,
         description: "My Notifications",
         conditions: StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
@@ -53,7 +53,7 @@ class NotificationDashboardDialogBuilder extends DialogBuilder {
 
   Future<NotificationDashboardModel> _setupDashboard() async {
     return await AbstractRepositorySingleton.singleton
-        .notificationDashboardRepository(appId)!
+        .notificationDashboardRepository(app.documentID!)!
         .add(_dashboardModel());
   }
 

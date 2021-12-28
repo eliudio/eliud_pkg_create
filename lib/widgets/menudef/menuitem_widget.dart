@@ -1,3 +1,4 @@
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/display_conditions_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -11,9 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class MenuItemWidget extends StatefulWidget {
+  final AppModel app;
   final MenuItemModel menuItemModel;
 
-  const MenuItemWidget({Key? key, required this.menuItemModel})
+  const MenuItemWidget({Key? key, required this.app, required this.menuItemModel})
       : super(key: key);
 
   @override
@@ -53,12 +55,12 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
         : '';
 
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-      topicContainer(context,
+      topicContainer(widget.app, context,
           title: 'General',
           collapsible: true,
           collapsed: true,
           children: [
-            textFormField(context,
+            textFormField(widget.app, context,
                 readOnly: false,
                 labelText: 'text',
                 icon: Icons.text_format,
@@ -69,7 +71,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
               }
               return null;
             }, hintText: ''),
-            textFormField(context,
+            textFormField(widget.app, context,
                 readOnly: false,
                 labelText: 'description',
                 icon: Icons.text_format,
@@ -81,13 +83,13 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
               return null;
             }, hintText: '')
           ]),
-      topicContainer(context,
+      topicContainer(widget.app, context,
           title: 'Icon',
           collapsible: true,
           collapsed: true,
-          children: [IconField(widget.menuItemModel.icon, _onIconChanged)]),
+          children: [IconField(widget.app, widget.menuItemModel.icon, _onIconChanged)]),
       if (widget.menuItemModel.action != null)
-        topicContainer(context,
+        topicContainer(widget.app, context,
             title: 'Action',
             collapsible: true,
             collapsed: true,
@@ -95,14 +97,14 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
               _actionDescription(context),
             ]),
       if (widget.menuItemModel.action != null)
-        DisplayConditionsWidget(
+        DisplayConditionsWidget(app: widget.app,
             value: widget.menuItemModel.action!.conditions!),
     ]);
   }
 
   Widget _actionDescription(BuildContext context) {
-    if (widget.menuItemModel.action == null) return text(context, 'No action');
-    return text(context, widget.menuItemModel.action!.describe());
+    if (widget.menuItemModel.action == null) return text(widget.app, context, 'No action');
+    return text(widget.app, context, widget.menuItemModel.action!.describe());
   }
 
   void _onIconChanged(value) {

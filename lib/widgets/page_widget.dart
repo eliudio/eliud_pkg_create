@@ -23,7 +23,7 @@ import 'condition/storage_conditions_widget.dart';
 
 void openPage(BuildContext context, AppModel app, bool create, PageModel model, String title,
     {double? fraction}) {
-  openFlexibleDialog(context,app.documentID! + '/_page',
+  openFlexibleDialog(app, context,app.documentID! + '/_page',
       includeHeading: false,
       widthFraction: fraction,
       child: PageCreateWidget.getIt(
@@ -86,7 +86,7 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
         builder: (context, state) {
       if (state is PageCreateValidated) {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-          HeaderWidget(
+          HeaderWidget(app: widget.app,
             cancelAction: () async {
               return true;
             },
@@ -99,17 +99,17 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
                 ? 'Create new page'
                 : 'Change page ' + state.pageModel.documentID!,
           ),
-          divider(context),
+          divider(widget.app, context),
           if (widget.create)
-            topicContainer(context,
+            topicContainer(widget.app,context,
                 title: 'General',
                 collapsible: true,
                 collapsed: true,
                 children: [
-                  getListTile(context,
+                  getListTile(context,widget.app,
                       leading: Icon(Icons.vpn_key),
                       title: widget.create
-                          ? dialogField(
+                          ? dialogField(widget.app,
                               context,
                               initialValue: state.pageModel.documentID,
                               valueChanged: (value) {
@@ -120,7 +120,7 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
                                 labelText: 'Identifier',
                               ),
                             )
-                          : text(context, state.pageModel.documentID!))
+                          : text(widget.app,context, state.pageModel.documentID!))
                 ]),
           BodyComponentsCreateWidget.getIt(
             context,
@@ -128,10 +128,10 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
             state.pageModel.bodyComponents!,
             widget.widgetWidth,
           ),
-          StorageConditionsWidget(value: state.pageModel.conditions!, ownerType: 'page'),
+          StorageConditionsWidget(app: widget.app, value: state.pageModel.conditions!, ownerType: 'page'),
         ]);
       } else {
-        return progressIndicator(context);
+        return progressIndicator(widget.app,context);
       }
     });
   }

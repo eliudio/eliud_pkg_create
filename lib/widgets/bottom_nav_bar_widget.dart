@@ -22,7 +22,7 @@ void openBottomNavBar(
   HomeMenuModel model, {
   double? fraction,
 }) {
-  openFlexibleDialog(context,app.documentID! + '/_bottomnavbar',
+  openFlexibleDialog(app, context,app.documentID! + '/_bottomnavbar',
       includeHeading: false,
       widthFraction: fraction,
       child: BottomNavBarCreateWidget.getIt(
@@ -76,7 +76,7 @@ class _BottomNavBarCreateWidgetState extends State<BottomNavBarCreateWidget> {
             thickness: 10,
             child:
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-              HeaderWidget(
+              HeaderWidget(app: widget.app,
                 cancelAction: () async {
                   return true;
                 },
@@ -91,7 +91,7 @@ class _BottomNavBarCreateWidgetState extends State<BottomNavBarCreateWidget> {
                 .add(BottomNavBarCreateEventApplyChanges(false)),
 */
               ),
-              divider(context),
+              divider(widget.app, context),
               MenuDefCreateWidget.getIt(
                 context,
                 widget.app,
@@ -100,7 +100,7 @@ class _BottomNavBarCreateWidgetState extends State<BottomNavBarCreateWidget> {
               )
             ]));
       } else {
-        return progressIndicator(context);
+        return progressIndicator(widget.app, context);
       }
     });
   }

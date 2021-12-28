@@ -1,7 +1,4 @@
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_policy_item_model.dart';
-import 'package:eliud_core/model/app_policy_model.dart';
-import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/tools/random.dart';
@@ -10,10 +7,10 @@ import 'package:eliud_core/tools/storage/upload_info.dart';
 
 class PolicyMediumBuilder {
   final FeedbackProgress feedbackProgress;
-  final String appId;
+  final AppModel app;
   final String memberId;
 
-  PolicyMediumBuilder(this.feedbackProgress, this.appId, this.memberId);
+  PolicyMediumBuilder(this.feedbackProgress, this.app, this.memberId);
 
 // Policy
   String policiesAssetLocation() =>
@@ -22,18 +19,18 @@ class PolicyMediumBuilder {
   Future<PlatformMediumModel> create() async {
     var policyID = 'policy_id';
     var policy = await _uploadPublicPdf(
-        appId, memberId, policiesAssetLocation(), policyID, feedbackProgress);
+        app, memberId, policiesAssetLocation(), policyID, feedbackProgress);
     return policy;
   }
 
   Future<PlatformMediumModel> _uploadPublicPdf(
-      String appId,
+      AppModel app,
       String memberId,
       String assetPath,
       String documentID,
       FeedbackProgress? feedbackProgress) async {
     String memberMediumDocumentID = newRandomKey();
-    return await PlatformMediumHelper(appId, memberId,
+    return await PlatformMediumHelper(app, memberId,
         PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple)
         .createThumbnailUploadPdfAsset(
         memberMediumDocumentID, assetPath, documentID,

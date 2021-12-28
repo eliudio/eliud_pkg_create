@@ -76,6 +76,7 @@ class _PrivilegeWidgetState extends State<PrivilegeWidget> {
     var stringValue = privStringValue(privilegeLevel);
     return Center(
         child: radioListTile(
+            widget.app,
             context,
             privilegeLevel.index,
             _privSelectedRadioTile,
@@ -88,25 +89,27 @@ class _PrivilegeWidgetState extends State<PrivilegeWidget> {
   Widget build(BuildContext context) {
     return ListView(children: [
       HeaderWidget(
+        app: widget.app,
         cancelAction: () async {
           return true;
         },
         title: 'Simulate member privilege',
       ),
-      topicContainer(context,
+      topicContainer(widget.app, context,
           title: 'Current or simulated privilege',
           collapsible: true,
           collapsed: true,
           children: [
-            text(context, appLevel),
-            text(context, appBlocked),
+            text(widget.app, context, appLevel),
+            text(widget.app, context, appBlocked),
           ]),
-      topicContainer(context,
+      topicContainer(widget.app, context,
           title: 'Simulate privilege',
           collapsible: true,
           collapsed: true,
           children: [
-            checkboxListTile(context, 'Blocked', isBlocked, (value) {
+            checkboxListTile(widget.app, context, 'Blocked', isBlocked,
+                (value) {
               setState(() {
                 if (value != null) {
                   isBlocked = value;
@@ -120,7 +123,8 @@ class _PrivilegeWidgetState extends State<PrivilegeWidget> {
             getPrivilegeOption(PrivilegeLevel.Level2Privilege),
             getPrivilegeOption(PrivilegeLevel.OwnerPrivilege),
             Center(
-                child: button(context, label: 'Simulate', onPressed: () {
+                child: button(widget.app, context, label: 'Simulate',
+                    onPressed: () {
               BlocProvider.of<AccessBloc>(context).add(PrivilegeChangedEvent(
                   widget.app,
                   toPrivilegeLevel(_privSelectedRadioTile),

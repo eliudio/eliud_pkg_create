@@ -35,10 +35,9 @@ class CreatorDecoration extends deco.Decoration {
   ValueNotifier<bool> _isCreationMode = ValueNotifier<bool>(false);
 
   @override
-  CreateWidget createDecoratedAppBar(BuildContext context, Key? appBarKey,
+  CreateWidget createDecoratedAppBar(AppModel app, BuildContext context, Key? appBarKey,
       CreateWidget createOriginalAppBar, AppBarModel model) {
-    if (!AccessBloc.isOwner(context)) return createOriginalAppBar;
-    var app = AccessBloc.currentApp(context);
+    if (!AccessBloc.isOwner(context, app)) return createOriginalAppBar;
     var currentAccess = AccessBloc.getState(context);
 
     return (() {
@@ -52,7 +51,7 @@ class CreatorDecoration extends deco.Decoration {
             createOriginalWidget: createOriginalAppBar,
             model: model,
             action: SingleAction(() {
-              openFlexibleDialog(
+              openFlexibleDialog(app,
                 context, app.documentID! + '/_appbar',
                 includeHeading: false,
                 widthFraction: .9,
@@ -76,12 +75,12 @@ class CreatorDecoration extends deco.Decoration {
   }
 
   @override
-  CreateWidget createDecoratedBodyComponent(
+  CreateWidget createDecoratedBodyComponent(AppModel app,
       BuildContext context,
       Key? originalBodyComponentKey,
       CreateWidget createBodyComponent,
       BodyComponentModel model) {
-    if (!AccessBloc.isOwner(context)) return createBodyComponent;
+    if (!AccessBloc.isOwner(context, app)) return createBodyComponent;
 
     return (() {
       return MyDecoratedWidget<BodyComponentModel>(
@@ -90,7 +89,7 @@ class CreatorDecoration extends deco.Decoration {
         createOriginalWidget: createBodyComponent,
         model: model,
         action: SingleAction(() {
-          updateComponent(context, model.componentName, model.componentId, (status) {});
+          updateComponent(context, app, model.componentName, model.componentId, (status) {});
         }),
         ensureHeight: true,
         initialPosition: InitialPosition.LeftTop,
@@ -100,13 +99,12 @@ class CreatorDecoration extends deco.Decoration {
   }
 
   @override
-  CreateWidget createDecoratedBottomNavigationBar(
+  CreateWidget createDecoratedBottomNavigationBar(AppModel app,
       BuildContext context,
       Key? originalBottomNavigationBarKey,
       CreateWidget createBottomNavigationBar,
       HomeMenuModel model) {
-    if (!AccessBloc.isOwner(context)) return createBottomNavigationBar;
-    var app = AccessBloc.currentApp(context);
+    if (!AccessBloc.isOwner(context, app)) return createBottomNavigationBar;
 
     return (() {
       return MyDecoratedWidget<HomeMenuModel>(
@@ -125,14 +123,13 @@ class CreatorDecoration extends deco.Decoration {
   }
 
   @override
-  CreateWidget createDecoratedDrawer(
+  CreateWidget createDecoratedDrawer(AppModel app,
       BuildContext context,
       DecorationDrawerType decorationDrawerType,
       Key? originalDrawerKey,
       CreateWidget createOriginalDrawer,
       DrawerModel model) {
-    if (!AccessBloc.isOwner(context)) return createOriginalDrawer;
-    var app = AccessBloc.currentApp(context);
+    if (!AccessBloc.isOwner(context, app)) return createOriginalDrawer;
 
     return (() {
       return MyDecoratedWidget<DrawerModel>(
@@ -152,10 +149,9 @@ class CreatorDecoration extends deco.Decoration {
   }
 
   @override
-  CreateWidget createDecoratedPage(BuildContext context, Key? originalPageKey,
+  CreateWidget createDecoratedPage(AppModel app, BuildContext context, Key? originalPageKey,
       CreateWidget createOriginalPage, PageModel model) {
-    if (!AccessBloc.isOwner(context)) return createOriginalPage;
-    var app = AccessBloc.currentApp(context);
+    if (!AccessBloc.isOwner(context, app)) return createOriginalPage;
 
     return (() {
       // Button for the decorator itself
@@ -189,14 +185,13 @@ class CreatorDecoration extends deco.Decoration {
                   isCreationMode: _isCreationMode,
                   originalWidgetKey: originalPageKey,
                   createOriginalWidget: () {
-                    var app = AccessBloc.currentApp(context);
                     if (app != null) {
                       return MyDecoratedWidget2<PageModel>(
                         originalWidgetKey: originalPageKey,
                         createOriginalWidget: createOriginalPage,
                         model: model,
                         action: (state) {
-                          openComplexDialog(context, app.documentID! + '/_style',
+                          openComplexDialog(app, context, app.documentID! + '/_style',
                               widthFraction: .5,
                               includeHeading: false,
                               child:
@@ -207,12 +202,12 @@ class CreatorDecoration extends deco.Decoration {
                         initialPosition: InitialPosition.RightBottom,
                       );
                     } else {
-                      return text(context, 'No app');
+                      return text(app, context, 'No app');
                     }
                   },
                   model: app,
                   action: SingleAction(() {
-                    openFlexibleDialog(
+                    openFlexibleDialog(app,
                       context, app.documentID! + '/_appcreate',
                       includeHeading: false,
                       widthFraction: fraction,
@@ -231,7 +226,7 @@ class CreatorDecoration extends deco.Decoration {
                 );
               },
               model: model,
-              action: MultipleActions([
+              action: MultipleActions(app, [
                 ActionWithLabel('Update page', () {
                   openPage(context, app, false, model, 'Update Page',);
                 }),
@@ -240,7 +235,7 @@ class CreatorDecoration extends deco.Decoration {
                       context,
                       app,
                       true,
-                      newPageDefaults(AccessBloc.currentAppId(context)),
+                      newPageDefaults(app.documentID!),
                       'Create page');
                 }),
               ]),
@@ -253,7 +248,7 @@ class CreatorDecoration extends deco.Decoration {
   }
 
   @override
-  deco.CreateWidget createDecoratedApp(
+  deco.CreateWidget createDecoratedApp(AppModel app,
       BuildContext context,
       Key? originalAppkey,
       deco.CreateWidget createOriginalApp,
@@ -262,13 +257,12 @@ class CreatorDecoration extends deco.Decoration {
   }
 
   @override
-  deco.CreateWidget createDecoratedDialog(
+  deco.CreateWidget createDecoratedDialog(AppModel app,
       BuildContext context,
       Key? originalDialogKey,
       deco.CreateWidget createOriginalDialog,
       DialogModel model) {
-    if (!AccessBloc.isOwner(context)) return createOriginalDialog;
-    var app = AccessBloc.currentApp(context);
+    if (!AccessBloc.isOwner(context, app)) return createOriginalDialog;
 
     return (() {
       return MyDecoratedWidget<DialogModel>(
@@ -276,13 +270,13 @@ class CreatorDecoration extends deco.Decoration {
         originalWidgetKey: originalDialogKey,
         createOriginalWidget: createOriginalDialog,
         model: model,
-        action: MultipleActions([
+        action: MultipleActions(app, [
           ActionWithLabel('Update dialog', () {
             openDialog(context, app, false, model, 'Update Page',);
           }),
           ActionWithLabel('Create dialog', () {
             openDialog(context, app, true,
-                newDialogDefaults(AccessBloc.currentAppId(context)), 'Create dialog');
+                newDialogDefaults(app.documentID!), 'Create dialog');
           }),
         ]),
         ensureHeight: false,

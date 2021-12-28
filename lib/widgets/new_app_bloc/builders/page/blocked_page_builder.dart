@@ -24,18 +24,18 @@ class BlockedPageBuilder extends PageBuilder {
       this.componentId,
       this.blockedAssetLocation,
       String pageId,
-      String appId,
+      AppModel app,
       String memberId,
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer)
-      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+      : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> _setupPage() async {
     return await corerepo.AbstractRepositorySingleton.singleton
-        .pageRepository(appId)!
+        .pageRepository(app.documentID!)!
         .add(_page());
   }
 
@@ -48,7 +48,7 @@ class BlockedPageBuilder extends PageBuilder {
 
     return PageModel(
         documentID: pageId,
-        appId: appId,
+        appId: app.documentID!,
         title: "Blocked !",
         drawer: leftDrawer,
         endDrawer: rightDrawer,
@@ -64,7 +64,7 @@ class BlockedPageBuilder extends PageBuilder {
   static String blockedIdentifier = "blocked";
 
   Future<PlatformMediumModel> uploadBlockedImage() async {
-    return await PlatformMediumHelper(appId, memberId,
+    return await PlatformMediumHelper(app, memberId,
             PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple)
         .createThumbnailUploadPhotoAsset(
       newRandomKey(),
@@ -90,7 +90,7 @@ class BlockedPageBuilder extends PageBuilder {
       documentID: blockedIdentifier,
       name: "Blocked!",
       sections: entries,
-      appId: appId,
+      appId: app.documentID!,
       conditions: StorageConditionsModel(
           privilegeLevelRequired:
               PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
@@ -99,7 +99,7 @@ class BlockedPageBuilder extends PageBuilder {
 
   Future<void> _setupBlocked(PlatformMediumModel blockedImage) async {
     await AbstractRepositorySingleton.singleton
-        .bookletRepository(appId)!
+        .bookletRepository(app.documentID!)!
         .add(_blocked(blockedImage));
   }
 
@@ -113,7 +113,7 @@ class BlockedPageBuilder extends PageBuilder {
           'Blocked',
           'You are blocked',
           pageId,
-          appId,
+          app,
           memberId,
           theHomeMenu,
           theAppBar,

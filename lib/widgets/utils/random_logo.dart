@@ -37,11 +37,11 @@ class RandomLogo {
 
   RandomLogo();
 
-  static Future<PublicMediumModel> getRandomPhoto(String appId, String memberId, MediumAvailable? feedbackFunction, ) async {
+  static Future<PublicMediumModel> getRandomPhoto(AppModel app, String memberId, MediumAvailable? feedbackFunction, ) async {
     var newRandom = randomLogos[_random.nextInt(randomLogos.length)];
     var photo = await PublicMediumAccessRights()
         .getMediumHelper(
-      appId,
+      app,
       memberId,
     )
         .createThumbnailUploadPhotoAsset(newRandomKey(), newRandom,

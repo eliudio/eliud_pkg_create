@@ -1,3 +1,4 @@
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/display_conditions_model.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_membership/membership_package.dart';
@@ -113,15 +114,15 @@ class WorkflowBuilder {
     return workflowForCreditCardPaymentCart();
   }
 
-  WorkflowActionModel requestMembershipAction(String appId) =>
-      WorkflowActionModel(appId,
+  WorkflowActionModel requestMembershipAction(AppModel app) =>
+      WorkflowActionModel(app,
           conditions: DisplayConditionsModel(
             privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
             packageCondition: MembershipPackage.MEMBER_HAS_NO_MEMBERSHIP_YET,
           ),
           workflow: _workflowForManuallyPaidMembership());
 
-  WorkflowActionModel payCart(String appId) => WorkflowActionModel(appId,
+  WorkflowActionModel payCart(AppModel app) => WorkflowActionModel(app,
       conditions: DisplayConditionsModel(
         privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
         packageCondition: ShopPackage.CONDITION_CARTS_HAS_ITEMS,

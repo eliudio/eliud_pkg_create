@@ -38,17 +38,11 @@ import 'menudef_bloc/menudef_create_state.dart';
 import 'menuitem_widget.dart';
 
 class MenuDefCreateWidget extends StatefulWidget {
-/*
-  final double widgetWidth;
-  final double widgetHeight;
-*/
+  final AppModel app;
 
-  const MenuDefCreateWidget._({
+  MenuDefCreateWidget._({
+    required this.app,
     Key? key,
-/*
-    required this.widgetWidth,
-    required this.widgetHeight,
-*/
   }) : super(key: key);
 
   @override
@@ -59,16 +53,16 @@ class MenuDefCreateWidget extends StatefulWidget {
   static Widget getIt(
       BuildContext context,
       AppModel app,
-      MenuDefModel
-          menuDefModel /*,
-      double widgetWidth, double widgetHeight*/
+      MenuDefModel menuDefModel
       ) {
     return BlocProvider<MenuDefCreateBloc>(
       create: (context) => MenuDefCreateBloc(
         app,
         menuDefModel,
       )..add(MenuDefCreateInitialiseEvent(menuDefModel)),
-      child: const MenuDefCreateWidget._(),
+      child: MenuDefCreateWidget._(
+        app: app,
+      ),
     );
   }
 }
@@ -82,7 +76,8 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
 
   @override
   Widget build(BuildContext context) {
-    var appId = AccessBloc.currentAppId(context);
+    var app = widget.app;
+    var appId = app.documentID!;
     return MultiBlocProvider(
         providers: [
           BlocProvider<PageListBloc>(
@@ -104,7 +99,6 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
         child: BlocBuilder<AccessBloc, AccessState>(
             builder: (context, accessState) {
           if (accessState is AccessDetermined) {
-            var app = accessState.currentApp;
             return BlocBuilder<MenuDefCreateBloc, MenuDefCreateState>(
                 builder: (context, state) {
               if (state is MenuDefCreateInitialised) {
@@ -113,7 +107,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                 int count = 0;
                 int size = state.menuDefModel.menuItems!.length;
                 return Column(children: [
-                  topicContainer(context,
+                  topicContainer(app, context,
                       title: 'Current menu items',
                       collapsible: true,
                       collapsed: true,
@@ -133,14 +127,14 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                       key: theKey,
                                       //                              onTap: () => details(item),
                                       leading: item.icon == null
-                                          ? text(
+                                          ? text(app,
                                               context,
                                               item.text == null
                                                   ? "?"
                                                   : item.text!)
                                           : IconHelper.getIconFromModel(
                                               iconModel: item.icon),
-                                      trailing: PopupMenuItemChoices(
+                                      trailing: PopupMenuItemChoices(app: app,
                                         isFirst: (count != 1),
                                         isLast: (count != size),
                                         actionUp: () =>
@@ -152,32 +146,33 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                 MenuDefCreateBloc>(context)
                                             .add(MenuDefMoveMenuItem(item,
                                                 MoveMenuItemDirection.Down)),
-                                        actionDetails: () => details(appId, item),
+                                        actionDetails: () =>
+                                            details(appId, item),
                                         actionDelete: () => BlocProvider.of<
                                                 MenuDefCreateBloc>(context)
                                             .add(MenuDefCreateDeleteMenuItem(
                                                 item)),
                                       ),
-                                      title: text(
+                                      title: text(app,
                                           context,
                                           item.action != null
                                               ? item.action!.describe()
                                               : ''),
-                                      subtitle: text(
+                                      subtitle: text(app,
                                           context,
                                           item.text == null
                                               ? "?"
                                               : item.text!));
                                 }).toList())))
                       ]),
-                  topicContainer(
+                  topicContainer(app,
                     context,
                     title: 'Available menu items',
                     collapsible: true,
                     collapsed: true,
                     children: [
                       Column(children: [
-                        tabBar(context,
+                        tabBar(app, context,
                             items: items, tabController: _tabController!),
                         if (_tabController!.index == 0)
                           Container(
@@ -211,10 +206,10 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                                     'Update page',
                                                                   )),
                                                       //Icon(Icons.add),
-                                                      title: text(context,
+                                                      title: text(app, context,
                                                           page.documentID!));
                                                 })),
-                                        divider(context),
+                                        divider(app, context),
                                         GestureDetector(
                                             child: const Icon(Icons.add),
                                             onTap: () {
@@ -231,7 +226,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics());
                                 } else {
-                                  return progressIndicator(context);
+                                  return progressIndicator(app, context);
                                 }
                               })),
                         if (_tabController!.index == 1)
@@ -268,10 +263,10 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                                     'Update dialog',
                                                                   )),
                                                       //Icon(Icons.add),
-                                                      title: text(context,
+                                                      title: text(app, context,
                                                           dialog.documentID!));
                                                 })),
-                                        divider(context),
+                                        divider(app, context),
                                         GestureDetector(
                                             child: const Icon(Icons.add),
                                             onTap: () {
@@ -288,7 +283,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics());
                                 } else {
-                                  return progressIndicator(context);
+                                  return progressIndicator(app, context);
                                 }
                               })),
                         if (_tabController!.index == 2)
@@ -325,12 +320,12 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                                     'Update workflow',
                                                                   )),
                                                       //Icon(Icons.add),
-                                                      title: text(
+                                                      title: text(app,
                                                           context,
                                                           workflow
                                                               .documentID!));
                                                 })),
-                                        divider(context),
+                                        divider(app, context),
                                         GestureDetector(
                                             child: const Icon(Icons.add),
                                             onTap: () {
@@ -347,7 +342,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics());
                                 } else {
-                                  return progressIndicator(context);
+                                  return progressIndicator(app, context);
                                 }
                               })),
                         if (_tabController!.index == 3)
@@ -365,7 +360,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                 .add(MenuDefCreateAddLogin());
                                           },
                                           child: const Icon(Icons.add)),
-                                      title: text(context, 'login')),
+                                      title: text(app, context, 'login')),
                                   ListTile(
                                       trailing: GestureDetector(
                                           onTap: () {
@@ -374,7 +369,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                 .add(MenuDefCreateAddLogout());
                                           },
                                           child: const Icon(Icons.add)),
-                                      title: text(context, 'logout')),
+                                      title: text(app, context, 'logout')),
                                   ListTile(
                                       trailing: GestureDetector(
                                           onTap: () {
@@ -384,7 +379,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                     MenuDefCreateAddOtherApps());
                                           },
                                           child: const Icon(Icons.add)),
-                                      title: text(context, 'other apps')),
+                                      title: text(app, context, 'other apps')),
                                 ],
                               )),
                       ])
@@ -392,11 +387,11 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                   )
                 ]);
               } else {
-                return progressIndicator(context);
+                return progressIndicator(app, context);
               }
             });
           } else {
-            return progressIndicator(context);
+            return progressIndicator(app, context);
           }
         }));
   }
@@ -409,11 +404,11 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
         itemBuilder: (context) => [
               PopupMenuItem(
                 value: 1,
-                child: text(context, 'Add to menu'),
+                child: text(widget.app, context, 'Add to menu'),
               ),
               PopupMenuItem(
                 value: 2,
-                child: text(context, 'Update'),
+                child: text(widget.app, context, 'Update'),
               ),
             ],
         onSelected: (value) {
@@ -427,15 +422,15 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
 
   void details(String appId, MenuItemModel menuItemModel) {
     var toUpdate = menuItemModel.copyWith();
-    openFlexibleDialog(context,appId + '/_error',
+    openFlexibleDialog(widget.app, context, appId + '/_error',
         title: 'Update Menu Item',
         widthFraction: .5,
-        child: MenuItemWidget(menuItemModel: toUpdate),
+        child: MenuItemWidget(app: widget.app, menuItemModel: toUpdate),
         buttons: [
-          dialogButton(context, label: 'Cancel', onPressed: () {
+          dialogButton(widget.app, context, label: 'Cancel', onPressed: () {
             Navigator.of(context).pop();
           }),
-          dialogButton(context, label: 'Ok', onPressed: () {
+          dialogButton(widget.app, context, label: 'Ok', onPressed: () {
             BlocProvider.of<MenuDefCreateBloc>(context)
                 .add(MenuDefUpdateMenuItem(menuItemModel, toUpdate));
             Navigator.of(context).pop();
@@ -443,7 +438,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
         ]);
   }
 
-  Widget getTitle(String _title) => Center(child: h3(context, _title));
+  Widget getTitle(String _title) => Center(child: h3(widget.app, context, _title));
 
   void ensureCurrentIsVisible() {
     if (currentVisible != null) {

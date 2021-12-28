@@ -8,7 +8,6 @@ import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
-import 'package:eliud_core/tools/component/component_spec.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/utils/popup_menu_item_choices.dart';
 import 'package:eliud_pkg_create/widgets/workflowtasks/workflow_task_widget.dart';
@@ -22,8 +21,10 @@ import 'workflowtasks__bloc/workflowtasks_create_state.dart';
 
 class WorkflowTasksCreateWidget extends StatefulWidget {
   final double widgetWidth;
+  final AppModel app;
 
   WorkflowTasksCreateWidget._({
+    required this.app,
     Key? key,
     required this.widgetWidth,
   }) : super(key: key);
@@ -47,6 +48,7 @@ class WorkflowTasksCreateWidget extends StatefulWidget {
         workflowTasks,
       )..add(WorkflowTasksCreateInitialiseEvent(workflowTasks)),
       child: WorkflowTasksCreateWidget._(
+        app: app,
         widgetWidth: widgetWidth,
       ),
     );
@@ -72,7 +74,7 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
                   int size = state.workflowTaskModels.length;
                   return Column(
                     children: [
-                      topicContainer(context,
+                      topicContainer(widget.app, context,
                           title: 'Tasks',
                           collapsible: true,
                           collapsed: false,
@@ -90,13 +92,13 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
                                             if (item == state.currentlySelected)
                                               theKey = currentVisible;
                                             count++;
-                                            return getListTile(context,
+                                            return getListTile(context,widget.app,
                                                 key: theKey,
                                                 //                                  onTap: () => details(context, item),
                                                 leading:
-                                                text(context,
+                                                text(widget.app,context,
                                                     item.seqNumber.toString()),
-                                                trailing: PopupMenuItemChoices(
+                                                trailing: PopupMenuItemChoices(app:widget.app,
                                                   isFirst: (count != 1),
                                                   isLast: (count != size),
                                                   actionUp: () =>
@@ -127,7 +129,7 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
                                                           WorkflowTasksCreateDeleteMenuItem(
                                                               item)),
                                                 ),
-                                                title: text(
+                                                title: text(widget.app,
                                                     context,
                                                     ((item.task == null) &&
                                                         (item.task!
@@ -137,7 +139,7 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
                                                         : item.task!
                                                         .description));
                                           }).toList()))),
-                              divider(context),
+                              divider(widget.app,context),
                               GestureDetector(
                                   child: Icon(Icons.add),
                                   onTap: () {
@@ -148,23 +150,22 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
                     ],
                   );
                 } else {
-                  return progressIndicator(context);
+                  return progressIndicator(widget.app,context);
                 }
               });
         } else {
-          return progressIndicator(context);
+          return progressIndicator(widget.app,context);
         }
     });
   }
 
   void details(BuildContext context, WorkflowTaskModel? workflowTaskModel/*, EditorFeedback feedback*/) {
-    var appId = AccessBloc.currentAppId(context);
-    openComplexDialog(
-      context, appId + '/_createdivider',
+    openComplexDialog(widget.app,
+      context, widget.app.documentID! + '/_createdivider',
       title: 'Create divider',
       includeHeading: false,
       widthFraction: .9,
-      child: WorkflowTaskWidget(
+      child: WorkflowTaskWidget(app: widget.app,
         model: (workflowTaskModel ?? newWorkflowTaskDefaults()),
         create: workflowTaskModel == null,
         feedback: null /*feedback*/),

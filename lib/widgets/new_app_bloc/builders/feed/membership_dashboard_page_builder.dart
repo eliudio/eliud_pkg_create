@@ -14,13 +14,13 @@ import 'other_feed_pages_builder.dart';
 class MembershipDashboardPageBuilder extends OtherFeedPageBuilder {
   MembershipDashboardPageBuilder(
       String pageId,
-      String appId,
+      AppModel app,
       String memberId,
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer)
-      : super(pageId, appId, memberId, theHomeMenu, theAppBar, leftDrawer,
+      : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
             rightDrawer);
 
   Future<PageModel> run(
@@ -30,7 +30,7 @@ class MembershipDashboardPageBuilder extends OtherFeedPageBuilder {
       required String profilePageId,
       required String feedPageId}) async {
     await MembershipDashboard(
-            appId, componentIdentifier, profilePageId, feedPageId)
+            app, componentIdentifier, profilePageId, feedPageId)
         .run();
     return await doIt(
         componentName: AbstractMembershipDashboardComponent.componentName,

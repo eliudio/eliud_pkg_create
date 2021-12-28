@@ -1,4 +1,5 @@
 import 'package:eliud_core/core/blocs/access/helper/access_helpers.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/display_conditions_model.dart';
 import 'package:eliud_core/package/packages.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -23,9 +24,11 @@ const String pageAndDialogComment = """
 
 class DisplayConditionsWidget extends StatefulWidget {
   final DisplayConditionsModel value;
+  final AppModel app;
 
   DisplayConditionsWidget({
     Key? key,
+    required this.app,
     required this.value,
   }) : super(key: key);
 
@@ -62,15 +65,15 @@ class _DisplayConditionState extends State<DisplayConditionsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return topicContainer(context,
+    return topicContainer(widget.app, context,
         title: 'Access rights',
         collapsible: true,
         collapsed: true,
         children: [
           getListTile(
-            context,
+            context,widget.app,
             leading: const Icon(Icons.security),
-            title: ComboboxWidget(
+            title: ComboboxWidget(app: widget.app,
               initialValue: (widget.value.privilegeLevelRequired == null)
                   ? 0
                   : widget.value.privilegeLevelRequired!.index,
@@ -93,18 +96,18 @@ class _DisplayConditionState extends State<DisplayConditionsWidget> {
           ),
           _aBitSpace(),
           getListTile(
-            context,
+            context,widget.app,
             leading: const Icon(Icons.security),
-            title: PackageConditionWidget(
+            title: PackageConditionWidget(app: widget.app,
                 initialPackageCondition: widget.value.packageCondition,
                 packageInfos: getAllPackageConditionsAsPackageInfos2(),
                 feedback: (value) => widget.value.packageCondition = value),
           ),
           _aBitSpace(),
           getListTile(
-            context,
+            context,widget.app,
             leading: const Icon(Icons.security),
-            title: ComboboxWidget(
+            title: ComboboxWidget(app: widget.app,
               initialValue: (widget.value.conditionOverride == null) ||
                       (widget.value.conditionOverride ==
                           ConditionOverride.Unknown)
@@ -130,7 +133,7 @@ class _DisplayConditionState extends State<DisplayConditionsWidget> {
             ),
           ),
           _aBitSpace(),
-          text(context, _menuItemComment),
+          text(widget.app, context, _menuItemComment),
         ]);
   }
 }

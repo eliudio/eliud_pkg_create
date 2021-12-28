@@ -5,6 +5,7 @@ import 'package:eliud_core/core/navigate/router.dart' as EliudRouter;
 import 'package:eliud_core/core/widgets/alert_widget.dart';
 import 'package:eliud_core/model/app_list_bloc.dart';
 import 'package:eliud_core/model/app_list_state.dart';
+import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
@@ -14,9 +15,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:ui';
 
 class PlayStore extends StatefulWidget {
+  final AppModel app;
   final PlayStoreModel playStoreModel;
 
-  const PlayStore(this.playStoreModel, {Key? key}) : super(key: key);
+  const PlayStore(this.app, this.playStoreModel, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,18 +31,17 @@ class PlayStoreState extends State<PlayStore> {
   PlayStoreState();
 
   Widget alertWidget({title = String, content = String}) {
-    return AlertWidget(title: title, content: content);
+    return AlertWidget(app: widget.app, title: title, content: content);
   }
 
   @override
   Widget build(BuildContext context) {
-    var currentAppId = AccessBloc.currentAppId(context);
+    var app = widget.app;
+    var currentAppId = widget.app.documentID!;
     return BlocBuilder<AccessBloc, AccessState>(
         builder: (context, accessState) {
       if (accessState is AccessDetermined) {
         var member = accessState.getMember();
-        var app = accessState.currentApp;
-        var appID = app.documentID!;
         return BlocBuilder<AppListBloc, AppListState>(
             builder: (context, state) {
           if (state is AppListLoaded) {
@@ -79,7 +80,7 @@ class PlayStoreState extends State<PlayStore> {
                   component = GestureDetector(
                       onTap: () async {
                         EliudRouter.Router.navigateTo(context,
-                            SwitchApp(appID, toAppID: model.documentID!));
+                            SwitchApp(app, toAppID: model.documentID!));
                       },
                       child: logo);
                 } else {
@@ -117,11 +118,11 @@ class PlayStoreState extends State<PlayStore> {
                     shrinkWrap: true,
                     children: components));
           } else {
-            return progressIndicator(context);
+            return progressIndicator(app, context);
           }
         });
       } else {
-        return progressIndicator(context);
+        return progressIndicator(app, context);
       }
     });
   }
