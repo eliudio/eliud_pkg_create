@@ -49,9 +49,6 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
         appModel.logo = theState.appModel.logo;
         appModel.homePages = theState.appModel.homePages;
         appModel.appStatus = theState.appModel.appStatus;
-        appModel.routeAnimationDuration =
-            theState.appModel.routeAnimationDuration;
-        appModel.routeBuilder = theState.appModel.routeBuilder;
         if (event.save) {
           var app = await appRepository(appId: appId)!
               .get(theState.appModel.documentID);
