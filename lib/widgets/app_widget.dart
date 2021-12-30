@@ -3,6 +3,7 @@ import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/app_policy_item_model.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
+import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
@@ -581,13 +582,13 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
   }
 
   void _pdfFeedbackFunction(
-      AppModel appModel, PlatformMediumModel? platformMediumModel) {
+      AppModel appModel, PublicMediumModel? publicMediumModel) {
     setState(() {
       _progressPolicy = null;
       appModel.policies!.policies!.add(AppPolicyItemModel(
           documentID: newRandomKey(),
-          name: platformMediumModel!.baseName,
-          policy: platformMediumModel));
+          name: publicMediumModel!.baseName,
+          policy: publicMediumModel));
     });
   }
 
