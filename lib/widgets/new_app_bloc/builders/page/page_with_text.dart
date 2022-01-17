@@ -8,8 +8,8 @@ import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/page_builder.dart';
 import 'package:eliud_pkg_text/model/abstract_repository_singleton.dart';
-import 'package:eliud_pkg_text/model/html_component.dart';
-import 'package:eliud_pkg_text/model/html_model.dart';
+import 'package:eliud_pkg_text/model/html_with_platform_medium_component.dart';
+import 'package:eliud_pkg_text/model/html_with_platform_medium_model.dart';
 
 class PageWithTextBuilder extends PageBuilder {
   final String title;
@@ -31,7 +31,7 @@ class PageWithTextBuilder extends PageBuilder {
   Future<PageModel> create() async {
     // welcome page
     var htmlComponentId = pageId;
-    await htmlRepository(appId: app.documentID!)!.add(HtmlModel(
+    await htmlWithPlatformMediumRepository(appId: app.documentID!)!.add(HtmlWithPlatformMediumModel(
       documentID: htmlComponentId,
       appId: app.documentID!,
       name: 'html 1',
@@ -48,7 +48,7 @@ class PageWithTextBuilder extends PageBuilder {
       bodyComponents: [
         BodyComponentModel(
             documentID: "1",
-            componentName: AbstractHtmlComponent.componentName,
+            componentName: AbstractHtmlWithPlatformMediumComponent.componentName,
             componentId: htmlComponentId)
       ],
       layout: PageLayout.ListView,
