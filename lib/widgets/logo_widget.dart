@@ -63,7 +63,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                           context,
                           widget.app,
                           widget.app.ownerID!,
-                          PublicMediumAccessRights(),
+                          () => PublicMediumAccessRights(),
                           (photo) =>
                               _photoFeedbackFunction(widget.app, photo),
                           _photoUploading,
@@ -73,7 +73,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                           context,
                           widget.app,
                           widget.app.ownerID!,
-                          PublicMediumAccessRights(),
+                          () => PublicMediumAccessRights(),
                           (photo) =>
                               _photoFeedbackFunction(widget.app, photo),
                           _photoUploading,

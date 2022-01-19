@@ -293,7 +293,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                 context,
                 widget.app,
                 ownerId,
-                PublicMediumAccessRights(),
+                () => PublicMediumAccessRights(),
                 (photo) => _photoFeedbackFunction(drawerModel, photo),
                 _photoUploading,
                 allowCrop: false);
@@ -303,7 +303,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                 context,
                 widget.app,
                 ownerId,
-                PlatformMediumAccessRights(
+                () => PlatformMediumAccessRights(
                     PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
                 (photo) => _photoFeedbackFunction(drawerModel, photo),
                 _photoUploading,
