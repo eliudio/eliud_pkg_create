@@ -26,9 +26,9 @@ class StyleSelectionWidget extends StatefulWidget {
 
   _StyleSelectionWidgetState createState() => _StyleSelectionWidgetState();
 
-  static Widget getIt(BuildContext context, AppModel app, bool withHeader, bool collapsed,) {
+  static Widget getIt(BuildContext context, AppModel app, bool withHeader, bool collapsed, {FeedbackSelection? feedbackSelection}) {
     return BlocProvider<StyleSelectionBloc>(
-      create: (context) => StyleSelectionBloc(app)
+      create: (context) => StyleSelectionBloc(app, feedbackSelection)
         ..add(InitialiseStyleSelectionEvent(
             family: app.styleFamily, styleName: app.styleName)),
       child: StyleSelectionWidget._(app, withHeader, collapsed),

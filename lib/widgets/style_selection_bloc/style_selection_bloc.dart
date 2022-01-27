@@ -14,12 +14,15 @@ import 'style_selection_state.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_core/model/model_export.dart';
 
+typedef FeedbackSelection = Function(String? styleFamily, String? styleName);
+
 class StyleSelectionBloc
     extends Bloc<StyleSelectionEvent, StyleSelectionState> {
   String? styleName;
   final AppModel app;
+  final FeedbackSelection? feedbackSelection;
 
-  StyleSelectionBloc(AppModel initialiseWithApp) : app = initialiseWithApp.copyWith(), super(StyleSelectionUninitialized());
+  StyleSelectionBloc(AppModel initialiseWithApp, this.feedbackSelection) : app = initialiseWithApp.copyWith(), super(StyleSelectionUninitialized());
   @override
   Stream<StyleSelectionState> mapEventToState(
       StyleSelectionEvent event) async* {
@@ -102,6 +105,9 @@ class StyleSelectionBloc
   StyleSelectionInitializedWithSelection selectStyle(Style style, StyleSelectionInitialized state) {
     app.styleFamily = style.styleFamily.familyName;
     app.styleName = style.styleName;
+    if (this.feedbackSelection != null) {
+      this.feedbackSelection!(app.styleFamily, app.styleName);
+    }
     return StyleSelectionInitializedWithSelection(
         families: state.families,
         style: style,
