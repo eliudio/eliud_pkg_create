@@ -63,14 +63,15 @@ class StyleSelectionBloc
         yield selectStyle(event.style, state as StyleSelectionInitialized);
       } else if (event is DeleteStyleEvent) {
         // find family
+/*
+TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
         var foundFamily = theState.families
             .where((family) =>
         family.familyName == event.style.styleFamily.familyName)
             .first;
         if (foundFamily != null) {
           // new list of styles
-          Map<String, Style> newStyleList = Map.from(
-              foundFamily.styles);
+          Map<String, Style> newStyleList = await foundFamily.allStylesMap(app);
           newStyleList.remove(event.style.styleName);
 
           // new family
@@ -86,14 +87,18 @@ class StyleSelectionBloc
           var newState = theState.copyWith(newFamilies);
           yield newState;
         }
+*/
       } else if (event is StyleUpdatedEvent) {
         // make sure the style is updated in the list
       } else if (event is CopyStyleEvent) {
+/*
+TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
         var newStyle = event.style.copy(event.newName);
         if (newStyle != null) {
           newStyle.styleFamily.styles[event.newName] = newStyle;
           yield theState.copyWith(theState.families);
         }
+*/
       } else if (event is StyleSelectionApplyChanges) {
         if (event.save) {
           appRepository(appId: app.documentID)!.update(app);

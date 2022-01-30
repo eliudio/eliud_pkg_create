@@ -51,6 +51,9 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
           var styleFamily = childDocuments[position];
           var isCurrent = currentlySelected != null &&
               currentlySelected.styleFamily == styleFamily;
+          return Text("TODO");
+/*
+TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
           List<Widget> buttons = _getStyles(styleFamily.styles.values.toList(), currentlySelected);
           if (styleFamily.canInsert) {
             buttons.add(ListTile(
@@ -85,6 +88,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
               (Icons.circle),
             ),
           );
+*/
         },
       ),
     );

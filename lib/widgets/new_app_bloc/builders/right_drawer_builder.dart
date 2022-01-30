@@ -3,8 +3,8 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
+import 'package:eliud_core/model/rgb_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
-import 'package:eliud_core/style/tools/colors.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 
 import 'with_menu.dart';
@@ -21,7 +21,7 @@ class RightDrawerBuilder extends WithMenu {
         headerText: '',
         secondHeaderText: 'name: \${userName}\ngroup: \${userGroup}',
         headerHeight: 0,
-        popupMenuBackgroundColor: EliudColors.red,
+        popupMenuBackgroundColor: RgbModel(r: 255, g: 0, b: 0, opacity: 1.00),
         menu: await menuDef());
 
     await drawerRepository(appId: app.documentID!)!.add(drawerModel);
