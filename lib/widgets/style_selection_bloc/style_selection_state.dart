@@ -28,28 +28,58 @@ class StyleSelectionUninitialized extends StyleSelectionState {
               runtimeType == other.runtimeType;
 }
 
+class StyleFamilyState {
+  final StyleFamily styleFamily;
+  final List<Style> allStyles;
+
+  StyleFamilyState(this.styleFamily, this.allStyles);
+
+  @override
+  bool operator == (Object other) =>
+      identical(this, other) ||
+          other is StyleFamilyState &&
+              styleFamily == other.styleFamily &&
+              const ListEquality().equals(allStyles, other.allStyles) &&
+              runtimeType == other.runtimeType;
+
+  String familyName() => styleFamily.familyName;
+}
+
 abstract class StyleSelectionInitialized extends StyleSelectionState {
-  late List<StyleFamily> families;
+  late List<StyleFamilyState> families;
 
   @override
   List<Object?> get props => [families];
 
-  StyleSelectionInitialized({required List<StyleFamily> initFamilies}) {
-    initFamilies.sort((a, b) => a.familyName.compareTo(b.familyName));
+  StyleSelectionInitialized({required List<StyleFamilyState> initFamilies}) {
+    initFamilies.sort((a, b) => a.familyName().compareTo(b.familyName()));
     families = initFamilies;
   }
 
-  StyleSelectionInitialized copyWith(List<StyleFamily> newFamilies);
+  StyleSelectionInitialized copyWith(List<StyleFamilyState> newFamilies);
+
+  StyleSelectionInitialized copyWithNewStyleFamily(StyleFamily styleFamily, List<Style> allStyles);
+
+  static List<StyleFamilyState> copyAndReplace(List<StyleFamilyState> toReplace, StyleFamilyState replaceWith) {
+    List<StyleFamilyState> newFamilies = [];
+    for (var styleFamilyState in toReplace) {
+      if (styleFamilyState.styleFamily.familyName != replaceWith.familyName()) {
+        newFamilies.add(styleFamilyState);
+      }
+    }
+    newFamilies.add(replaceWith);
+    return newFamilies;
+  }
 }
 
 class StyleSelectionInitializedWithSelection extends StyleSelectionInitialized {
-  final Style style;
+  final Style currentSelectedStyle;
 
   @override
-  List<Object?> get props => [style, families];
+  List<Object?> get props => [currentSelectedStyle, families];
 
   StyleSelectionInitializedWithSelection(
-      {required List<StyleFamily> families, required this.style/*, required this.count*/})
+      {required List<StyleFamilyState> families, required this.currentSelectedStyle/*, required this.count*/})
       : super(initFamilies: families);
 
   @override
@@ -57,12 +87,18 @@ class StyleSelectionInitializedWithSelection extends StyleSelectionInitialized {
       identical(this, other) ||
           other is StyleSelectionInitializedWithSelection &&
               runtimeType == other.runtimeType &&
-              style == other.style &&
+              currentSelectedStyle == other.currentSelectedStyle &&
               ListEquality().equals(families, other.families);
 
   @override
-  StyleSelectionInitializedWithSelection copyWith(List<StyleFamily> newFamilies) {
-    return StyleSelectionInitializedWithSelection(style: style, families: newFamilies);
+  StyleSelectionInitializedWithSelection copyWith(List<StyleFamilyState> newFamilies) {
+    return StyleSelectionInitializedWithSelection(currentSelectedStyle: currentSelectedStyle, families: newFamilies);
+  }
+
+  @override
+  StyleSelectionInitialized copyWithNewStyleFamily(StyleFamily styleFamily, List<Style> allStyles) {
+    var newOne = StyleSelectionInitializedWithSelection(families: StyleSelectionInitialized.copyAndReplace(families, StyleFamilyState(styleFamily, allStyles)), currentSelectedStyle: currentSelectedStyle);
+    return newOne;
   }
 }
 
@@ -72,7 +108,7 @@ class StyleSelectionInitializedWithoutSelection
   List<Object?> get props => [families];
 
   StyleSelectionInitializedWithoutSelection(
-      {required List<StyleFamily> families})
+      {required List<StyleFamilyState> families})
       : super(initFamilies: families);
 
   @override
@@ -83,8 +119,13 @@ class StyleSelectionInitializedWithoutSelection
               ListEquality().equals(families, other.families);
 
   @override
-  StyleSelectionInitializedWithoutSelection copyWith(List<StyleFamily> newFamilies) {
+  StyleSelectionInitializedWithoutSelection copyWith(List<StyleFamilyState> newFamilies) {
     return StyleSelectionInitializedWithoutSelection(families: newFamilies);
+  }
+
+  @override
+  StyleSelectionInitialized copyWithNewStyleFamily(StyleFamily styleFamily, List<Style> allStyles) {
+    return StyleSelectionInitializedWithoutSelection(families: StyleSelectionInitialized.copyAndReplace(families, StyleFamilyState(styleFamily, allStyles)));
   }
 }
 

@@ -39,7 +39,7 @@ class StyleSelectionWidget extends StatefulWidget {
 class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
   _StyleSelectionWidgetState();
 
-  Widget _getStyleFamilies(List<StyleFamily> childDocuments,
+  Widget _getStyleFamilies(List<StyleFamilyState> childDocuments,
       Style? currentlySelected) {
     return Container(
       margin: EdgeInsets.only(left: 8),
@@ -48,14 +48,11 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
         physics: ScrollPhysics(),
         itemCount: childDocuments.length,
         itemBuilder: (context, position) {
-          var styleFamily = childDocuments[position];
+          var styleFamilyState = childDocuments[position];
           var isCurrent = currentlySelected != null &&
-              currentlySelected.styleFamily == styleFamily;
-          return Text("TODO");
-/*
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-          List<Widget> buttons = _getStyles(styleFamily.styles.values.toList(), currentlySelected);
-          if (styleFamily.canInsert) {
+              currentlySelected.styleFamily == styleFamilyState.styleFamily;
+          List<Widget> buttons = _getStyles(styleFamilyState.allStyles, currentlySelected);
+          if (styleFamilyState.styleFamily.canInsert) {
             buttons.add(ListTile(
               leading: Icon(Icons.add),
               title: GestureDetector(
@@ -74,12 +71,31 @@ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
               subtitle: text(widget.app,context, "Add a new style"),
             ));
           }
+          if (styleFamilyState.styleFamily.canGenerateDefaults) {
+            buttons.add(ListTile(
+              leading: Icon(Icons.add),
+              title: GestureDetector(
+                  child: text(widget.app,
+                    context,
+                    'Generate',
+                  ),
+                  onTap: () {
+                    openAckNackDialog(widget.app,context, widget.app.documentID! + '/_regenerate',
+                        title: 'Confirm',
+                        message: 'Confirm regenerating the styles for this family (existing will be overwritten)', onSelection: (value) async {
+                          if (value == 0) {
+                            BlocProvider.of<StyleSelectionBloc>(context).add(GenerateDefaults(styleFamilyState.styleFamily));
+                          }});
+                  }),
+              subtitle: text(widget.app,context, "Generate Family Default Styles"),
+            ));
+          }
           return ExpansionTile(
             iconColor: Colors.black,
             collapsedIconColor: Colors.black,
             title: isCurrent
-                ? highLight1(widget.app,context, '${childDocuments[position].familyName}')
-                : text(widget.app,context, '${childDocuments[position].familyName}'),
+                ? highLight1(widget.app,context, '${childDocuments[position].familyName()}')
+                : text(widget.app,context, '${childDocuments[position].familyName()}'),
             onExpansionChanged: (value) {
               setState(() {});
             },
@@ -88,7 +104,6 @@ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
               (Icons.circle),
             ),
           );
-*/
         },
       ),
     );
@@ -96,7 +111,7 @@ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
 
   List<Widget> _getStyles(List<Style> childDocuments, Style? currentlySelected) {
     return childDocuments.map((style) {
-      var isCurrent = currentlySelected != null && currentlySelected == style;
+      var isCurrent = currentlySelected != null && currentlySelected.styleName == style.styleName;
       return ListTile(
           leading: Icon(Icons.arrow_right_alt),
           title: PopupMenuButton<int>(
@@ -231,7 +246,7 @@ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
                             /*app,
 */                            state.families,
                             state is StyleSelectionInitializedWithSelection
-                                ? state.style
+                                ? state.currentSelectedStyle
                                 : null)),
                   ],
                 )

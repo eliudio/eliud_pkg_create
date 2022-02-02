@@ -18,7 +18,21 @@ class InitialiseStyleSelectionEvent extends StyleSelectionEvent {
   @override
   List<Object?> get props => [ family, styleName ];
 
-  InitialiseStyleSelectionEvent({required this.family, required this.styleName});
+  InitialiseStyleSelectionEvent({this.family, this.styleName});
+}
+
+class ChangedStyleFamilyState extends StyleSelectionEvent {
+  final StyleFamily styleFamily;
+  final List<Style> allStyles;
+
+  ChangedStyleFamilyState(this.styleFamily, this.allStyles);
+}
+
+class GenerateDefaults extends StyleSelectionEvent {
+  final StyleFamily family;
+
+  GenerateDefaults(this.family);
+
 }
 
 class SelectedStyleEvent extends StyleSelectionEvent {

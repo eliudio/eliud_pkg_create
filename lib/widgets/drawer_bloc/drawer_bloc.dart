@@ -52,17 +52,6 @@ class DrawerCreateBloc extends Bloc<DrawerCreateEvent, DrawerCreateState> {
             await menuDefRepository(appId: drawerModel.appId)!
                 .update(theState.drawerModel.menu!);
           }
-
-          if (theState.drawerModel.headerBackgroundOverride != null) {
-            var value = await backgroundRepository(appId: appId)!.get(theState.drawerModel.headerBackgroundOverride!.documentID);
-            if (value == null) {
-              await backgroundRepository(appId: appId)!.add(
-                  theState.drawerModel.headerBackgroundOverride!);
-            } else {
-              await backgroundRepository(appId: appId)!.update(
-                  theState.drawerModel.headerBackgroundOverride!);
-            }
-          }
         }
       }
     }

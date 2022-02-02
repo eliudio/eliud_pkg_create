@@ -73,7 +73,7 @@ class PlayStoreModel {
     return PlayStoreEntity(
           appId: (appId != null) ? appId : null, 
           description: (description != null) ? description : null, 
-          itemBackgroundId: (itemBackground != null) ? itemBackground!.documentID : null, 
+          itemBackground: (itemBackground != null) ? itemBackground!.toEntity(appId: appId) : null, 
           conditions: (conditions != null) ? conditions!.toEntity(appId: appId) : null, 
     );
   }
@@ -85,6 +85,8 @@ class PlayStoreModel {
           documentID: documentID, 
           appId: entity.appId, 
           description: entity.description, 
+          itemBackground: 
+            await BackgroundModel.fromEntity(entity.itemBackground), 
           conditions: 
             await StorageConditionsModel.fromEntity(entity.conditions), 
     );
@@ -93,23 +95,13 @@ class PlayStoreModel {
   static Future<PlayStoreModel?> fromEntityPlus(String documentID, PlayStoreEntity? entity, { String? appId}) async {
     if (entity == null) return null;
 
-    BackgroundModel? itemBackgroundHolder;
-    if (entity.itemBackgroundId != null) {
-      try {
-          itemBackgroundHolder = await backgroundRepository(appId: appId)!.get(entity.itemBackgroundId);
-      } on Exception catch(e) {
-        print('Error whilst trying to initialise itemBackground');
-        print('Error whilst retrieving background with id ${entity.itemBackgroundId}');
-        print('Exception: $e');
-      }
-    }
-
     var counter = 0;
     return PlayStoreModel(
           documentID: documentID, 
           appId: entity.appId, 
           description: entity.description, 
-          itemBackground: itemBackgroundHolder, 
+          itemBackground: 
+            await BackgroundModel.fromEntityPlus(entity.itemBackground, appId: appId), 
           conditions: 
             await StorageConditionsModel.fromEntityPlus(entity.conditions, appId: appId), 
     );

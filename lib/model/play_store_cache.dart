@@ -133,18 +133,7 @@ class PlayStoreCache implements PlayStoreRepository {
 
   static Future<PlayStoreModel> refreshRelations(PlayStoreModel model) async {
 
-    BackgroundModel? itemBackgroundHolder;
-    if (model.itemBackground != null) {
-      try {
-        await backgroundRepository(appId: model.appId)!.get(model.itemBackground!.documentID).then((val) {
-          itemBackgroundHolder = val;
-        }).catchError((error) {});
-      } catch (_) {}
-    }
-
     return model.copyWith(
-        itemBackground: itemBackgroundHolder,
-
 
     );
   }

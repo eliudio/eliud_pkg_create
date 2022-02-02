@@ -314,8 +314,6 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
               drawerModel.headerBackgroundOverride =
                   drawerModel.headerBackgroundOverride == null
                       ? BackgroundModel(
-                          appId: widget.app.documentID!,
-                          documentID: newRandomKey(),
                           useProfilePhotoAsBackground: true)
                       : drawerModel.headerBackgroundOverride!.copyWith(
                           useProfilePhotoAsBackground: true,
@@ -333,8 +331,6 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
         drawerModel.headerBackgroundOverride =
             drawerModel.headerBackgroundOverride == null
                 ? BackgroundModel(
-                    appId: widget.app.documentID!,
-                    documentID: newRandomKey(),
                     backgroundImage: publicMediumModel)
                 : drawerModel.headerBackgroundOverride!.copyWith(
                     useProfilePhotoAsBackground: false,

@@ -20,7 +20,6 @@ import '../model/play_store_firestore.dart';
 import '../model/play_store_repository.dart';
 import '../model/play_store_cache.dart';
 
-import '../model/play_store_model.dart';
 
 class RepositorySingleton extends AbstractRepositorySingleton {
     var _playStoreRepository = HashMap<String, PlayStoreRepository>();

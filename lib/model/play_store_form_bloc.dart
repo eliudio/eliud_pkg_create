@@ -93,16 +93,7 @@ class PlayStoreFormBloc extends Bloc<PlayStoreFormEvent, PlayStoreFormState> {
         return;
       }
       if (event is ChangedPlayStoreItemBackground) {
-        if (event.value != null)
-          newValue = currentState.value!.copyWith(itemBackground: await backgroundRepository(appId: appId)!.get(event.value));
-        else
-          newValue = new PlayStoreModel(
-                                 documentID: currentState.value!.documentID,
-                                 appId: currentState.value!.appId,
-                                 description: currentState.value!.description,
-                                 itemBackground: null,
-                                 conditions: currentState.value!.conditions,
-          );
+        newValue = currentState.value!.copyWith(itemBackground: event.value);
         yield SubmittablePlayStoreForm(value: newValue);
 
         return;

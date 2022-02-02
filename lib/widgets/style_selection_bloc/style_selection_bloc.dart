@@ -8,9 +8,6 @@ import 'package:eliud_core/style/style_registry.dart';
 import 'style_selection_event.dart';
 import 'style_selection_state.dart';
 
-
-
-
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_core/model/model_export.dart';
 
@@ -21,75 +18,85 @@ class StyleSelectionBloc
   String? styleName;
   final AppModel app;
   final FeedbackSelection? feedbackSelection;
+  Map<String, StreamSubscription?> _styleFamilySubscription = {};
 
-  StyleSelectionBloc(AppModel initialiseWithApp, this.feedbackSelection) : app = initialiseWithApp.copyWith(), super(StyleSelectionUninitialized());
+  void listenToStyleFamily(String appId, StyleFamily styleFamily) {
+    // todo: listen to the app, if the style changes, then re-listen to the style
+    _styleFamilySubscription[styleFamily.familyName]?.cancel();
+    _styleFamilySubscription[styleFamily.familyName] =
+        styleFamily.listenToStyles(appId, (list) {
+          add(ChangedStyleFamilyState(styleFamily, list));
+        });
+  }
+
+  StyleSelectionBloc(AppModel initialiseWithApp, this.feedbackSelection)
+      : app = initialiseWithApp.copyWith(),
+        super(StyleSelectionUninitialized());
+
   @override
   Stream<StyleSelectionState> mapEventToState(
       StyleSelectionEvent event) async* {
     if (event is InitialiseStyleSelectionEvent) {
       styleName = app.styleName;
-      var styleFamily;
+      StyleFamily? styleFamily;
       if (event.family != null) {
         styleFamily = StyleRegistry.registry().styleFamily(event.family!);
       } else {
-        styleFamily = StyleRegistry.registry().styleFamily(DefaultStyleFamily.defaultStyleFamilyName);
+        styleFamily = StyleRegistry.registry()
+            .styleFamily(DefaultStyleFamily.defaultStyleFamilyName);
       }
-      var families = StyleRegistry.registry()
-          .registeredStyleFamilies
-          .values
-          .toList();
+      var families =
+          StyleRegistry.registry().registeredStyleFamilies.values.toList();
+
+      var styleFamilyStates = families.map((styleFamily) {
+        listenToStyleFamily(app.documentID!, styleFamily);
+        return StyleFamilyState(styleFamily, []);
+      }).toList();
       if (styleFamily != null) {
         var style;
         if (event.styleName != null) {
-          style = styleFamily.style(event.styleName);
+          style = styleFamily.getStyle(app, event.styleName!);
         } else {
-          style = styleFamily.style(DefaultStyle.defaultStyleName);
+          style = styleFamily.getStyle(app, DefaultStyle.defaultStyleName);
         }
         if (style != null) {
           yield StyleSelectionInitializedWithSelection(
-              families: families,
-              style: style,
-              );
+            families: styleFamilyStates,
+            currentSelectedStyle: style,
+          );
           return;
         }
       }
       yield StyleSelectionInitializedWithoutSelection(
-        families: families,
+        families: styleFamilyStates,
       );
+
+    }
+    if (event is ChangedStyleFamilyState) {
+      if (state is StyleSelectionInitialized) {
+        var styleSelectionInitialized = state as StyleSelectionInitialized;
+        var styleFamily = event.styleFamily;
+        var styles = event.allStyles;
+        yield styleSelectionInitialized.copyWithNewStyleFamily(styleFamily, styles);
+      }
+    }
+    if (event is GenerateDefaults) {
+      await event.family.installDefaults(app);
+      if (state is StyleSelectionInitializedWithSelection) {
+        var theState = state as StyleSelectionInitializedWithSelection;
+        add(InitialiseStyleSelectionEvent(family: theState.currentSelectedStyle.styleFamily.familyName, styleName: theState.currentSelectedStyle.styleName));
+      } else if (state is StyleSelectionInitializedWithoutSelection) {
+        add(InitialiseStyleSelectionEvent());
+      }
     }
     if (state is StyleSelectionInitialized) {
       var theState = state as StyleSelectionInitialized;
       if (event is SelectStyleEvent) {
         yield selectStyle(event.style, state as StyleSelectionInitialized);
       } else if (event is DeleteStyleEvent) {
-        // find family
-/*
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-        var foundFamily = theState.families
-            .where((family) =>
-        family.familyName == event.style.styleFamily.familyName)
-            .first;
-        if (foundFamily != null) {
-          // new list of styles
-          Map<String, Style> newStyleList = await foundFamily.allStylesMap(app);
-          newStyleList.remove(event.style.styleName);
-
-          // new family
-          var newFamily = event.style.styleFamily.copyWithNewStyles(
-              newStyleList);
-
-          // new families
-          List<StyleFamily> newFamilies = List.from(theState.families);
-          newFamilies.removeWhere((fam) =>
-          fam.familyName == event.style.styleFamily.familyName);
-          newFamilies.add(newFamily);
-
-          var newState = theState.copyWith(newFamilies);
-          yield newState;
-        }
-*/
+        event.style.styleFamily.delete(app, event.style);
       } else if (event is StyleUpdatedEvent) {
-        // make sure the style is updated in the list
+        event.style.styleFamily.update(app, event.style);
       } else if (event is CopyStyleEvent) {
 /*
 TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
@@ -107,15 +114,16 @@ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
     }
   }
 
-  StyleSelectionInitializedWithSelection selectStyle(Style style, StyleSelectionInitialized state) {
+  StyleSelectionInitializedWithSelection selectStyle(
+      Style style, StyleSelectionInitialized state) {
     app.styleFamily = style.styleFamily.familyName;
     app.styleName = style.styleName;
     if (this.feedbackSelection != null) {
       this.feedbackSelection!(app.styleFamily, app.styleName);
     }
     return StyleSelectionInitializedWithSelection(
-        families: state.families,
-        style: style,
+      families: state.families,
+      currentSelectedStyle: style,
     );
   }
 }

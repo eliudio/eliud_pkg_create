@@ -46,7 +46,6 @@
       "fieldName": "itemBackground",
       "displayName": "itemBackground",
       "fieldType": "Background",
-      "association": true,
       "optional": true,
       "group": "background"
     },

@@ -18,7 +18,6 @@ class LeftDrawerBuilder extends WithMenu {
     var headerBackgroundOverride;
     if (logo != null) {
       headerBackgroundOverride = _drawerHeaderBGOverride(logo);
-      await backgroundRepository(appId: app.documentID!)!.add(headerBackgroundOverride);
     }
 
     var drawerModel = DrawerModel(
@@ -38,8 +37,6 @@ class LeftDrawerBuilder extends WithMenu {
   BackgroundModel _drawerHeaderBGOverride(PublicMediumModel? logo) {
     var decorationColorModels = <DecorationColorModel>[];
     var backgroundModel = BackgroundModel(
-        appId: app.documentID!,
-        documentID: 'left_drawer_header_bg_' + app.documentID!,
         decorationColors: decorationColorModels,
         backgroundImage: logo);
     return backgroundModel;

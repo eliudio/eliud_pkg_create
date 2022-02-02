@@ -127,7 +127,6 @@ class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
   final TextEditingController _documentIDController = TextEditingController();
   final TextEditingController _appIdController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  String? _itemBackground;
 
 
   _MyPlayStoreFormState(this.formAction);
@@ -162,10 +161,6 @@ class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
           _descriptionController.text = state.value!.description.toString();
         else
           _descriptionController.text = "";
-        if (state.value!.itemBackground != null)
-          _itemBackground= state.value!.itemBackground!.documentID;
-        else
-          _itemBackground= "";
       }
       if (state is PlayStoreFormInitialized) {
         List<Widget> children = [];
@@ -196,10 +191,6 @@ class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
                   child: StyleRegistry.registry().styleWithApp(widget.app).adminFormStyle().groupTitle(widget.app, context, 'Background')
                 ));
 
-        children.add(
-
-                DropdownButtonComponentFactory().createNew(app: widget.app, id: "backgrounds", value: _itemBackground, trigger: _onItemBackgroundSelected, optional: true),
-          );
 
 
         children.add(Container(height: 20.0));
@@ -279,14 +270,6 @@ class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
 
   void _onDescriptionChanged() {
     _myFormBloc.add(ChangedPlayStoreDescription(value: _descriptionController.text));
-  }
-
-
-  void _onItemBackgroundSelected(String? val) {
-    setState(() {
-      _itemBackground = val;
-    });
-    _myFormBloc.add(ChangedPlayStoreItemBackground(value: val));
   }
 
 

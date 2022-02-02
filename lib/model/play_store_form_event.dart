@@ -96,7 +96,7 @@ class ChangedPlayStoreDescription extends PlayStoreFormEvent {
 }
 
 class ChangedPlayStoreItemBackground extends PlayStoreFormEvent {
-  final String? value;
+  final BackgroundModel? value;
 
   ChangedPlayStoreItemBackground({this.value});
 

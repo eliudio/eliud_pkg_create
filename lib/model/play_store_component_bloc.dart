@@ -22,7 +22,6 @@ import 'package:eliud_pkg_create/model/play_store_component_state.dart';
 import 'package:eliud_pkg_create/model/play_store_repository.dart';
 import 'package:flutter/services.dart';
 
-
 class PlayStoreComponentBloc extends Bloc<PlayStoreComponentEvent, PlayStoreComponentState> {
   final PlayStoreRepository? playStoreRepository;
   StreamSubscription? _playStoreSubscription;
