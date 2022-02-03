@@ -35,7 +35,8 @@ typedef BlocProvider BlocProviderProvider(Widget child);
 
 void openDrawer(BuildContext context, AppModel app, DrawerModel model,
     DecorationDrawerType decorationDrawerType, double fraction) {
-  openFlexibleDialog(app,
+  openFlexibleDialog(
+    app,
     context,
     app.documentID! + '/_drawer',
     includeHeading: false,
@@ -109,7 +110,8 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                 shrinkWrap: true,
                 physics: ScrollPhysics(),
                 children: [
-                  HeaderWidget(app: widget.app,
+                  HeaderWidget(
+                    app: widget.app,
                     cancelAction: () async {
                       return true;
                     },
@@ -126,27 +128,30 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                       collapsed: true,
                       children: [
                         getListTile(
-                          context,widget.app,
+                          context,
+                          widget.app,
                           leading: Icon(Icons.description),
-                          title: dialogField(widget.app,context,
+                          title: dialogField(widget.app, context,
                               valueChanged: (value) =>
                                   state.drawerModel.headerText = value,
                               initialValue: state.drawerModel.headerText,
-                              decoration:
-                                  inputDecoration(widget.app,context, "Header text")),
+                              decoration: inputDecoration(
+                                  widget.app, context, "Header text")),
                         ),
                         _mediaButtons(context, state, widget.app,
                             accessState.getMember()!.documentID!),
-                        getListTile(context,widget.app,
+                        getListTile(context, widget.app,
                             leading: Icon(Icons.description),
-                            title: dialogField(widget.app,
+                            title: dialogField(
+                              widget.app,
                               context,
                               keyboardType: TextInputType.multiline,
                               maxLines: 3,
                               valueChanged: (value) =>
                                   state.drawerModel.secondHeaderText = value,
                               initialValue: state.drawerModel.secondHeaderText,
-                              decoration: inputDecoration(widget.app,
+                              decoration: inputDecoration(
+                                widget.app,
                                 context,
                                 'Second Header text',
                               ),
@@ -160,11 +165,11 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                   )
                 ]);
           } else {
-            return progressIndicator(widget.app,context);
+            return progressIndicator(widget.app, context);
           }
         });
       } else {
-        return progressIndicator(widget.app,context);
+        return progressIndicator(widget.app, context);
       }
     });
   }
@@ -191,11 +196,10 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
         displayCase = DisplayCase.ShowUrlPhoto;
       }
     }
-    var x = memberId;
-
     switch (displayCase) {
       case DisplayCase.ShowProgress:
-        return progressIndicatorWithValue(widget.app,context, value: _progress!);
+        return progressIndicatorWithValue(widget.app, context,
+            value: _progress!);
       case DisplayCase.ShowMemberProfilePhoto:
         return _listTileWithMemberPhoto(context, memberId, state.drawerModel);
       case DisplayCase.ShowUrlPhoto:
@@ -228,19 +232,19 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
   Widget _listTileWithMemberPhoto(
       BuildContext context, String ownerId, DrawerModel drawerModel) {
     return _listTile(context,
-        widget1: text(widget.app,context, 'Using member profile photo'),
+        widget1: text(widget.app, context, 'Using member profile photo'),
         widget2: _clearButton(drawerModel.headerBackgroundOverride!));
   }
 
   Widget _listTile(BuildContext context,
       {required Widget widget1, Widget? widget2}) {
-    return getListTile(context,widget.app,
+    return getListTile(context, widget.app,
         leading: Icon(Icons.add_a_photo),
         title: Container(
           padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
           child:
               ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-            inputDecorationLabel(widget.app,context, 'Header image / logo'),
+            inputDecorationLabel(widget.app, context, 'Header image / logo'),
             Row(children: [
               widget1,
               Spacer(),
@@ -259,7 +263,8 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
   }
 
   Widget _clearButton(BackgroundModel backgroundModel) {
-    return iconButton(widget.app,context, icon: Icon(Icons.clear), onPressed: () {
+    return iconButton(widget.app, context, icon: Icon(Icons.clear),
+        onPressed: () {
       setState(() {
         backgroundModel.backgroundImage = null;
         backgroundModel.useProfilePhotoAsBackground = null;
@@ -275,17 +280,19 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
     var items = <PopupMenuItem<int>>[];
     if (AbstractMediumPlatform.platform!.hasCamera()) {
       items.add(
-        PopupMenuItem<int>(child: text(widget.app,context, 'Take photo'), value: 0),
+        PopupMenuItem<int>(
+            child: text(widget.app, context, 'Take photo'), value: 0),
       );
     }
-    items.add(
-        new PopupMenuItem<int>(child: text(widget.app,context, 'Upload photo'), value: 1));
-    items.add(new PopupMenuItem<int>(
-        child: text(widget.app,context, 'Use member profile photo'), value: 2));
+    items.add(PopupMenuItem<int>(
+        child: text(widget.app, context, 'Upload photo'), value: 1));
+    items.add(PopupMenuItem<int>(
+        child: text(widget.app, context, 'Use member profile photo'),
+        value: 2));
     return PopupMenuButton(
         tooltip: 'Add photo',
-        padding: EdgeInsets.all(0.0),
-        child: Icon(Icons.photo, size: 40),
+        padding: const EdgeInsets.all(0.0),
+        child: const Icon(Icons.photo, size: 40),
         itemBuilder: (_) => items,
         onSelected: (choice) {
           if (choice == 0) {
@@ -313,8 +320,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
             setState(() {
               drawerModel.headerBackgroundOverride =
                   drawerModel.headerBackgroundOverride == null
-                      ? BackgroundModel(
-                          useProfilePhotoAsBackground: true)
+                      ? BackgroundModel(useProfilePhotoAsBackground: true)
                       : drawerModel.headerBackgroundOverride!.copyWith(
                           useProfilePhotoAsBackground: true,
                           backgroundImage: null);
@@ -330,8 +336,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
       if (publicMediumModel != null) {
         drawerModel.headerBackgroundOverride =
             drawerModel.headerBackgroundOverride == null
-                ? BackgroundModel(
-                    backgroundImage: publicMediumModel)
+                ? BackgroundModel(backgroundImage: publicMediumModel)
                 : drawerModel.headerBackgroundOverride!.copyWith(
                     useProfilePhotoAsBackground: false,
                     backgroundImage: publicMediumModel);
