@@ -27,11 +27,15 @@ import 'new_app_bloc/new_app_state.dart';
 typedef BlocProvider BlocProviderProvider(Widget child);
 
 void newApp(
-  BuildContext context, MemberModel member, AppModel app, {
+  BuildContext context,
+  MemberModel member,
+  AppModel app, {
   double? fraction,
 }) {
-  openFlexibleDialog(app,
-    context,app.documentID! + '/_newapp',
+  openFlexibleDialog(
+    app,
+    context,
+    app.documentID! + '/_newapp',
     includeHeading: false,
     widthFraction: fraction == null ? .5 : fraction,
     child: Container(
@@ -63,22 +67,23 @@ class NewAppCreateWidget extends StatefulWidget {
     return _NewAppCreateWidgetState();
   }
 
-  static Widget getIt(
-      BuildContext context, MemberModel member, AppModel app, double widgetWidth, double widgetHeight) {
-      return BlocProvider<NewAppCreateBloc>(
-        create: (context) => NewAppCreateBloc()
-          ..add(NewAppCreateEventInitialise('YOUR_APP_ID', member)),
-        child: NewAppCreateWidget._(
-          app:app,
-          widgetWidth: widgetWidth,
-          widgetHeight: widgetHeight,
-        ),
-      );
+  static Widget getIt(BuildContext context, MemberModel member, AppModel app,
+      double widgetWidth, double widgetHeight) {
+    return BlocProvider<NewAppCreateBloc>(
+      create: (context) => NewAppCreateBloc()
+        ..add(NewAppCreateEventInitialise('YOUR_APP_ID', member)),
+      child: NewAppCreateWidget._(
+        app: app,
+        widgetWidth: widgetWidth,
+        widgetHeight: widgetHeight,
+      ),
+    );
   }
 }
 
 class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
-  static bool hasAccessToLocalFileSystem = AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem();
+  static bool hasAccessToLocalFileSystem =
+      AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem();
   var shopActionSpecifications = ShopActionSpecifications(
     requiresAccessToLocalFileSystem: false,
     paymentType: ShopPaymentType.Card,
@@ -218,8 +223,8 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     return BlocBuilder<NewAppCreateBloc, NewAppCreateState>(
         builder: (context, state) {
       if (state is SwitchApp) {
-        BlocProvider.of<AccessBloc>(context)
-            .add(SwitchAppWithIDEvent(appId: state.appToBeCreated.documentID!, goHome: true));
+        BlocProvider.of<AccessBloc>(context).add(SwitchAppWithIDEvent(
+            appId: state.appToBeCreated.documentID!, goHome: true));
       } else if (state is NewAppCreateInitialised) {
         return Container(
             width: widget.widgetWidth,
@@ -254,9 +259,12 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           includeSignoutButton: signoutSpecifications,
                           includeFlushButton: flushSpecifications,
                           includeJoinAction: includeJoinAction,
-                          membershipDashboardDialogSpecifications: membershipDashboardDialogSpecifications,
-                          notificationDashboardDialogSpecifications: notificationDashboardDialogSpecifications,
-                          assignmentDashboardDialogSpecifications: assignmentDashboardDialogSpecifications,
+                          membershipDashboardDialogSpecifications:
+                              membershipDashboardDialogSpecifications,
+                          notificationDashboardDialogSpecifications:
+                              notificationDashboardDialogSpecifications,
+                          assignmentDashboardDialogSpecifications:
+                              assignmentDashboardDialogSpecifications,
                         ));
                         return false;
                       }
@@ -272,23 +280,30 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   }
 
   Widget enterDetails(NewAppCreateInitialised state) {
-    return ListView(shrinkWrap: true, physics: ScrollPhysics(),
-        children: [
-        divider(widget.app, context),
-        _general(context, state),
-        _contents(context, state),
-        _logo(state.appToBeCreated),
-        StyleSelectionWidget.getIt(
-            context, state.appToBeCreated, false, true, feedbackSelection: (styleFamily, styleName) {
+    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
+      divider(widget.app, context),
+      _general(context, state),
+      _contents(context, state),
+      _logo(context, state.appToBeCreated),
+      _inContainer(context, 'Style', [
+        StyleSelectionWidget.getIt(context, state.appToBeCreated, false, true,
+            feedbackSelection: (styleFamily, styleName) {
           state.appToBeCreated.styleFamily = styleFamily;
           state.appToBeCreated.styleName = styleName;
         }),
-      ]
-    )   ;
+      ]),
+    ]);
   }
 
-  Widget _logo(AppModel appModel) {
-    return LogoWidget(app: appModel, collapsed: false);
+  Widget _inContainer(
+      BuildContext context, String label, List<Widget> widgets) {
+    return topicContainer(widget.app, context,
+        title: label, collapsible: true, collapsed: true, children: widgets);
+  }
+
+  Widget _logo(BuildContext context, AppModel appModel) {
+    return _inContainer(
+        context, 'Logo' + (!hasAccessToLocalFileSystem ? ' (not available on web)' : ''), [LogoWidget(app: appModel, collapsed: false)]);
   }
 
   Widget _general(BuildContext context, NewAppCreateInitialised state) {
@@ -299,9 +314,10 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           collapsible: true,
           collapsed: false,
           children: [
-            getListTile(context,widget.app,
+            getListTile(context, widget.app,
                 leading: Icon(Icons.vpn_key),
-                title: dialogField(widget.app,
+                title: dialogField(
+                  widget.app,
                   context,
                   initialValue: state.appToBeCreated.documentID,
                   valueChanged: (value) {
@@ -322,78 +338,93 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     return Container(
         height: 100,
         width: widget.widgetWidth,
-        child: progressIndicatorWithValue(widget.app, context, value: state.progress));
+        child: progressIndicatorWithValue(widget.app, context,
+            value: state.progress));
   }
 
   Widget _contents(BuildContext context, NewAppCreateInitialised state) {
     var suffix = !hasAccessToLocalFileSystem ? ' (not available on web)' : '';
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-      ActionSpecificationWidget(app: widget.app,
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: welcomeSpecifications,
-          label: 'Generate Welcome Page' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate Welcome Page'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: blockedSpecifications,
-          label: 'Generate Page for Blocked members' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate Page for Blocked members'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: aboutSpecifications,
-          label: 'Generate About Page' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate About Page'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: hasAccessToLocalFileSystem,
           actionSpecification: albumSpecifications,
-          label: 'Generate Example Album Page' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate Example Album Page'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: shopActionSpecifications,
-          label: 'Generate Shop' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate Shop'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
-          actionSpecification: feedSpecifications, label: 'Generate Feed' + suffix),
-
-      ActionSpecificationWidget(app: widget.app,
+          actionSpecification: feedSpecifications,
+          label: 'Generate Feed'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: chatSpecifications,
-          label: 'Generate Chat Dialog' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate Chat Dialog'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: memberDashboardSpecifications,
-          label: 'Generate Member Dashboard Dialog' + suffix),
-
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate Member Dashboard Dialog'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: hasAccessToLocalFileSystem,
           actionSpecification: examplePolicySpecifications,
           label: 'Generate Example Policy' + suffix),
-
-      ActionSpecificationWidget(app: widget.app,
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: signinSpecifications,
-          label: 'Generate signin button' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate signin button'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: signoutSpecifications,
-          label: 'Generate signout button' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate signout button'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: flushSpecifications,
-          label: 'Generate flush button' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate flush button'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: includeJoinAction,
-          label: 'Generate join button' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate join button'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: membershipDashboardDialogSpecifications,
-          label: 'Generate membership dashboard dialog' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate membership dashboard dialog'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: notificationDashboardDialogSpecifications,
-          label: 'Generate notification dashboard dialog' + suffix),
-      ActionSpecificationWidget(app: widget.app,
+          label: 'Generate notification dashboard dialog'),
+      ActionSpecificationWidget(
+          app: widget.app,
           enabled: true,
           actionSpecification: assignmentDashboardDialogSpecifications,
-          label: 'Generate assignment dashboard dialog' + suffix),
+          label: 'Generate assignment dashboard dialog'),
     ]);
   }
 }
@@ -426,7 +457,8 @@ class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
         collapsible: true,
         collapsed: true,
         children: [
-          checkboxListTile(widget.app,
+          checkboxListTile(
+              widget.app,
               context,
               'AppBar',
               widget.actionSpecification.availableInAppBar,
@@ -438,7 +470,8 @@ class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
                       });
                     }
                   : null),
-          checkboxListTile(widget.app,
+          checkboxListTile(
+              widget.app,
               context,
               'Home menu',
               widget.actionSpecification.availableInHomeMenu,
@@ -450,7 +483,8 @@ class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
                       });
                     }
                   : null),
-          checkboxListTile(widget.app,
+          checkboxListTile(
+              widget.app,
               context,
               'Left drawer',
               widget.actionSpecification.availableInLeftDrawer,
@@ -462,7 +496,8 @@ class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
                       });
                     }
                   : null),
-          checkboxListTile(widget.app,
+          checkboxListTile(
+              widget.app,
               context,
               'Right drawer',
               widget.actionSpecification.availableInRightDrawer,
@@ -474,7 +509,8 @@ class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
                       });
                     }
                   : null),
-          checkboxListTile(widget.app,
+          checkboxListTile(
+              widget.app,
               context,
               'Available (not through menu)',
               widget.actionSpecification.available,

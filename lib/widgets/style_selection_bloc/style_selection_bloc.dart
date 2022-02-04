@@ -89,6 +89,9 @@ class StyleSelectionBloc
         add(InitialiseStyleSelectionEvent());
       }
     }
+    if (event is AddNewStyleEvent) {
+      await event.styleFamily.newStyle(app, event.newStyleName);
+    }
     if (state is StyleSelectionInitialized) {
       var theState = state as StyleSelectionInitialized;
       if (event is SelectStyleEvent) {
@@ -98,14 +101,7 @@ class StyleSelectionBloc
       } else if (event is StyleUpdatedEvent) {
         event.style.styleFamily.update(app, event.style);
       } else if (event is CopyStyleEvent) {
-/*
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-        var newStyle = event.style.copy(event.newName);
-        if (newStyle != null) {
-          newStyle.styleFamily.styles[event.newName] = newStyle;
-          yield theState.copyWith(theState.families);
-        }
-*/
+        event.style.copy(app, event.newName);
       } else if (event is StyleSelectionApplyChanges) {
         if (event.save) {
           appRepository(appId: app.documentID)!.update(app);

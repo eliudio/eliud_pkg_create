@@ -61,12 +61,16 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                     'Add',
                   ),
                   onTap: () {
-                    // todo:
-                    // ask for the name of the new style (search for 'Provide new name for copy of style' below)
-                    // add a InsertNewStyle to the bloc
-                    // deal with this in the bloc i.e.:
-                    // use the styleFamily.defaultNew(new name)
-                    // use the style.update(context) to update the style
+                    openEntryDialog(widget.app,context, widget.app.documentID! + '/_newstyle',
+                        title: 'Provide name for the new style',
+                        hintText: 'Style name',
+                        ackButtonLabel: 'New',
+                        nackButtonLabel: 'Cancel', onPressed: (newName) {
+                          if (newName != null) {
+                            BlocProvider.of<StyleSelectionBloc>(context)
+                                .add(AddNewStyleEvent(styleFamily: styleFamilyState.styleFamily, newStyleName: newName));
+                          }
+                        });
                   }),
               subtitle: text(widget.app,context, "Add a new style"),
             ));
@@ -169,10 +173,6 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                       .add(SelectStyleEvent(style: style));
                 } else if (value == 2) {
                   style.update(widget.app, context);
-/*
-                  BlocProvider.of<StyleSelectionBloc>(context)
-                      .add(StyleUpdatedEvent(style: style));
-*/
                 } else if (value == 3) {
                   openEntryDialog(widget.app,context, widget.app.documentID! + '/_stylename',
                       title: 'Provide new name for copy of style',
@@ -242,9 +242,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                   children: <Widget>[
                     Container(
                         height: 200,
-                        child: _getStyleFamilies(
-                            /*app,
-*/                            state.families,
+                        child: _getStyleFamilies(state.families,
                             state is StyleSelectionInitializedWithSelection
                                 ? state.currentSelectedStyle
                                 : null)),

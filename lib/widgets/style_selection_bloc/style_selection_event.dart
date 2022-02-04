@@ -66,6 +66,16 @@ class CopyStyleEvent extends StyleSelectionEvent {
   CopyStyleEvent({required this.style, required this.newName});
 }
 
+class AddNewStyleEvent extends StyleSelectionEvent {
+  final StyleFamily styleFamily;
+  final String newStyleName;
+
+  @override
+  List<Object?> get props => [ styleFamily, newStyleName ];
+
+  AddNewStyleEvent({required this.styleFamily, required this.newStyleName});
+}
+
 class StyleUpdatedEvent extends StyleSelectionEvent {
   final Style style;
 
