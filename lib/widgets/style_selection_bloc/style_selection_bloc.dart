@@ -80,15 +80,6 @@ class StyleSelectionBloc
         yield styleSelectionInitialized.copyWithNewStyleFamily(styleFamily, styles);
       }
     }
-    if (event is GenerateDefaults) {
-      await event.family.installDefaults(app);
-      if (state is StyleSelectionInitializedWithSelection) {
-        var theState = state as StyleSelectionInitializedWithSelection;
-        add(InitialiseStyleSelectionEvent(family: theState.currentSelectedStyle.styleFamily.familyName, styleName: theState.currentSelectedStyle.styleName));
-      } else if (state is StyleSelectionInitializedWithoutSelection) {
-        add(InitialiseStyleSelectionEvent());
-      }
-    }
     if (event is AddNewStyleEvent) {
       await event.styleFamily.newStyle(app, event.newStyleName);
     }

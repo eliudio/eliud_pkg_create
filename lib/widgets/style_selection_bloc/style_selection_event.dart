@@ -28,13 +28,6 @@ class ChangedStyleFamilyState extends StyleSelectionEvent {
   ChangedStyleFamilyState(this.styleFamily, this.allStyles);
 }
 
-class GenerateDefaults extends StyleSelectionEvent {
-  final StyleFamily family;
-
-  GenerateDefaults(this.family);
-
-}
-
 class SelectedStyleEvent extends StyleSelectionEvent {
   final Style style;
 

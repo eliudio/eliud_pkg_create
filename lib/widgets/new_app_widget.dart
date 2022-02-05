@@ -286,7 +286,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
       _contents(context, state),
       _logo(context, state.appToBeCreated),
       _inContainer(context, 'Style', [
-        StyleSelectionWidget.getIt(context, state.appToBeCreated, false, true,
+        StyleSelectionWidget.getIt(context, state.appToBeCreated, false, true, true,
             feedbackSelection: (styleFamily, styleName) {
           state.appToBeCreated.styleFamily = styleFamily;
           state.appToBeCreated.styleName = styleName;

@@ -195,7 +195,7 @@ class CreatorDecoration extends deco.Decoration {
                               widthFraction: .5,
                               includeHeading: false,
                               child:
-                              StyleSelectionWidget.getIt(context, app, true, false, ),
+                              StyleSelectionWidget.getIt(context, app, true, false, false),
                               title: 'Style');
                         },
                         ensureHeight: false,

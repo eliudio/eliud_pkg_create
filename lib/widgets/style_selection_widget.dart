@@ -21,17 +21,18 @@ class StyleSelectionWidget extends StatefulWidget {
   final AppModel app;
   final bool withHeader;
   final bool collapsed;
+  final bool partOfCreationOfApp;   // is this widget part of the creation of a new app (and hence we can't create styles)?
 
-  StyleSelectionWidget._(this.app, this.withHeader, this.collapsed);
+  StyleSelectionWidget._(this.app, this.withHeader, this.collapsed, this.partOfCreationOfApp);
 
   _StyleSelectionWidgetState createState() => _StyleSelectionWidgetState();
 
-  static Widget getIt(BuildContext context, AppModel app, bool withHeader, bool collapsed, {FeedbackSelection? feedbackSelection}) {
+  static Widget getIt(BuildContext context, AppModel app, bool withHeader, bool collapsed, bool partOfCreationOfApp, {FeedbackSelection? feedbackSelection}) {
     return BlocProvider<StyleSelectionBloc>(
       create: (context) => StyleSelectionBloc(app, feedbackSelection)
         ..add(InitialiseStyleSelectionEvent(
             family: app.styleFamily, styleName: app.styleName)),
-      child: StyleSelectionWidget._(app, withHeader, collapsed),
+      child: StyleSelectionWidget._(app, withHeader, collapsed, partOfCreationOfApp),
     );
   }
 }
@@ -73,25 +74,6 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                         });
                   }),
               subtitle: text(widget.app,context, "Add a new style"),
-            ));
-          }
-          if (styleFamilyState.styleFamily.canGenerateDefaults) {
-            buttons.add(ListTile(
-              leading: Icon(Icons.add),
-              title: GestureDetector(
-                  child: text(widget.app,
-                    context,
-                    'Generate',
-                  ),
-                  onTap: () {
-                    openAckNackDialog(widget.app,context, widget.app.documentID! + '/_regenerate',
-                        title: 'Confirm',
-                        message: 'Confirm regenerating the styles for this family (existing will be overwritten)', onSelection: (value) async {
-                          if (value == 0) {
-                            BlocProvider.of<StyleSelectionBloc>(context).add(GenerateDefaults(styleFamilyState.styleFamily));
-                          }});
-                  }),
-              subtitle: text(widget.app,context, "Generate Family Default Styles"),
             ));
           }
           return ExpansionTile(
@@ -152,7 +134,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: StyleSelectionWidget.SIZE_SMALL))),
-                    if (style.allowedUpdates.canCopy)
+                    if ((style.allowedUpdates.canCopy) && (!widget.partOfCreationOfApp))
                       PopupMenuItem(
                           value: 3,
                           child: Text("Copy style",
