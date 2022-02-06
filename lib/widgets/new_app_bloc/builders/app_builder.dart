@@ -616,7 +616,6 @@ class AppBuilder {
       if (_blockedPageId != null)
         menuItem(app, _blockedPageId, 'Blocked', Icons.do_not_disturb),
       if (_aboutPageId != null) menuItemAbout(app, _aboutPageId, 'About'),
-      if (_albumPageId != null) menuItemAbout(app, _albumPageId, 'Album'),
       if (_memberDashboardDialogId != null)
         menuItemManageAccount(app, _memberDashboardDialogId),
       if (_policyPageId != null)
