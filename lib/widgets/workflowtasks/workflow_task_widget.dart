@@ -36,14 +36,13 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
   Widget build(BuildContext context) {
     var tasks = TaskModelRegistry.registry()!.getTasks();
     var taskIdentifiers = tasks.map((element) => element.identifier).toList();
-    var taskEditorWidget;
+    TaskEditor? taskEditorWidget;
     var taskDetails;
-    if (widget.model.task != null) {
-      taskDetails = TaskModelRegistry.registry()!
-          .getDetails(widget.model.task!.identifier);
-      if (taskDetails != null) {
-        taskEditorWidget = taskDetails!.editor;
-      }
+    widget.model.task ??= tasks[0].createNewInstance();
+    taskDetails = TaskModelRegistry.registry()!
+        .getDetails(widget.model.task!.identifier);
+    if (taskDetails != null) {
+      taskEditorWidget = taskDetails!.editor;
     }
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
       HeaderWidget(app: widget.app,
@@ -283,7 +282,7 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
                 title: "Task type",
               ),
             ),
-            if (taskEditorWidget != null) taskEditorWidget(widget.model.task),
+            if (taskEditorWidget != null) taskEditorWidget(widget.app, widget.model.task, ),
           ]),
     ]);
   }

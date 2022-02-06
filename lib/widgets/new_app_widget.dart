@@ -86,7 +86,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
       AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem();
   var shopActionSpecifications = ShopActionSpecifications(
     requiresAccessToLocalFileSystem: false,
-    paymentType: ShopPaymentType.Card,
+    paymentType: ShopPaymentType.Manual,
     availableInLeftDrawer: true,
     availableInRightDrawer: false,
     availableInAppBar: false,
@@ -183,7 +183,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   );
   var includeJoinAction = JoinActionSpecifications(
     requiresAccessToLocalFileSystem: false,
-    paymentType: JoinPaymentType.Card,
+    paymentType: JoinPaymentType.Manual,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
     availableInAppBar: true,
@@ -192,7 +192,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   );
   var membershipDashboardDialogSpecifications = JoinActionSpecifications(
     requiresAccessToLocalFileSystem: false,
-    paymentType: JoinPaymentType.Card,
+    paymentType: JoinPaymentType.Manual,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
     availableInAppBar: true,
@@ -201,7 +201,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   );
   var notificationDashboardDialogSpecifications = JoinActionSpecifications(
     requiresAccessToLocalFileSystem: false,
-    paymentType: JoinPaymentType.Card,
+    paymentType: JoinPaymentType.Manual,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
     availableInAppBar: true,
@@ -210,7 +210,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   );
   var assignmentDashboardDialogSpecifications = JoinActionSpecifications(
     requiresAccessToLocalFileSystem: false,
-    paymentType: JoinPaymentType.Card,
+    paymentType: JoinPaymentType.Manual,
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
     availableInAppBar: true,

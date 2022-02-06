@@ -63,112 +63,122 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AccessBloc, AccessState>(
-    builder: (context, accessState) {
-        if (accessState is AccessDetermined) {
-          return BlocBuilder<WorkflowTasksCreateBloc, WorkflowTasksCreateState>(
-              builder: (context, state) {
-                if (state is WorkflowTasksCreateInitialised) {
-                  currentVisible = GlobalKey();
-                  ensureCurrentIsVisible();
-                  int count = 0;
-                  int size = state.workflowTaskModels.length;
-                  return Column(
+        builder: (context, accessState) {
+      if (accessState is AccessDetermined) {
+        return BlocBuilder<WorkflowTasksCreateBloc, WorkflowTasksCreateState>(
+            builder: (context, state) {
+          if (state is WorkflowTasksCreateInitialised) {
+            currentVisible = GlobalKey();
+            ensureCurrentIsVisible();
+            int count = 0;
+            int size = state.workflowTaskModels.length;
+            return Column(
+              children: [
+                topicContainer(widget.app, context,
+                    title: 'Tasks',
+                    collapsible: true,
+                    collapsed: false,
                     children: [
-                      topicContainer(widget.app, context,
-                          title: 'Tasks',
-                          collapsible: true,
-                          collapsed: false,
-                          children: [
-                            ListView(children: [
-                              Container(
-                                  height: 200, //heightUnit() * 1,
-                                  width: widget.widgetWidth,
-                                  child: SingleChildScrollView(
-                                      physics: ScrollPhysics(),
-                                      child: Column(
-                                          children: state.workflowTaskModels
-                                              .map((item) {
-                                            var theKey;
-                                            if (item == state.currentlySelected)
-                                              theKey = currentVisible;
-                                            count++;
-                                            return getListTile(context,widget.app,
-                                                key: theKey,
-                                                //                                  onTap: () => details(context, item),
-                                                leading:
-                                                text(widget.app,context,
-                                                    item.seqNumber.toString()),
-                                                trailing: PopupMenuItemChoices(app:widget.app,
-                                                  isFirst: (count != 1),
-                                                  isLast: (count != size),
-                                                  actionUp: () =>
-                                                      BlocProvider.of<
-                                                          WorkflowTasksCreateBloc>(
-                                                          context)
-                                                          .add(
-                                                          WorkflowTasksMoveItem(
-                                                              item,
-                                                              MoveItemDirection
-                                                                  .Up)),
-                                                  actionDown: () =>
-                                                      BlocProvider.of<
-                                                          WorkflowTasksCreateBloc>(
-                                                          context)
-                                                          .add(
-                                                          WorkflowTasksMoveItem(
-                                                              item,
-                                                              MoveItemDirection
-                                                                  .Down)),
-                                                  actionDetails: () =>
-                                                      details(context, item),
-                                                  actionDelete: () =>
-                                                      BlocProvider.of<
-                                                          WorkflowTasksCreateBloc>(
-                                                          context)
-                                                          .add(
-                                                          WorkflowTasksCreateDeleteMenuItem(
-                                                              item)),
-                                                ),
-                                                title: text(widget.app,
-                                                    context,
-                                                    ((item.task == null) &&
-                                                        (item.task!
-                                                            .description !=
-                                                            null))
-                                                        ? '?'
-                                                        : item.task!
-                                                        .description));
-                                          }).toList()))),
-                              divider(widget.app,context),
-                              GestureDetector(
-                                  child: Icon(Icons.add),
-                                  onTap: () {
-                                    details(context, null);
-                                  })
-                            ], shrinkWrap: true, physics: ScrollPhysics()),
-                          ]),
-                    ],
-                  );
-                } else {
-                  return progressIndicator(widget.app,context);
-                }
-              });
-        } else {
-          return progressIndicator(widget.app,context);
-        }
+                      ListView(children: [
+                        Container(
+                            height: 200, //heightUnit() * 1,
+                            width: widget.widgetWidth,
+                            child: SingleChildScrollView(
+                                physics: ScrollPhysics(),
+                                child: Column(
+                                    children:
+                                        state.workflowTaskModels.map((item) {
+                                  var theKey;
+                                  if (item == state.currentlySelected)
+                                    theKey = currentVisible;
+                                  count++;
+                                  return getListTile(context, widget.app,
+                                      key: theKey,
+                                      //                                  onTap: () => details(context, item),
+                                      leading: text(widget.app, context,
+                                          item.seqNumber.toString()),
+                                      trailing: PopupMenuItemChoices(
+                                        app: widget.app,
+                                        isFirst: (count != 1),
+                                        isLast: (count != size),
+                                        actionUp: () => BlocProvider.of<
+                                                    WorkflowTasksCreateBloc>(
+                                                context)
+                                            .add(WorkflowTasksMoveItem(
+                                                item, MoveItemDirection.Up)),
+                                        actionDown: () => BlocProvider.of<
+                                                    WorkflowTasksCreateBloc>(
+                                                context)
+                                            .add(WorkflowTasksMoveItem(
+                                                item, MoveItemDirection.Down)),
+                                        actionDetails: () =>
+                                            details(context, item),
+                                        actionDelete: () => BlocProvider.of<
+                                                    WorkflowTasksCreateBloc>(
+                                                context)
+                                            .add(
+                                                WorkflowTasksCreateDeleteMenuItem(
+                                                    item)),
+                                      ),
+                                      title: text(
+                                          widget.app,
+                                          context,
+                                          ((item.task == null) &&
+                                                  (item.task!.description !=
+                                                      null))
+                                              ? '?'
+                                              : item.task!.description));
+                                }).toList()))),
+                        divider(widget.app, context),
+                        GestureDetector(
+                            child: Icon(Icons.add),
+                            onTap: () {
+                              details(context, null);
+                            })
+                      ], shrinkWrap: true, physics: ScrollPhysics()),
+                    ]),
+              ],
+            );
+          } else {
+            return progressIndicator(widget.app, context);
+          }
+        });
+      } else {
+        return progressIndicator(widget.app, context);
+      }
     });
   }
 
-  void details(BuildContext context, WorkflowTaskModel? workflowTaskModel/*, EditorFeedback feedback*/) {
-    openComplexDialog(widget.app,
-      context, widget.app.documentID! + '/_createdivider',
+  void details(BuildContext context,
+      WorkflowTaskModel? workflowTaskModel /*, EditorFeedback feedback*/) {
+    var newVersion;
+    if (workflowTaskModel == null) {
+      newVersion = newWorkflowTaskDefaults();
+    } else {
+      newVersion = workflowTaskModel.copyWith();
+    }
+    openComplexDialog(
+      widget.app,
+      context,
+      widget.app.documentID! + '/_createtask',
       title: 'Create divider',
       includeHeading: false,
       widthFraction: .9,
-      child: WorkflowTaskWidget(app: widget.app,
-        model: (workflowTaskModel ?? newWorkflowTaskDefaults()),
-        create: workflowTaskModel == null,
-        feedback: null /*feedback*/),
+      child: WorkflowTaskWidget(
+          app: widget.app,
+          model: newVersion,
+          create: workflowTaskModel == null,
+          feedback: (status) {
+            if (status) {
+              if (workflowTaskModel != null) {
+                BlocProvider.of<WorkflowTasksCreateBloc>(context).add(
+                    WorkflowTasksUpdateItem(workflowTaskModel, newVersion));
+              } else {
+                BlocProvider.of<WorkflowTasksCreateBloc>(context)
+                    .add(WorkflowTasksCreateAddWorkflowTask(newVersion));
+              }
+            }
+          }),
     );
   }
 
