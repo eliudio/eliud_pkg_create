@@ -523,6 +523,7 @@ class AppBuilder {
           policies: policyModel,
           description: 'Your new application',
           logo: logo,
+          autoPrivileged1: app.autoPrivileged1,
           homePages: AppHomePageReferencesModel(
             homePageBlockedMember: blockedPageId ?? homePageId,
             homePagePublic: homePageId,

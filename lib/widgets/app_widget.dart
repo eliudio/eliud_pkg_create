@@ -578,6 +578,17 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                   labelText: 'Email',
                 ),
               )),
+          checkboxListTile(
+              widget.app,
+              context,
+              'Auto privilege level 1 for new members?',
+              app.autoPrivileged1 ?? false,
+                  (value) {
+                setState(() {
+                  app.autoPrivileged1 =
+                      value ?? false;
+                });
+              }),
         ]);
   }
 

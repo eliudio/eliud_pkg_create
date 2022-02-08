@@ -26,7 +26,9 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
       var theState = state as NewAppCreateInitialised;
       if (event is NewAppCreateConfirm) {
         add(NewAppCreateProgressed(0));
-        AppBuilder(theState.appToBeCreated, theState.member,
+        AppBuilder(
+          theState.appToBeCreated,
+          theState.member,
           logo: theState.appToBeCreated.logo,
           welcomePageSpecifications: event.includeWelcome,
           blockedPageSpecifications: event.includeblocked,
@@ -39,9 +41,12 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
           signoutButton: event.includeSignoutButton,
           flushButton: event.includeFlushButton,
           joinSpecification: event.includeJoinAction,
-          membershipDashboardDialogSpecifications: event.membershipDashboardDialogSpecifications,
-          notificationDashboardDialogSpecifications: event.notificationDashboardDialogSpecifications,
-          assignmentDashboardDialogSpecifications: event.assignmentDashboardDialogSpecifications,
+          membershipDashboardDialogSpecifications:
+              event.membershipDashboardDialogSpecifications,
+          notificationDashboardDialogSpecifications:
+              event.notificationDashboardDialogSpecifications,
+          assignmentDashboardDialogSpecifications:
+              event.assignmentDashboardDialogSpecifications,
           aboutPageSpecifications: event.aboutPageSpecifications,
           albumPageSpecifications: event.albumPageSpecifications,
         ).create(this);

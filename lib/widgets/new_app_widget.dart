@@ -327,7 +327,18 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                     hintText: 'Identifier',
                     labelText: 'Identifier',
                   ),
-                ))
+                )),
+            checkboxListTile(
+                widget.app,
+                context,
+                'Auto privilege level 1 for new members?',
+                state.appToBeCreated.autoPrivileged1 ?? false,
+                    (value) {
+                  setState(() {
+                    state.appToBeCreated.autoPrivileged1 =
+                        value ?? false;
+                  });
+                }),
           ]);
     } else {
       return text(widget.app, context, 'no contents');
