@@ -3,6 +3,8 @@ import 'package:eliud_core/model/access_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/package/package.dart';
+import 'package:eliud_pkg_create/registry/registry.dart';
+import 'package:eliud_pkg_create/wizards/NewPolicyWizard.dart';
 import 'package:flutter_bloc/src/bloc_provider.dart';
 
 import 'model/abstract_repository_singleton.dart';
@@ -21,6 +23,8 @@ abstract class CreatorPackage extends Package {
   @override
   void init() {
     ComponentRegistry().init();
+
+    NewAppWizardRegistry.registry().register(NewPolicyWizard());
 
     AbstractRepositorySingleton.singleton = RepositorySingleton();
   }

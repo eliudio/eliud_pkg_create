@@ -20,6 +20,7 @@ class ActionSpecification {
   bool shouldCreatePageDialogOrWorkflow() =>
       availableInLeftDrawer ||
       availableInRightDrawer ||
+      availableInAppBar ||
       availableInHomeMenu ||
       available;
 }

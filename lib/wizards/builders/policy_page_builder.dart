@@ -10,7 +10,7 @@ import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
-import 'page_builder.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/page_builder.dart';
 import 'package:eliud_pkg_etc/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_etc/model/policy_presentation_component.dart';
 import 'package:eliud_pkg_etc/model/policy_presentation_model.dart';

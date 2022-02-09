@@ -1,4 +1,6 @@
 
+import 'package:eliud_core/package/package.dart';
+
 import 'creator_package.dart';
 
 class CreatorMobilePackage extends CreatorPackage {

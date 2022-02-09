@@ -1,8 +1,9 @@
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
+import 'package:eliud_pkg_create/registry/registry.dart';
 import 'package:equatable/equatable.dart';
-
 import 'action_specification.dart';
+import 'package:flutter/foundation.dart';
 
 abstract class NewAppCreateEvent extends Equatable {
   @override
@@ -34,7 +35,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   final ActionSpecification includeChat;
   final ActionSpecification includeFeed;
   final ActionSpecification includeMemberDashboard;
-  final ActionSpecification includeExamplePolicy;
+  //final ActionSpecification includeExamplePolicy;
   final ActionSpecification includeSigninButton;
   final ActionSpecification includeSignoutButton;
   final ActionSpecification includeFlushButton;
@@ -45,6 +46,9 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   final ActionSpecification aboutPageSpecifications;
   final ActionSpecification albumPageSpecifications;
 
+  // map newAppWizardName >> ActionSpecifications
+  final Map<String, NewAppWizardParameters> newAppWizardParameters;
+
   NewAppCreateConfirm({
     required this.logo,
     required this.includeShop,
@@ -53,7 +57,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
     required this.includeChat,
     required this.includeFeed,
     required this.includeMemberDashboard,
-    required this.includeExamplePolicy,
+    //required this.includeExamplePolicy,
     required this.includeSigninButton,
     required this.includeSignoutButton,
     required this.includeFlushButton,
@@ -63,6 +67,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
     required this.assignmentDashboardDialogSpecifications,
     required this.aboutPageSpecifications,
     required this.albumPageSpecifications,
+    required this.newAppWizardParameters,
   });
 
   @override
@@ -73,9 +78,10 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
         includeChat,
         includeFeed,
         includeMemberDashboard,
-        includeExamplePolicy,
+        //includeExamplePolicy,
         includeSignoutButton,
         includeFlushButton,
+    newAppWizardParameters,
       ];
 
   @override
@@ -87,7 +93,8 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
           includeChat == other.includeChat &&
           includeFeed == other.includeFeed &&
           includeMemberDashboard == other.includeMemberDashboard &&
-          includeExamplePolicy == other.includeExamplePolicy &&
+          mapEquals(newAppWizardParameters, other.newAppWizardParameters) &&
+          //includeExamplePolicy == other.includeExamplePolicy &&
           includeSignoutButton == other.includeSignoutButton &&
           includeFlushButton == other.includeFlushButton;
 }

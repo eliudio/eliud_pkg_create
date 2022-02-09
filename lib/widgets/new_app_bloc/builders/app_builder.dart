@@ -1,4 +1,8 @@
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
+import 'package:eliud_core/model/home_menu_model.dart';
+import 'package:eliud_pkg_create/registry/registry.dart';
+import 'package:eliud_pkg_create/wizards/builders/policy/app_policy_builder.dart';
+import 'package:eliud_pkg_create/wizards/builders/policy/policy_medium_builder.dart';
 import 'package:eliud_pkg_notifications/notifications_package.dart';
 import 'package:eliud_core/model/access_model.dart';
 import 'package:eliud_core/model/display_conditions_model.dart';
@@ -40,10 +44,7 @@ import 'home_menu_builder.dart';
 import 'left_drawer_builder.dart';
 import 'right_drawer_builder.dart';
 import 'dialog/chat_dialog_builder.dart';
-import 'page/policy_page_builder.dart';
 import 'page/welcome_page_builder.dart';
-import 'policy/policy_medium_builder.dart';
-import 'policy/app_policy_builder.dart';
 
 import '../new_app_bloc.dart';
 import '../new_app_event.dart';
@@ -66,7 +67,6 @@ class AppBuilder {
   static String BLOCKED_ASSET_PATH =
       'packages/eliud_pkg_create/assets/blocked.png';
   static String SHOP_PAGE_ID = 'shop';
-  static String POLICY_PAGE_ID = 'policy';
   static String FEED_PAGE_ID = 'feed';
   static String PROFILE_PAGE_ID = 'profile';
   static String FOLLOW_REQUEST_PAGE_ID = 'follow_request';
@@ -122,7 +122,7 @@ class AppBuilder {
   final ActionSpecification chatDialogSpecifications;
   final ActionSpecification memberDashboardDialogSpecifications;
 
-  final ActionSpecification policySpecifications;
+//  final ActionSpecification policySpecifications;
 
   final JoinActionSpecifications joinSpecification;
   final ActionSpecification signinButton;
@@ -132,6 +132,8 @@ class AppBuilder {
   final ActionSpecification membershipDashboardDialogSpecifications;
   final ActionSpecification notificationDashboardDialogSpecifications;
   final ActionSpecification assignmentDashboardDialogSpecifications;
+
+  final Map<String, NewAppWizardParameters> newAppWizardParameters;
 
   AppBuilder(
     this.app,
@@ -145,7 +147,7 @@ class AppBuilder {
     required this.feedPageSpecifications,
     required this.chatDialogSpecifications,
     required this.memberDashboardDialogSpecifications,
-    required this.policySpecifications,
+//    required this.policySpecifications,
     required this.joinSpecification,
     required this.signinButton,
     required this.signoutButton,
@@ -153,6 +155,7 @@ class AppBuilder {
     required this.membershipDashboardDialogSpecifications,
     required this.notificationDashboardDialogSpecifications,
     required this.assignmentDashboardDialogSpecifications,
+    required this.newAppWizardParameters,
   }) {
     appId = app.documentID!;
     memberId = member.documentID!;
@@ -162,10 +165,8 @@ class AppBuilder {
   var blockedPageId;
   var leftDrawer;
   var rightDrawer;
-  var theHomeMenu;
+  late HomeMenuModel theHomeMenu;
   var theAppBar;
-  var policyMedium;
-  var policyModel;
 
   var manuallyPaidMembership = false;
   var membershipPaidByCard = false;
@@ -200,9 +201,10 @@ class AppBuilder {
     // create the app
     tasks.add(() async {
       newlyCreatedApp = await appRepository()!.add(AppModel(
-          documentID: appId,
-          title: 'New application',
-          ownerID: memberId,));
+        documentID: appId,
+        title: 'New application',
+        ownerID: memberId,
+      ));
     });
 
     tasks.add(() async {
@@ -218,36 +220,32 @@ class AppBuilder {
     tasks.add(() async {
       print("leftDrawer");
       leftDrawer = await LeftDrawerBuilder(app,
-          logo: logo,
-          menuItems:
-              getMenuItemsFor((value) => value.availableInLeftDrawer)).create();
+              logo: logo, menuItems: getMenuItemsFor(MenuType.leftDrawerMenu))
+          .create();
     });
 
     tasks.add(() async {
       print("rightDrawer");
       rightDrawer = await RightDrawerBuilder(app,
-              logo: logo,
-              menuItems:
-                  getMenuItemsFor((value) => value.availableInRightDrawer))
+              logo: logo, menuItems: getMenuItemsFor(MenuType.rightDrawerMenu))
           .create();
     });
 
     tasks.add(() async {
       print("HomeMenu");
       theHomeMenu = await HomeMenuBuilder(app,
-              logo: logo,
-              menuItems: getMenuItemsFor((value) => value.availableInHomeMenu))
+              logo: logo, menuItems: getMenuItemsFor(MenuType.bottomNavBarMenu))
           .create();
     });
 
     tasks.add(() async {
       print("AppBar");
       theAppBar = await AppBarBuilder(app,
-              logo: logo,
-              menuItems: getMenuItemsFor((value) => value.availableInAppBar))
+              logo: logo, menuItems: getMenuItemsFor(MenuType.appBarMenu))
           .create();
     });
 
+    // Wizard 1
     if (memberDashboardDialogSpecifications
         .shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
@@ -257,6 +255,7 @@ class AppBuilder {
       });
     }
 
+    // Wizard 2
     // Feed and profile page
     if (feedPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       profilePageId = PROFILE_PAGE_ID;
@@ -328,8 +327,8 @@ class AppBuilder {
       });
       tasks.add(() async {
         print("Membership Dashboard");
-        await MembershipDashboardPageBuilder(APP_MEMBERS_PAGE_ID, app,
-                memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
+        await MembershipDashboardPageBuilder(APP_MEMBERS_PAGE_ID, app, memberId,
+                theHomeMenu, theAppBar, leftDrawer, rightDrawer)
             .run(
           componentIdentifier: MEMBERSHIP_COMPONENT_IDENTIFIER,
           profilePageId: PROFILE_PAGE_ID,
@@ -352,41 +351,44 @@ class AppBuilder {
       });
     }
 
+    // Wizard 3
     if (aboutPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
         print("About Page");
-          await AboutPageBuilder(
-              ABOUT_COMPONENT_IDENTIFIER,
-              hasAccessToLocalFileSystem ? ABOUT_ASSET_PATH : null,
-              ABOUT_PAGE_ID,
-              app,
-              memberId,
-              theHomeMenu,
-              theAppBar,
-              leftDrawer,
-              rightDrawer)
-              .create();
+        await AboutPageBuilder(
+                ABOUT_COMPONENT_IDENTIFIER,
+                hasAccessToLocalFileSystem ? ABOUT_ASSET_PATH : null,
+                ABOUT_PAGE_ID,
+                app,
+                memberId,
+                theHomeMenu,
+                theAppBar,
+                leftDrawer,
+                rightDrawer)
+            .create();
       });
     }
 
+    // Wizard 4
     if (blockedPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
         print("Blocked Page");
-          var blockedPage = await BlockedPageBuilder(
-              BLOCKED_COMPONENT_IDENTIFIER,
-              hasAccessToLocalFileSystem ? BLOCKED_ASSET_PATH : null,
-              BLOCKED_PAGE_ID,
-              app,
-              memberId,
-              theHomeMenu,
-              theAppBar,
-              leftDrawer,
-              rightDrawer)
-              .create();
-          blockedPageId = blockedPage.documentID;
+        var blockedPage = await BlockedPageBuilder(
+                BLOCKED_COMPONENT_IDENTIFIER,
+                hasAccessToLocalFileSystem ? BLOCKED_ASSET_PATH : null,
+                BLOCKED_PAGE_ID,
+                app,
+                memberId,
+                theHomeMenu,
+                theAppBar,
+                leftDrawer,
+                rightDrawer)
+            .create();
+        blockedPageId = blockedPage.documentID;
       });
     }
 
+    // Wizard 5
     if (membershipDashboardDialogSpecifications
         .shouldCreatePageDialogOrWorkflow()) {
       print("Membership Dashboard");
@@ -396,6 +398,7 @@ class AppBuilder {
           .create());
     }
 
+    // Wizard 6
     if (notificationDashboardDialogSpecifications
         .shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
@@ -406,6 +409,7 @@ class AppBuilder {
       });
     }
 
+    // Wizard 7
     if (assignmentDashboardDialogSpecifications
         .shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
@@ -414,31 +418,8 @@ class AppBuilder {
             .create();
       });
     }
-    // policy
-    if (policySpecifications.shouldCreatePageDialogOrWorkflow()) {
-      // policy medium
-      tasks.add(() async {
-        print("Policy Medium");
-        policyMedium =
-            await PolicyMediumBuilder((value) => {}, app, memberId).create();
-      });
 
-      // policy
-      tasks.add(() async {
-        print("Policy Model");
-        policyModel =
-            await AppPolicyBuilder(appId, memberId, policyMedium).create();
-      });
-
-      // policy page
-      tasks.add(() async {
-        print("Policy Page");
-        await PolicyPageBuilder(POLICY_PAGE_ID, app, memberId, theHomeMenu,
-                theAppBar, leftDrawer, rightDrawer, policyMedium, 'Policy')
-            .create();
-      });
-    }
-
+    // Wizard 8
     // welcome page
     if (welcomePageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
@@ -450,6 +431,7 @@ class AppBuilder {
       });
     }
 
+    // Wizard 9
     if (albumPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
         print("Album page");
@@ -468,6 +450,7 @@ class AppBuilder {
       });
     }
 
+    // Wizard 10
     // chat
     if (chatDialogSpecifications.shouldCreatePageDialogOrWorkflow()) {
       tasks.add(() async {
@@ -481,6 +464,7 @@ class AppBuilder {
       });
     }
 
+    // Wizard 11
     // join
     if (joinSpecification.shouldCreatePageDialogOrWorkflow()) {
       if (joinSpecification.paymentType == JoinPaymentType.Manual) {
@@ -490,6 +474,7 @@ class AppBuilder {
       }
     }
 
+    // Wizard 12
     // shop
     if (shopPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
       if (shopPageSpecifications.paymentType == ShopPaymentType.Manual) {
@@ -499,6 +484,7 @@ class AppBuilder {
       }
     }
 
+    // Wizard ????
     tasks.add(() async {
       print("WorkflowBuilder");
       await WorkflowBuilder(appId,
@@ -509,10 +495,31 @@ class AppBuilder {
           .create();
     });
 
+    // add the tasks for the extra wizards
+    for (var wizard
+        in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+      var newAppWizardName = wizard.newAppWizardName;
+      var parameters = newAppWizardParameters[newAppWizardName];
+      if (parameters != null) {
+        var extraTasks = wizard.getCreateTasks(
+          app,
+          parameters,
+          memberId,
+          () => theHomeMenu,
+          () => theAppBar,
+          () => leftDrawer,
+          () => rightDrawer,
+        );
+        if (extraTasks != null) {
+          tasks.addAll(extraTasks);
+        }
+      }
+    }
+
     // app
     tasks.add(() async {
       print("App");
-      newlyCreatedApp = await appRepository()!.update(AppModel(
+      var newApp = AppModel(
           documentID: appId,
           title: 'New application',
           ownerID: memberId,
@@ -520,7 +527,6 @@ class AppBuilder {
               app.styleFamily ?? DefaultStyleFamily.defaultStyleFamilyName,
           styleName: app.styleName ?? DefaultStyle.defaultStyleName,
           email: member.email,
-          policies: policyModel,
           description: 'Your new application',
           logo: logo,
           autoPrivileged1: app.autoPrivileged1,
@@ -531,7 +537,16 @@ class AppBuilder {
             homePageLevel1Member: homePageId,
             homePageLevel2Member: homePageId,
             homePageOwner: homePageId,
-          )));
+          ));
+      for (var wizard
+          in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+        var newAppWizardName = wizard.newAppWizardName;
+        var parameters = newAppWizardParameters[newAppWizardName];
+        if (parameters != null) {
+          newApp = wizard.updateApp(parameters, newApp);
+        }
+      }
+      newlyCreatedApp = await appRepository()!.update(newApp);
     });
 
     var progressManager = ProgressManager(tasks.length,
@@ -546,7 +561,10 @@ class AppBuilder {
       try {
         await task();
       } catch (e) {
-        print('Exception running task ' + i.toString() + ', error: ' + e.toString());
+        print('Exception running task ' +
+            i.toString() +
+            ', error: ' +
+            e.toString());
       }
       progressManager.progressedNextStep();
       if (newAppCreateBloc.state is NewAppCreateCreateCancelled)
@@ -561,7 +579,23 @@ class AppBuilder {
     }
   }
 
-  List<MenuItemModel> getMenuItemsFor(Evaluate evaluate) {
+  List<MenuItemModel> getMenuItemsFor(MenuType type) {
+    Evaluate evaluate;
+    switch (type) {
+      case MenuType.leftDrawerMenu:
+        evaluate = (value) => value.availableInLeftDrawer;
+        break;
+      case MenuType.rightDrawerMenu:
+        evaluate = (value) => value.availableInRightDrawer;
+        break;
+      case MenuType.appBarMenu:
+        evaluate = (value) => value.availableInAppBar;
+        break;
+      case MenuType.bottomNavBarMenu:
+        evaluate = (value) => value.availableInHomeMenu;
+        break;
+    }
+
     var _welcomePageId =
         evaluate(welcomePageSpecifications) ? WELCOME_PAGE_ID : null;
     var _blockedPageId =
@@ -599,7 +633,6 @@ class AppBuilder {
     var _memberDashboardDialogId = evaluate(memberDashboardDialogSpecifications)
         ? MEMBER_DASHBOARD_DIALOG_ID
         : null;
-    var _policyPageId = evaluate(policySpecifications) ? POLICY_PAGE_ID : null;
 
     var _hasUnreadChatDialogId = evaluate(chatDialogSpecifications)
         ? IDENTIFIER_MEMBER_HAS_UNREAD_CHAT
@@ -611,7 +644,7 @@ class AppBuilder {
     var _signout = evaluate(signoutButton);
     var _signin = evaluate(signinButton);
 
-    return [
+    List<MenuItemModel> oldMenuItems = [
       if (_welcomePageId != null)
         menuItemWelcome(app, _welcomePageId, 'Welcome'),
       if (_blockedPageId != null)
@@ -619,8 +652,6 @@ class AppBuilder {
       if (_aboutPageId != null) menuItemAbout(app, _aboutPageId, 'About'),
       if (_memberDashboardDialogId != null)
         menuItemManageAccount(app, _memberDashboardDialogId),
-      if (_policyPageId != null)
-        menuItem(app, _policyPageId, 'Policy', Icons.rule),
       if (_shopPageId != null) menuItemShop(app, _shopPageId, 'Shop'),
       if (_feedPageId != null) menuItemFeed(app, _feedPageId, 'Feed'),
       if (_notificationDashboardDialogId != null)
@@ -631,15 +662,16 @@ class AppBuilder {
             icon: IconModel(
                 codePoint: Icons.notifications.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
-            action:
-                OpenDialog(app, dialogID: _notificationDashboardDialogId,
+            action: OpenDialog(app,
+                dialogID: _notificationDashboardDialogId,
                 conditions: DisplayConditionsModel(
-                  privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
-                    packageCondition:
-                    NotificationsPackage.CONDITION_MEMBER_HAS_UNREAD_NOTIFICATIONS,
-                    conditionOverride: ConditionOverride.InclusiveForBlockedMembers // allow blocked members to see
-                )
-                )),
+                    privilegeLevelRequired:
+                        PrivilegeLevelRequired.NoPrivilegeRequired,
+                    packageCondition: NotificationsPackage
+                        .CONDITION_MEMBER_HAS_UNREAD_NOTIFICATIONS,
+                    conditionOverride: ConditionOverride
+                        .InclusiveForBlockedMembers // allow blocked members to see
+                    ))),
       if (_assignmentDasboardDialogId != null)
         MenuItemModel(
             documentID: 'assignments',
@@ -648,12 +680,14 @@ class AppBuilder {
             icon: IconModel(
                 codePoint: Icons.playlist_add_check.codePoint,
                 fontFamily: Icons.notifications.fontFamily),
-            action: OpenDialog(app, dialogID: _assignmentDasboardDialogId,
-            conditions: DisplayConditionsModel(
-                packageCondition: WorkflowPackage.CONDITION_MUST_HAVE_ASSIGNMENTS,
-                conditionOverride: ConditionOverride.InclusiveForBlockedMembers // allow blocked members to see
-            )
-            )),
+            action: OpenDialog(app,
+                dialogID: _assignmentDasboardDialogId,
+                conditions: DisplayConditionsModel(
+                    packageCondition:
+                        WorkflowPackage.CONDITION_MUST_HAVE_ASSIGNMENTS,
+                    conditionOverride: ConditionOverride
+                        .InclusiveForBlockedMembers // allow blocked members to see
+                    ))),
       if (_membershipDashboardDialogId != null)
         MenuItemModel(
             documentID: '3',
@@ -696,6 +730,22 @@ class AppBuilder {
       if (_signout) menuItemSignOut(app),
       if (_signin) menuItemSignIn(app),
     ];
+
+    List<MenuItemModel> newMenuItems = [];
+    for (var wizard
+        in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+      var newAppWizardName = wizard.newAppWizardName;
+      var newAppWizardParam = newAppWizardParameters[newAppWizardName];
+      if (newAppWizardParam != null) {
+        var menuItem = wizard.getMenuItemFor(app, newAppWizardParam, type);
+        if (menuItem != null) {
+          newMenuItems.add(menuItem);
+        }
+      }
+    }
+    var mergedMenuItems = oldMenuItems;
+    mergedMenuItems.addAll(newMenuItems);
+    return mergedMenuItems;
   }
 
   // Start the installation by claiming ownership of the app.

@@ -11,6 +11,7 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
+import 'package:eliud_pkg_create/registry/registry.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_bloc.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_event.dart';
 import 'package:eliud_pkg_create/widgets/style_selection_widget.dart';
@@ -149,14 +150,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInHomeMenu: false,
     available: false,
   );
-  var examplePolicySpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: hasAccessToLocalFileSystem,
-    availableInRightDrawer: false,
-    availableInAppBar: false,
-    availableInHomeMenu: false,
-    available: false,
-  );
   var signoutSpecifications = ActionSpecification(
     requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: false,
@@ -218,6 +211,18 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     available: false,
   );
 
+  final Map<String, NewAppWizardParameters> newAppWizardParameterss = {};
+
+  @override
+  void initState() {
+    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+      var newAppWizardName = wizard.newAppWizardName;
+      var newAppWizardParameters = wizard.newAppWizardParameters();
+      newAppWizardParameterss[newAppWizardName] = newAppWizardParameters;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewAppCreateBloc, NewAppCreateState>(
@@ -254,7 +259,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           includeChat: chatSpecifications,
                           includeFeed: feedSpecifications,
                           includeMemberDashboard: memberDashboardSpecifications,
-                          includeExamplePolicy: examplePolicySpecifications,
+                          newAppWizardParameters: newAppWizardParameterss,
                           includeSigninButton: signinSpecifications,
                           includeSignoutButton: signoutSpecifications,
                           includeFlushButton: flushSpecifications,
@@ -355,7 +360,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
 
   Widget _contents(BuildContext context, NewAppCreateInitialised state) {
     var suffix = !hasAccessToLocalFileSystem ? ' (not available on web)' : '';
-    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
+    List<Widget> children = [
       ActionSpecificationWidget(
           app: widget.app,
           enabled: true,
@@ -398,11 +403,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           label: 'Generate Member Dashboard Dialog'),
       ActionSpecificationWidget(
           app: widget.app,
-          enabled: hasAccessToLocalFileSystem,
-          actionSpecification: examplePolicySpecifications,
-          label: 'Generate Example Policy' + suffix),
-      ActionSpecificationWidget(
-          app: widget.app,
           enabled: true,
           actionSpecification: signinSpecifications,
           label: 'Generate signin button'),
@@ -436,7 +436,16 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           enabled: true,
           actionSpecification: assignmentDashboardDialogSpecifications,
           label: 'Generate assignment dashboard dialog'),
-    ]);
+    ];
+    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+      var newAppWizardName = wizard.newAppWizardName;
+      var newAppWizardParameters = newAppWizardParameterss[newAppWizardName];
+      if (newAppWizardParameters != null) {
+        children.add(wizard.wizardParametersWidget(
+            widget.app, context, newAppWizardParameters));
+      }
+    }
+    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: children);
   }
 }
 
