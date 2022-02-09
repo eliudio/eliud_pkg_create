@@ -32,8 +32,8 @@ dependencies:
   eliud_pkg_chat:
     path: ../eliud_pkg_chat
 
-  eliud_pkg_feed:
-    path: ../eliud_pkg_feed
+#  eliud_pkg_feed:
+#    path: ../eliud_pkg_feed
 
   eliud_pkg_pay:
     path: ../eliud_pkg_pay

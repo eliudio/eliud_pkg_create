@@ -1,8 +1,6 @@
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_pkg_create/registry/registry.dart';
-import 'package:eliud_pkg_create/wizards/builders/policy/app_policy_builder.dart';
-import 'package:eliud_pkg_create/wizards/builders/policy/policy_medium_builder.dart';
 import 'package:eliud_pkg_notifications/notifications_package.dart';
 import 'package:eliud_core/model/access_model.dart';
 import 'package:eliud_core/model/display_conditions_model.dart';
@@ -29,13 +27,6 @@ import 'dialog/assignment_dialog_builder.dart';
 import 'dialog/member_dashboard_dialog_builder.dart';
 import 'dialog/membership_dashboard_dialog_builder.dart';
 import 'dialog/notification_dashboard_dialog_builder.dart';
-import 'feed/feed_page_builder.dart';
-import 'feed/follow_requests_dashboard_page_builder.dart';
-import 'feed/followers_dashboard_page_builder.dart';
-import 'feed/following_dashboard_page_builder.dart';
-import 'feed/invite_dashboard_page_builder.dart';
-import 'feed/membership_dashboard_page_builder.dart';
-import 'feed/profile_page_builder.dart';
 import 'helpers/menu_helpers.dart';
 import 'page/about_page_builder.dart';
 import 'workflow_builder.dart';
@@ -67,13 +58,6 @@ class AppBuilder {
   static String BLOCKED_ASSET_PATH =
       'packages/eliud_pkg_create/assets/blocked.png';
   static String SHOP_PAGE_ID = 'shop';
-  static String FEED_PAGE_ID = 'feed';
-  static String PROFILE_PAGE_ID = 'profile';
-  static String FOLLOW_REQUEST_PAGE_ID = 'follow_request';
-  static String FOLLOWERS_PAGE_ID = 'followers';
-  static String FOLLOWING_PAGE_ID = 'following';
-  static String FIND_FRIEND_PAGE_ID = 'fiend_friends';
-  static String APP_MEMBERS_PAGE_ID = 'app_members';
 
   static String MEMBER_DASHBOARD_DIALOG_ID = 'member_dashboard';
   static String MEMBERSHIP_DASHBOARD_DIALOG_ID = 'membership_dashboard';
@@ -83,17 +67,8 @@ class AppBuilder {
   static String IDENTIFIER_MEMBER_HAS_UNREAD_CHAT = "chat_dialog_with_unread";
   static String IDENTIFIER_MEMBER_ALL_HAVE_BEEN_READ = "chat_dialog_all_read";
 
-  static String FEED_MENU_COMPONENT_IDENTIFIER = "feed_menu";
   static String ABOUT_COMPONENT_IDENTIFIER = "about";
   static String BLOCKED_COMPONENT_IDENTIFIER = "blocked";
-  static String FOLLOW_REQUEST_COMPONENT_ID = "follow_request";
-  static String FEED_HEADER_COMPONENT_IDENTIFIER = "feed_header";
-  static String FEED_PROFILE_COMPONENT_IDENTIFIER = "feed_profile";
-  static String FOLLOWERS_COMPONENT_IDENTIFIER = "followers";
-  static String FOLLOWING_COMPONENT_IDENTIFIER = "following";
-  static String INVITE_COMPONENT_IDENTIFIER = "invite";
-  static String MEMBERSHIP_COMPONENT_IDENTIFIER = "membership";
-  static String PROFILE_COMPONENT_IDENTIFIER = "profile";
   static String ALBUM_COMPONENT_IDENTIFIER = "album";
 
   static String MANUALLY_PAY_MEMBERSHIP_WORKFLOW_ID =
@@ -116,7 +91,6 @@ class AppBuilder {
   final ActionSpecification aboutPageSpecifications;
   final ActionSpecification blockedPageSpecifications;
   final ShopActionSpecifications shopPageSpecifications;
-  final ActionSpecification feedPageSpecifications;
   final ActionSpecification albumPageSpecifications;
 
   final ActionSpecification chatDialogSpecifications;
@@ -144,10 +118,8 @@ class AppBuilder {
     required this.aboutPageSpecifications,
     required this.blockedPageSpecifications,
     required this.shopPageSpecifications,
-    required this.feedPageSpecifications,
     required this.chatDialogSpecifications,
     required this.memberDashboardDialogSpecifications,
-//    required this.policySpecifications,
     required this.joinSpecification,
     required this.signinButton,
     required this.signoutButton,
@@ -174,7 +146,6 @@ class AppBuilder {
   var creditCardPaymentCart = false;
 
   var newlyCreatedApp;
-  var feedModel;
 
   Future<AppModel> create(NewAppCreateBloc newAppCreateBloc) async {
     List<NewAppTask> tasks = [];
@@ -252,102 +223,6 @@ class AppBuilder {
         print("member dashboard");
         await MemberDashboardDialogBuilder(app, MEMBER_DASHBOARD_DIALOG_ID)
             .create();
-      });
-    }
-
-    // Wizard 2
-    // Feed and profile page
-    if (feedPageSpecifications.shouldCreatePageDialogOrWorkflow()) {
-      profilePageId = PROFILE_PAGE_ID;
-      feedPageId = FEED_PAGE_ID;
-      tasks.add(() async {
-        print("feedModel");
-        feedModel = await FeedPageBuilder(FEED_PAGE_ID, app, memberId,
-                theHomeMenu, theAppBar, leftDrawer, rightDrawer)
-            .run(
-                feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
-                headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
-                profileComponentIdentifier: FEED_PROFILE_COMPONENT_IDENTIFIER,
-                feedPageId: FEED_PAGE_ID,
-                profilePageId: PROFILE_PAGE_ID,
-                followRequestPageId: FOLLOW_REQUEST_PAGE_ID,
-                followersPageId: FOLLOWERS_PAGE_ID,
-                followingPageId: FOLLOWING_PAGE_ID,
-                fiendFriendsPageId: FIND_FRIEND_PAGE_ID,
-                appMembersPageId: APP_MEMBERS_PAGE_ID);
-      });
-
-      tasks.add(() async {
-        print("Follow Request");
-        await FollowRequestsDashboardPageBuilder(FOLLOW_REQUEST_PAGE_ID, app,
-                memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer)
-            .run(
-          componentIdentifier: FOLLOW_REQUEST_COMPONENT_ID,
-          profilePageId: PROFILE_PAGE_ID,
-          feedPageId: FEED_PAGE_ID,
-          feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
-          headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
-        );
-      });
-      tasks.add(() async {
-        print("Followers Dashboard");
-        await FollowersDashboardPageBuilder(FOLLOWERS_PAGE_ID, app, memberId,
-                theHomeMenu, theAppBar, leftDrawer, rightDrawer)
-            .run(
-          componentIdentifier: FOLLOWERS_COMPONENT_IDENTIFIER,
-          profilePageId: PROFILE_PAGE_ID,
-          feedPageId: FEED_PAGE_ID,
-          feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
-          headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
-        );
-      });
-      tasks.add(() async {
-        print("Following Dashboard");
-        await FollowingDashboardPageBuilder(FOLLOWING_PAGE_ID, app, memberId,
-                theHomeMenu, theAppBar, leftDrawer, rightDrawer)
-            .run(
-          componentIdentifier: FOLLOWING_COMPONENT_IDENTIFIER,
-          profilePageId: PROFILE_PAGE_ID,
-          feedPageId: FEED_PAGE_ID,
-          feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
-          headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
-        );
-      });
-      tasks.add(() async {
-        print("Invite Dashboard");
-        await InviteDashboardPageBuilder(FIND_FRIEND_PAGE_ID, app, memberId,
-                theHomeMenu, theAppBar, leftDrawer, rightDrawer)
-            .run(
-          componentIdentifier: INVITE_COMPONENT_IDENTIFIER,
-          profilePageId: PROFILE_PAGE_ID,
-          feedPageId: FEED_PAGE_ID,
-          feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
-          headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
-        );
-      });
-      tasks.add(() async {
-        print("Membership Dashboard");
-        await MembershipDashboardPageBuilder(APP_MEMBERS_PAGE_ID, app, memberId,
-                theHomeMenu, theAppBar, leftDrawer, rightDrawer)
-            .run(
-          componentIdentifier: MEMBERSHIP_COMPONENT_IDENTIFIER,
-          profilePageId: PROFILE_PAGE_ID,
-          feedPageId: FEED_PAGE_ID,
-          feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
-          headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
-        );
-      });
-      tasks.add(() async {
-        print("Profile Page");
-        await ProfilePageBuilder(PROFILE_PAGE_ID, app, memberId, theHomeMenu,
-                theAppBar, leftDrawer, rightDrawer)
-            .run(
-          feed: feedModel,
-          member: member,
-          feedMenuComponentIdentifier: FEED_MENU_COMPONENT_IDENTIFIER,
-          headerComponentIdentifier: FEED_HEADER_COMPONENT_IDENTIFIER,
-          profileComponentIdentifier: PROFILE_COMPONENT_IDENTIFIER,
-        );
       });
     }
 
@@ -504,7 +379,7 @@ class AppBuilder {
         var extraTasks = wizard.getCreateTasks(
           app,
           parameters,
-          memberId,
+          member,
           () => theHomeMenu,
           () => theAppBar,
           () => leftDrawer,
@@ -602,19 +477,7 @@ class AppBuilder {
         evaluate(blockedPageSpecifications) ? BLOCKED_PAGE_ID : null;
     var _aboutPageId = evaluate(aboutPageSpecifications) ? ABOUT_PAGE_ID : null;
     var _shopPageId = evaluate(shopPageSpecifications) ? SHOP_PAGE_ID : null;
-    var _feedPageId = evaluate(feedPageSpecifications) ? FEED_PAGE_ID : null;
     var _albumPageId = evaluate(albumPageSpecifications) ? ALBUM_PAGE_ID : null;
-/*
-    var _profilePageId = evaluate(feedPageSpecifications) ? PROFILE_PAGE_ID : null;
-    var _followRequestPageId = evaluate(feedPageSpecifications) ? FOLLOW_REQUEST_PAGE_ID : null;
-    var _followersPageId = evaluate(feedPageSpecifications) ? FOLLOWERS_PAGE_ID : null;
-    var _followingPageId = evaluate(feedPageSpecifications) ? FOLLOWING_PAGE_ID : null;
-    var _findFriendPageId = evaluate(feedPageSpecifications) ? FIND_FRIEND_PAGE_ID : null;
-    var _appMembersPageId = evaluate(feedPageSpecifications) ? APP_MEMBERS_PAGE_ID : null;
-    var _invitePageId = evaluate(feedPageSpecifications) ? INVITE_PAGE_ID : null;
-    var _membershipPageId = evaluate(feedPageSpecifications) ? MEMBERSHIP_PAGE_ID : null;
-*/
-
     var _membershipDashboardDialogId =
         evaluate(membershipDashboardDialogSpecifications)
             ? MEMBERSHIP_DASHBOARD_DIALOG_ID
@@ -653,7 +516,6 @@ class AppBuilder {
       if (_memberDashboardDialogId != null)
         menuItemManageAccount(app, _memberDashboardDialogId),
       if (_shopPageId != null) menuItemShop(app, _shopPageId, 'Shop'),
-      if (_feedPageId != null) menuItemFeed(app, _feedPageId, 'Feed'),
       if (_notificationDashboardDialogId != null)
         MenuItemModel(
             documentID: 'notifications',

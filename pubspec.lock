@@ -183,13 +183,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.2"
-  chips_input:
-    dependency: transitive
-    description:
-      name: chips_input
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.6"
   cli_util:
     dependency: transitive
     description:
@@ -404,13 +397,6 @@ packages:
     dependency: "direct main"
     description:
       path: "../eliud_pkg_etc"
-      relative: true
-    source: path
-    version: "0.0.1"
-  eliud_pkg_feed:
-    dependency: "direct main"
-    description:
-      path: "../eliud_pkg_feed"
       relative: true
     source: path
     version: "0.0.1"

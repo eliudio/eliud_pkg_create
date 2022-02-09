@@ -2,6 +2,7 @@ import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
+import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/app_builder.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ abstract class NewAppWizardInfo {
   List<NewAppTask>? getCreateTasks(
     AppModel app,
     NewAppWizardParameters parameters,
-    String memberId,
+    MemberModel member,
     HomeMenuProvider homeMenuProvider,
     AppBarProvider appBarProvider,
     DrawerProvider leftDrawerProvider,

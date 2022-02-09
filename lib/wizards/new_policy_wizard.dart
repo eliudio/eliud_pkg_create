@@ -28,7 +28,7 @@ import 'package:flutter/src/widgets/framework.dart';
 
 import 'builders/policy/app_policy_builder.dart';
 import 'builders/policy/policy_medium_builder.dart';
-import 'builders/policy_page_builder.dart';
+import 'builders/policy/policy_page_builder.dart';
 
 class NewPolicyWizard extends NewAppWizardInfo {
   static String POLICY_PAGE_ID = 'policy';
@@ -75,7 +75,7 @@ class NewPolicyWizard extends NewAppWizardInfo {
   List<NewAppTask>? getCreateTasks(
       AppModel app,
       NewAppWizardParameters parameters,
-      String memberId,
+      MemberModel member,
       HomeMenuProvider homeMenuProvider,
       AppBarProvider appBarProvider,
       DrawerProvider leftDrawerProvider,
@@ -88,6 +88,8 @@ class NewPolicyWizard extends NewAppWizardInfo {
         List<NewAppTask> tasks = [];
         late PublicMediumModel policyMedium;
         late AppPolicyModel policyModel;
+        var memberId = member.documentID!;
+
         // policy medium
         tasks.add(() async {
           print("Policy Medium");

@@ -34,7 +34,6 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
           blockedPageSpecifications: event.includeblocked,
           shopPageSpecifications: event.includeShop,
           chatDialogSpecifications: event.includeChat,
-          feedPageSpecifications: event.includeFeed,
           memberDashboardDialogSpecifications: event.includeMemberDashboard,
           newAppWizardParameters: event.newAppWizardParameters,
           signinButton: event.includeSigninButton,

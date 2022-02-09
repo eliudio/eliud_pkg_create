@@ -126,14 +126,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInHomeMenu: hasAccessToLocalFileSystem,
     available: false,
   );
-  var feedSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: true,
-    availableInRightDrawer: false,
-    availableInAppBar: false,
-    availableInHomeMenu: true,
-    available: false,
-  );
   var chatSpecifications = ActionSpecification(
     requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: false,
@@ -257,7 +249,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           albumPageSpecifications: albumSpecifications,
                           includeShop: shopActionSpecifications,
                           includeChat: chatSpecifications,
-                          includeFeed: feedSpecifications,
                           includeMemberDashboard: memberDashboardSpecifications,
                           newAppWizardParameters: newAppWizardParameterss,
                           includeSigninButton: signinSpecifications,
@@ -386,11 +377,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           enabled: true,
           actionSpecification: shopActionSpecifications,
           label: 'Generate Shop'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: feedSpecifications,
-          label: 'Generate Feed'),
       ActionSpecificationWidget(
           app: widget.app,
           enabled: true,
