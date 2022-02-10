@@ -24,7 +24,7 @@ abstract class CreatorPackage extends Package {
   void init() {
     ComponentRegistry().init();
 
-    // core
+    // core wizards
     NewAppWizardRegistry.registry().register(NewPolicyWizard());
 
     AbstractRepositorySingleton.singleton = RepositorySingleton();

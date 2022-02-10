@@ -175,15 +175,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInHomeMenu: false,
     available: false,
   );
-  var membershipDashboardDialogSpecifications = JoinActionSpecifications(
-    requiresAccessToLocalFileSystem: false,
-    paymentType: JoinPaymentType.Manual,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: false,
-    availableInAppBar: true,
-    availableInHomeMenu: false,
-    available: false,
-  );
   var notificationDashboardDialogSpecifications = JoinActionSpecifications(
     requiresAccessToLocalFileSystem: false,
     paymentType: JoinPaymentType.Manual,
@@ -255,8 +246,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           includeSignoutButton: signoutSpecifications,
                           includeFlushButton: flushSpecifications,
                           includeJoinAction: includeJoinAction,
-                          membershipDashboardDialogSpecifications:
-                              membershipDashboardDialogSpecifications,
                           notificationDashboardDialogSpecifications:
                               notificationDashboardDialogSpecifications,
                           assignmentDashboardDialogSpecifications:
@@ -407,11 +396,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           enabled: true,
           actionSpecification: includeJoinAction,
           label: 'Generate join button'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: membershipDashboardDialogSpecifications,
-          label: 'Generate membership dashboard dialog'),
       ActionSpecificationWidget(
           app: widget.app,
           enabled: true,

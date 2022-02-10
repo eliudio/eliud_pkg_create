@@ -25,7 +25,6 @@ import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 
 import 'dialog/assignment_dialog_builder.dart';
 import 'dialog/member_dashboard_dialog_builder.dart';
-import 'dialog/membership_dashboard_dialog_builder.dart';
 import 'dialog/notification_dashboard_dialog_builder.dart';
 import 'helpers/menu_helpers.dart';
 import 'page/about_page_builder.dart';
@@ -60,7 +59,6 @@ class AppBuilder {
   static String SHOP_PAGE_ID = 'shop';
 
   static String MEMBER_DASHBOARD_DIALOG_ID = 'member_dashboard';
-  static String MEMBERSHIP_DASHBOARD_DIALOG_ID = 'membership_dashboard';
   static String NOTIFICATION_DASHBOARD_DIALOG_ID = 'notification_dashboard';
   static String ASSIGNMENT_DASHBOARD_DIALOG_ID = 'assignment_dashboard';
 
@@ -103,7 +101,6 @@ class AppBuilder {
   final ActionSpecification signoutButton;
   final ActionSpecification flushButton;
 
-  final ActionSpecification membershipDashboardDialogSpecifications;
   final ActionSpecification notificationDashboardDialogSpecifications;
   final ActionSpecification assignmentDashboardDialogSpecifications;
 
@@ -124,7 +121,6 @@ class AppBuilder {
     required this.signinButton,
     required this.signoutButton,
     required this.flushButton,
-    required this.membershipDashboardDialogSpecifications,
     required this.notificationDashboardDialogSpecifications,
     required this.assignmentDashboardDialogSpecifications,
     required this.newAppWizardParameters,
@@ -261,16 +257,6 @@ class AppBuilder {
             .create();
         blockedPageId = blockedPage.documentID;
       });
-    }
-
-    // Wizard 5
-    if (membershipDashboardDialogSpecifications
-        .shouldCreatePageDialogOrWorkflow()) {
-      print("Membership Dashboard");
-      tasks.add(() async => await MembershipDashboardDialogBuilder(
-              app, MEMBERSHIP_DASHBOARD_DIALOG_ID,
-              profilePageId: profilePageId, feedPageId: feedPageId)
-          .create());
     }
 
     // Wizard 6
@@ -478,10 +464,6 @@ class AppBuilder {
     var _aboutPageId = evaluate(aboutPageSpecifications) ? ABOUT_PAGE_ID : null;
     var _shopPageId = evaluate(shopPageSpecifications) ? SHOP_PAGE_ID : null;
     var _albumPageId = evaluate(albumPageSpecifications) ? ALBUM_PAGE_ID : null;
-    var _membershipDashboardDialogId =
-        evaluate(membershipDashboardDialogSpecifications)
-            ? MEMBERSHIP_DASHBOARD_DIALOG_ID
-            : null;
 
     var _notificationDashboardDialogId =
         evaluate(notificationDashboardDialogSpecifications)
@@ -550,15 +532,6 @@ class AppBuilder {
                     conditionOverride: ConditionOverride
                         .InclusiveForBlockedMembers // allow blocked members to see
                     ))),
-      if (_membershipDashboardDialogId != null)
-        MenuItemModel(
-            documentID: '3',
-            text: 'Members',
-            description: 'Members',
-            icon: IconModel(
-                codePoint: Icons.people.codePoint,
-                fontFamily: Icons.notifications.fontFamily),
-            action: OpenDialog(app, dialogID: _membershipDashboardDialogId)),
       if (_hasUnreadChatDialogId != null)
         MenuItemModel(
             documentID: IDENTIFIER_MEMBER_HAS_UNREAD_CHAT,

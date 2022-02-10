@@ -133,6 +133,9 @@ class NewPolicyWizard extends NewAppWizardInfo {
       throw Exception('Unexpected class for parameters: ' + parameters.toString());
     }
   }
+
+  @override
+  String? getPageID(String pageType) => null;
 }
 
 class NewPolicyParameters extends NewAppWizardParameters {

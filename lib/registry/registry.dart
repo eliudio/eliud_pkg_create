@@ -46,6 +46,25 @@ abstract class NewAppWizardInfo {
 
   // adjust the app
   AppModel updateApp(NewAppWizardParameters parameters, AppModel adjustMe);
+
+  /*
+   * Get pageID for a page type.
+   *
+   * Some pages require to have the page ID which could be provided by another wizard.
+   * For example the member MembershipDashboardWizard needs the profilePageId and feedPageId
+   * from the FeedWizard. The mechanism to do this is by
+   *
+   * - the wizard providing the page ID implementing this method and return the page ID for that type.
+   *   In the example given the FeedWizard would implement this method for the types profilePageId and feedPageId
+   *   The string for these types is a convention.
+   *
+   * - the wizard requesting that needs to know a page ID for a given page type requests the NewAppWizardRegistry
+   *   for the pageID, using it's getPageID method
+   *
+   * For the page type we use a hard coded string, rather than using a const, to avoid introducing dependencies
+   *
+   */
+   String? getPageID(String pageType);
 }
 
 /*
@@ -69,5 +88,16 @@ class NewAppWizardRegistry {
 
   void register(NewAppWizardInfo newAppWizardInfo) {
     registeredNewAppWizardInfos.add(newAppWizardInfo);
+  }
+
+  /*
+   * See comments NewAppWizardInfo::getPageID
+   */
+  String? getPageID(String pageType) {
+    for (var wizard in registeredNewAppWizardInfos) {
+      var pageID = wizard.getPageID(pageType);
+      if (pageID != null) return pageID;
+    }
+    return null;
   }
 }

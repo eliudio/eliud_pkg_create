@@ -38,7 +38,6 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   final ActionSpecification includeSignoutButton;
   final ActionSpecification includeFlushButton;
   final JoinActionSpecifications includeJoinAction;
-  final ActionSpecification membershipDashboardDialogSpecifications;
   final ActionSpecification notificationDashboardDialogSpecifications;
   final ActionSpecification assignmentDashboardDialogSpecifications;
   final ActionSpecification aboutPageSpecifications;
@@ -59,7 +58,6 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
     required this.includeSignoutButton,
     required this.includeFlushButton,
     required this.includeJoinAction,
-    required this.membershipDashboardDialogSpecifications,
     required this.notificationDashboardDialogSpecifications,
     required this.assignmentDashboardDialogSpecifications,
     required this.aboutPageSpecifications,

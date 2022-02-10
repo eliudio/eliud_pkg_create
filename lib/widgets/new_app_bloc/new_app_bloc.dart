@@ -40,8 +40,6 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
           signoutButton: event.includeSignoutButton,
           flushButton: event.includeFlushButton,
           joinSpecification: event.includeJoinAction,
-          membershipDashboardDialogSpecifications:
-              event.membershipDashboardDialogSpecifications,
           notificationDashboardDialogSpecifications:
               event.notificationDashboardDialogSpecifications,
           assignmentDashboardDialogSpecifications:
