@@ -4,8 +4,7 @@ import 'package:eliud_core/model/abstract_repository_singleton.dart'
 import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/model/member_dashboard_component.dart';
 import 'package:eliud_core/model/model_export.dart';
-
-import 'dialog_builder.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/dialog/dialog_builder.dart';
 
 String updateProfileText = '''
 Maintain your personal details here

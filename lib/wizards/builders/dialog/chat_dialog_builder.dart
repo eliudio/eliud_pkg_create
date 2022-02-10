@@ -6,8 +6,7 @@ import 'package:eliud_pkg_chat/chat_package.dart';
 import 'package:eliud_pkg_chat/model/chat_dashboard_component.dart';
 import 'package:eliud_pkg_chat/model/chat_dashboard_model.dart';
 import 'package:eliud_pkg_chat/model/abstract_repository_singleton.dart';
-
-import 'dialog_builder.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/dialog/dialog_builder.dart';
 
 class ChatDialogBuilder extends DialogBuilder {
   final String identifierMemberHasUnreadChat;

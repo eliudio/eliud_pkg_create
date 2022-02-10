@@ -47,6 +47,8 @@ class ShopActionSpecifications extends ActionSpecification {
       available: available);
 }
 
+
+
 enum JoinPaymentType { Manual, Card }
 
 class JoinActionSpecifications extends ActionSpecification {
@@ -68,4 +70,3 @@ class JoinActionSpecifications extends ActionSpecification {
       availableInHomeMenu: availableInHomeMenu,
       available: available);
 }
-

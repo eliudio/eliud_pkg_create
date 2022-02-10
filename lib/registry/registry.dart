@@ -7,7 +7,31 @@ import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/app_builder.dart';
 import 'package:flutter/material.dart';
 
+import 'action_specification.dart';
+
 abstract class NewAppWizardParameters {}
+
+class ActionSpecificationParametersBase
+    extends NewAppWizardParameters {
+  late ActionSpecification actionSpecifications;
+
+  ActionSpecificationParametersBase(
+      {required bool requiresAccessToLocalFileSystem,
+        required bool availableInLeftDrawer,
+        required bool availableInRightDrawer,
+        required bool availableInAppBar,
+        required bool availableInHomeMenu,
+        required bool available}) {
+    actionSpecifications = ActionSpecification(
+      requiresAccessToLocalFileSystem: requiresAccessToLocalFileSystem,
+      availableInLeftDrawer: availableInLeftDrawer,
+      availableInRightDrawer: availableInRightDrawer,
+      availableInAppBar: availableInAppBar,
+      availableInHomeMenu: availableInHomeMenu,
+      available: available,
+    );
+  }
+}
 
 enum MenuType { leftDrawerMenu, rightDrawerMenu, appBarMenu, bottomNavBarMenu }
 

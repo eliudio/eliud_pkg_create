@@ -1,8 +1,8 @@
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
+import 'package:eliud_pkg_create/registry/action_specification.dart';
 import 'package:eliud_pkg_create/registry/registry.dart';
 import 'package:equatable/equatable.dart';
-import 'action_specification.dart';
 import 'package:flutter/foundation.dart';
 
 abstract class NewAppCreateEvent extends Equatable {

@@ -11,6 +11,7 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
+import 'package:eliud_pkg_create/registry/action_specification.dart';
 import 'package:eliud_pkg_create/registry/registry.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_bloc.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_event.dart';
@@ -22,7 +23,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'logo_widget.dart';
-import 'new_app_bloc/action_specification.dart';
 import 'new_app_bloc/new_app_state.dart';
 
 typedef BlocProvider BlocProviderProvider(Widget child);
