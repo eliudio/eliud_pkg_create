@@ -30,22 +30,11 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
           theState.appToBeCreated,
           theState.member,
           logo: theState.appToBeCreated.logo,
-          welcomePageSpecifications: event.includeWelcome,
-          blockedPageSpecifications: event.includeblocked,
           shopPageSpecifications: event.includeShop,
-          chatDialogSpecifications: event.includeChat,
-          memberDashboardDialogSpecifications: event.includeMemberDashboard,
           newAppWizardParameters: event.newAppWizardParameters,
           signinButton: event.includeSigninButton,
           signoutButton: event.includeSignoutButton,
           flushButton: event.includeFlushButton,
-          joinSpecification: event.includeJoinAction,
-          notificationDashboardDialogSpecifications:
-              event.notificationDashboardDialogSpecifications,
-          assignmentDashboardDialogSpecifications:
-              event.assignmentDashboardDialogSpecifications,
-          aboutPageSpecifications: event.aboutPageSpecifications,
-          albumPageSpecifications: event.albumPageSpecifications,
         ).create(this);
       } else if (event is NewAppSwitchAppEvent) {
         yield SwitchApp(theState.appToBeCreated, theState.member);

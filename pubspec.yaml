@@ -14,35 +14,20 @@ dependencies:
   eliud_core:
     path: ../eliud_core
 
-  eliud_pkg_etc:
-    path: ../eliud_pkg_etc
-
-  eliud_pkg_text:
-    path: ../eliud_pkg_text
+  eliud_pkg_workflow:
+    path: ../eliud_pkg_workflow
 
   eliud_pkg_medium:
     path: ../eliud_pkg_medium
 
-  eliud_pkg_follow:
-    path: ../eliud_pkg_follow
+  eliud_pkg_text:
+    path: ../eliud_pkg_text
 
-  eliud_pkg_workflow:
-    path: ../eliud_pkg_workflow
-
-  eliud_pkg_chat:
-    path: ../eliud_pkg_chat
-
-#  eliud_pkg_feed:
-#    path: ../eliud_pkg_feed
-
-  eliud_pkg_pay:
-    path: ../eliud_pkg_pay
+#  eliud_pkg_shop:
+#    path: ../eliud_pkg_shop
 
   eliud_pkg_membership:
     path: ../eliud_pkg_membership
-
-  eliud_pkg_shop:
-    path: ../eliud_pkg_shop
 
 dev_dependencies:
   build_runner: "1.11.5"

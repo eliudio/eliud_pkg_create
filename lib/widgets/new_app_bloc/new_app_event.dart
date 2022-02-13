@@ -1,7 +1,7 @@
+import 'package:eliud_core/core/wizards/registry/action_specification.dart';
+import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
-import 'package:eliud_pkg_create/registry/action_specification.dart';
-import 'package:eliud_pkg_create/registry/registry.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
@@ -30,18 +30,9 @@ class NewAppCreateEventInitialise extends NewAppCreateEvent {
 class NewAppCreateConfirm extends NewAppCreateEvent {
   final PublicMediumModel? logo;
   final ShopActionSpecifications includeShop;
-  final ActionSpecification includeWelcome;
-  final ActionSpecification includeblocked;
-  final ActionSpecification includeChat;
-  final ActionSpecification includeMemberDashboard;
   final ActionSpecification includeSigninButton;
   final ActionSpecification includeSignoutButton;
   final ActionSpecification includeFlushButton;
-  final JoinActionSpecifications includeJoinAction;
-  final ActionSpecification notificationDashboardDialogSpecifications;
-  final ActionSpecification assignmentDashboardDialogSpecifications;
-  final ActionSpecification aboutPageSpecifications;
-  final ActionSpecification albumPageSpecifications;
 
   // map newAppWizardName >> ActionSpecifications
   final Map<String, NewAppWizardParameters> newAppWizardParameters;
@@ -49,19 +40,9 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   NewAppCreateConfirm({
     required this.logo,
     required this.includeShop,
-    required this.includeWelcome,
-    required this.includeblocked,
-    required this.includeChat,
-    required this.includeMemberDashboard,
-    //required this.includeExamplePolicy,
     required this.includeSigninButton,
     required this.includeSignoutButton,
     required this.includeFlushButton,
-    required this.includeJoinAction,
-    required this.notificationDashboardDialogSpecifications,
-    required this.assignmentDashboardDialogSpecifications,
-    required this.aboutPageSpecifications,
-    required this.albumPageSpecifications,
     required this.newAppWizardParameters,
   });
 
@@ -69,9 +50,6 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   List<Object?> get props => [
         logo,
         includeShop,
-        includeWelcome,
-        includeChat,
-        includeMemberDashboard,
         includeSignoutButton,
         includeFlushButton,
     newAppWizardParameters,
@@ -83,10 +61,7 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
       other is NewAppCreateConfirm &&
           logo == other.logo &&
           includeShop == other.includeShop &&
-          includeChat == other.includeChat &&
-          includeMemberDashboard == other.includeMemberDashboard &&
           mapEquals(newAppWizardParameters, other.newAppWizardParameters) &&
-          //includeExamplePolicy == other.includeExamplePolicy &&
           includeSignoutButton == other.includeSignoutButton &&
           includeFlushButton == other.includeFlushButton;
 }

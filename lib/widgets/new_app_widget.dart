@@ -1,5 +1,7 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/blocs/access/access_event.dart';
+import 'package:eliud_core/core/wizards/registry/action_specification.dart';
+import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -11,8 +13,6 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
-import 'package:eliud_pkg_create/registry/action_specification.dart';
-import 'package:eliud_pkg_create/registry/registry.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_bloc.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_event.dart';
 import 'package:eliud_pkg_create/widgets/style_selection_widget.dart';
@@ -94,54 +94,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInHomeMenu: true,
     available: false,
   );
-  var welcomeSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: true,
-    availableInRightDrawer: false,
-    availableInAppBar: false,
-    availableInHomeMenu: true,
-    available: false,
-  );
-  var blockedSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: false,
-    availableInAppBar: false,
-    availableInHomeMenu: false,
-    available: true,
-  );
-  var aboutSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: true,
-    availableInRightDrawer: false,
-    availableInAppBar: false,
-    availableInHomeMenu: true,
-    available: false,
-  );
-  var albumSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: hasAccessToLocalFileSystem,
-    availableInRightDrawer: false,
-    availableInAppBar: false,
-    availableInHomeMenu: hasAccessToLocalFileSystem,
-    available: false,
-  );
-  var chatSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: false,
-    availableInAppBar: true,
-    availableInHomeMenu: false,
-    available: false,
-  );
-  var memberDashboardSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: true,
-    availableInAppBar: false,
-    availableInHomeMenu: false,
-    available: false,
-  );
   var signoutSpecifications = ActionSpecification(
     requiresAccessToLocalFileSystem: false,
     availableInLeftDrawer: false,
@@ -163,33 +115,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     availableInLeftDrawer: false,
     availableInRightDrawer: false,
     availableInAppBar: false,
-    availableInHomeMenu: false,
-    available: false,
-  );
-  var includeJoinAction = JoinActionSpecifications(
-    requiresAccessToLocalFileSystem: false,
-    paymentType: JoinPaymentType.Manual,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: false,
-    availableInAppBar: true,
-    availableInHomeMenu: false,
-    available: false,
-  );
-  var notificationDashboardDialogSpecifications = JoinActionSpecifications(
-    requiresAccessToLocalFileSystem: false,
-    paymentType: JoinPaymentType.Manual,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: false,
-    availableInAppBar: true,
-    availableInHomeMenu: false,
-    available: false,
-  );
-  var assignmentDashboardDialogSpecifications = JoinActionSpecifications(
-    requiresAccessToLocalFileSystem: false,
-    paymentType: JoinPaymentType.Manual,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: false,
-    availableInAppBar: true,
     availableInHomeMenu: false,
     available: false,
   );
@@ -234,22 +159,11 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                         BlocProvider.of<NewAppCreateBloc>(context)
                             .add(NewAppCreateConfirm(
                           logo: state.appToBeCreated.logo,
-                          includeWelcome: welcomeSpecifications,
-                          includeblocked: blockedSpecifications,
-                          aboutPageSpecifications: aboutSpecifications,
-                          albumPageSpecifications: albumSpecifications,
                           includeShop: shopActionSpecifications,
-                          includeChat: chatSpecifications,
-                          includeMemberDashboard: memberDashboardSpecifications,
                           newAppWizardParameters: newAppWizardParameterss,
                           includeSigninButton: signinSpecifications,
                           includeSignoutButton: signoutSpecifications,
                           includeFlushButton: flushSpecifications,
-                          includeJoinAction: includeJoinAction,
-                          notificationDashboardDialogSpecifications:
-                              notificationDashboardDialogSpecifications,
-                          assignmentDashboardDialogSpecifications:
-                              assignmentDashboardDialogSpecifications,
                         ));
                         return false;
                       }
@@ -344,41 +258,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
       ActionSpecificationWidget(
           app: widget.app,
           enabled: true,
-          actionSpecification: welcomeSpecifications,
-          label: 'Generate Welcome Page'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: blockedSpecifications,
-          label: 'Generate Page for Blocked members'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: aboutSpecifications,
-          label: 'Generate About Page'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: hasAccessToLocalFileSystem,
-          actionSpecification: albumSpecifications,
-          label: 'Generate Example Album Page'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: shopActionSpecifications,
-          label: 'Generate Shop'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: chatSpecifications,
-          label: 'Generate Chat Dialog'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: memberDashboardSpecifications,
-          label: 'Generate Member Dashboard Dialog'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
           actionSpecification: signinSpecifications,
           label: 'Generate signin button'),
       ActionSpecificationWidget(
@@ -391,21 +270,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           enabled: true,
           actionSpecification: flushSpecifications,
           label: 'Generate flush button'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: includeJoinAction,
-          label: 'Generate join button'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: notificationDashboardDialogSpecifications,
-          label: 'Generate notification dashboard dialog'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: assignmentDashboardDialogSpecifications,
-          label: 'Generate assignment dashboard dialog'),
     ];
     for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
       var newAppWizardName = wizard.newAppWizardName;
