@@ -15,7 +15,6 @@ import 'package:eliud_core/style/_default/default_style_family.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 
 import 'helpers/menu_helpers.dart';
-import 'workflow_builder.dart';
 import 'app_bar_builder.dart';
 import 'home_menu_builder.dart';
 import 'left_drawer_builder.dart';
@@ -143,16 +142,6 @@ class AppBuilder {
       print("AppBar");
       theAppBar = await AppBarBuilder(app,
               logo: logo, menuItems: getMenuItemsFor(MenuType.appBarMenu))
-          .create();
-    });
-
-    tasks.add(() async {
-      print("WorkflowBuilder");
-      await WorkflowBuilder(appId,
-              manuallyPaidMembership: manuallyPaidMembership,
-              membershipPaidByCard: membershipPaidByCard,
-              manualPaymentCart: manualPaymentCart,
-              creditCardPaymentCart: creditCardPaymentCart)
           .create();
     });
 

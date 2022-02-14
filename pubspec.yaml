@@ -23,12 +23,6 @@ dependencies:
   eliud_pkg_text:
     path: ../eliud_pkg_text
 
-#  eliud_pkg_shop:
-#    path: ../eliud_pkg_shop
-
-  eliud_pkg_membership:
-    path: ../eliud_pkg_membership
-
 dev_dependencies:
   build_runner: "1.11.5"
 
