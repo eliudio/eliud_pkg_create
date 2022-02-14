@@ -36,7 +36,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - packages/eliud_pkg_create/assets/new_app/legal/policies.pdf
     - packages/eliud_pkg_create/assets/annoyed.png
     - packages/eliud_pkg_create/assets/angry.png
     - packages/eliud_pkg_create/assets/embarassed.png
@@ -53,7 +52,3 @@ flutter:
     - packages/eliud_pkg_create/assets/stressed.png
     - packages/eliud_pkg_create/assets/surprised.png
     - packages/eliud_pkg_create/assets/tired.png
-    - packages/eliud_pkg_create/assets/about.png
-    - packages/eliud_pkg_create/assets/blocked.png
-    - packages/eliud_pkg_create/assets/example_photo_1.jpg
-    - packages/eliud_pkg_create/assets/example_photo_2.jpg
