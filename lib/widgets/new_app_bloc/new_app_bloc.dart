@@ -30,7 +30,6 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
           theState.appToBeCreated,
           theState.member,
           logo: theState.appToBeCreated.logo,
-          shopPageSpecifications: event.includeShop,
           newAppWizardParameters: event.newAppWizardParameters,
           signinButton: event.includeSigninButton,
           signoutButton: event.includeSignoutButton,

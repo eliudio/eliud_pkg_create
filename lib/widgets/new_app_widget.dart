@@ -159,7 +159,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                         BlocProvider.of<NewAppCreateBloc>(context)
                             .add(NewAppCreateConfirm(
                           logo: state.appToBeCreated.logo,
-                          includeShop: shopActionSpecifications,
                           newAppWizardParameters: newAppWizardParameterss,
                           includeSigninButton: signinSpecifications,
                           includeSignoutButton: signoutSpecifications,

@@ -380,19 +380,12 @@ packages:
     source: path
     version: "1.0.0+1"
   eliud_pkg_etc:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "../eliud_pkg_etc"
       relative: true
     source: path
     version: "0.0.1"
-  eliud_pkg_fundamentals:
-    dependency: transitive
-    description:
-      path: "../eliud_pkg_fundamentals"
-      relative: true
-    source: path
-    version: "1.0.0+1"
   eliud_pkg_medium:
     dependency: "direct main"
     description:
@@ -400,31 +393,10 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
-  eliud_pkg_membership:
-    dependency: "direct main"
-    description:
-      path: "../eliud_pkg_membership"
-      relative: true
-    source: path
-    version: "0.0.1"
   eliud_pkg_notifications:
     dependency: transitive
     description:
       path: "../eliud_pkg_notifications"
-      relative: true
-    source: path
-    version: "0.0.1"
-  eliud_pkg_pay:
-    dependency: transitive
-    description:
-      path: "../eliud_pkg_pay"
-      relative: true
-    source: path
-    version: "0.0.1"
-  eliud_pkg_shop:
-    dependency: "direct main"
-    description:
-      path: "../eliud_pkg_shop"
       relative: true
     source: path
     version: "0.0.1"
@@ -586,7 +558,7 @@ packages:
       name: flutter_blurhash
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.0"
+    version: "0.6.4"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -772,13 +744,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.2+2"
-  getwidget:
-    dependency: transitive
-    description:
-      name: getwidget
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.4"
   glob:
     dependency: transitive
     description:
@@ -932,7 +897,7 @@ packages:
       name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.19"
+    version: "0.9.20"
   just_audio_platform_interface:
     dependency: transitive
     description:
@@ -1253,13 +1218,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  stripe_payment:
-    dependency: transitive
-    description:
-      name: stripe_payment
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.4"
   synchronized:
     dependency: transitive
     description:
@@ -1315,7 +1273,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.19"
+    version: "6.0.20"
   url_launcher_android:
     dependency: transitive
     description:
@@ -1336,14 +1294,14 @@ packages:
       name: url_launcher_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "3.0.0"
   url_launcher_macos:
     dependency: transitive
     description:
       name: url_launcher_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "3.0.0"
   url_launcher_platform_interface:
     dependency: transitive
     description:
@@ -1364,7 +1322,7 @@ packages:
       name: url_launcher_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "3.0.0"
   uuid:
     dependency: transitive
     description:

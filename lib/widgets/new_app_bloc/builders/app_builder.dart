@@ -44,8 +44,6 @@ class AppBuilder {
 
   PublicMediumModel? logo;
 
-  final ShopActionSpecifications shopPageSpecifications;
-
   final ActionSpecification signinButton;
   final ActionSpecification signoutButton;
   final ActionSpecification flushButton;
@@ -56,7 +54,6 @@ class AppBuilder {
     this.app,
     this.member, {
     required this.logo,
-    required this.shopPageSpecifications,
     required this.signinButton,
     required this.signoutButton,
     required this.flushButton,

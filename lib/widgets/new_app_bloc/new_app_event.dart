@@ -29,7 +29,6 @@ class NewAppCreateEventInitialise extends NewAppCreateEvent {
 
 class NewAppCreateConfirm extends NewAppCreateEvent {
   final PublicMediumModel? logo;
-  final ShopActionSpecifications includeShop;
   final ActionSpecification includeSigninButton;
   final ActionSpecification includeSignoutButton;
   final ActionSpecification includeFlushButton;
@@ -39,7 +38,6 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
 
   NewAppCreateConfirm({
     required this.logo,
-    required this.includeShop,
     required this.includeSigninButton,
     required this.includeSignoutButton,
     required this.includeFlushButton,
@@ -49,7 +47,6 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
   @override
   List<Object?> get props => [
         logo,
-        includeShop,
         includeSignoutButton,
         includeFlushButton,
     newAppWizardParameters,
@@ -60,7 +57,6 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
       identical(this, other) ||
       other is NewAppCreateConfirm &&
           logo == other.logo &&
-          includeShop == other.includeShop &&
           mapEquals(newAppWizardParameters, other.newAppWizardParameters) &&
           includeSignoutButton == other.includeSignoutButton &&
           includeFlushButton == other.includeFlushButton;
