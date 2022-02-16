@@ -76,7 +76,7 @@ class PlayStoreState extends State<PlayStore> {
                       : const Icon(Icons.help),
                 );
                 Widget component;
-                if (model.documentID != currentAppId) {
+                if ((model.documentID != currentAppId) && ((model.appStatus == AppStatus.Live) || ((member != null) && (model.ownerID == member.documentID)))) {
                   component = GestureDetector(
                       onTap: () async {
                         EliudRouter.Router.navigateTo(context,

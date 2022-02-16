@@ -20,6 +20,7 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
     if (event is NewAppCreateEventInitialise) {
       var appToBeCreated = AppModel(
           documentID: event.initialAppIdToBeCreated,
+          appStatus: AppStatus.Offline,
           ownerID: event.member.documentID!);
       yield NewAppCreateAllowEnterDetails(appToBeCreated, event.member);
     } else if (state is NewAppCreateInitialised) {

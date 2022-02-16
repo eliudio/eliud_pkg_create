@@ -99,6 +99,7 @@ class AppBuilder {
     tasks.add(() async {
       newlyCreatedApp = await appRepository()!.add(AppModel(
         documentID: appId,
+        appStatus: AppStatus.Offline,
         title: 'New application',
         ownerID: memberId,
       ));
@@ -172,6 +173,7 @@ class AppBuilder {
           documentID: appId,
           title: 'New application',
           ownerID: memberId,
+          appStatus: AppStatus.Live,
           styleFamily:
               app.styleFamily ?? DefaultStyleFamily.defaultStyleFamilyName,
           styleName: app.styleName ?? DefaultStyle.defaultStyleName,
@@ -279,6 +281,7 @@ class AppBuilder {
       String appId, String ownerID) async {
     // add the app
     var application = AppModel(
+      appStatus: AppStatus.Offline,
       documentID: appId,
       ownerID: ownerID,
     );
