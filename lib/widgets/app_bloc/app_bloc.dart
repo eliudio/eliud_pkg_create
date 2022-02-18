@@ -10,6 +10,7 @@ import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
+import 'package:eliud_core/tools/query/query_tools.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'app_event.dart';
@@ -23,13 +24,33 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       : appModel = deepCopy(appId, initialiseWithApp),
         super(AppCreateUninitialised());
 
+  static EliudQuery getQuery() {
+    return EliudQuery(theConditions: [
+      EliudQueryCondition('conditions.privilegeLevelRequired', isEqualTo: 3),
+    ]);
+  }
+
   @override
   Stream<AppCreateState> mapEventToState(AppCreateEvent event) async* {
     if (event is AppCreateEventValidateEvent) {
-      List<PageModel?> pages =
-          await pageRepository(appId: appId)!.valuesList();
-      List<DialogModel?> dialogs =
-          await dialogRepository(appId: appId)!.valuesList();
+      var pages = <PageModel?>[];
+      {
+        var countDown = 3;
+        while (countDown >= 0) {
+          pages.addAll(
+              await pageRepository(appId: appId)!.valuesList(privilegeLevel: countDown));
+          countDown--;
+        }
+      }
+      var dialogs = <DialogModel?>[];
+      {
+        var countDown = 3;
+        while (countDown >= 0) {
+          dialogs.addAll(
+              await dialogRepository(appId: appId)!.valuesList(privilegeLevel: countDown));
+          countDown--;
+        }
+      }
 
       var theHomeMenu = await homeMenu(appId, store: true);
       var theAppBar = await appBar(appId);
