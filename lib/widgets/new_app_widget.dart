@@ -201,7 +201,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
 
   Widget _logo(BuildContext context, AppModel appModel) {
     return _inContainer(
-        context, 'Logo' + (!hasAccessToLocalFileSystem ? ' (not available on web)' : ''), [LogoWidget(app: appModel, collapsed: false)]);
+        context, 'Logo', [LogoWidget(app: appModel, collapsed: false)]);
   }
 
   Widget _general(BuildContext context, NewAppCreateInitialised state) {
@@ -252,7 +252,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   }
 
   Widget _contents(BuildContext context, NewAppCreateInitialised state) {
-    var suffix = !hasAccessToLocalFileSystem ? ' (not available on web)' : '';
     List<Widget> children = [
       ActionSpecificationWidget(
           app: widget.app,
