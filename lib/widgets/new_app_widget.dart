@@ -257,17 +257,17 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
           app: widget.app,
           enabled: true,
           actionSpecification: signinSpecifications,
-          label: 'Generate signin button'),
+          label: 'Generate Sign-in Button'),
       ActionSpecificationWidget(
           app: widget.app,
           enabled: true,
           actionSpecification: signoutSpecifications,
-          label: 'Generate signout button'),
+          label: 'Generate Sign-out Button'),
       ActionSpecificationWidget(
           app: widget.app,
           enabled: true,
           actionSpecification: flushSpecifications,
-          label: 'Generate flush button'),
+          label: 'Generate Flush Button'),
     ];
     for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
       var newAppWizardName = wizard.newAppWizardName;
