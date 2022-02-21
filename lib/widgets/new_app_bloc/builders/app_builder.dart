@@ -81,19 +81,15 @@ class AppBuilder {
     var hasAccessToLocalFileSystem =
         AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem();
 
-    // uploading a random photo requires access to the local file system
-    if (hasAccessToLocalFileSystem) {
-      tasks.add(() async {
-        print("Logo");
-        if (logo == null) {
-          try {
-            logo = await RandomLogo.getRandomPhoto(app, memberId, null);
-          } catch (_) {
-            //swallow. On web, today, this fails because we don't have access to asset files
-          }
+    tasks.add(() async {
+      print("Logo");
+      if (logo == null) {
+        try {
+          logo = await RandomLogo.getRandomPhoto(app, memberId, null);
+        } catch (_) {
         }
-      });
-    }
+      }
+    });
 
     // create the app
     tasks.add(() async {
