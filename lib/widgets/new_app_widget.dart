@@ -82,6 +82,29 @@ class NewAppCreateWidget extends StatefulWidget {
   }
 }
 
+
+enum ShopPaymentType { Manual, Card }
+
+class ShopActionSpecifications extends ActionSpecification {
+  final ShopPaymentType paymentType;
+
+  ShopActionSpecifications({
+    required this.paymentType,
+    required bool requiresAccessToLocalFileSystem,
+    required bool availableInLeftDrawer,
+    required bool availableInRightDrawer,
+    required bool availableInAppBar,
+    required bool availableInHomeMenu,
+    required bool available,
+  }) : super(
+      requiresAccessToLocalFileSystem: requiresAccessToLocalFileSystem,
+      availableInLeftDrawer: availableInLeftDrawer,
+      availableInRightDrawer: availableInRightDrawer,
+      availableInAppBar: availableInAppBar,
+      availableInHomeMenu: availableInHomeMenu,
+      available: available);
+}
+
 class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   static bool hasAccessToLocalFileSystem =
       AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem();

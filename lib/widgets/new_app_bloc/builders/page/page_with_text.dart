@@ -1,4 +1,5 @@
 import 'package:eliud_core/core/wizards/builders/page_builder.dart';
+import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
@@ -24,9 +25,12 @@ class PageWithTextBuilder extends PageBuilder {
       HomeMenuModel theHomeMenu,
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
-      DrawerModel rightDrawer)
+      DrawerModel rightDrawer,
+      PageProvider pageProvider,
+      ActionProvider actionProvider,
+      )
       : super(pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
-            rightDrawer);
+            rightDrawer, pageProvider, actionProvider);
 
   Future<PageModel> create() async {
     // welcome page

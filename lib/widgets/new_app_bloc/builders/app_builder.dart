@@ -3,6 +3,7 @@ import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/access_model.dart';
+import 'package:eliud_core/tools/action/action_model.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
@@ -50,6 +51,38 @@ class AppBuilder {
 
   final Map<String, NewAppWizardParameters> newAppWizardParameters;
 
+  /*
+   * See comments NewAppWizardInfo::getPageID
+   *
+   */
+  String? getPageID(String pageType) {
+    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+      var newAppWizardName = wizard.newAppWizardName;
+      var parameters = newAppWizardParameters[newAppWizardName];
+      if (parameters != null) {
+        var pageID = wizard.getPageID(parameters, pageType);
+        if (pageID != null) return pageID;
+      }
+    }
+    return null;
+  }
+
+  /*
+   * See comments NewAppWizardInfo::getAction
+   *
+   */
+  ActionModel? getAction(AppModel app, String actionType) {
+    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+      var newAppWizardName = wizard.newAppWizardName;
+      var parameters = newAppWizardParameters[newAppWizardName];
+      if (parameters != null) {
+        var action = wizard.getAction(parameters, app, actionType,);
+        if (action != null) return action;
+      }
+    }
+    return null;
+  }
+
   AppBuilder(
     this.app,
     this.member, {
@@ -77,9 +110,6 @@ class AppBuilder {
 
   Future<AppModel> create(NewAppCreateBloc newAppCreateBloc) async {
     List<NewAppTask> tasks = [];
-
-    var hasAccessToLocalFileSystem =
-        AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem();
 
     tasks.add(() async {
       print("Logo");
@@ -153,6 +183,8 @@ class AppBuilder {
           () => theAppBar,
           () => leftDrawer,
           () => rightDrawer,
+          getPageID,
+          getAction,
         );
         if (extraTasks != null) {
           tasks.addAll(extraTasks);
@@ -160,8 +192,8 @@ class AppBuilder {
       }
     }
 
-    var blockedPageId = NewAppWizardRegistry.registry().getPageID('blockedPageId');
-    var homePageId = NewAppWizardRegistry.registry().getPageID('homePageId');
+    var blockedPageId = getPageID('blockedPageId');
+    var homePageId = getPageID('homePageId');
     // app
     tasks.add(() async {
       print("App");
@@ -293,3 +325,11 @@ class AppBuilder {
         points: 0));
   }
 }
+
+/*
+interface PageAndActionProvider
+
+with parameters
+
+
+*/
