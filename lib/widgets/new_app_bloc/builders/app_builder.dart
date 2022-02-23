@@ -29,15 +29,6 @@ typedef Evaluate = bool Function(ActionSpecification actionSpecification);
 
 
 class AppBuilder {
-  static String MANUALLY_PAY_MEMBERSHIP_WORKFLOW_ID =
-      'manually_paid_membership_workflow';
-  static String MEMBERSHIP_PAID_BY_CARD_WORKFLOW_ID =
-      'membership_paid_by_card_workflow';
-  static String MANUAL_PAYMENT_CART_WORKFLOW_ID =
-      'manual_payment_cart_workflow';
-  static String CREDITCARD_PAYMENT_CART_WORKFLOW_ID =
-      'creditcard_payment_cart_workflow';
-
   final AppModel app;
   final MemberModel member;
   late String appId;
@@ -325,11 +316,3 @@ class AppBuilder {
         points: 0));
   }
 }
-
-/*
-interface PageAndActionProvider
-
-with parameters
-
-
-*/
