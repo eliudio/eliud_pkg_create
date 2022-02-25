@@ -15,15 +15,14 @@ import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/style/_default/default_style_family.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 
-import 'helpers/menu_helpers.dart';
-import 'app_bar_builder.dart';
-import 'home_menu_builder.dart';
-import 'left_drawer_builder.dart';
-import 'right_drawer_builder.dart';
-
 import '../new_app_bloc.dart';
 import '../new_app_event.dart';
 import '../new_app_state.dart';
+import '../../wizard_shared/helpers/menu_helpers.dart';
+import '../../wizard_shared/menus/app_bar_builder.dart';
+import '../../wizard_shared/menus/home_menu_builder.dart';
+import '../../wizard_shared/menus/left_drawer_builder.dart';
+import '../../wizard_shared/menus/right_drawer_builder.dart';
 
 typedef Evaluate = bool Function(ActionSpecification actionSpecification);
 
@@ -34,55 +33,9 @@ class AppBuilder {
   late String appId;
   late String memberId;
 
-  PublicMediumModel? logo;
-
-  final ActionSpecification signinButton;
-  final ActionSpecification signoutButton;
-  final ActionSpecification flushButton;
-
-  final Map<String, NewAppWizardParameters> newAppWizardParameters;
-
-  /*
-   * See comments NewAppWizardInfo::getPageID
-   *
-   */
-  String? getPageID(String pageType) {
-    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
-      var newAppWizardName = wizard.newAppWizardName;
-      var parameters = newAppWizardParameters[newAppWizardName];
-      if (parameters != null) {
-        var pageID = wizard.getPageID(parameters, pageType);
-        if (pageID != null) return pageID;
-      }
-    }
-    return null;
-  }
-
-  /*
-   * See comments NewAppWizardInfo::getAction
-   *
-   */
-  ActionModel? getAction(AppModel app, String actionType) {
-    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
-      var newAppWizardName = wizard.newAppWizardName;
-      var parameters = newAppWizardParameters[newAppWizardName];
-      if (parameters != null) {
-        var action = wizard.getAction(parameters, app, actionType,);
-        if (action != null) return action;
-      }
-    }
-    return null;
-  }
-
   AppBuilder(
     this.app,
-    this.member, {
-    required this.logo,
-    required this.signinButton,
-    required this.signoutButton,
-    required this.flushButton,
-    required this.newAppWizardParameters,
-  }) {
+    this.member, ) {
     appId = app.documentID!;
     memberId = member.documentID!;
   }
@@ -92,25 +45,10 @@ class AppBuilder {
   late HomeMenuModel theHomeMenu;
   var theAppBar;
 
-  var manuallyPaidMembership = false;
-  var membershipPaidByCard = false;
-  var manualPaymentCart = false;
-  var creditCardPaymentCart = false;
-
   var newlyCreatedApp;
 
   Future<AppModel> create(NewAppCreateBloc newAppCreateBloc) async {
     List<NewAppTask> tasks = [];
-
-    tasks.add(() async {
-      print("Logo");
-      if (logo == null) {
-        try {
-          logo = await RandomLogo.getRandomPhoto(app, memberId, null);
-        } catch (_) {
-        }
-      }
-    });
 
     // create the app
     tasks.add(() async {
@@ -134,57 +72,32 @@ class AppBuilder {
     // check if no errors, e.g. identifier should not exist
     tasks.add(() async {
       print("leftDrawer");
-      leftDrawer = await LeftDrawerBuilder(app,
-              logo: logo, menuItems: getMenuItemsFor(MenuType.leftDrawerMenu))
-          .create();
+      leftDrawer = await LeftDrawerBuilder(app, )
+          .getOrCreate();
     });
 
     tasks.add(() async {
       print("rightDrawer");
       rightDrawer = await RightDrawerBuilder(app,
-              logo: logo, menuItems: getMenuItemsFor(MenuType.rightDrawerMenu))
-          .create();
+               )
+          .getOrCreate();
     });
 
     tasks.add(() async {
       print("HomeMenu");
       theHomeMenu = await HomeMenuBuilder(app,
-              logo: logo, menuItems: getMenuItemsFor(MenuType.bottomNavBarMenu))
-          .create();
+               )
+          .getOrCreate();
     });
 
     tasks.add(() async {
       print("AppBar");
       theAppBar = await AppBarBuilder(app,
-              logo: logo, menuItems: getMenuItemsFor(MenuType.appBarMenu))
-          .create();
+               )
+          .getOrCreate();
     });
 
-    // add the tasks for the extra wizards
-    for (var wizard
-        in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
-      var newAppWizardName = wizard.newAppWizardName;
-      var parameters = newAppWizardParameters[newAppWizardName];
-      if (parameters != null) {
-        var extraTasks = wizard.getCreateTasks(
-          app,
-          parameters,
-          member,
-          () => theHomeMenu,
-          () => theAppBar,
-          () => leftDrawer,
-          () => rightDrawer,
-          getPageID,
-          getAction,
-        );
-        if (extraTasks != null) {
-          tasks.addAll(extraTasks);
-        }
-      }
-    }
 
-    var blockedPageId = getPageID('blockedPageId');
-    var homePageId = getPageID('homePageId');
     // app
     tasks.add(() async {
       print("App");
@@ -193,29 +106,10 @@ class AppBuilder {
           title: 'New application',
           ownerID: memberId,
           appStatus: AppStatus.Live,
-          styleFamily:
-              app.styleFamily ?? DefaultStyleFamily.defaultStyleFamilyName,
-          styleName: app.styleName ?? DefaultStyle.defaultStyleName,
           email: member.email,
           description: 'Your new application',
-          logo: logo,
           autoPrivileged1: app.autoPrivileged1,
-          homePages: AppHomePageReferencesModel(
-            homePageBlockedMember: blockedPageId ?? homePageId,
-            homePagePublic: homePageId,
-            homePageSubscribedMember: homePageId,
-            homePageLevel1Member: homePageId,
-            homePageLevel2Member: homePageId,
-            homePageOwner: homePageId,
-          ));
-      for (var wizard
-          in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
-        var newAppWizardName = wizard.newAppWizardName;
-        var parameters = newAppWizardParameters[newAppWizardName];
-        if (parameters != null) {
-          newApp = wizard.updateApp(parameters, newApp);
-        }
-      }
+      );
       newlyCreatedApp = await appRepository()!.update(newApp);
     });
 
@@ -247,48 +141,6 @@ class AppBuilder {
     } else {
       throw Exception("no app created");
     }
-  }
-
-  List<MenuItemModel> getMenuItemsFor(MenuType type) {
-    Evaluate evaluate;
-    switch (type) {
-      case MenuType.leftDrawerMenu:
-        evaluate = (value) => value.availableInLeftDrawer;
-        break;
-      case MenuType.rightDrawerMenu:
-        evaluate = (value) => value.availableInRightDrawer;
-        break;
-      case MenuType.appBarMenu:
-        evaluate = (value) => value.availableInAppBar;
-        break;
-      case MenuType.bottomNavBarMenu:
-        evaluate = (value) => value.availableInHomeMenu;
-        break;
-    }
-
-    var _signout = evaluate(signoutButton);
-    var _signin = evaluate(signinButton);
-
-    List<MenuItemModel> oldMenuItems = [
-      if (_signout) menuItemSignOut(app),
-      if (_signin) menuItemSignIn(app),
-    ];
-
-    List<MenuItemModel> newMenuItems = [];
-    for (var wizard
-        in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
-      var newAppWizardName = wizard.newAppWizardName;
-      var newAppWizardParam = newAppWizardParameters[newAppWizardName];
-      if (newAppWizardParam != null) {
-        var menuItems = wizard.getMenuItemsFor(app, newAppWizardParam, type);
-        if (menuItems != null) {
-          newMenuItems.addAll(menuItems);
-        }
-      }
-    }
-    var mergedMenuItems = oldMenuItems;
-    mergedMenuItems.addAll(newMenuItems);
-    return mergedMenuItems;
   }
 
   // Start the installation by claiming ownership of the app.

@@ -1,28 +1,20 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/blocs/access/access_event.dart';
-import 'package:eliud_core/core/wizards/registry/action_specification.dart';
-import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
-import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
-import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
-import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_bloc.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_event.dart';
-import 'package:eliud_pkg_create/widgets/style_selection_widget.dart';
-import 'package:eliud_pkg_medium/platform/medium_platform.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'logo_widget.dart';
+import 'new_app_bloc/new_app_bloc.dart';
 import 'new_app_bloc/new_app_state.dart';
 
 typedef BlocProvider BlocProviderProvider(Widget child);
@@ -82,78 +74,7 @@ class NewAppCreateWidget extends StatefulWidget {
   }
 }
 
-
-enum ShopPaymentType { Manual, Card }
-
-class ShopActionSpecifications extends ActionSpecification {
-  final ShopPaymentType paymentType;
-
-  ShopActionSpecifications({
-    required this.paymentType,
-    required bool requiresAccessToLocalFileSystem,
-    required bool availableInLeftDrawer,
-    required bool availableInRightDrawer,
-    required bool availableInAppBar,
-    required bool availableInHomeMenu,
-    required bool available,
-  }) : super(
-      requiresAccessToLocalFileSystem: requiresAccessToLocalFileSystem,
-      availableInLeftDrawer: availableInLeftDrawer,
-      availableInRightDrawer: availableInRightDrawer,
-      availableInAppBar: availableInAppBar,
-      availableInHomeMenu: availableInHomeMenu,
-      available: available);
-}
-
 class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
-  static bool hasAccessToLocalFileSystem =
-      AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem();
-  var shopActionSpecifications = ShopActionSpecifications(
-    requiresAccessToLocalFileSystem: false,
-    paymentType: ShopPaymentType.Manual,
-    availableInLeftDrawer: true,
-    availableInRightDrawer: false,
-    availableInAppBar: false,
-    availableInHomeMenu: true,
-    available: false,
-  );
-  var signoutSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: true,
-    availableInAppBar: false,
-    availableInHomeMenu: false,
-    available: false,
-  );
-  var signinSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: false,
-    availableInAppBar: true,
-    availableInHomeMenu: false,
-    available: false,
-  );
-  var flushSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: false,
-    availableInAppBar: false,
-    availableInHomeMenu: false,
-    available: false,
-  );
-
-  final Map<String, NewAppWizardParameters> newAppWizardParameterss = {};
-
-  @override
-  void initState() {
-    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
-      var newAppWizardName = wizard.newAppWizardName;
-      var newAppWizardParameters = wizard.newAppWizardParameters();
-      newAppWizardParameterss[newAppWizardName] = newAppWizardParameters;
-    }
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewAppCreateBloc, NewAppCreateState>(
@@ -181,11 +102,6 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                     ? () async {
                         BlocProvider.of<NewAppCreateBloc>(context)
                             .add(NewAppCreateConfirm(
-                          logo: state.appToBeCreated.logo,
-                          newAppWizardParameters: newAppWizardParameterss,
-                          includeSigninButton: signinSpecifications,
-                          includeSignoutButton: signoutSpecifications,
-                          includeFlushButton: flushSpecifications,
                         ));
                         return false;
                       }
@@ -203,67 +119,32 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   Widget enterDetails(NewAppCreateInitialised state) {
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
       divider(widget.app, context),
-      _general(context, state),
-      _contents(context, state),
-      _logo(context, state.appToBeCreated),
-      _inContainer(context, 'Style', [
-        StyleSelectionWidget.getIt(context, state.appToBeCreated, false, true, true,
-            feedbackSelection: (styleFamily, styleName) {
-          state.appToBeCreated.styleFamily = styleFamily;
-          state.appToBeCreated.styleName = styleName;
-        }),
-      ]),
+      getListTile(context, widget.app,
+          leading: Icon(Icons.vpn_key),
+          title: dialogField(
+            widget.app,
+            context,
+            initialValue: state.appToBeCreated.documentID,
+            valueChanged: (value) {
+              state.appToBeCreated.documentID = value;
+            },
+            decoration: const InputDecoration(
+              hintText: 'Identifier',
+              labelText: 'Identifier',
+            ),
+          )),
+      checkboxListTile(
+          widget.app,
+          context,
+          'Auto privilege level 1 for new members?',
+          state.appToBeCreated.autoPrivileged1 ?? false,
+              (value) {
+            setState(() {
+              state.appToBeCreated.autoPrivileged1 =
+                  value ?? false;
+            });
+          }),
     ]);
-  }
-
-  Widget _inContainer(
-      BuildContext context, String label, List<Widget> widgets) {
-    return topicContainer(widget.app, context,
-        title: label, collapsible: true, collapsed: true, children: widgets);
-  }
-
-  Widget _logo(BuildContext context, AppModel appModel) {
-    return _inContainer(
-        context, 'Logo', [LogoWidget(app: appModel, collapsed: false)]);
-  }
-
-  Widget _general(BuildContext context, NewAppCreateInitialised state) {
-    if (state is NewAppCreateAllowEnterDetails) {
-      return topicContainer(widget.app, context,
-          width: widget.widgetWidth,
-          title: 'General',
-          collapsible: true,
-          collapsed: false,
-          children: [
-            getListTile(context, widget.app,
-                leading: Icon(Icons.vpn_key),
-                title: dialogField(
-                  widget.app,
-                  context,
-                  initialValue: state.appToBeCreated.documentID,
-                  valueChanged: (value) {
-                    state.appToBeCreated.documentID = value;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Identifier',
-                    labelText: 'Identifier',
-                  ),
-                )),
-            checkboxListTile(
-                widget.app,
-                context,
-                'Auto privilege level 1 for new members?',
-                state.appToBeCreated.autoPrivileged1 ?? false,
-                    (value) {
-                  setState(() {
-                    state.appToBeCreated.autoPrivileged1 =
-                        value ?? false;
-                  });
-                }),
-          ]);
-    } else {
-      return text(widget.app, context, 'no contents');
-    }
   }
 
   Widget _progress(NewAppCreateCreateInProgress state) {
@@ -274,128 +155,5 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
             value: state.progress));
   }
 
-  Widget _contents(BuildContext context, NewAppCreateInitialised state) {
-    List<Widget> children = [
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: signinSpecifications,
-          label: 'Generate Sign-in Button'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: signoutSpecifications,
-          label: 'Generate Sign-out Button'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: flushSpecifications,
-          label: 'Generate Flush Button'),
-    ];
-    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
-      var newAppWizardName = wizard.newAppWizardName;
-      var newAppWizardParameters = newAppWizardParameterss[newAppWizardName];
-      if (newAppWizardParameters != null) {
-        children.add(wizard.wizardParametersWidget(
-            widget.app, context, newAppWizardParameters));
-      }
-    }
-    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: children);
-  }
 }
 
-class ActionSpecificationWidget extends StatefulWidget {
-  final AppModel app;
-  final String label;
-  final bool enabled;
-  final ActionSpecification actionSpecification;
-
-  ActionSpecificationWidget({
-    Key? key,
-    required this.app,
-    required this.label,
-    required this.enabled,
-    required this.actionSpecification,
-  }) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return _ActionSpecificationWidgetState();
-  }
-}
-
-class _ActionSpecificationWidgetState extends State<ActionSpecificationWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return topicContainer(widget.app, context,
-        title: widget.label,
-        collapsible: true,
-        collapsed: true,
-        children: [
-          checkboxListTile(
-              widget.app,
-              context,
-              'AppBar',
-              widget.actionSpecification.availableInAppBar,
-              widget.enabled
-                  ? (value) {
-                      setState(() {
-                        widget.actionSpecification.availableInAppBar =
-                            value ?? false;
-                      });
-                    }
-                  : null),
-          checkboxListTile(
-              widget.app,
-              context,
-              'Home menu',
-              widget.actionSpecification.availableInHomeMenu,
-              widget.enabled
-                  ? (value) {
-                      setState(() {
-                        widget.actionSpecification.availableInHomeMenu =
-                            value ?? false;
-                      });
-                    }
-                  : null),
-          checkboxListTile(
-              widget.app,
-              context,
-              'Left drawer',
-              widget.actionSpecification.availableInLeftDrawer,
-              widget.enabled
-                  ? (value) {
-                      setState(() {
-                        widget.actionSpecification.availableInLeftDrawer =
-                            value ?? false;
-                      });
-                    }
-                  : null),
-          checkboxListTile(
-              widget.app,
-              context,
-              'Right drawer',
-              widget.actionSpecification.availableInRightDrawer,
-              widget.enabled
-                  ? (value) {
-                      setState(() {
-                        widget.actionSpecification.availableInRightDrawer =
-                            value ?? false;
-                      });
-                    }
-                  : null),
-          checkboxListTile(
-              widget.app,
-              context,
-              'Available (not through menu)',
-              widget.actionSpecification.available,
-              widget.enabled
-                  ? (value) {
-                      setState(() {
-                        widget.actionSpecification.available = value ?? false;
-                      });
-                    }
-                  : null),
-        ]);
-  }
-}

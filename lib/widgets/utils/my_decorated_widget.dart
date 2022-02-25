@@ -56,10 +56,10 @@ class MultipleActions extends Action {
   }
 }
 
-class MyDecoratedWidget<T> extends StatefulWidget {
+class MyDecoratedWidget extends StatefulWidget {
   final ValueNotifier<bool> isCreationMode;
   final deco.CreateWidget createOriginalWidget;
-  T model;
+//  T model;
   final Key? originalWidgetKey;
   final bool ensureHeight;
   final InitialPosition initialPosition;
@@ -70,7 +70,7 @@ class MyDecoratedWidget<T> extends StatefulWidget {
     Key? key,
     required this.isCreationMode,
     required this.originalWidgetKey,
-    required this.model,
+//    required this.model,
     required this.createOriginalWidget,
     required this.ensureHeight,
     required this.initialPosition,

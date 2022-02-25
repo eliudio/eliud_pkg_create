@@ -6,9 +6,9 @@ import 'package:flutter/src/widgets/framework.dart';
 
 typedef StateCallBack = void Function(_MyDecoratedDialogWidgetState2 state);
 
-class MyDecoratedWidget2<T> extends StatefulWidget {
+class MyDecoratedWidget2 extends StatefulWidget {
   final deco.CreateWidget createOriginalWidget;
-  T model;
+  //T model;
   final Key? originalWidgetKey;
   final bool ensureHeight;
   final InitialPosition initialPosition;
@@ -18,7 +18,7 @@ class MyDecoratedWidget2<T> extends StatefulWidget {
   MyDecoratedWidget2({
     Key? key,
     required this.originalWidgetKey,
-    required this.model,
+    //required this.model,
     required this.createOriginalWidget,
     required this.ensureHeight,
     required this.initialPosition,

@@ -30,11 +30,6 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
         AppBuilder(
           theState.appToBeCreated,
           theState.member,
-          logo: theState.appToBeCreated.logo,
-          newAppWizardParameters: event.newAppWizardParameters,
-          signinButton: event.includeSigninButton,
-          signoutButton: event.includeSignoutButton,
-          flushButton: event.includeFlushButton,
         ).create(this);
       } else if (event is NewAppSwitchAppEvent) {
         yield SwitchApp(theState.appToBeCreated, theState.member);

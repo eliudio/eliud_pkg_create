@@ -28,38 +28,16 @@ class NewAppCreateEventInitialise extends NewAppCreateEvent {
 }
 
 class NewAppCreateConfirm extends NewAppCreateEvent {
-  final PublicMediumModel? logo;
-  final ActionSpecification includeSigninButton;
-  final ActionSpecification includeSignoutButton;
-  final ActionSpecification includeFlushButton;
-
-  // map newAppWizardName >> ActionSpecifications
-  final Map<String, NewAppWizardParameters> newAppWizardParameters;
-
-  NewAppCreateConfirm({
-    required this.logo,
-    required this.includeSigninButton,
-    required this.includeSignoutButton,
-    required this.includeFlushButton,
-    required this.newAppWizardParameters,
-  });
+  NewAppCreateConfirm();
 
   @override
   List<Object?> get props => [
-        logo,
-        includeSignoutButton,
-        includeFlushButton,
-    newAppWizardParameters,
       ];
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is NewAppCreateConfirm &&
-          logo == other.logo &&
-          mapEquals(newAppWizardParameters, other.newAppWizardParameters) &&
-          includeSignoutButton == other.includeSignoutButton &&
-          includeFlushButton == other.includeFlushButton;
+      other is NewAppCreateConfirm;
 }
 
 class NewAppCreateProgressed extends NewAppCreateEvent {
