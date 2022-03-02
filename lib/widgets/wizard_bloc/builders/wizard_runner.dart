@@ -1,26 +1,20 @@
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/access_event.dart';
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/access_model.dart';
+import 'package:eliud_core/core/wizards/tools/documentIdentifier.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
-import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
-import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
-import 'package:eliud_pkg_medium/platform/medium_platform.dart';
 import 'package:eliud_core/model/app_home_page_references_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
-import 'package:eliud_core/style/_default/default_style_family.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-
-import '../../wizard_shared/helpers/menu_helpers.dart';
+import 'package:eliud_core/tools/random.dart';
 import '../../wizard_shared/menus/app_bar_builder.dart';
 import '../../wizard_shared/menus/home_menu_builder.dart';
 import '../../wizard_shared/menus/left_drawer_builder.dart';
@@ -28,22 +22,20 @@ import '../../wizard_shared/menus/right_drawer_builder.dart';
 import '../wizard_bloc.dart';
 import '../wizard_event.dart';
 
-
 typedef Evaluate = bool Function(ActionSpecification actionSpecification);
 
-
 class WizardRunner {
+  final String uniqueId = newRandomKey();
   final AppModel app;
   final MemberModel member;
   late String appId;
   late String memberId;
 
-  PublicMediumModel? logo;
-
-  final ActionSpecification signinButton;
-  final ActionSpecification signoutButton;
+  final String? styleFamily;
+  final String? styleName;
 
   final Map<String, NewAppWizardParameters> newAppWizardParameters;
+  final bool autoPrivileged1;
 
   /*
    * See comments NewAppWizardInfo::getPageID
@@ -54,7 +46,7 @@ class WizardRunner {
       var newAppWizardName = wizard.newAppWizardName;
       var parameters = newAppWizardParameters[newAppWizardName];
       if (parameters != null) {
-        var pageID = wizard.getPageID(parameters, pageType);
+        var pageID = wizard.getPageID(uniqueId, parameters, pageType);
         if (pageID != null) return pageID;
       }
     }
@@ -70,8 +62,24 @@ class WizardRunner {
       var newAppWizardName = wizard.newAppWizardName;
       var parameters = newAppWizardParameters[newAppWizardName];
       if (parameters != null) {
-        var action = wizard.getAction(parameters, app, actionType,);
+        var action = wizard.getAction(uniqueId, parameters, app, actionType,);
         if (action != null) return action;
+      }
+    }
+    return null;
+  }
+
+  /*
+   * See comments NewAppWizardInfo::getImage
+   *
+   */
+  PublicMediumModel? getPublicMediumModel(AppModel app, String publicMediumModelType) {
+    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+      var newAppWizardName = wizard.newAppWizardName;
+      var parameters = newAppWizardParameters[newAppWizardName];
+      if (parameters != null) {
+        var image = wizard.getPublicMediumModel(uniqueId, parameters, publicMediumModelType,);
+        if (image != null) return image;
       }
     }
     return null;
@@ -80,18 +88,18 @@ class WizardRunner {
   WizardRunner(
     this.app,
     this.member, {
-    required this.logo,
-    required this.signinButton,
-    required this.signoutButton,
     required this.newAppWizardParameters,
-  }) {
+    required this.autoPrivileged1,
+    required this.styleFamily,
+    required this.styleName,
+      }) {
     appId = app.documentID!;
     memberId = member.documentID!;
   }
 
   var newlyCreatedApp;
 
-  Future<AppModel> create(WizardBloc wizardBloc) async {
+  Future<AppModel> create(AccessBloc accessBloc, WizardBloc wizardBloc, ) async {
     List<NewAppTask> tasks = [];
 
     // check if no errors, e.g. identifier should not exist
@@ -104,6 +112,8 @@ class WizardRunner {
     late DrawerModel rightDrawer;
     late HomeMenuModel theHomeMenu;
     late AppBarModel theAppBar;
+
+    var logo = getPublicMediumModel(app, 'logo');
 
     tasks.add(() async {
       print("leftDrawer");
@@ -145,17 +155,17 @@ class WizardRunner {
       var newAppWizardName = wizard.newAppWizardName;
       var parameters = newAppWizardParameters[newAppWizardName];
       if (parameters != null) {
-        var leftDrawerMenuItemsExtra = wizard.getMenuItemsFor(app, parameters, MenuType.leftDrawerMenu);
-        var rightDrawerMenuItemsExtra = wizard.getMenuItemsFor(app, parameters, MenuType.rightDrawerMenu);
-        var homeMenuMenuItemsExtra = wizard.getMenuItemsFor(app, parameters, MenuType.bottomNavBarMenu);
-        var appBarMenuItemsExtra = wizard.getMenuItemsFor(app, parameters, MenuType.appBarMenu);
+        var leftDrawerMenuItemsExtra = wizard.getMenuItemsFor(uniqueId, app, parameters, MenuType.leftDrawerMenu);
+        var rightDrawerMenuItemsExtra = wizard.getMenuItemsFor(uniqueId, app, parameters, MenuType.rightDrawerMenu);
+        var homeMenuMenuItemsExtra = wizard.getMenuItemsFor(uniqueId, app, parameters, MenuType.bottomNavBarMenu);
+        var appBarMenuItemsExtra = wizard.getMenuItemsFor(uniqueId, app, parameters, MenuType.appBarMenu);
 
         if (leftDrawerMenuItemsExtra != null) leftDrawerMenuItems.addAll(leftDrawerMenuItemsExtra);
         if (rightDrawerMenuItemsExtra != null) rightDrawerMenuItems.addAll(rightDrawerMenuItemsExtra);
         if (homeMenuMenuItemsExtra != null) homeMenuMenuItems.addAll(homeMenuMenuItemsExtra);
         if (appBarMenuItemsExtra != null) appBarMenuItems.addAll(appBarMenuItemsExtra);
 
-        var extraTasks = wizard.getCreateTasks(
+        var extraTasks = wizard.getCreateTasks(uniqueId,
           app,
           parameters,
           member,
@@ -177,10 +187,10 @@ class WizardRunner {
     if (blockedPageId != null) {
       if (newApp.homePages != null) {
         newApp = newApp.copyWith(homePages: newApp.homePages!.copyWith(
-            homePageBlockedMember: blockedPageId));
+            homePageBlockedMember: constructDocumentId(uniqueId: uniqueId, documentId: blockedPageId)));
       } else {
         newApp = newApp.copyWith(homePages: AppHomePageReferencesModel(
-            homePageBlockedMember: blockedPageId));
+            homePageBlockedMember: constructDocumentId(uniqueId: uniqueId, documentId: blockedPageId)));
       }
     }
 
@@ -188,49 +198,34 @@ class WizardRunner {
     if (homePageId != null) {
       if (newApp.homePages != null) {
         newApp = newApp.copyWith(homePages: newApp.homePages!.copyWith(
-          homePagePublic: homePageId,
-          homePageSubscribedMember: homePageId,
-          homePageLevel1Member: homePageId,
-          homePageLevel2Member: homePageId,
-          homePageOwner: homePageId,
+          homePagePublic: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
+          homePageSubscribedMember: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
+          homePageLevel1Member: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
+          homePageLevel2Member: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
+          homePageOwner: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
         ));
       } else {
         newApp = newApp.copyWith(homePages: AppHomePageReferencesModel(
-            homePageBlockedMember: blockedPageId));
+            homePageBlockedMember: blockedPageId == null ? null : constructDocumentId(uniqueId: uniqueId, documentId: blockedPageId)));
       }
     }
-    // app
+
     tasks.add(() async {
       print("App");
-/*
-      var newApp = AppModel(
-          documentID: appId,
-          title: 'New application',
-          ownerID: memberId,
-          appStatus: AppStatus.Live,
-          styleFamily:
-              app.styleFamily ?? DefaultStyleFamily.defaultStyleFamilyName,
-          styleName: app.styleName ?? DefaultStyle.defaultStyleName,
-          email: member.email,
-          description: 'Your new application',
-          logo: logo,
-          autoPrivileged1: app.autoPrivileged1,
-          homePages: AppHomePageReferencesModel(
-            homePageBlockedMember: blockedPageId ?? homePageId,
-            homePagePublic: homePageId,
-            homePageSubscribedMember: homePageId,
-            homePageLevel1Member: homePageId,
-            homePageLevel2Member: homePageId,
-            homePageOwner: homePageId,
-          ));
-*/
-      for (var wizard
-          in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+      for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
         var newAppWizardName = wizard.newAppWizardName;
         var parameters = newAppWizardParameters[newAppWizardName];
         if (parameters != null) {
-          newApp = wizard.updateApp(parameters, newApp);
+          newApp = wizard.updateApp(uniqueId, parameters, newApp);
         }
+      }
+    });
+
+    tasks.add(() async {
+      print("App");
+      newApp = newApp.copyWith(autoPrivileged1: autoPrivileged1);
+      if (logo != null) {
+        newApp = newApp.copyWith(logo: logo);
       }
       newlyCreatedApp = await appRepository()!.update(newApp);
     });
@@ -255,6 +250,11 @@ class WizardRunner {
       await theAppBarBuilder.updateMenuItems(appBarMenuItems);
     });
 
+    tasks.add(() async {
+      accessBloc.add(RefreshAppEvent(newApp));
+      accessBloc.add(GoHome(app: newApp));
+    });
+
     var progressManager = ProgressManager(tasks.length,
         (progress) => wizardBloc.add(WizardProgressed(progress)));
 
@@ -277,15 +277,11 @@ class WizardRunner {
         throw Exception("Process cancelled");
     }
 
-    if (newlyCreatedApp != null) {
-      wizardBloc.add(WizardSwitchAppEvent());
-      return newlyCreatedApp;
-    } else {
-      throw Exception("no app created");
-    }
+    return newlyCreatedApp;
   }
 
   List<MenuItemModel> getMenuItemsFor(MenuType type) {
+/*
     Evaluate evaluate;
     switch (type) {
       case MenuType.leftDrawerMenu:
@@ -301,14 +297,7 @@ class WizardRunner {
         evaluate = (value) => value.availableInHomeMenu;
         break;
     }
-
-    var _signout = evaluate(signoutButton);
-    var _signin = evaluate(signinButton);
-
-    List<MenuItemModel> oldMenuItems = [
-      if (_signout) menuItemSignOut(app),
-      if (_signin) menuItemSignIn(app),
-    ];
+*/
 
     List<MenuItemModel> newMenuItems = [];
     for (var wizard
@@ -316,39 +305,12 @@ class WizardRunner {
       var newAppWizardName = wizard.newAppWizardName;
       var newAppWizardParam = newAppWizardParameters[newAppWizardName];
       if (newAppWizardParam != null) {
-        var menuItems = wizard.getMenuItemsFor(app, newAppWizardParam, type);
+        var menuItems = wizard.getMenuItemsFor(uniqueId, app, newAppWizardParam, type);
         if (menuItems != null) {
           newMenuItems.addAll(menuItems);
         }
       }
     }
-    var mergedMenuItems = oldMenuItems;
-    mergedMenuItems.addAll(newMenuItems);
-    return mergedMenuItems;
-  }
-
-  // Start the installation by claiming ownership of the app.
-  // Otherwise you won't be able to add data, given security depends on the ownerId of the app being allowed to add data to app's entities
-  // We do this twice: the first time before wiping the data. This is to assure that we can wipe
-  // The second time because the wipe has deleted the entry
-  // This process works except when the app was create by someone else before. In which case you must delete the app through console.firebase.google.com or by logging in as the owner of the app
-  Future<AppModel> claimOwnerShipApplication(
-      String appId, String ownerID) async {
-    // add the app
-    var application = AppModel(
-      appStatus: AppStatus.Offline,
-      documentID: appId,
-      ownerID: ownerID,
-    );
-    return await AbstractMainRepositorySingleton.singleton
-        .appRepository()!
-        .add(application);
-  }
-
-  Future<AccessModel> claimAccess(String appId, String ownerID) async {
-    return await accessRepository(appId: appId)!.add(AccessModel(
-        documentID: ownerID,
-        privilegeLevel: PrivilegeLevel.OwnerPrivilege,
-        points: 0));
+    return newMenuItems;
   }
 }

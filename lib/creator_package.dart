@@ -4,6 +4,7 @@ import 'package:eliud_core/model/access_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/package/package.dart';
+import 'package:eliud_pkg_create/wizards/logo_wizard.dart';
 import 'model/abstract_repository_singleton.dart';
 import 'model/component_registry.dart';
 import 'model/repository_singleton.dart';
@@ -20,6 +21,8 @@ abstract class CreatorPackage extends Package {
   @override
   void init() {
     ComponentRegistry().init();
+
+    NewAppWizardRegistry.registry().register(LogoWizard());
 
     AbstractRepositorySingleton.singleton = RepositorySingleton();
   }

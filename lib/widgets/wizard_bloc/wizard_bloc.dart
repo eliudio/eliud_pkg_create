@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_pkg_create/widgets/wizard_bloc/wizard_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eliud_core/model/app_model.dart';
@@ -7,7 +8,8 @@ import 'wizard_event.dart';
 
 class WizardBloc extends Bloc<WizardEvent, WizardState> {
   final AppModel app;
-  WizardBloc(this.app) : super(NewAppCreateUninitialised());
+  final AccessBloc accessBloc;
+  WizardBloc(this.app, this.accessBloc) : super(NewAppCreateUninitialised());
 
   @override
   Stream<WizardState> mapEventToState(WizardEvent event) async* {
@@ -20,11 +22,11 @@ class WizardBloc extends Bloc<WizardEvent, WizardState> {
         WizardRunner(
           theState.app,
           theState.member,
-          logo: theState.app.logo,
+          autoPrivileged1: event.autoPrivileged1,
           newAppWizardParameters: event.newAppWizardParameters,
-          signinButton: event.includeSigninButton,
-          signoutButton: event.includeSignoutButton,
-        ).create(this);
+          styleFamily: event.styleFamily,
+          styleName: event.styleName,
+        ).create(accessBloc, this);
       } else if (event is WizardSwitchAppEvent) {
         yield WizardSwitchApp(theState.app, theState.member);
       } else if (event is WizardProgressed) {

@@ -34,7 +34,7 @@ import 'logo_widget.dart';
 
 typedef BlocProvider BlocProviderProvider(Widget child);
 
-void openApp(
+void openAppX(
   BuildContext context,
   AppModel app, {
   double? fraction,
@@ -113,7 +113,15 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
           ),
           divider(widget.app, context),
           _general(context, state.appModel, widget.create),
-          LogoWidget(app: state.appModel, collapsed: true),
+          LogoWidget(
+              app: state.appModel,
+              logo: state.appModel.logo,
+              logoFeedback: (newLogo) {
+                setState(() {
+                  state.appModel.logo = newLogo;
+                });
+              },
+              collapsed: true),
           topicContainer(widget.app, context,
               title: 'Home pages',
               collapsible: true,
@@ -582,13 +590,11 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
               widget.app,
               context,
               'Auto privilege level 1 for new members?',
-              app.autoPrivileged1 ?? false,
-                  (value) {
-                setState(() {
-                  app.autoPrivileged1 =
-                      value ?? false;
-                });
-              }),
+              app.autoPrivileged1 ?? false, (value) {
+            setState(() {
+              app.autoPrivileged1 = value ?? false;
+            });
+          }),
         ]);
   }
 

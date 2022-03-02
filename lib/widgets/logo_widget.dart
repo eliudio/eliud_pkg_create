@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -13,11 +11,15 @@ import 'package:eliud_pkg_medium/platform/medium_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class LogoWidget extends StatefulWidget {
-  final AppModel app;
-  final bool collapsed;
+typedef LogoFeedback(PublicMediumModel? logo);
 
-  const LogoWidget({Key? key, required this.app, required this.collapsed})
+class LogoWidget extends StatefulWidget {
+  final bool collapsed;
+  final AppModel app;
+  final PublicMediumModel? logo;
+  final LogoFeedback logoFeedback;
+
+  const LogoWidget({Key? key, required this.app, required this.logo, required this.logoFeedback, required this.collapsed})
       : super(key: key);
 
   @override
@@ -65,7 +67,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                           widget.app.ownerID!,
                           () => PublicMediumAccessRights(),
                           (photo) =>
-                              _photoFeedbackFunction(widget.app, photo),
+                              _photoFeedbackFunction(photo),
                           _photoUploading,
                           allowCrop: false);
                     } else if (value == 1) {
@@ -75,34 +77,33 @@ class _LogoWidgetState extends State<LogoWidget> {
                           widget.app.ownerID!,
                           () => PublicMediumAccessRights(),
                           (photo) =>
-                              _photoFeedbackFunction(widget.app, photo),
+                              _photoFeedbackFunction(photo),
                           _photoUploading,
                           allowCrop: false);
                     } else if (value == 2) {
                       var photo = await RandomLogo.getRandomPhoto(widget.app,
                           widget.app.ownerID!, _photoUploading);
-                      _photoFeedbackFunction(widget.app, photo);
+                      _photoFeedbackFunction(photo);
                     } else if (value == 3) {
-                      _photoFeedbackFunction(widget.app, null);
+                      _photoFeedbackFunction(null);
                     }
                   }),
               title: _progress != null
                   ? progressIndicatorWithValue(widget.app, context, value: _progress!)
-                  : widget.app.logo == null ||
-                          widget.app.logo!.url == null
+                  : widget.logo == null ||
+                          widget.logo!.url == null
                       ? Center(child: text(widget.app, context, 'No image set'))
                       : Image.network(
-                          widget.app.logo!.url!,
+                          widget.logo!.url!,
                           height: 100,
                         ))
         ]);
   }
 
-  void _photoFeedbackFunction(
-      AppModel appModel, PublicMediumModel? platformMediumModel) {
+  void _photoFeedbackFunction(PublicMediumModel? platformMediumModel) {
     setState(() {
       _progress = null;
-      appModel.logo = platformMediumModel;
+      widget.logoFeedback(platformMediumModel);
     });
   }
 

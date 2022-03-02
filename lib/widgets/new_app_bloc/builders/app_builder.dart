@@ -1,24 +1,21 @@
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
+import 'package:eliud_core/core/wizards/tools/documentIdentifier.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/access_model.dart';
-import 'package:eliud_core/tools/action/action_model.dart';
+import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/hello_world_page_builder.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
-import 'package:eliud_pkg_medium/platform/medium_platform.dart';
 import 'package:eliud_core/model/app_home_page_references_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
-import 'package:eliud_core/style/_default/default_style_family.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-
 import '../new_app_bloc.dart';
 import '../new_app_event.dart';
 import '../new_app_state.dart';
-import '../../wizard_shared/helpers/menu_helpers.dart';
 import '../../wizard_shared/menus/app_bar_builder.dart';
 import '../../wizard_shared/menus/home_menu_builder.dart';
 import '../../wizard_shared/menus/left_drawer_builder.dart';
@@ -26,16 +23,19 @@ import '../../wizard_shared/menus/right_drawer_builder.dart';
 
 typedef Evaluate = bool Function(ActionSpecification actionSpecification);
 
-
 class AppBuilder {
+  final String uniqueId = newRandomKey();
   final AppModel app;
   final MemberModel member;
   late String appId;
   late String memberId;
 
+  static String HELLO_WORLD_PAGE_ID = "hello";
+
   AppBuilder(
     this.app,
-    this.member, ) {
+    this.member,
+  ) {
     appId = app.documentID!;
     memberId = member.documentID!;
   }
@@ -69,46 +69,79 @@ class AppBuilder {
       claimOwnerShipApplication(appId, memberId);
     });
 
-    // check if no errors, e.g. identifier should not exist
+    PublicMediumModel? logo;
+    tasks.add(() async {
+      print("Logo");
+      try {
+        logo = await RandomLogo.getRandomPhoto(app, memberId, null);
+      } catch (_) {
+        //swallow. On web, today, this fails because we don't have access to asset files
+      }
+    });
+
     tasks.add(() async {
       print("leftDrawer");
-      leftDrawer = await LeftDrawerBuilder(app, )
-          .getOrCreate();
+      leftDrawer = await LeftDrawerBuilder(
+        app,
+        logo: logo
+      ).getOrCreate();
     });
 
     tasks.add(() async {
       print("rightDrawer");
-      rightDrawer = await RightDrawerBuilder(app,
-               )
-          .getOrCreate();
+      rightDrawer = await RightDrawerBuilder(
+        app,
+      ).getOrCreate();
     });
 
     tasks.add(() async {
       print("HomeMenu");
-      theHomeMenu = await HomeMenuBuilder(app,
-               )
-          .getOrCreate();
+      theHomeMenu = await HomeMenuBuilder(
+        app,
+      ).getOrCreate();
     });
 
     tasks.add(() async {
       print("AppBar");
-      theAppBar = await AppBarBuilder(app,
-               )
-          .getOrCreate();
+      theAppBar = await AppBarBuilder(
+        app,
+      ).getOrCreate();
     });
 
+    tasks.add(() async {
+      print("Welcome Page");
+      await HelloWorldPageBuilder(uniqueId,
+        HELLO_WORLD_PAGE_ID,
+        app,
+        memberId,
+        theHomeMenu,
+        theAppBar,
+        leftDrawer,
+        rightDrawer,
+            (value) => null,
+            (v1, v2) => null,
+      ).create();
+    });
 
     // app
     tasks.add(() async {
       print("App");
       var newApp = AppModel(
-          documentID: appId,
-          title: 'New application',
-          ownerID: memberId,
-          appStatus: AppStatus.Live,
-          email: member.email,
-          description: 'Your new application',
-          autoPrivileged1: app.autoPrivileged1,
+        documentID: appId,
+        title: 'New application',
+        ownerID: memberId,
+        appStatus: AppStatus.Live,
+        email: member.email,
+        logo: logo,
+        homePages: AppHomePageReferencesModel(
+            homePageBlockedMember: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+            homePagePublic: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+            homePageSubscribedMember: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+            homePageLevel1Member: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+            homePageLevel2Member: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+            homePageOwner: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+        ),
+        description: 'Your new application',
       );
       newlyCreatedApp = await appRepository()!.update(newApp);
     });

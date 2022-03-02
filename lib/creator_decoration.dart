@@ -185,8 +185,12 @@ class CreatorDecoration extends deco.Decoration {
               originalWidgetKey: originalPageKey,
               createOriginalWidget: () {
                 // Button for the wizard
-                return MyDecoratedWidget(
-                  isCreationMode: _isCreationMode,
+                return MyDecoratedWidget2(
+                  icon: Icon(
+                    Icons.edit,
+                    color: Constants.ICON_COLOR,
+                    size: 15,
+                  ),
                   originalWidgetKey: originalPageKey,
                   createOriginalWidget: () {
                     // Button for the app
@@ -198,6 +202,11 @@ class CreatorDecoration extends deco.Decoration {
                           return MyDecoratedWidget2(
                             originalWidgetKey: originalPageKey,
                             createOriginalWidget: createOriginalPage,
+                            icon: Icon(
+                              Icons.palette_outlined,
+                              color: Constants.ICON_COLOR,
+                              size: CreatorButton.BUTTON_HEIGHT * .7,
+                            ),
                             action: (state) {
                               openComplexDialog(
                                   app, context, app.documentID! + '/_style',
@@ -231,11 +240,11 @@ class CreatorDecoration extends deco.Decoration {
                         );
                       }),
                       ensureHeight: false,
-                      initialPosition: InitialPosition.LeftBottom,
+                      initialPosition: InitialPosition.LeftAlmostBottom,
                       label: 'app',
                     );
                   },
-                  action: SingleAction(() {
+                  action: (state) {
                     var member = AccessBloc.member(context);
                     if (member != null) {
                       newWizard(
@@ -245,9 +254,9 @@ class CreatorDecoration extends deco.Decoration {
                         fraction: .9,
                       );
                     }
-                  }),
+                  },
                   ensureHeight: false,
-                  initialPosition: InitialPosition.LeftAlmostBottom,
+                  initialPosition: InitialPosition.LeftBottom,
                   label: 'wizard',
                 );
               },
@@ -315,6 +324,11 @@ class CreatorDecoration extends deco.Decoration {
                     return MyDecoratedWidget2(
                       originalWidgetKey: originalPageKey,
                       createOriginalWidget: createOriginalPage,
+                      icon: Icon(
+                        Icons.palette_outlined,
+                        color: Constants.ICON_COLOR,
+                        size: CreatorButton.BUTTON_HEIGHT * .7,
+                      ),
                       action: (state) {
                         openComplexDialog(
                             app, context, app.documentID! + '/_style',

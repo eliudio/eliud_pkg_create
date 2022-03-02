@@ -13,11 +13,9 @@ import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/style_selection_widget.dart';
 import 'package:eliud_pkg_create/widgets/wizard_bloc/wizard_bloc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'logo_widget.dart';
 import 'wizard_bloc/wizard_event.dart';
 import 'wizard_bloc/wizard_state.dart';
 
@@ -66,9 +64,12 @@ class WizardWidget extends StatefulWidget {
 
   static Widget getIt(BuildContext context, MemberModel member, AppModel app,
       double widgetWidth, double widgetHeight) {
+    var accessBloc = BlocProvider.of<AccessBloc>(context);
     return BlocProvider<WizardBloc>(
-      create: (context) => WizardBloc(app)
-        ..add(WizardInitialise(member)),
+      create: (context) => WizardBloc(
+        app,
+        accessBloc,
+      )..add(WizardInitialise(member)),
       child: WizardWidget._(
         app: app,
         widgetWidth: widgetWidth,
@@ -79,28 +80,16 @@ class WizardWidget extends StatefulWidget {
 }
 
 class _WizardWidgetState extends State<WizardWidget> {
-  var signoutSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: true,
-    availableInAppBar: false,
-    availableInHomeMenu: false,
-    available: false,
-  );
-  var signinSpecifications = ActionSpecification(
-    requiresAccessToLocalFileSystem: false,
-    availableInLeftDrawer: false,
-    availableInRightDrawer: false,
-    availableInAppBar: true,
-    availableInHomeMenu: false,
-    available: false,
-  );
+  var autoPrivileged1 = true;
+  String? styleFamily;
+  String? styleName;
 
   final Map<String, NewAppWizardParameters> newAppWizardParameterss = {};
 
   @override
   void initState() {
-    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+    for (var wizard
+        in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
       var newAppWizardName = wizard.newAppWizardName;
       var newAppWizardParameters = wizard.newAppWizardParameters();
       newAppWizardParameterss[newAppWizardName] = newAppWizardParameters;
@@ -110,11 +99,10 @@ class _WizardWidgetState extends State<WizardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WizardBloc, WizardState>(
-        builder: (context, state) {
+    return BlocBuilder<WizardBloc, WizardState>(builder: (context, state) {
       if (state is WizardSwitchApp) {
-        BlocProvider.of<AccessBloc>(context).add(SwitchAppWithIDEvent(
-            appId: state.app.documentID!, goHome: true));
+        BlocProvider.of<AccessBloc>(context).add(
+            SwitchAppWithIDEvent(appId: state.app.documentID!, goHome: true));
       } else if (state is WizardInitialised) {
         return Container(
             width: widget.widgetWidth,
@@ -124,8 +112,7 @@ class _WizardWidgetState extends State<WizardWidget> {
                 app: widget.app,
                 cancelAction: () async {
                   if (state is WizardCreateInProgress) {
-                    BlocProvider.of<WizardBloc>(context)
-                        .add(WizardCancelled());
+                    BlocProvider.of<WizardBloc>(context).add(WizardCancelled());
                     return false;
                   } else {
                     return true;
@@ -133,12 +120,11 @@ class _WizardWidgetState extends State<WizardWidget> {
                 },
                 okAction: (state is WizardAllowEnterDetails)
                     ? () async {
-                        BlocProvider.of<WizardBloc>(context)
-                            .add(WizardConfirm(
-                          logo: state.app.logo,
+                        BlocProvider.of<WizardBloc>(context).add(WizardConfirm(
                           newAppWizardParameters: newAppWizardParameterss,
-                          includeSigninButton: signinSpecifications,
-                          includeSignoutButton: signoutSpecifications,
+                          autoPrivileged1: autoPrivileged1,
+                          styleFamily: styleFamily,
+                          styleName: styleName,
                         ));
                         return false;
                       }
@@ -157,26 +143,12 @@ class _WizardWidgetState extends State<WizardWidget> {
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
       divider(widget.app, context),
       _contents(context, state),
-      _logo(context, state.app),
-      _inContainer(context, 'Style', [
-        StyleSelectionWidget.getIt(context, state.app, false, true, true,
-            feedbackSelection: (styleFamily, styleName) {
-          state.app.styleFamily = styleFamily;
-          state.app.styleName = styleName;
-        }),
-      ]),
+      StyleSelectionWidget.getIt(context, state.app, false, true, true,
+          feedbackSelection: (newStyleFamily, newStyleName) {
+        styleFamily = newStyleFamily;
+        styleName = newStyleName;
+      }),
     ]);
-  }
-
-  Widget _inContainer(
-      BuildContext context, String label, List<Widget> widgets) {
-    return topicContainer(widget.app, context,
-        title: label, collapsible: true, collapsed: true, children: widgets);
-  }
-
-  Widget _logo(BuildContext context, AppModel appModel) {
-    return _inContainer(
-        context, 'Logo', [LogoWidget(app: appModel, collapsed: false)]);
   }
 
   Widget _progress(WizardCreateInProgress state) {
@@ -189,18 +161,24 @@ class _WizardWidgetState extends State<WizardWidget> {
 
   Widget _contents(BuildContext context, WizardInitialised state) {
     List<Widget> children = [
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: signinSpecifications,
-          label: 'Generate Sign-in Button'),
-      ActionSpecificationWidget(
-          app: widget.app,
-          enabled: true,
-          actionSpecification: signoutSpecifications,
-          label: 'Generate Sign-out Button'),
+      topicContainer(widget.app, context,
+          title: 'Set Auto privilege',
+          collapsible: true,
+          collapsed: true,
+          children: [
+            checkboxListTile(
+                widget.app,
+                context,
+                'Auto privilege level 1 for new members?',
+                autoPrivileged1, (value) {
+              setState(() {
+                autoPrivileged1 = value ?? false;
+              });
+            }),
+          ]),
     ];
-    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+    for (var wizard
+        in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
       var newAppWizardName = wizard.newAppWizardName;
       var newAppWizardParameters = newAppWizardParameterss[newAppWizardName];
       if (newAppWizardParameters != null) {
@@ -208,7 +186,8 @@ class _WizardWidgetState extends State<WizardWidget> {
             widget.app, context, newAppWizardParameters));
       }
     }
-    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: children);
+    return ListView(
+        shrinkWrap: true, physics: ScrollPhysics(), children: children);
   }
 }
 

@@ -1,4 +1,3 @@
-import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
@@ -26,24 +25,22 @@ class WizardInitialise extends WizardEvent {
 }
 
 class WizardConfirm extends WizardEvent {
-  final PublicMediumModel? logo;
-  final ActionSpecification includeSigninButton;
-  final ActionSpecification includeSignoutButton;
+  final bool autoPrivileged1;
+  final String? styleFamily;
+  final String? styleName;
 
   // map newAppWizardName >> ActionSpecifications
   final Map<String, NewAppWizardParameters> newAppWizardParameters;
 
   WizardConfirm({
-    required this.logo,
-    required this.includeSigninButton,
-    required this.includeSignoutButton,
     required this.newAppWizardParameters,
+    required this.autoPrivileged1,
+    required this.styleFamily,
+    required this.styleName,
   });
 
   @override
   List<Object?> get props => [
-        logo,
-        includeSignoutButton,
         newAppWizardParameters,
       ];
 
@@ -51,9 +48,8 @@ class WizardConfirm extends WizardEvent {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is WizardConfirm &&
-          logo == other.logo &&
-          mapEquals(newAppWizardParameters, other.newAppWizardParameters) &&
-          includeSignoutButton == other.includeSignoutButton;
+          autoPrivileged1 == other.autoPrivileged1 &&
+          mapEquals(newAppWizardParameters, other.newAppWizardParameters);
 }
 
 class WizardProgressed extends WizardEvent {

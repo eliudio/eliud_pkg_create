@@ -13,6 +13,7 @@ class MyDecoratedWidget2 extends StatefulWidget {
   final bool ensureHeight;
   final InitialPosition initialPosition;
   final String? label;
+  final Widget icon;
   final StateCallBack action;
 
   MyDecoratedWidget2({
@@ -20,6 +21,7 @@ class MyDecoratedWidget2 extends StatefulWidget {
     required this.originalWidgetKey,
     //required this.model,
     required this.createOriginalWidget,
+    required this.icon,
     required this.ensureHeight,
     required this.initialPosition,
     this.label,
@@ -42,11 +44,7 @@ class _MyDecoratedDialogWidgetState2
     return CreatorButton(
                 backgroundColor: Constants.BACKGROUND_COLOR,
                 textColor: Constants.TEXT_COLOR,
-                icon: Icon(
-                  Icons.palette_outlined,
-                  color: Constants.ICON_COLOR,
-                  size: CreatorButton.BUTTON_HEIGHT * .7,
-                ),
+                icon: widget.icon,
                 borderColor: Constants.BORDER_COLOR,
                 ensureHeight: widget.ensureHeight,
                 initialPosition: widget.initialPosition,
