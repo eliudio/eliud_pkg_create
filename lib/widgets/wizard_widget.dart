@@ -4,6 +4,7 @@ import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
+import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
@@ -31,8 +32,15 @@ void newWizard(
     app,
     context,
     app.documentID! + '/_wizard',
-    includeHeading: false,
+    includeHeading: true,
     widthFraction: fraction == null ? .5 : fraction,
+    title: 'Run Wizard',
+    buttons: [
+      dialogButton(app, context, label: 'Close', onPressed: () {
+        var accessBloc = BlocProvider.of<AccessBloc>(context);
+        Navigator.of(context).pop();
+      }),
+    ],
     child: Container(
         width: 10,
         child: WizardWidget.getIt(
@@ -79,10 +87,19 @@ class WizardWidget extends StatefulWidget {
   }
 }
 
+class CurrentActiveWizardData {
+  final NewAppWizardInfo wizard;
+  final String wizardName;
+  final NewAppWizardParameters parameters;
+
+  CurrentActiveWizardData(this.wizard, this.wizardName, this.parameters);
+}
+
 class _WizardWidgetState extends State<WizardWidget> {
   var autoPrivileged1 = true;
   String? styleFamily;
   String? styleName;
+  CurrentActiveWizardData? currentActiveWizardData = null;
 
   final Map<String, NewAppWizardParameters> newAppWizardParameterss = {};
 
@@ -108,47 +125,13 @@ class _WizardWidgetState extends State<WizardWidget> {
             width: widget.widgetWidth,
             child:
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-              HeaderWidget(
-                app: widget.app,
-                cancelAction: () async {
-                  if (state is WizardCreateInProgress) {
-                    BlocProvider.of<WizardBloc>(context).add(WizardCancelled());
-                    return false;
-                  } else {
-                    return true;
-                  }
-                },
-                okAction: (state is WizardAllowEnterDetails)
-                    ? () async {
-                        BlocProvider.of<WizardBloc>(context).add(WizardConfirm(
-                          newAppWizardParameters: newAppWizardParameterss,
-                          autoPrivileged1: autoPrivileged1,
-                          styleFamily: styleFamily,
-                          styleName: styleName,
-                        ));
-                        return false;
-                      }
-                    : null,
-                title: 'Run Wizard',
-              ),
-              if (state is WizardAllowEnterDetails) enterDetails(state),
-              if (state is WizardCreateInProgress) _progress(state),
+                  _contents(context, state),
+                  if (state is WizardCreateInProgress) _progress(state),
+                  if (!(state is WizardCreateInProgress))  _currentActiveWizard(),
             ]));
       }
       return progressIndicator(widget.app, context);
     });
-  }
-
-  Widget enterDetails(WizardInitialised state) {
-    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-      divider(widget.app, context),
-      _contents(context, state),
-      StyleSelectionWidget.getIt(context, state.app, false, true, true,
-          feedbackSelection: (newStyleFamily, newStyleName) {
-        styleFamily = newStyleFamily;
-        styleName = newStyleName;
-      }),
-    ]);
   }
 
   Widget _progress(WizardCreateInProgress state) {
@@ -159,8 +142,37 @@ class _WizardWidgetState extends State<WizardWidget> {
             value: state.progress));
   }
 
+  Widget _currentActiveWizard() {
+    if (currentActiveWizardData != null) {
+      return ListView(
+        shrinkWrap: true, physics: ScrollPhysics(),
+        children: [
+          currentActiveWizardData!.wizard.wizardParametersWidget(
+              widget.app, context, currentActiveWizardData!.parameters),
+          divider(widget.app, context, ),
+          Center(child: button(widget.app, context, label: 'Go!', onPressed: () {
+            Map<String, NewAppWizardParameters> theAppWizardParameters = {};
+            theAppWizardParameters[currentActiveWizardData!.wizardName] =
+                currentActiveWizardData!.parameters;
+            BlocProvider.of<WizardBloc>(context).add(WizardConfirm(
+              newAppWizardParameters: theAppWizardParameters,
+              autoPrivileged1: autoPrivileged1,
+              styleFamily: styleFamily,
+              styleName: styleName,
+            ));
+            currentActiveWizardData = null;
+          })),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
   Widget _contents(BuildContext context, WizardInitialised state) {
     List<Widget> children = [
+/*
+todo: create wizard for these 2:
       topicContainer(widget.app, context,
           title: 'Set Auto privilege',
           collapsible: true,
@@ -176,18 +188,28 @@ class _WizardWidgetState extends State<WizardWidget> {
               });
             }),
           ]),
+      StyleSelectionWidget.getIt(context, state.app, false, true, true,
+          feedbackSelection: (newStyleFamily, newStyleName) {
+        styleFamily = newStyleFamily;
+        styleName = newStyleName;
+      }),
+*/
     ];
     for (var wizard
         in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
       var newAppWizardName = wizard.newAppWizardName;
       var newAppWizardParameters = newAppWizardParameterss[newAppWizardName];
       if (newAppWizardParameters != null) {
-        children.add(wizard.wizardParametersWidget(
-            widget.app, context, newAppWizardParameters));
+        children.add(
+            button(widget.app, context, label: newAppWizardName, onPressed: () {
+          setState(() {
+            currentActiveWizardData = CurrentActiveWizardData(
+                wizard, newAppWizardName, newAppWizardParameters);
+          });
+        }));
       }
     }
-    return ListView(
-        shrinkWrap: true, physics: ScrollPhysics(), children: children);
+    return Center(child: Wrap(children: children));
   }
 }
 

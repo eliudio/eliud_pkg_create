@@ -250,16 +250,20 @@ class WizardRunner {
       await theAppBarBuilder.updateMenuItems(appBarMenuItems);
     });
 
+/*
     tasks.add(() async {
       accessBloc.add(RefreshAppEvent(newApp));
       accessBloc.add(GoHome(app: newApp));
     });
+*/
 
     var progressManager = ProgressManager(tasks.length,
         (progress) => wizardBloc.add(WizardProgressed(progress)));
+/*
 
     var currentTask = tasks[0];
-    currentTask().then((value) => tasks[1]);
+    currentTask().then((_) => tasks[1]);
+*/
 
     int i = 0;
     for (var task in tasks) {
