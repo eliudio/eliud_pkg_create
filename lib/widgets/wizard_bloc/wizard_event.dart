@@ -20,11 +20,11 @@ class WizardInitialise extends WizardEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WizardInitialise &&
-          member == other.member;
+      other is WizardInitialise && member == other.member;
 }
 
 class WizardConfirm extends WizardEvent {
+  final String wizardMessage;
   final bool autoPrivileged1;
   final String? styleFamily;
   final String? styleName;
@@ -33,6 +33,7 @@ class WizardConfirm extends WizardEvent {
   final Map<String, NewAppWizardParameters> newAppWizardParameters;
 
   WizardConfirm({
+    required this.wizardMessage,
     required this.newAppWizardParameters,
     required this.autoPrivileged1,
     required this.styleFamily,
@@ -49,11 +50,13 @@ class WizardConfirm extends WizardEvent {
       identical(this, other) ||
       other is WizardConfirm &&
           autoPrivileged1 == other.autoPrivileged1 &&
+          wizardMessage == other.wizardMessage &&
           mapEquals(newAppWizardParameters, other.newAppWizardParameters);
 }
 
 class WizardProgressed extends WizardEvent {
-  double progress;
+  final double progress;
+
   WizardProgressed(this.progress);
 
   @override
@@ -62,18 +65,8 @@ class WizardProgressed extends WizardEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WizardProgressed && progress == other.progress;
-}
-
-class WizardSwitchAppEvent extends WizardEvent {
-  WizardSwitchAppEvent();
-
-  @override
-  List<Object?> get props => [];
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is WizardSwitchAppEvent;
+      other is WizardProgressed &&
+      progress == other.progress;
 }
 
 class WizardCancelled extends WizardEvent {
@@ -85,4 +78,19 @@ class WizardCancelled extends WizardEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is WizardCancelled;
+}
+
+class WizardFinished extends WizardEvent {
+  final bool success;
+
+  WizardFinished(this.success);
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) &&
+      other is WizardFinished &&
+      success == other.success;
 }

@@ -10,6 +10,7 @@ import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
+import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/style_selection_widget.dart';
@@ -117,17 +118,16 @@ class _WizardWidgetState extends State<WizardWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WizardBloc, WizardState>(builder: (context, state) {
-      if (state is WizardSwitchApp) {
-        BlocProvider.of<AccessBloc>(context).add(
-            SwitchAppWithIDEvent(appId: state.app.documentID!, goHome: true));
-      } else if (state is WizardInitialised) {
+      if (state is WizardInitialised) {
         return Container(
             width: widget.widgetWidth,
             child:
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-                  _contents(context, state),
-                  if (state is WizardCreateInProgress) _progress(state),
-                  if (!(state is WizardCreateInProgress))  _currentActiveWizard(),
+              _contents(context, state),
+              if (state is WizardCreateInProgress) _progress(state),
+              if (!(state is WizardCreateInProgress))
+                _currentActiveWizard(),
+              if (state is WizardCreated) _finished(state)
             ]));
       }
       return progressIndicator(widget.app, context);
@@ -142,19 +142,44 @@ class _WizardWidgetState extends State<WizardWidget> {
             value: state.progress));
   }
 
+  Widget _finished(WizardCreated state) {
+    return Container();
+/*
+    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
+      divider(
+        widget.app,
+        context,
+      ),
+      Center(
+          child: text(
+              widget.app,
+              context,
+              state.wizardMessage +
+                  ' finished' +
+                  (state.success ? 'with success' : ', but failed')))
+    ]);
+*/
+  }
+
   Widget _currentActiveWizard() {
     if (currentActiveWizardData != null) {
       return ListView(
-        shrinkWrap: true, physics: ScrollPhysics(),
+        shrinkWrap: true,
+        physics: ScrollPhysics(),
         children: [
           currentActiveWizardData!.wizard.wizardParametersWidget(
               widget.app, context, currentActiveWizardData!.parameters),
-          divider(widget.app, context, ),
-          Center(child: button(widget.app, context, label: 'Go!', onPressed: () {
+          divider(
+            widget.app,
+            context,
+          ),
+          Center(
+              child: button(widget.app, context, label: 'Go!', onPressed: () {
             Map<String, NewAppWizardParameters> theAppWizardParameters = {};
             theAppWizardParameters[currentActiveWizardData!.wizardName] =
                 currentActiveWizardData!.parameters;
             BlocProvider.of<WizardBloc>(context).add(WizardConfirm(
+              wizardMessage: currentActiveWizardData!.wizardName,
               newAppWizardParameters: theAppWizardParameters,
               autoPrivileged1: autoPrivileged1,
               styleFamily: styleFamily,

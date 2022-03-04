@@ -56,11 +56,11 @@ class WizardAllowEnterDetails extends WizardInitialised {
           member == other.member;
 }
 
-class WizardCreateInProgress extends WizardInitialised {
-  final double progress;
+class WizardRunning extends WizardInitialised {
+  final String wizardMessage;
 
-  WizardCreateInProgress(
-      AppModel app, MemberModel member, this.progress)
+  WizardRunning(
+      AppModel app, MemberModel member, this.wizardMessage)
       : super(app, member);
 
   @override
@@ -69,30 +69,52 @@ class WizardCreateInProgress extends WizardInitialised {
           other is WizardCreateInProgress &&
               app == other.app &&
               member == other.member &&
+              wizardMessage == other.wizardMessage;
+}
+
+class WizardCreateInProgress extends WizardRunning {
+  final double progress;
+
+  WizardCreateInProgress(
+      AppModel app, MemberModel member, String wizardMessage, this.progress)
+      : super(app, member, wizardMessage);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is WizardCreateInProgress &&
+              app == other.app &&
+              member == other.member &&
+              wizardMessage == other.wizardMessage &&
               progress == other.progress;
 }
 
-class WizardCreateCancelled extends WizardInitialised {
+class WizardCreateCancelled extends WizardRunning {
   WizardCreateCancelled(
-      AppModel app, MemberModel member)
-      : super(app, member);
+      AppModel app, MemberModel member, String wizardMessage)
+      : super(app, member, wizardMessage);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
           other is WizardCreateCancelled &&
               app == other.app &&
+              wizardMessage == other.wizardMessage &&
               member == other.member;
 }
 
-class WizardSwitchApp extends WizardInitialised {
-  WizardSwitchApp(AppModel app, MemberModel member)
-      : super(app, member);
+class WizardCreated extends WizardRunning {
+  final bool success;
+  WizardCreated(
+      AppModel app, MemberModel member, String wizardMessage, this.success)
+      : super(app, member, wizardMessage);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WizardSwitchApp &&
+          other is WizardCreated &&
               app == other.app &&
-              member == other.member;
+              member == other.member &&
+              success == other.success &&
+              wizardMessage == other.wizardMessage;
 }
