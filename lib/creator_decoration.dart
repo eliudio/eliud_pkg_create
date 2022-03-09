@@ -175,7 +175,7 @@ class CreatorDecoration extends deco.Decoration {
           bordercolor: Constants.BORDER_COLOR,
 //        label: 'creator',
           ensureHeight: false,
-          initialPosition: InitialPosition.RightAlmostBottom,
+          initialPosition: InitialPosition.CenterBottom,
           isCreationMode: _isCreationMode,
           originalWidgetKey: originalPageKey,
           createOriginalWidget: () {
@@ -187,7 +187,7 @@ class CreatorDecoration extends deco.Decoration {
                 // Button for the wizard
                 return MyDecoratedWidget2(
                   icon: Icon(
-                    Icons.edit,
+                    Icons.star,
                     color: Constants.ICON_COLOR,
                     size: 15,
                   ),
@@ -257,7 +257,7 @@ class CreatorDecoration extends deco.Decoration {
                   },
                   ensureHeight: false,
                   initialPosition: InitialPosition.LeftBottom,
-                  label: 'wizard',
+//                  label: 'wizard',
                 );
               },
               action: MultipleActions(app, [
