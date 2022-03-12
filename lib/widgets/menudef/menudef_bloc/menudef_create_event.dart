@@ -91,6 +91,14 @@ class MenuDefCreateAddOtherApps extends MenuDefCreateEvent {
   bool operator ==(Object other) => identical(this, other);
 }
 
+class MenuDefCreateAddGoHome extends MenuDefCreateEvent {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) => identical(this, other);
+}
+
 class MenuDefCreateDeleteMenuItemFromIndex extends MenuDefCreateEvent {
   final int index;
 

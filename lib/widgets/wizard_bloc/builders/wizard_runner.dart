@@ -37,6 +37,8 @@ class WizardRunner {
   final Map<String, NewAppWizardParameters> newAppWizardParameters;
   final bool autoPrivileged1;
 
+  final AccessBloc accessBloc;
+
   /*
    * See comments NewAppWizardInfo::getPageID
    *
@@ -77,6 +79,7 @@ class WizardRunner {
     required this.autoPrivileged1,
     required this.styleFamily,
     required this.styleName,
+    required this.accessBloc,
       }) {
     appId = app.documentID!;
     memberId = member.documentID!;
@@ -206,15 +209,6 @@ class WizardRunner {
     });
 
     tasks.add(() async {
-      print("App");
-      newApp = newApp.copyWith(autoPrivileged1: autoPrivileged1);
-      if (logo != null) {
-        newApp = newApp.copyWith(logo: logo);
-      }
-      newlyCreatedApp = await appRepository()!.update(newApp);
-    });
-
-    tasks.add(() async {
       print("update leftDrawer");
       await leftDrawerBuilder.updateMenuItems(leftDrawerMenuItems);
     });
@@ -234,6 +228,16 @@ class WizardRunner {
       await theAppBarBuilder.updateMenuItems(appBarMenuItems);
     });
 
+    tasks.add(() async {
+      print("App");
+      newApp = newApp.copyWith(autoPrivileged1: autoPrivileged1);
+      if (logo != null) {
+        newApp = newApp.copyWith(logo: logo);
+      }
+      newlyCreatedApp = await appRepository()!.update(newApp);
+    });
+
+    // Now run all tasks
     var progressManager = ProgressManager(tasks.length,
         (progress) => wizardBloc.add(WizardProgressed(progress)));
 

@@ -365,11 +365,20 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                       trailing: GestureDetector(
                                           onTap: () {
                                             BlocProvider.of<MenuDefCreateBloc>(
-                                                    context)
+                                                context)
                                                 .add(MenuDefCreateAddLogout());
                                           },
                                           child: const Icon(Icons.add)),
                                       title: text(app, context, 'logout')),
+                                  ListTile(
+                                      trailing: GestureDetector(
+                                          onTap: () {
+                                            BlocProvider.of<MenuDefCreateBloc>(
+                                                context)
+                                                .add(MenuDefCreateAddGoHome());
+                                          },
+                                          child: const Icon(Icons.add)),
+                                      title: text(app, context, 'go home')),
                                   ListTile(
                                       trailing: GestureDetector(
                                           onTap: () {

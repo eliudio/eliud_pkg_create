@@ -38,8 +38,11 @@ void newWizard(
     title: 'Run Wizard',
     buttons: [
       dialogButton(app, context, label: 'Close', onPressed: () {
-        var accessBloc = BlocProvider.of<AccessBloc>(context);
         Navigator.of(context).pop();
+
+        // the wizard might have created a new home page. Go home
+        var accessBloc = BlocProvider.of<AccessBloc>(context);
+        accessBloc.add(GoHome(app: app, redetermine: true));
       }),
     ],
     child: Container(

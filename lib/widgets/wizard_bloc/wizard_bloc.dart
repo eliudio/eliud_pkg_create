@@ -26,6 +26,7 @@ class WizardBloc extends Bloc<WizardEvent, WizardState> {
         newAppWizardParameters: event.newAppWizardParameters,
         styleFamily: event.styleFamily,
         styleName: event.styleName,
+        accessBloc: accessBloc,
       ).create(accessBloc, this).then((value) => add(WizardFinished(true)));
     } else if (state is WizardRunning) {
       var theState = state as WizardRunning;

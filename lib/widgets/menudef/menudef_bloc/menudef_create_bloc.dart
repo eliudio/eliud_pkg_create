@@ -21,15 +21,18 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
   final AppModel app;
   final MenuDefModel menu;
 
-  MenuDefCreateBloc(this.app, this.menu, )
-      : super(MenuDefCreateUninitialised());
+  MenuDefCreateBloc(
+    this.app,
+    this.menu,
+  ) : super(MenuDefCreateUninitialised());
 
   @override
   Stream<MenuDefCreateState> mapEventToState(MenuDefCreateEvent event) async* {
     if (event is MenuDefCreateInitialiseEvent) {
       var appId = app.documentID;
       yield MenuDefCreateInitialised(
-          menuDefModel: event.menuDefModel, );
+        menuDefModel: event.menuDefModel,
+      );
     } else if (state is MenuDefCreateInitialised) {
       var appId = app.documentID;
       if (event is MenuDefCreateDeleteMenuItem) {
@@ -53,6 +56,19 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
               description: 'Sign out',
               action: InternalAction(app,
                   internalActionEnum: InternalActionEnum.Logout)),
+        );
+        apply();
+      } else if (event is MenuDefCreateAddGoHome) {
+        yield _newStateWithNewItem(
+          MenuItemModel(
+              documentID: newRandomKey(),
+              text: 'Go home',
+              icon: IconModel(
+                  codePoint: Icons.home.codePoint,
+                  fontFamily: Icons.settings.fontFamily),
+              description: 'Go home',
+              action: InternalAction(app,
+                  internalActionEnum: InternalActionEnum.GoHome)),
         );
         apply();
       } else if (event is MenuDefCreateAddOtherApps) {
@@ -103,7 +119,8 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
         apply();
       } else if (event is MenuDefMoveMenuItem) {
         MenuDefCreateInitialised theState = state as MenuDefCreateInitialised;
-        List<MenuItemModel> menuItems = List.of(theState.menuDefModel.menuItems!);
+        List<MenuItemModel> menuItems =
+            List.of(theState.menuDefModel.menuItems!);
         int positionToMove = menuItems.indexOf(event.menuItemModel);
         if (event.moveMenuItemDirection == MoveMenuItemDirection.Up) {
           if (positionToMove > 0) {
@@ -114,14 +131,17 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
             menuItems.swap(positionToMove + 1, positionToMove);
           }
         }
-        yield _newStateWithItems(menuItems, currentlySelected: event.menuItemModel);
+        yield _newStateWithItems(menuItems,
+            currentlySelected: event.menuItemModel);
         apply();
       } else if (event is MenuDefUpdateMenuItem) {
         MenuDefCreateInitialised theState = state as MenuDefCreateInitialised;
-        List<MenuItemModel> menuItems = List.of(theState.menuDefModel.menuItems!);
+        List<MenuItemModel> menuItems =
+            List.of(theState.menuDefModel.menuItems!);
         int positionToReplace = menuItems.indexOf(event.beforeMenuItemModel);
         menuItems.replace(positionToReplace, event.afterMenuItemModel);
-        yield _newStateWithItems(menuItems, currentlySelected: event.afterMenuItemModel);
+        yield _newStateWithItems(menuItems,
+            currentlySelected: event.afterMenuItemModel);
         apply();
       }
     }
