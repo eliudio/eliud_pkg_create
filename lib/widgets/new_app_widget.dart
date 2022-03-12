@@ -7,6 +7,7 @@ import 'package:eliud_core/style/frontend/has_dialog_field.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
+import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_event.dart';
@@ -98,7 +99,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                     return true;
                   }
                 },
-                okAction: (state is NewAppCreateAllowEnterDetails)
+                okAction: ((state is NewAppCreateAllowEnterDetails) || (state is NewAppCreateError))
                     ? () async {
                         BlocProvider.of<NewAppCreateBloc>(context)
                             .add(NewAppCreateConfirm(
@@ -108,7 +109,8 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                     : null,
                 title: 'Create new App',
               ),
-              if (state is NewAppCreateAllowEnterDetails) enterDetails(state),
+              if (state is NewAppCreateError) text(widget.app, context, state.error),
+              if ((state is NewAppCreateAllowEnterDetails) || (state is NewAppCreateError)) enterDetails(state),
               if (state is NewAppCreateCreateInProgress) _progress(state),
             ]));
       }

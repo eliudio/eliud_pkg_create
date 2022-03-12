@@ -44,16 +44,34 @@ abstract class NewAppCreateInitialised extends NewAppCreateState {
 
 class NewAppCreateAllowEnterDetails extends NewAppCreateInitialised {
   NewAppCreateAllowEnterDetails(
-    AppModel appToBeCreated,
-    MemberModel member,
-  ) : super(appToBeCreated, member);
+      AppModel appToBeCreated,
+      MemberModel member,
+      ) : super(appToBeCreated, member);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is NewAppCreateAllowEnterDetails &&
-          appToBeCreated == other.appToBeCreated &&
-          member == other.member;
+          other is NewAppCreateAllowEnterDetails &&
+              appToBeCreated == other.appToBeCreated &&
+              member == other.member;
+}
+
+class NewAppCreateError extends NewAppCreateInitialised {
+  final String error;
+
+  NewAppCreateError(
+      AppModel appToBeCreated,
+      MemberModel member,
+      this.error,
+      ) : super(appToBeCreated, member);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is NewAppCreateError &&
+              appToBeCreated == other.appToBeCreated &&
+              member == other.member &&
+              error == other.error;
 }
 
 class NewAppCreateCreateInProgress extends NewAppCreateInitialised {

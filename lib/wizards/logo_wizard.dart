@@ -41,6 +41,9 @@ class LogoWizard extends NewAppWizardInfoDefaultImpl {
       if (pageType == 'logo') return parameters.logo;
     }
   }
+
+  @override
+  String getPackageName() => "eliud_pkg_create";
 }
 
 class LogoParameters extends NewAppWizardParameters {

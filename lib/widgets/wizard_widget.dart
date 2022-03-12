@@ -128,8 +128,7 @@ class _WizardWidgetState extends State<WizardWidget> {
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
               _contents(context, state),
               if (state is WizardCreateInProgress) _progress(state),
-              if (!(state is WizardCreateInProgress))
-                _currentActiveWizard(),
+              if (!(state is WizardCreateInProgress)) _currentActiveWizard(),
               if (state is WizardCreated) _finished(state)
             ]));
       }
@@ -198,46 +197,41 @@ class _WizardWidgetState extends State<WizardWidget> {
   }
 
   Widget _contents(BuildContext context, WizardInitialised state) {
-    List<Widget> children = [
-/*
-todo: create wizard for these 2:
-      topicContainer(widget.app, context,
-          title: 'Set Auto privilege',
-          collapsible: true,
-          collapsed: true,
-          children: [
-            checkboxListTile(
-                widget.app,
-                context,
-                'Auto privilege level 1 for new members?',
-                autoPrivileged1, (value) {
-              setState(() {
-                autoPrivileged1 = value ?? false;
-              });
-            }),
-          ]),
-      StyleSelectionWidget.getIt(context, state.app, false, true, true,
-          feedbackSelection: (newStyleFamily, newStyleName) {
-        styleFamily = newStyleFamily;
-        styleName = newStyleName;
-      }),
-*/
-    ];
+    List<Widget> all = [];
+    List<String> packages = [];
     for (var wizard
         in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
-      var newAppWizardName = wizard.newAppWizardName;
-      var newAppWizardParameters = newAppWizardParameterss[newAppWizardName];
-      if (newAppWizardParameters != null) {
-        children.add(
-            button(widget.app, context, label: newAppWizardName, onPressed: () {
-          setState(() {
-            currentActiveWizardData = CurrentActiveWizardData(
-                wizard, newAppWizardName, newAppWizardParameters);
-          });
-        }));
+      var package = wizard.getPackageName();
+      if (!packages.contains(package)) {
+        packages.add(package);
       }
     }
-    return Center(child: Wrap(children: children));
+    for (var package in packages) {
+      List<Widget> children = [];
+      children.add(h4(widget.app, context, 'package: $package'));
+      List<Widget> childrenChildren = [];
+      for (var wizard
+          in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+        if (wizard.getPackageName() == package) {
+          var newAppWizardName = wizard.newAppWizardName;
+          var newAppWizardParameters = newAppWizardParameterss[newAppWizardName];
+          if (newAppWizardParameters != null) {
+            childrenChildren.add(button(widget.app, context, label: newAppWizardName,
+                onPressed: () {
+                  setState(() {
+                    currentActiveWizardData = CurrentActiveWizardData(
+                        wizard, newAppWizardName, newAppWizardParameters);
+                  });
+                }));
+          }
+        }
+      }
+      children.add(Wrap(children: childrenChildren));
+      all.add(
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: ListView(shrinkWrap: true, physics: ScrollPhysics(), children: children)));
+    }
+    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: all);
   }
 }
 

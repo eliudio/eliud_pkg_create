@@ -26,11 +26,17 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
     } else if (state is NewAppCreateInitialised) {
       var theState = state as NewAppCreateInitialised;
       if (event is NewAppCreateConfirm) {
-        add(NewAppCreateProgressed(0));
-        AppBuilder(
-          theState.appToBeCreated,
-          theState.member,
-        ).create(this);
+        var appId = theState.appToBeCreated.documentID;
+        var app = await appRepository()!.get(appId);
+        if (app == null) {
+          add(NewAppCreateProgressed(0));
+          AppBuilder(
+            theState.appToBeCreated,
+            theState.member,
+          ).create(this);
+        } else {
+          yield(NewAppCreateError(theState.appToBeCreated, theState.member, 'App with ID $appId already exists. Choose a unique identifier'));
+        }
       } else if (event is NewAppSwitchAppEvent) {
         yield SwitchApp(theState.appToBeCreated, theState.member);
       } else if (event is NewAppCreateProgressed) {
