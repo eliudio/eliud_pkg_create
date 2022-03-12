@@ -119,7 +119,6 @@ class AppBuilder {
         leftDrawer,
         rightDrawer,
             (value) => null,
-            (v1, v2) => null,
       ).create();
     });
 

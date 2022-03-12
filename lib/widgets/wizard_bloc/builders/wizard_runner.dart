@@ -53,21 +53,6 @@ class WizardRunner {
     return null;
   }
 
-  /*
-   * See comments NewAppWizardInfo::getAction
-   *
-   */
-  ActionModel? getAction(AppModel app, String actionType) {
-    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
-      var newAppWizardName = wizard.newAppWizardName;
-      var parameters = newAppWizardParameters[newAppWizardName];
-      if (parameters != null) {
-        var action = wizard.getAction(uniqueId, parameters, app, actionType,);
-        if (action != null) return action;
-      }
-    }
-    return null;
-  }
 
   /*
    * See comments NewAppWizardInfo::getImage
@@ -174,7 +159,6 @@ class WizardRunner {
           () => leftDrawer,
           () => rightDrawer,
           getPageID,
-          getAction,
         );
         if (extraTasks != null) {
           tasks.addAll(extraTasks);
