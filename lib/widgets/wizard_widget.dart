@@ -132,31 +132,36 @@ class _WizardWidgetState extends State<WizardWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<WizardBloc, WizardState>(builder: (context, state) {
       if (state is WizardInitialised) {
-        return Container(width: widget.widgetWidth, height: widget.widgetHeight, child: OrientationBuilder(builder: (context, orientation) {
-              return SplitView(
-                  gripColor: Colors.red,
-                  controller: _splitViewController,
-                  onWeightChanged: (newWeight) {
-                    setState(() {});
-                  },
-                  viewMode: orientation == Orientation.landscape
-                      ? SplitViewMode.Horizontal
-                      : SplitViewMode.Vertical,
-                  children: [
-                    _contents(context, state),
-          Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: ListView(
-                        shrinkWrap: true,
-                        physics: ScrollPhysics(),
+        return Container(
+            width: widget.widgetWidth,
+            height: widget.widgetHeight,
+            child: (state is WizardCreateInProgress)
+                ? _progress(state)
+                : OrientationBuilder(builder: (context, orientation) {
+                    return SplitView(
+                        gripColor: Colors.red,
+                        controller: _splitViewController,
+                        onWeightChanged: (newWeight) {
+                          setState(() {});
+                        },
+                        viewMode: orientation == Orientation.landscape
+                            ? SplitViewMode.Horizontal
+                            : SplitViewMode.Vertical,
                         children: [
-                          if (state is WizardCreateInProgress) _progress(state),
-                          if (!(state is WizardCreateInProgress))
-                            _currentActiveWizard(),
-                          if (state is WizardCreated) _finished(state)
-                        ]))
-                  ]);
-            }));
+                          _contents(context, state),
+                          Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 8),
+                              child: ListView(
+                                  shrinkWrap: true,
+                                  physics: ScrollPhysics(),
+                                  children: [
+                                    if (!(state is WizardCreateInProgress))
+                                      _currentActiveWizard(),
+                                    if (state is WizardCreated) _finished(state)
+                                  ]))
+                        ]);
+                  }));
       } else {
         return progressIndicator(widget.app, context);
       }

@@ -13,6 +13,7 @@ import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_event.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'new_app_bloc/new_app_bloc.dart';
@@ -127,8 +128,17 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
             widget.app,
             context,
             initialValue: state.appToBeCreated.documentID,
+/*
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.characters,
+*/
+            inputFormatters: [
+              UpperCaseTextFormatter(),
+            ],
             valueChanged: (value) {
-              state.appToBeCreated.documentID = value;
+              setState(() {
+                state.appToBeCreated.documentID = value.toUpperCase();
+              });
             },
             decoration: const InputDecoration(
               hintText: 'Identifier',
@@ -148,3 +158,12 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
 
 }
 
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
+  }
+}
