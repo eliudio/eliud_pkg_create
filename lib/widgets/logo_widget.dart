@@ -31,11 +31,18 @@ class _LogoWidgetState extends State<LogoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    return ListView(
+        shrinkWrap: true,
+        physics: ScrollPhysics(),
+        children: [
+        h4(widget.app, context, 'Logo'),
+/*
     return topicContainer(widget.app, context,
         title: 'Logo',
         collapsible: true,
         collapsed: widget.collapsed,
         children: [
+*/
           getListTile(context,widget.app,
               trailing: PopupMenuButton<int>(
                   child: Icon(Icons.more_vert),

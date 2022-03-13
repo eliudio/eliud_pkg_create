@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  split_view: 3.1.0
+
   eliud_core:
     path: ../eliud_core
 

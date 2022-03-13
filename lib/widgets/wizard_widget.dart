@@ -18,6 +18,7 @@ import 'package:eliud_pkg_create/widgets/wizard_bloc/wizard_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:split_view/split_view.dart';
 import 'wizard_bloc/wizard_event.dart';
 import 'wizard_bloc/wizard_state.dart';
 
@@ -103,12 +104,21 @@ class _WizardWidgetState extends State<WizardWidget> {
   var autoPrivileged1 = true;
   String? styleFamily;
   String? styleName;
+  SplitViewController? _splitViewController;
   CurrentActiveWizardData? currentActiveWizardData = null;
 
   final Map<String, NewAppWizardParameters> newAppWizardParameterss = {};
 
   @override
   void initState() {
+    _splitViewController = SplitViewController(weights: [
+      0.3,
+      0.7
+    ], limits: [
+      WeightLimit(min: 0.2, max: 0.8),
+      WeightLimit(min: 0.2, max: 0.8)
+    ]);
+
     for (var wizard
         in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
       var newAppWizardName = wizard.newAppWizardName;
@@ -122,17 +132,34 @@ class _WizardWidgetState extends State<WizardWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<WizardBloc, WizardState>(builder: (context, state) {
       if (state is WizardInitialised) {
-        return Container(
-            width: widget.widgetWidth,
-            child:
-                ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-              _contents(context, state),
-              if (state is WizardCreateInProgress) _progress(state),
-              if (!(state is WizardCreateInProgress)) _currentActiveWizard(),
-              if (state is WizardCreated) _finished(state)
-            ]));
+        return Container(width: widget.widgetWidth, height: widget.widgetHeight, child: OrientationBuilder(builder: (context, orientation) {
+              return SplitView(
+                  gripColor: Colors.red,
+                  controller: _splitViewController,
+                  onWeightChanged: (newWeight) {
+                    setState(() {});
+                  },
+                  viewMode: orientation == Orientation.landscape
+                      ? SplitViewMode.Horizontal
+                      : SplitViewMode.Vertical,
+                  children: [
+                    _contents(context, state),
+          Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: ListView(
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        children: [
+                          if (state is WizardCreateInProgress) _progress(state),
+                          if (!(state is WizardCreateInProgress))
+                            _currentActiveWizard(),
+                          if (state is WizardCreated) _finished(state)
+                        ]))
+                  ]);
+            }));
+      } else {
+        return progressIndicator(widget.app, context);
       }
-      return progressIndicator(widget.app, context);
     });
   }
 
@@ -146,21 +173,6 @@ class _WizardWidgetState extends State<WizardWidget> {
 
   Widget _finished(WizardCreated state) {
     return Container();
-/*
-    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-      divider(
-        widget.app,
-        context,
-      ),
-      Center(
-          child: text(
-              widget.app,
-              context,
-              state.wizardMessage +
-                  ' finished' +
-                  (state.success ? 'with success' : ', but failed')))
-    ]);
-*/
   }
 
   Widget _currentActiveWizard() {
@@ -214,22 +226,24 @@ class _WizardWidgetState extends State<WizardWidget> {
           in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
         if (wizard.getPackageName() == package) {
           var newAppWizardName = wizard.newAppWizardName;
-          var newAppWizardParameters = newAppWizardParameterss[newAppWizardName];
+          var newAppWizardParameters =
+              newAppWizardParameterss[newAppWizardName];
           if (newAppWizardParameters != null) {
-            childrenChildren.add(button(widget.app, context, label: newAppWizardName,
-                onPressed: () {
-                  setState(() {
-                    currentActiveWizardData = CurrentActiveWizardData(
-                        wizard, newAppWizardName, newAppWizardParameters);
-                  });
-                }));
+            childrenChildren.add(button(widget.app, context,
+                label: newAppWizardName, onPressed: () {
+              setState(() {
+                currentActiveWizardData = CurrentActiveWizardData(
+                    wizard, newAppWizardName, newAppWizardParameters);
+              });
+            }));
           }
         }
       }
       children.add(Wrap(children: childrenChildren));
-      all.add(
-          Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: ListView(shrinkWrap: true, physics: ScrollPhysics(), children: children)));
+      all.add(Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: ListView(
+              shrinkWrap: true, physics: ScrollPhysics(), children: children)));
     }
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: all);
   }
