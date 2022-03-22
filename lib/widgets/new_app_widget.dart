@@ -128,17 +128,15 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
             widget.app,
             context,
             initialValue: state.appToBeCreated.documentID,
-/*
-            keyboardType: TextInputType.text,
-            textCapitalization: TextCapitalization.characters,
-*/
             inputFormatters: [
               UpperCaseTextFormatter(),
             ],
             valueChanged: (value) {
-              setState(() {
                 state.appToBeCreated.documentID = value.toUpperCase();
+/*
+                setState(() {
               });
+*/
             },
             decoration: const InputDecoration(
               hintText: 'Identifier',
