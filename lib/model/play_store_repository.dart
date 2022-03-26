@@ -32,11 +32,12 @@ import 'package:eliud_pkg_create/model/entity_export.dart';
 import 'dart:async';
 import 'package:eliud_core/tools/query/query_tools.dart';
 import 'package:eliud_core/tools/common_tools.dart';
+import 'package:eliud_core/tools/repository_base.dart';
 
 typedef PlayStoreModelTrigger(List<PlayStoreModel?> list);
 typedef PlayStoreChanged(PlayStoreModel? value);
 
-abstract class PlayStoreRepository {
+abstract class PlayStoreRepository extends RepositoryBase<PlayStoreModel> {
   Future<PlayStoreModel> add(PlayStoreModel value);
   Future<void> delete(PlayStoreModel value);
   Future<PlayStoreModel?> get(String? id, { Function(Exception)? onError });
