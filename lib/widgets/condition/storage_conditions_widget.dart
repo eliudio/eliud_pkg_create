@@ -13,16 +13,20 @@ A privilege is data secured data, i.e. the storage mechanism secures the access.
 (*) It's worth remembering that when a member is blocked, that person is not blocked from public view, as that person can always logoff and open the site anonymously.
 """;
 
+typedef StorageConditionsFeedback(int value);
+
 class StorageConditionsWidget extends StatefulWidget {
   final AppModel app;
   final String ownerType; // page, dialog
   final StorageConditionsModel value;
+  final StorageConditionsFeedback feedback;
 
   StorageConditionsWidget({
     Key? key,
     required this.app,
     required this.value,
     required this.ownerType,
+    required this.feedback,
   }) : super(key: key);
 
   @override
@@ -43,9 +47,11 @@ class _StorageConditionState extends State<StorageConditionsWidget> {
         collapsed: true,
         children: [
           getListTile(
-            context,widget.app,
+            context,
+            widget.app,
             leading: const Icon(Icons.security),
-            title: ComboboxWidget(app: widget.app,
+            title: ComboboxWidget(
+              app: widget.app,
               initialValue: (widget.value.privilegeLevelRequired == null)
                   ? 0
                   : widget.value.privilegeLevelRequired!.index,
@@ -69,8 +75,11 @@ class _StorageConditionState extends State<StorageConditionsWidget> {
                     prefix +
                     ' only accessible to you, as the owner ',
               ],
-              feedback: (value) => widget.value.privilegeLevelRequired =
-                  toPrivilegeLevelRequiredSimple(value),
+              feedback: (value) {
+                widget.value.privilegeLevelRequired =
+                    toPrivilegeLevelRequiredSimple(value);
+                widget.feedback(value);
+              },
               title: "Privilege Condition (*)",
             ),
           ),

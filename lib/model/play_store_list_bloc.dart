@@ -27,7 +27,7 @@ import 'package:eliud_core/tools/query/query_tools.dart';
 class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
   final PlayStoreRepository _playStoreRepository;
   StreamSubscription? _playStoresListSubscription;
-  final EliudQuery? eliudQuery;
+  EliudQuery? eliudQuery;
   int pages = 1;
   final bool? paged;
   final String? orderBy;
@@ -99,6 +99,13 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
     if (event is NewPage) {
       pages = pages + 1; // it doesn't matter so much if we increase pages beyond the end
       yield* _mapLoadPlayStoreListWithDetailsToState();
+    } else if (event is PlayStoreChangeQuery) {
+      eliudQuery = event.newQuery;
+      if ((detailed == null) || (!detailed!)) {
+        yield* _mapLoadPlayStoreListToState();
+      } else {
+        yield* _mapLoadPlayStoreListWithDetailsToState();
+      }
     } else if (event is AddPlayStoreList) {
       yield* _mapAddPlayStoreListToState(event);
     } else if (event is UpdatePlayStoreList) {

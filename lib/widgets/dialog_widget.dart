@@ -128,11 +128,15 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
                 ]),
           BodyComponentsCreateWidget.getIt(
             context,
+            ((state.dialogModel.conditions == null) || (state.dialogModel.conditions!.privilegeLevelRequired == null)) ? 0 : state.dialogModel.conditions!.privilegeLevelRequired!.index,
             widget.app,
             state.dialogModel.bodyComponents!,
             widget.widgetWidth,
           ),
-          StorageConditionsWidget(app: widget.app, value: state.dialogModel.conditions!, ownerType: 'dialog'),
+          StorageConditionsWidget(app: widget.app, value: state.dialogModel.conditions!, ownerType: 'dialog', feedback: (_) {
+            setState(() {
+            });
+          }),
         ]);
       } else {
         return progressIndicator(widget.app, context);

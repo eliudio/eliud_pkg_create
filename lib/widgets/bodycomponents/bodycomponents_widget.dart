@@ -15,10 +15,12 @@ import 'bodycomponents__bloc/bodycomponents_create_event.dart';
 import 'bodycomponents__bloc/bodycomponents_create_state.dart';
 
 class BodyComponentsCreateWidget extends StatefulWidget {
+  final int containerPrivilege;
   final double widgetWidth;
   final AppModel app;
 
   BodyComponentsCreateWidget._({
+    required this.containerPrivilege,
     required this.app,
     Key? key,
     required this.widgetWidth,
@@ -32,6 +34,7 @@ class BodyComponentsCreateWidget extends StatefulWidget {
 
   static Widget getIt(
       BuildContext context,
+      int containerPrivilege,
       AppModel app,
       List<BodyComponentModel> bodyComponents,
       double widgetWidth,
@@ -44,8 +47,8 @@ class BodyComponentsCreateWidget extends StatefulWidget {
         bodyComponents,
       )..add(BodyComponentsCreateInitialiseEvent(bodyComponents)),
       child: BodyComponentsCreateWidget._(app: app,
+        containerPrivilege: containerPrivilege,
         widgetWidth: widgetWidth,
-
       ),
     );
   }
@@ -120,6 +123,7 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
                   PluginsWidget(app: widget.app,
                     widgetHeight: 200, //max(heightUnit() * 2, 150) - 10,
                     widgetWidth: widget.widgetWidth,
+                    containerPrivilege: widget.containerPrivilege,
                     pluginsWidthComponents: state.pluginWithComponents,
                   )
                 ]),

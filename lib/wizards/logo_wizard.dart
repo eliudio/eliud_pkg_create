@@ -67,6 +67,7 @@ class _LogoWizardWidget extends StatefulWidget {
 class _LogoWizardWidgetState extends State<_LogoWizardWidget> {
   @override
   Widget build(BuildContext context) => LogoWidget(
+    isCollapsable: false,
       app: widget.app,
       logo: widget.parameters.logo,
       collapsed: false,

@@ -114,6 +114,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
           divider(widget.app, context),
           _general(context, state.appModel, widget.create),
           LogoWidget(
+              isCollapsable: true,
               app: state.appModel,
               logo: state.appModel.logo,
               logoFeedback: (newLogo) {

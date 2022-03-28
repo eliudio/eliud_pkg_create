@@ -2,6 +2,7 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
+import 'package:eliud_core/style/frontend/has_tabs.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'bodycomponents__bloc/bodycomponents_create_state.dart';
 
 class PluginsWidget extends StatefulWidget {
   final AppModel app;
+  final int containerPrivilege;
   final double widgetWidth;
   final double widgetHeight;
   List<PluginWithComponents> pluginsWidthComponents;
@@ -20,6 +22,7 @@ class PluginsWidget extends StatefulWidget {
   PluginsWidget({
     Key? key,
     required this.app,
+    required this.containerPrivilege,
     required this.pluginsWidthComponents,
     required this.widgetWidth,
     required this.widgetHeight,
@@ -61,22 +64,26 @@ class _PluginsWidgetState extends State<PluginsWidget>
       }
     }
 
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Container(
-          height: widget.widgetHeight,
-          width: oneUnitwidth(),
-          child: ListView(
-              shrinkWrap: true, physics: ScrollPhysics(), children: listItems)),
-      verticalDivider(widget.app, context, widget.widgetHeight),
-      Container(
-          height: widget.widgetHeight,
-          width: oneUnitwidth(),
-          child: ListView(
-              shrinkWrap: true,
-              physics: ScrollPhysics(),
-              children: innerListItems)),
-      verticalDivider(widget.app, context, widget.widgetHeight),
-      _selector(context),
+    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
+      Row(mainAxisSize: MainAxisSize.min, children: [
+        Container(
+            height: widget.widgetHeight,
+            width: oneUnitwidth(),
+            child: ListView(
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                children: listItems)),
+        verticalDivider(widget.app, context, widget.widgetHeight),
+        Container(
+            height: widget.widgetHeight,
+            width: oneUnitwidth(),
+            child: ListView(
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                children: innerListItems)),
+        verticalDivider(widget.app, context, widget.widgetHeight),
+        _selector(context),
+      ])
     ]);
   }
 
@@ -102,12 +109,16 @@ class _PluginsWidgetState extends State<PluginsWidget>
           height: widget.widgetHeight,
           width: oneUnitwidth() * 2,
           child: component.selector.createSelectWidget(
-              context,widget.app,
+              context,
+              widget.app,
+              widget.containerPrivilege,
               widget.widgetHeight,
-                  (componentId) => _selectedItem(componentId),
+              (componentId) => _selectedItem(componentId),
               component.editor));
     } else {
-      return Container(width: oneUnitwidth() * 2,);
+      return Container(
+        width: oneUnitwidth() * 2,
+      );
     }
   }
 

@@ -124,11 +124,15 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
                 ]),
           BodyComponentsCreateWidget.getIt(
             context,
+            ((state.pageModel.conditions == null) || (state.pageModel.conditions!.privilegeLevelRequired == null)) ? 0 : state.pageModel.conditions!.privilegeLevelRequired!.index,
             widget.app,
             state.pageModel.bodyComponents!,
             widget.widgetWidth,
           ),
-          StorageConditionsWidget(app: widget.app, value: state.pageModel.conditions!, ownerType: 'page'),
+          StorageConditionsWidget(app: widget.app, value: state.pageModel.conditions!, ownerType: 'page', feedback: (_) {
+            setState(() {
+            });
+          }),
         ]);
       } else {
         return progressIndicator(widget.app,context);

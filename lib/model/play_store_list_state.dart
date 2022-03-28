@@ -13,6 +13,7 @@
 
 */
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
 
@@ -36,6 +37,13 @@ class PlayStoreListLoaded extends PlayStoreListState {
 
   @override
   String toString() => 'PlayStoreListLoaded { values: $values }';
+
+  @override
+  bool operator ==(Object other) => 
+          other is PlayStoreListLoaded &&
+              runtimeType == other.runtimeType &&
+              ListEquality().equals(values, other.values) &&
+              mightHaveMore == other.mightHaveMore;
 }
 
 class PlayStoreNotLoaded extends PlayStoreListState {}

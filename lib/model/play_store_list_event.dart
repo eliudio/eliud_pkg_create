@@ -13,6 +13,7 @@
 
 */
 
+import 'package:eliud_core/tools/query/query_tools.dart';
 import 'package:equatable/equatable.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
 
@@ -73,5 +74,17 @@ class PlayStoreListUpdated extends PlayStoreListEvent {
 
   @override
   String toString() => 'PlayStoreListUpdated{ value: $value, mightHaveMore: $mightHaveMore }';
+}
+
+class PlayStoreChangeQuery extends PlayStoreListEvent {
+  final EliudQuery newQuery;
+
+  const PlayStoreChangeQuery({ required this.newQuery });
+
+  @override
+  List<Object?> get props => [ newQuery ];
+
+  @override
+  String toString() => 'PlayStoreChangeQuery{ value: $newQuery }';
 }
 
