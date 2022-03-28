@@ -18,6 +18,7 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_tabs.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/etc.dart';
+import 'package:eliud_core/tools/query/query_tools.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/utils/popup_menu_item_choices.dart';
 import 'package:eliud_pkg_workflow/model/abstract_repository_singleton.dart';
@@ -51,10 +52,10 @@ class MenuDefCreateWidget extends StatefulWidget {
   }
 
   static Widget getIt(
-      BuildContext context,
-      AppModel app,
-      MenuDefModel menuDefModel
-      ) {
+    BuildContext context,
+    AppModel app,
+    MenuDefModel menuDefModel,
+  ) {
     return BlocProvider<MenuDefCreateBloc>(
       create: (context) => MenuDefCreateBloc(
         app,
@@ -82,11 +83,13 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
         providers: [
           BlocProvider<PageListBloc>(
             create: (context) => PageListBloc(
+              eliudQuery: getComponentSelectorQuery(0, widget.app.documentID!),
               pageRepository: pageRepository(appId: appId)!,
             )..add(LoadPageList()),
           ),
           BlocProvider<DialogListBloc>(
             create: (context) => DialogListBloc(
+              eliudQuery: getComponentSelectorQuery(0, widget.app.documentID!),
               dialogRepository: dialogRepository(appId: appId)!,
             )..add(LoadDialogList()),
           ),
@@ -127,14 +130,16 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                       key: theKey,
                                       //                              onTap: () => details(item),
                                       leading: item.icon == null
-                                          ? text(app,
+                                          ? text(
+                                              app,
                                               context,
                                               item.text == null
                                                   ? "?"
                                                   : item.text!)
                                           : IconHelper.getIconFromModel(
                                               iconModel: item.icon),
-                                      trailing: PopupMenuItemChoices(app: app,
+                                      trailing: PopupMenuItemChoices(
+                                        app: app,
                                         isFirst: (count != 1),
                                         isLast: (count != size),
                                         actionUp: () =>
@@ -153,19 +158,22 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                             .add(MenuDefCreateDeleteMenuItem(
                                                 item)),
                                       ),
-                                      title: text(app,
+                                      title: text(
+                                          app,
                                           context,
                                           item.action != null
                                               ? item.action!.describe()
                                               : ''),
-                                      subtitle: text(app,
+                                      subtitle: text(
+                                          app,
                                           context,
                                           item.text == null
                                               ? "?"
                                               : item.text!));
                                 }).toList())))
                       ]),
-                  topicContainer(app,
+                  topicContainer(
+                    app,
                     context,
                     title: 'Available menu items',
                     collapsible: true,
@@ -175,117 +183,36 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                         tabBar(app, context,
                             items: items, tabController: _tabController!),
                         if (_tabController!.index == 0)
-                          Container(
-                              height: height(),
-                              child: BlocBuilder<PageListBloc, PageListState>(
-                                  builder: (context, state) {
-                                if ((state is PageListLoaded) &&
-                                    (state.values != null)) {
-                                  var pages = state.values!;
-                                  return ListView(
-                                      children: [
-                                        Container(
-                                            height: 200,
-                                            child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics: const ScrollPhysics(),
-                                                itemCount: pages.length,
-                                                itemBuilder:
-                                                    (context, position) {
-                                                  var page = pages[position];
-                                                  return ListTile(
-                                                      trailing:
-                                                          availableMenuItemPopup(
-                                                              MenuDefCreateAddMenuItemForPage(
-                                                                  page!),
-                                                              () => openPage(
-                                                                    context,
-                                                                    app,
-                                                                    false,
-                                                                    page,
-                                                                    'Update page',
-                                                                  )),
-                                                      //Icon(Icons.add),
-                                                      title: text(app, context,
-                                                          page.documentID!));
-                                                })),
-                                        divider(app, context),
-                                        GestureDetector(
-                                            child: const Icon(Icons.add),
-                                            onTap: () {
-                                              openPage(
-                                                context,
-                                                app,
-                                                true,
-                                                newPageDefaults(
-                                                    app.documentID!),
-                                                'Create page',
-                                              );
-                                            })
-                                      ],
-                                      shrinkWrap: true,
-                                      physics: const ScrollPhysics());
-                                } else {
-                                  return progressIndicator(app, context);
-                                }
-                              })),
+                          PagesOrDialogsWidget(
+                              app: widget.app,
+                              pages: true,
+                              availableMenuItemPopup: (page) =>
+                                  availableMenuItemPopup(
+                                      MenuDefCreateAddMenuItemForPage(page!),
+                                      () => openPage(
+                                            context,
+                                            app,
+                                            false,
+                                            page,
+                                            'Update page',
+                                          )),
+                              height: height() + 50),
                         if (_tabController!.index == 1)
-                          Container(
-                              height: height(),
-                              child:
-                                  BlocBuilder<DialogListBloc, DialogListState>(
-                                      builder: (context, state) {
-                                if ((state is DialogListLoaded) &&
-                                    (state.values != null)) {
-                                  var dialogs = state.values!;
-                                  return ListView(
-                                      children: [
-                                        Container(
-                                            height: 200,
-                                            child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics: const ScrollPhysics(),
-                                                itemCount: dialogs.length,
-                                                itemBuilder:
-                                                    (context, position) {
-                                                  var dialog =
-                                                      dialogs[position];
-                                                  return ListTile(
-                                                      trailing:
-                                                          availableMenuItemPopup(
-                                                              MenuDefCreateAddMenuItemForDialog(
-                                                                  dialog!),
-                                                              () => openDialog(
-                                                                    context,
-                                                                    app,
-                                                                    true,
-                                                                    dialog,
-                                                                    'Update dialog',
-                                                                  )),
-                                                      //Icon(Icons.add),
-                                                      title: text(app, context,
-                                                          dialog.documentID!));
-                                                })),
-                                        divider(app, context),
-                                        GestureDetector(
-                                            child: const Icon(Icons.add),
-                                            onTap: () {
-                                              openDialog(
-                                                context,
-                                                app,
-                                                true,
-                                                newDialogDefaults(
-                                                    app.documentID!),
-                                                'Create dialog',
-                                              );
-                                            })
-                                      ],
-                                      shrinkWrap: true,
-                                      physics: const ScrollPhysics());
-                                } else {
-                                  return progressIndicator(app, context);
-                                }
-                              })),
+                          PagesOrDialogsWidget(
+                              app: widget.app,
+                              pages: false,
+                              availableMenuItemPopup: (dialog) =>
+                                  availableMenuItemPopup(
+                                      MenuDefCreateAddMenuItemForDialog(
+                                          dialog!),
+                                      () => openDialog(
+                                            context,
+                                            app,
+                                            true,
+                                            dialog,
+                                            'Update dialog',
+                                          )),
+                              height: height() + 50),
                         if (_tabController!.index == 2)
                           Container(
                               height: height(),
@@ -320,7 +247,8 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                                     'Update workflow',
                                                                   )),
                                                       //Icon(Icons.add),
-                                                      title: text(app,
+                                                      title: text(
+                                                          app,
                                                           context,
                                                           workflow
                                                               .documentID!));
@@ -365,7 +293,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                       trailing: GestureDetector(
                                           onTap: () {
                                             BlocProvider.of<MenuDefCreateBloc>(
-                                                context)
+                                                    context)
                                                 .add(MenuDefCreateAddLogout());
                                           },
                                           child: const Icon(Icons.add)),
@@ -374,7 +302,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                       trailing: GestureDetector(
                                           onTap: () {
                                             BlocProvider.of<MenuDefCreateBloc>(
-                                                context)
+                                                    context)
                                                 .add(MenuDefCreateAddGoHome());
                                           },
                                           child: const Icon(Icons.add)),
@@ -447,7 +375,8 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
         ]);
   }
 
-  Widget getTitle(String _title) => Center(child: h3(widget.app, context, _title));
+  Widget getTitle(String _title) =>
+      Center(child: h3(widget.app, context, _title));
 
   void ensureCurrentIsVisible() {
     if (currentVisible != null) {
@@ -485,6 +414,167 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
   void _handleTabSelection() {
     if ((_tabController != null) && (_tabController!.indexIsChanging)) {
       setState(() {});
+    }
+  }
+}
+
+typedef AvailableMenuItemPopupProvider(model);
+
+class PagesOrDialogsWidget extends StatefulWidget {
+  final AppModel app;
+  final bool pages;
+  final AvailableMenuItemPopupProvider availableMenuItemPopup;
+  final double height;
+
+  PagesOrDialogsWidget(
+      {required this.app,
+      Key? key,
+      required this.pages,
+      required this.availableMenuItemPopup,
+      required this.height})
+      : super(key: key);
+
+  @override
+  _PagesOrDialogsWidgetState createState() {
+    return _PagesOrDialogsWidgetState();
+  }
+}
+
+class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
+    with SingleTickerProviderStateMixin {
+  TabController? _privilegeTabController;
+  final List<String> _privilegeItems = ['No', 'L1', 'L2', 'Owner'];
+  final int _initialPrivilege = 0;
+  int _currentPrivilege = 0;
+
+  _PagesOrDialogsWidgetState();
+
+  @override
+  void initState() {
+    var _privilegeASize = _privilegeItems.length;
+    _privilegeTabController =
+        TabController(vsync: this, length: _privilegeASize);
+    _privilegeTabController!.addListener(_handlePrivilegeTabSelection);
+    _privilegeTabController!.index = _initialPrivilege;
+
+    super.initState();
+  }
+
+  void _handlePrivilegeTabSelection() {
+    if ((_privilegeTabController != null) &&
+        (_privilegeTabController!.indexIsChanging)) {
+      _currentPrivilege = _privilegeTabController!.index;
+      BlocProvider.of<PageListBloc>(context).add(PageChangeQuery(
+          newQuery: getComponentSelectorQuery(
+              _currentPrivilege, widget.app.documentID!)));
+      BlocProvider.of<DialogListBloc>(context).add(DialogChangeQuery(
+          newQuery: getComponentSelectorQuery(
+              _currentPrivilege, widget.app.documentID!)));
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_privilegeTabController != null) {
+      _privilegeTabController!.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var newPrivilegeItems = <Widget>[];
+    int i = 0;
+    for (var privilegeItem in _privilegeItems) {
+      newPrivilegeItems.add(text(widget.app, context, privilegeItem));
+      i++;
+    }
+    if (widget.pages) {
+      return Container(
+          height: widget.height,
+          child: BlocBuilder<PageListBloc, PageListState>(
+              builder: (context, state) {
+            if ((state is PageListLoaded) && (state.values != null)) {
+              var pages = state.values!;
+              return ListView(children: [
+                tabBar2(widget.app, context,
+                    items: newPrivilegeItems,
+                    tabController: _privilegeTabController!),
+                Container(
+                    height: 200,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        itemCount: pages.length,
+                        itemBuilder: (context, position) {
+                          var page = pages[position];
+                          return ListTile(
+                              trailing: widget.availableMenuItemPopup(page),
+                              //Icon(Icons.add),
+                              title:
+                                  text(widget.app, context, page!.documentID!));
+                        })),
+                divider(widget.app, context),
+                GestureDetector(
+                    child: const Icon(Icons.add),
+                    onTap: () {
+                      openPage(
+                        context,
+                        widget.app,
+                        true,
+                        newPageDefaults(widget.app.documentID!),
+                        'Create page',
+                      );
+                    })
+              ], shrinkWrap: true, physics: const ScrollPhysics());
+            } else {
+              return progressIndicator(widget.app, context);
+            }
+          }));
+    } else {
+      return Container(
+          height: widget.height,
+          child: BlocBuilder<DialogListBloc, DialogListState>(
+              builder: (context, state) {
+            if ((state is DialogListLoaded) && (state.values != null)) {
+              var dialogs = state.values!;
+              return ListView(children: [
+                tabBar2(widget.app, context,
+                    items: newPrivilegeItems,
+                    tabController: _privilegeTabController!),
+                Container(
+                    height: 200,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        itemCount: dialogs.length,
+                        itemBuilder: (context, position) {
+                          var dialog = dialogs[position];
+                          return ListTile(
+                              trailing: widget.availableMenuItemPopup(
+                                dialog,
+                              ),
+                              //Icon(Icons.add),
+                              title: text(
+                                  widget.app, context, dialog!.documentID!));
+                        })),
+                divider(widget.app, context),
+                GestureDetector(
+                    child: const Icon(Icons.add),
+                    onTap: () {
+                      openDialog(
+                        context,
+                        widget.app,
+                        true,
+                        newDialogDefaults(widget.app.documentID!),
+                        'Create dialog',
+                      );
+                    })
+              ], shrinkWrap: true, physics: const ScrollPhysics());
+            } else {
+              return progressIndicator(widget.app, context);
+            }
+          }));
     }
   }
 }
