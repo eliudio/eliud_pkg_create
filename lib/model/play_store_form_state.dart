@@ -111,22 +111,6 @@ class DescriptionPlayStoreFormError extends PlayStoreFormError {
 }
 
 
-class ItemBackgroundPlayStoreFormError extends PlayStoreFormError { 
-  const ItemBackgroundPlayStoreFormError({ String? message, PlayStoreModel? value }): super(message: message, value: value);
-
-  @override
-  List<Object?> get props => [ message, value ];
-
-  @override
-  String toString() {
-    return '''ItemBackgroundPlayStoreFormError {
-      value: $value,
-      message: $message,
-    }''';
-  }
-}
-
-
 class ConditionsPlayStoreFormError extends PlayStoreFormError { 
   const ConditionsPlayStoreFormError({ String? message, PlayStoreModel? value }): super(message: message, value: value);
 

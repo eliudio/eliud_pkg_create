@@ -25,27 +25,22 @@ import 'package:eliud_core/tools/common_tools.dart';
 class PlayStoreEntity {
   final String? appId;
   final String? description;
-  final BackgroundEntity? itemBackground;
   final StorageConditionsEntity? conditions;
 
-  PlayStoreEntity({this.appId, this.description, this.itemBackground, this.conditions, });
+  PlayStoreEntity({this.appId, this.description, this.conditions, });
 
 
-  List<Object?> get props => [appId, description, itemBackground, conditions, ];
+  List<Object?> get props => [appId, description, conditions, ];
 
   @override
   String toString() {
-    return 'PlayStoreEntity{appId: $appId, description: $description, itemBackground: $itemBackground, conditions: $conditions}';
+    return 'PlayStoreEntity{appId: $appId, description: $description, conditions: $conditions}';
   }
 
   static PlayStoreEntity? fromMap(Object? o) {
     if (o == null) return null;
     var map = o as Map<String, dynamic>;
 
-    var itemBackgroundFromMap;
-    itemBackgroundFromMap = map['itemBackground'];
-    if (itemBackgroundFromMap != null)
-      itemBackgroundFromMap = BackgroundEntity.fromMap(itemBackgroundFromMap);
     var conditionsFromMap;
     conditionsFromMap = map['conditions'];
     if (conditionsFromMap != null)
@@ -54,15 +49,11 @@ class PlayStoreEntity {
     return PlayStoreEntity(
       appId: map['appId'], 
       description: map['description'], 
-      itemBackground: itemBackgroundFromMap, 
       conditions: conditionsFromMap, 
     );
   }
 
   Map<String, Object?> toDocument() {
-    final Map<String, dynamic>? itemBackgroundMap = itemBackground != null 
-        ? itemBackground!.toDocument()
-        : null;
     final Map<String, dynamic>? conditionsMap = conditions != null 
         ? conditions!.toDocument()
         : null;
@@ -72,8 +63,6 @@ class PlayStoreEntity {
       else theDocument["appId"] = null;
     if (description != null) theDocument["description"] = description;
       else theDocument["description"] = null;
-    if (itemBackground != null) theDocument["itemBackground"] = itemBackgroundMap;
-      else theDocument["itemBackground"] = null;
     if (conditions != null) theDocument["conditions"] = conditionsMap;
       else theDocument["conditions"] = null;
     return theDocument;

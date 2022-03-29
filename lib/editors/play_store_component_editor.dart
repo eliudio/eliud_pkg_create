@@ -10,7 +10,6 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/component/component_spec.dart';
 import 'package:eliud_core/tools/random.dart';
-import 'package:eliud_core/tools/rgb_formfield.dart';
 import 'package:eliud_core/tools/widgets/condition_simple_widget.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/model/abstract_repository_singleton.dart';
@@ -19,12 +18,9 @@ import 'package:eliud_pkg_medium/editors/widgets/background_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:eliud_core/core/editor/editor_base_bloc/editor_base_bloc.dart';
 import 'package:eliud_core/core/editor/editor_base_bloc/editor_base_event.dart';
 import 'package:eliud_core/core/editor/editor_base_bloc/editor_base_state.dart';
 
-import 'bloc/playStore_bloc.dart';
 import 'bloc/playstore_bloc.dart';
 
 class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
@@ -46,7 +42,7 @@ class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
           documentID: newRandomKey(),
           conditions: StorageConditionsModel(
               privilegeLevelRequired:
-              PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
+                  PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
         ),
         feedback);
   }
@@ -77,11 +73,9 @@ class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
       widthFraction: .9,
       child: BlocProvider<PlayStoreBloc>(
           create: (context) => PlayStoreBloc(
-            app.documentID!,
-            /*create,
-            */
-            feedback,
-          )..add(EditorBaseInitialise<PlayStoreModel>(model)),
+                app.documentID!,
+                feedback,
+              )..add(EditorBaseInitialise<PlayStoreModel>(model)),
           child: PlayStoreComponentEditor(
             app: app,
           )),
@@ -106,77 +100,79 @@ class _PlayStoreComponentEditorState extends State<PlayStoreComponentEditor> {
   Widget build(BuildContext context) {
     return BlocBuilder<AccessBloc, AccessState>(
         builder: (aContext, accessState) {
-          if (accessState is AccessDetermined) {
-            return BlocBuilder<PlayStoreBloc, EditorBaseState<PlayStoreModel>>(
-                builder: (ppContext, playStoreState) {
-                  if (playStoreState is EditorBaseInitialised<PlayStoreModel>) {
-                    return ListView(
-                        shrinkWrap: true,
-                        physics: ScrollPhysics(),
+      if (accessState is AccessDetermined) {
+        var member = accessState.getMember();
+        if (member != null) {
+          var memberId = member.documentID!;
+          return BlocBuilder<PlayStoreBloc, EditorBaseState<PlayStoreModel>>(
+              builder: (ppContext, playStoreState) {
+            if (playStoreState is EditorBaseInitialised<PlayStoreModel>) {
+              return ListView(
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  children: [
+                    HeaderWidget(
+                      app: widget.app,
+                      title: 'PlayStore',
+                      okAction: () async {
+                        await BlocProvider.of<PlayStoreBloc>(context).save(
+                            EditorBaseApplyChanges<PlayStoreModel>(
+                                model: playStoreState.model));
+                        return true;
+                      },
+                      cancelAction: () async {
+                        return true;
+                      },
+                    ),
+                    topicContainer(widget.app, context,
+                        title: 'General',
+                        collapsible: true,
+                        collapsed: true,
                         children: [
-                          HeaderWidget(
-                            app: widget.app,
-                            title: 'PlayStore',
-                            okAction: () async {
-                              await BlocProvider.of<PlayStoreBloc>(context).save(
-                                  EditorBaseApplyChanges<PlayStoreModel>(
-                                      model: playStoreState.model));
-                              return true;
-                            },
-                            cancelAction: () async {
-                              return true;
-                            },
-                          ),
-                          topicContainer(widget.app, context,
-                              title: 'General',
-                              collapsible: true,
-                              collapsed: true,
-                              children: [
-                                getListTile(context, widget.app,
-                                    leading: Icon(Icons.vpn_key),
-                                    title: text(widget.app, context,
-                                        playStoreState.model.documentID!)),
-                                getListTile(context, widget.app,
-                                    leading: Icon(Icons.description),
-                                    title: dialogField(
-                                      widget.app,
-                                      context,
-                                      initialValue: playStoreState.model.description,
-                                      valueChanged: (value) {
-                                        playStoreState.model.description = value;
-                                      },
-                                      maxLines: 1,
-                                      decoration: const InputDecoration(
-                                        hintText: 'Description',
-                                        labelText: 'Description',
-                                      ),
-                                    )),
-                              ]),
-                          BackgroundWidget(
-                              app: widget.app,
-                              memberId: widget.memberId,
-                              value: playStoreState.model.itemBackground!,
-                              label: 'Background'),
-                          topicContainer(widget.app, context,
-                              title: 'Condition',
-                              collapsible: true,
-                              collapsed: true,
-                              children: [
-                                getListTile(context, widget.app,
-                                    leading: Icon(Icons.security),
-                                    title: ConditionsSimpleWidget(
-                                      app: widget.app,
-                                      value: playStoreState.model.conditions!,
-                                    )),
-                              ]),
-                        ]);
-                  } else {
-                    return progressIndicator(widget.app, context);
-                  }
-                });
-          } else {
-            return progressIndicator(widget.app, context);
-          }
-        });
+                          getListTile(context, widget.app,
+                              leading: Icon(Icons.vpn_key),
+                              title: text(widget.app, context,
+                                  playStoreState.model.documentID!)),
+                          getListTile(context, widget.app,
+                              leading: Icon(Icons.description),
+                              title: dialogField(
+                                widget.app,
+                                context,
+                                initialValue: playStoreState.model.description,
+                                valueChanged: (value) {
+                                  playStoreState.model.description = value;
+                                },
+                                maxLines: 1,
+                                decoration: const InputDecoration(
+                                  hintText: 'Description',
+                                  labelText: 'Description',
+                                ),
+                              )),
+                        ]),
+                    topicContainer(widget.app, context,
+                        title: 'Condition',
+                        collapsible: true,
+                        collapsed: true,
+                        children: [
+                          getListTile(context, widget.app,
+                              leading: Icon(Icons.security),
+                              title: ConditionsSimpleWidget(
+                                app: widget.app,
+                                value: playStoreState.model.conditions!,
+                              )),
+                        ]),
+                  ]);
+            } else {
+              return progressIndicator(widget.app, context);
+            }
+          });
+        } else {
+          return text(widget.app, context,
+              'needs to be logged in as owner to be able to edit');
+        }
+      } else {
+        return progressIndicator(widget.app, context);
+      }
+    });
   }
 }

@@ -192,7 +192,6 @@ class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
                 ));
 
 
-
         children.add(Container(height: 20.0));
         children.add(StyleRegistry.registry().styleWithApp(widget.app).adminFormStyle().divider(widget.app, context));
 
@@ -221,7 +220,6 @@ class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
                               documentID: state.value!.documentID, 
                               appId: state.value!.appId, 
                               description: state.value!.description, 
-                              itemBackground: state.value!.itemBackground, 
                               conditions: state.value!.conditions, 
                         )));
                       } else {
@@ -230,7 +228,6 @@ class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
                               documentID: state.value!.documentID, 
                               appId: state.value!.appId, 
                               description: state.value!.description, 
-                              itemBackground: state.value!.itemBackground, 
                               conditions: state.value!.conditions, 
                           )));
                       }
