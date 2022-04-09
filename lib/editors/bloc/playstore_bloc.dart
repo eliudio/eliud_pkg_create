@@ -19,7 +19,7 @@ class PlayStoreBloc extends EditorBaseBloc<PlayStoreModel> {
   }
 
   @override
-  PlayStoreModel setDefaultConditions(
+  PlayStoreModel setDefaultValues(
       PlayStoreModel t, StorageConditionsModel conditions) {
     return t.copyWith(
         conditions: t.conditions ??

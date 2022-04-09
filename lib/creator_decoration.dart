@@ -35,6 +35,8 @@ class CreatorDecoration extends deco.Decoration {
   static double fraction = 1;
   ValueNotifier<bool> _isCreationMode = ValueNotifier<bool>(false);
 
+  static bool disableSimulatePrivilege = true;
+
   @override
   CreateWidget createDecoratedAppBar(AppModel app, BuildContext context,
       Key? appBarKey, CreateWidget createOriginalAppBar, AppBarModel model) {
@@ -45,7 +47,8 @@ class CreatorDecoration extends deco.Decoration {
       return MyDecoratedWidget(
         isCreationMode: _isCreationMode,
         originalWidgetKey: appBarKey,
-        createOriginalWidget: () {
+        createOriginalWidget: disableSimulatePrivilege ? createOriginalAppBar :
+          () {
           return MyDecoratedWidget(
             isCreationMode: _isCreationMode,
             originalWidgetKey: appBarKey,
