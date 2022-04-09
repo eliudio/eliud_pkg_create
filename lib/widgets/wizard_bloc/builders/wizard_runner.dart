@@ -161,7 +161,6 @@ class WizardRunner {
           () => theAppBar,
           () => leftDrawer,
           () => rightDrawer,
-          getPageID,
         );
         if (extraTasks != null) {
           tasks.addAll(extraTasks);

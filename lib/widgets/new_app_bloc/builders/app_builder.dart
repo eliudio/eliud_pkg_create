@@ -118,7 +118,6 @@ class AppBuilder {
         theAppBar,
         leftDrawer,
         rightDrawer,
-            (value) => null,
       ).create();
     });
 

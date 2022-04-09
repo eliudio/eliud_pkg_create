@@ -17,13 +17,12 @@ class HelloWorldPageBuilder extends PageBuilder {
       AppBarModel theAppBar,
       DrawerModel leftDrawer,
       DrawerModel rightDrawer,
-      PageProvider pageProvider,
       )
       : super(uniqueId, pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
-            rightDrawer, pageProvider,
+            rightDrawer,
   );
 
   Future<PageModel> create() async {
-    return PageWithTextBuilder(uniqueId, 'Hello', 'Hello world', pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer, pageProvider, ).create();
+    return PageWithTextBuilder(uniqueId, 'Hello', 'Hello world', pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer, ).create();
   }
 }
