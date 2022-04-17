@@ -18,6 +18,7 @@ import 'package:eliud_core/tools/component/component_constructor.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:eliud_core/tools/query/query_tools.dart';
 
 import 'package:eliud_core/tools/has_fab.dart';
 
@@ -40,7 +41,7 @@ import '../tools/bespoke_entities.dart';
 import 'package:eliud_pkg_create/model/entity_export.dart';
 
 class ListComponentFactory implements ComponentConstructor {
-  Widget? createNew({Key? key, required AppModel app,  required String id, Map<String, dynamic>? parameters}) {
+  Widget? createNew({Key? key, required AppModel app,  required String id, int? privilegeLevel, Map<String, dynamic>? parameters}) {
     return ListComponent(app: app, componentId: id);
   }
 
@@ -51,7 +52,7 @@ class ListComponentFactory implements ComponentConstructor {
 }
 
 
-typedef DropdownButtonChanged(String? value);
+typedef DropdownButtonChanged(String? value, int? privilegeLevel);
 
 class DropdownButtonComponentFactory implements ComponentDropDown {
   @override
@@ -66,10 +67,10 @@ class DropdownButtonComponentFactory implements ComponentDropDown {
     return false;
   }
 
-  Widget createNew({Key? key, required AppModel app, required String id, Map<String, dynamic>? parameters, String? value, DropdownButtonChanged? trigger, bool? optional}) {
+  Widget createNew({Key? key, required AppModel app, required String id, int? privilegeLevel, Map<String, dynamic>? parameters, String? value, DropdownButtonChanged? trigger, bool? optional}) {
 
     if (id == "playStores")
-      return DropdownButtonComponent(app: app, componentId: id, value: value, trigger: trigger, optional: optional);
+      return DropdownButtonComponent(app: app, componentId: id, value: value, privilegeLevel: privilegeLevel, trigger: trigger, optional: optional);
 
     return Text("Id $id not found");
   }
@@ -80,6 +81,7 @@ class ListComponent extends StatelessWidget with HasFab {
   final AppModel app;
   final String? componentId;
   Widget? widget;
+  int? privilegeLevel;
 
   @override
   Widget? fab(BuildContext context){
@@ -90,7 +92,7 @@ class ListComponent extends StatelessWidget with HasFab {
     return null;
   }
 
-  ListComponent({required this.app, this.componentId}) {
+  ListComponent({required this.app, this.privilegeLevel, this.componentId}) {
     initWidget();
   }
 
@@ -110,6 +112,10 @@ class ListComponent extends StatelessWidget with HasFab {
       providers: [
         BlocProvider<PlayStoreListBloc>(
           create: (context) => PlayStoreListBloc(
+            eliudQuery: EliudQuery(theConditions: [
+              EliudQueryCondition('conditions.privilegeLevelRequired', isEqualTo: privilegeLevel ?? 0),
+              EliudQueryCondition('appId', isEqualTo: app.documentID!),]
+            ),
             playStoreRepository: playStoreRepository(appId: app.documentID!)!,
           )..add(LoadPlayStoreList()),
         )
@@ -121,7 +127,7 @@ class ListComponent extends StatelessWidget with HasFab {
 }
 
 
-typedef Changed(String? value);
+typedef Changed(String? value, int? privilegeLevel);
 
 class DropdownButtonComponent extends StatelessWidget {
   final AppModel app;
@@ -129,8 +135,9 @@ class DropdownButtonComponent extends StatelessWidget {
   final String? value;
   final Changed? trigger;
   final bool? optional;
+  int? privilegeLevel;
 
-  DropdownButtonComponent({required this.app, this.componentId, this.value, this.trigger, this.optional});
+  DropdownButtonComponent({required this.app, this.componentId, this.privilegeLevel, this.value, this.trigger, this.optional});
 
   @override
   Widget build(BuildContext context) {
@@ -145,11 +152,15 @@ class DropdownButtonComponent extends StatelessWidget {
       providers: [
         BlocProvider<PlayStoreListBloc>(
           create: (context) => PlayStoreListBloc(
+            eliudQuery: EliudQuery(theConditions: [
+              EliudQueryCondition('conditions.privilegeLevelRequired', isEqualTo: privilegeLevel ?? 0),
+              EliudQueryCondition('appId', isEqualTo: app.documentID!),]
+            ),
             playStoreRepository: playStoreRepository(appId: app.documentID!)!,
           )..add(LoadPlayStoreList()),
         )
       ],
-      child: PlayStoreDropdownButtonWidget(app: app, value: value, trigger: trigger, optional: optional),
+      child: PlayStoreDropdownButtonWidget(app: app, value: value, privilegeLevel: privilegeLevel, trigger: trigger, optional: optional),
     );
   }
 
