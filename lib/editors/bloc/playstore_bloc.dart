@@ -21,10 +21,6 @@ class PlayStoreBloc extends EditorBaseBloc<PlayStoreModel> {
   @override
   PlayStoreModel setDefaultValues(
       PlayStoreModel t, StorageConditionsModel conditions) {
-    return t.copyWith(
-        conditions: t.conditions ??
-            StorageConditionsModel(
-                privilegeLevelRequired:
-                PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple));
+    return t.copyWith(conditions: t.conditions ?? conditions);
   }
 }

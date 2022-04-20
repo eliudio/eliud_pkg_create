@@ -20,6 +20,11 @@ class DialogCreateBloc extends Bloc<DialogCreateEvent, DialogCreateState> {
     if (event is DialogCreateEventValidateEvent) {
       // convention is that the ID of the appBar, drawers and home menu are the same ID as that of the app
       var _homeMenuId = homeMenuID(appId);
+      // retrieve with links
+/*
+      var newDialogModel = await dialogRepository(appId: theState.dialogModel.appId)!
+          .get(event.dialogModel.documentID);
+*/
 
       event.dialogModel.conditions ??= StorageConditionsModel(
           privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple);

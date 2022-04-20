@@ -1,5 +1,6 @@
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
+import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
@@ -8,6 +9,8 @@ import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
+import 'package:eliud_core/tools/widgets/editor/dialog_layout_widget.dart';
+import 'package:eliud_core/tools/widgets/grid_view/select_grid_view_widget.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/dialog_bloc/dialog_bloc.dart';
 import 'package:eliud_pkg_create/widgets/dialog_bloc/dialog_event.dart';
@@ -27,18 +30,21 @@ void openDialog(
   String title, {
   double? fraction = 1,
 }) {
-  openFlexibleDialog(app, context, app.documentID! + '/_dialog',
-      includeHeading: false,
-      widthFraction: fraction,
-      child: DialogCreateWidget.getIt(
-        context,
-        app,
-        model,
-        create,
-        fullScreenWidth(context) * (fraction ?? 1),
-        //fullScreenHeight(context) - 100,
-      ),
-      );
+  openFlexibleDialog(
+    app,
+    context,
+    app.documentID! + '/_dialog',
+    includeHeading: false,
+    widthFraction: fraction,
+    child: DialogCreateWidget.getIt(
+      context,
+      app,
+      model,
+      create,
+      fullScreenWidth(context) * (fraction ?? 1),
+      //fullScreenHeight(context) - 100,
+    ),
+  );
 }
 
 class DialogCreateWidget extends StatefulWidget {
@@ -61,14 +67,15 @@ class DialogCreateWidget extends StatefulWidget {
   static Widget getIt(
     BuildContext context,
     AppModel app,
-    DialogModel appBarModel,
+    DialogModel dialogModel,
     bool create,
     double widgetWidth,
   ) {
     return BlocProvider<DialogCreateBloc>(
-      create: (context) =>
-          DialogCreateBloc(app.documentID!, appBarModel, )
-            ..add(DialogCreateEventValidateEvent(appBarModel)),
+      create: (context) => DialogCreateBloc(
+        app.documentID!,
+        dialogModel,
+      )..add(DialogCreateEventValidateEvent(dialogModel)),
       child: DialogCreateWidget._(
         app: app,
         create: create,
@@ -90,7 +97,8 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
         builder: (context, state) {
       if (state is DialogCreateValidated) {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-          HeaderWidget(app: widget.app,
+          HeaderWidget(
+            app: widget.app,
             cancelAction: () async {
               return true;
             },
@@ -104,39 +112,74 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
                 : 'Change dialog ' + state.dialogModel.documentID!,
           ),
           divider(widget.app, context),
-          if (widget.create)
-            topicContainer(widget.app, context,
-                title: 'General',
-                collapsible: true,
-                collapsed: true,
-                children: [
-                  getListTile(context,widget.app,
-                      leading: Icon(Icons.vpn_key),
-                      title: widget.create
-                          ? dialogField(widget.app,
-                        context,
-                              initialValue: state.dialogModel.documentID,
-                              valueChanged: (value) {
-                                state.dialogModel.documentID = value;
-                              },
-                              decoration: const InputDecoration(
-                                hintText: 'Identifier',
-                                labelText: 'Identifier',
-                              ),
-                            )
-                          : text(widget.app, context, state.dialogModel.documentID!))
-                ]),
+          topicContainer(widget.app, context,
+              title: 'General',
+              collapsible: true,
+              collapsed: true,
+              children: [
+                getListTile(context, widget.app,
+                    leading: Icon(Icons.vpn_key),
+                    title: widget.create
+                        ? dialogField(
+                            widget.app,
+                            context,
+                            readOnly: !widget.create,
+                            initialValue: state.dialogModel.documentID,
+                            valueChanged: (value) {
+                              state.dialogModel.documentID = value;
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Identifier',
+                              labelText: 'Identifier',
+                            ),
+                          )
+                        : text(
+                            widget.app, context, state.dialogModel.documentID!))
+              ]),
+          topicContainer(widget.app, context,
+              title: 'Layout',
+              collapsible: true,
+              collapsed: true,
+              children: [
+//                BackgroundWidget(app: widget.app, label: 'Background override', value: state.pageModel.backgroundOverride, memberId: memberId);
+                DialogLayoutWidget(
+                  app: widget.app,
+                  dialogLayoutCallback: (DialogLayout dialogLayout) {
+                    setState(() {
+                      state.dialogModel.layout = dialogLayout;
+                    });
+                  },
+                  dialogLayout: state.dialogModel.layout ?? DialogLayout.ListView,
+                ),
+                if (state.dialogModel.layout == DialogLayout.GridView)
+                  selectGridViewWidget(
+                      context,
+                      widget.app,
+                      state.dialogModel.conditions,
+                      state.dialogModel.gridView, (newGridView) {
+                    setState(() {
+                      state.dialogModel.gridView = newGridView;
+                    });
+                  }),
+              ]),
           BodyComponentsCreateWidget.getIt(
             context,
-            ((state.dialogModel.conditions == null) || (state.dialogModel.conditions!.privilegeLevelRequired == null)) ? 0 : state.dialogModel.conditions!.privilegeLevelRequired!.index,
+            ((state.dialogModel.conditions == null) ||
+                    (state.dialogModel.conditions!.privilegeLevelRequired ==
+                        null))
+                ? 0
+                : state.dialogModel.conditions!.privilegeLevelRequired!.index,
             widget.app,
             state.dialogModel.bodyComponents!,
             widget.widgetWidth,
           ),
-          StorageConditionsWidget(app: widget.app, value: state.dialogModel.conditions!, ownerType: 'dialog', feedback: (_) {
-            setState(() {
-            });
-          }),
+          StorageConditionsWidget(
+              app: widget.app,
+              value: state.dialogModel.conditions!,
+              ownerType: 'dialog',
+              feedback: (_) {
+                setState(() {});
+              }),
         ]);
       } else {
         return progressIndicator(widget.app, context);
