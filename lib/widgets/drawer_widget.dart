@@ -1,6 +1,7 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
 import 'package:eliud_core/core/blocs/access/state/access_state.dart';
+import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/background_model.dart';
@@ -20,8 +21,7 @@ import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/utils/styles.dart';
-import 'package:eliud_pkg_medium/platform/access_rights.dart';
-import 'package:eliud_pkg_medium/platform/medium_platform.dart';
+import 'package:eliud_core/package/access_rights.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'drawer_bloc/drawer_bloc.dart';
@@ -278,7 +278,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
     DrawerModel drawerModel,
   ) {
     var items = <PopupMenuItem<int>>[];
-    if (AbstractMediumPlatform.platform!.hasCamera()) {
+    if (Registry.registry()!.getMediumApi().hasCamera()) {
       items.add(
         PopupMenuItem<int>(
             child: text(widget.app, context, 'Take photo'), value: 0),
@@ -296,7 +296,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
         itemBuilder: (_) => items,
         onSelected: (choice) {
           if (choice == 0) {
-            AbstractMediumPlatform.platform!.takePhoto(
+            Registry.registry()!.getMediumApi().takePhoto(
                 context,
                 widget.app,
                 ownerId,
@@ -306,7 +306,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                 allowCrop: false);
           }
           if (choice == 1) {
-            AbstractMediumPlatform.platform!.uploadPhoto(
+            Registry.registry()!.getMediumApi().uploadPhoto(
                 context,
                 widget.app,
                 ownerId,

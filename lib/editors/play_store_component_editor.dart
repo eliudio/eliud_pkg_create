@@ -14,7 +14,6 @@ import 'package:eliud_core/tools/widgets/condition_simple_widget.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
-import 'package:eliud_pkg_medium/editors/widgets/background_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

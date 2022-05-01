@@ -19,9 +19,6 @@ dependencies:
   eliud_pkg_workflow:
     path: ../eliud_pkg_workflow
 
-  eliud_pkg_medium:
-    path: ../eliud_pkg_medium
-
   eliud_pkg_text:
     path: ../eliud_pkg_text
 

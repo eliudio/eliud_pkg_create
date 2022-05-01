@@ -16,7 +16,6 @@ import 'package:eliud_pkg_create/widgets/page_bloc/page_bloc.dart';
 import 'package:eliud_pkg_create/widgets/page_bloc/page_event.dart';
 import 'package:eliud_pkg_create/widgets/page_bloc/page_state.dart';
 import 'package:eliud_pkg_create/widgets/privilege_widget.dart';
-import 'package:eliud_pkg_medium/editors/widgets/background_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'bodycomponents/bodycomponents_widget.dart';

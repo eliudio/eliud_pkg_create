@@ -1,3 +1,4 @@
+import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -6,8 +7,7 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
-import 'package:eliud_pkg_medium/platform/access_rights.dart';
-import 'package:eliud_pkg_medium/platform/medium_platform.dart';
+import 'package:eliud_core/package/access_rights.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -57,7 +57,7 @@ class _LogoWidgetState extends State<LogoWidget> {
             child: Icon(Icons.more_vert),
             elevation: 10,
             itemBuilder: (context) => [
-              if (AbstractMediumPlatform.platform!.hasCamera())
+              if (Registry.registry()!.getMediumApi().hasCamera())
                 PopupMenuItem(
                   value: 0,
                   child: text(widget.app, context, 'Take photo'),
@@ -66,7 +66,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                 value: 1,
                 child: text(widget.app, context, 'Upload logo'),
               ),
-              /*if (AbstractMediumPlatform.platform!.hasAccessToLocalFilesystem()) */PopupMenuItem(
+              /*if (Registry.registry()!.getMediumApi().hasAccessToLocalFilesystem()) */PopupMenuItem(
                 value: 2,
                 child: text(widget.app, context, 'Random logo'),
               ),
@@ -77,7 +77,7 @@ class _LogoWidgetState extends State<LogoWidget> {
             ],
             onSelected: (value) async {
               if (value == 0) {
-                AbstractMediumPlatform.platform!.takePhoto(
+                Registry.registry()!.getMediumApi().takePhoto(
                     context,
                     widget.app,
                     widget.app.ownerID!,
@@ -87,7 +87,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                     _photoUploading,
                     allowCrop: false);
               } else if (value == 1) {
-                AbstractMediumPlatform.platform!.uploadPhoto(
+                Registry.registry()!.getMediumApi().uploadPhoto(
                     context,
                     widget.app,
                     widget.app.ownerID!,
