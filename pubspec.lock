@@ -134,6 +134,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  camera:
+    dependency: transitive
+    description:
+      name: camera
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.4+21"
+  camera_platform_interface:
+    dependency: transitive
+    description:
+      name: camera_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.6"
+  camera_web:
+    dependency: transitive
+    description:
+      name: camera_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.1+3"
   characters:
     dependency: transitive
     description:
@@ -239,6 +260,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  crop_your_image:
+    dependency: transitive
+    description:
+      name: crop_your_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.0+1"
   cross_file:
     dependency: transitive
     description:
@@ -348,6 +376,13 @@ packages:
     dependency: "direct main"
     description:
       path: "../eliud_pkg_etc"
+      relative: true
+    source: path
+    version: "0.0.1"
+  eliud_pkg_medium:
+    dependency: transitive
+    description:
+      path: "../eliud_pkg_medium"
       relative: true
     source: path
     version: "0.0.1"
@@ -531,6 +566,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
+  flutter_carousel_slider:
+    dependency: transitive
+    description:
+      name: flutter_carousel_slider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.8"
   flutter_circular_text:
     dependency: transitive
     description:
@@ -601,6 +643,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  flutter_staggered_grid_view:
+    dependency: transitive
+    description:
+      name: flutter_staggered_grid_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
   flutter_svg:
     dependency: transitive
     description:
@@ -793,6 +842,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.3"
+  image_picker_gallery_camera:
+    dependency: transitive
+    description:
+      name: image_picker_gallery_camera
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -996,6 +1052,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.11.1"
+  percent_indicator:
+    dependency: transitive
+    description:
+      name: percent_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   petitparser:
     dependency: transitive
     description:
@@ -1010,6 +1073,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.13.0"
+  pinch_zoom:
+    dependency: transitive
+    description:
+      name: pinch_zoom
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   platform:
     dependency: transitive
     description:

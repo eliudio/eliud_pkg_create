@@ -1,4 +1,5 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/app_policy_item_model.dart';
@@ -123,6 +124,23 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                 });
               },
               collapsed: true),
+          topicContainer(widget.app, context,
+              title: 'Profile photo for members with not photo',
+              collapsible: true,
+              collapsed: true,
+              children: [
+                Registry.registry()!.getMediumApi().getPublicPhotoWidget(
+                  context: context,
+                  defaultImage: 'packages/eliud_pkg_create/assets/rodentia-icons_preferences-desktop-personal.png',
+                  feedbackFunction: (mediumModel) {
+                    setState(() {
+                      state.appModel.anonymousProfilePhoto = mediumModel;
+                    });
+                  },
+                  app: widget.app,
+                  initialImage: state.appModel.anonymousProfilePhoto ,
+                ),
+              ]),
           topicContainer(widget.app, context,
               title: 'Home pages',
               collapsible: true,

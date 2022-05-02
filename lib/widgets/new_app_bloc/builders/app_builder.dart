@@ -4,6 +4,7 @@ import 'package:eliud_core/core/wizards/tools/documentIdentifier.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/access_model.dart';
+import 'package:eliud_core/package/access_rights.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/hello_world_page_builder.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
@@ -75,7 +76,20 @@ class AppBuilder {
       try {
         logo = await RandomLogo.getRandomPhoto(app, memberId, null);
       } catch (_) {
-        //swallow. On web, today, this fails because we don't have access to asset files
+      }
+    });
+
+
+    PublicMediumModel? anonymousMedium;
+    tasks.add(() async {
+      print("Anonymous photo");
+      try {
+        anonymousMedium = await PublicMediumAccessRights()
+            .getMediumHelper(
+          app,
+          memberId,
+        ).createThumbnailUploadPhotoAsset(newRandomKey(), 'packages/eliud_pkg_create/assets/rodentia-icons_preferences-desktop-personal.png');
+      } catch (_) {
       }
     });
 
@@ -131,6 +145,7 @@ class AppBuilder {
         appStatus: AppStatus.Live,
         email: member.email,
         logo: logo,
+        anonymousProfilePhoto: anonymousMedium,
         homePages: AppHomePageReferencesModel(
             homePageBlockedMember: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
             homePagePublic: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),

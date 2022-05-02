@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
+import 'package:eliud_core/tools/storage/public_medium_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eliud_core/model/app_home_page_references_model.dart';
 import 'package:eliud_core/model/app_model.dart';
@@ -35,7 +36,8 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
             theState.member,
           ).create(this);
         } else {
-          yield(NewAppCreateError(theState.appToBeCreated, theState.member, 'App with ID $appId already exists. Choose a unique identifier'));
+          yield (NewAppCreateError(theState.appToBeCreated, theState.member,
+              'App with ID $appId already exists. Choose a unique identifier'));
         }
       } else if (event is NewAppSwitchAppEvent) {
         yield SwitchApp(theState.appToBeCreated, theState.member);
