@@ -131,6 +131,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
               children: [
                 Registry.registry()!.getMediumApi().getPublicPhotoWidget(
                   context: context,
+                  allowCrop: true,
                   defaultImage: 'packages/eliud_pkg_create/assets/rodentia-icons_preferences-desktop-personal.png',
                   feedbackFunction: (mediumModel) {
                     setState(() {
