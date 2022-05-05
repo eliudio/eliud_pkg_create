@@ -92,6 +92,12 @@ class PlayStoreFormBloc extends Bloc<PlayStoreFormEvent, PlayStoreFormState> {
 
         return;
       }
+      if (event is ChangedPlayStoreBackgroundIcon) {
+        newValue = currentState.value!.copyWith(backgroundIcon: event.value);
+        yield SubmittablePlayStoreForm(value: newValue);
+
+        return;
+      }
       if (event is ChangedPlayStoreConditions) {
         newValue = currentState.value!.copyWith(conditions: event.value);
         yield SubmittablePlayStoreForm(value: newValue);

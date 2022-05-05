@@ -95,6 +95,18 @@ class ChangedPlayStoreDescription extends PlayStoreFormEvent {
   String toString() => 'ChangedPlayStoreDescription{ value: $value }';
 }
 
+class ChangedPlayStoreBackgroundIcon extends PlayStoreFormEvent {
+  final BackgroundModel? value;
+
+  ChangedPlayStoreBackgroundIcon({this.value});
+
+  @override
+  List<Object?> get props => [ value ];
+
+  @override
+  String toString() => 'ChangedPlayStoreBackgroundIcon{ value: $value }';
+}
+
 class ChangedPlayStoreConditions extends PlayStoreFormEvent {
   final StorageConditionsModel? value;
 

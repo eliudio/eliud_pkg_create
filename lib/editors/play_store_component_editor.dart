@@ -1,6 +1,7 @@
 import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
 import 'package:eliud_core/core/blocs/access/state/access_state.dart';
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/model/background_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
@@ -10,6 +11,7 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/component/component_spec.dart';
 import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_core/tools/widgets/background_widget.dart';
 import 'package:eliud_core/tools/widgets/condition_simple_widget.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/model/abstract_repository_singleton.dart';
@@ -148,6 +150,11 @@ class _PlayStoreComponentEditorState extends State<PlayStoreComponentEditor> {
                                 ),
                               )),
                         ]),
+                    BackgroundWidget(
+                        app: widget.app,
+                        memberId: memberId,
+                        value: playStoreState.model.backgroundIcon!,
+                        label: 'Background for Icon'),
                     topicContainer(widget.app, context,
                         title: 'Condition',
                         collapsible: true,

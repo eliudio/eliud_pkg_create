@@ -8,6 +8,7 @@ import 'package:eliud_core/model/app_list_state.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
+import 'package:eliud_core/tools/etc.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
 import 'package:eliud_pkg_create/widgets/new_app_widget.dart';
 import 'package:flutter/material.dart';
@@ -52,25 +53,17 @@ class PlayStoreState extends State<PlayStore> {
                     newApp(context, member, app);
                   },
                   child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                              Colors.orange,
-                              Colors.orangeAccent,
-                              Colors.red,
-                              Colors.redAccent
-                              //add more colors for gradient
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            stops: [0, 0.2, 0.5, 0.8]),
-                      ),
+                      decoration: widget.playStoreModel.backgroundIcon == null
+                          ? null
+                          : BoxDecorationHelper.boxDecoration(member, widget.playStoreModel.backgroundIcon),
                       child: const Icon(Icons.add))));
             }
             for (var model in state.values!) {
               if (model != null) {
                 var logo = Container(
-                  color: Colors.red,
+                  decoration: widget.playStoreModel.backgroundIcon == null
+                      ? null
+                      : BoxDecorationHelper.boxDecoration(member, widget.playStoreModel.backgroundIcon),
                   child: ((model.logo != null) && (model.logo!.url != null))
                       ? Image.network(model.logo!.url!)
                       : const Icon(Icons.help),
@@ -83,7 +76,8 @@ class PlayStoreState extends State<PlayStore> {
                             SwitchApp(app, toAppID: model.documentID!));
                       },
                       child: logo);
-                } else {
+                  components.add(component);
+                } /*else {
                   component = Stack(children: [
                     logo,
                     Center(
@@ -101,8 +95,7 @@ class PlayStoreState extends State<PlayStore> {
                                   ),
                                 )))),
                   ]);
-                }
-                components.add(component);
+                }*/
               }
             }
 
@@ -110,7 +103,7 @@ class PlayStoreState extends State<PlayStore> {
                 padding: const EdgeInsets.all(16.0),
                 child: GridView.extent(
                     maxCrossAxisExtent: size,
-                    padding: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(20),
                     mainAxisSpacing: 20,
                     crossAxisSpacing: 20,
                     physics: const ScrollPhysics(),

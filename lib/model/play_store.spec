@@ -43,6 +43,13 @@
       "iconName": "text_format"
     },
     {
+      "fieldName": "backgroundIcon",
+      "displayName": "Background Icon",
+      "fieldType": "Background",
+      "optional": true,
+      "group": "background"
+    },
+    {
       "fieldName": "conditions",
       "displayName": "Conditions",
       "fieldType": "StorageConditions",

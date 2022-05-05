@@ -1,3 +1,4 @@
+import 'package:eliud_core/model/background_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/tools/component/component_spec.dart';
 import 'package:eliud_core/tools/random.dart';
@@ -14,6 +15,7 @@ class PlayStoreBloc extends EditorBaseBloc<PlayStoreModel> {
     return PlayStoreModel(
         appId: appId,
         documentID: newRandomKey(),
+        backgroundIcon: BackgroundModel(),
         conditions: conditions,
         description: 'new play store');
   }
@@ -21,6 +23,6 @@ class PlayStoreBloc extends EditorBaseBloc<PlayStoreModel> {
   @override
   PlayStoreModel setDefaultValues(
       PlayStoreModel t, StorageConditionsModel conditions) {
-    return t.copyWith(conditions: t.conditions ?? conditions);
+    return t.copyWith(conditions: t.conditions ?? conditions, backgroundIcon: t.backgroundIcon ?? BackgroundModel());
   }
 }
