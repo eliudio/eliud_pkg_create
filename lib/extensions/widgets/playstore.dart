@@ -53,17 +53,19 @@ class PlayStoreState extends State<PlayStore> {
                     newApp(context, member, app);
                   },
                   child: Container(
+                      clipBehavior: (widget.playStoreModel.backgroundIcon == null) ? Clip.none : Clip.hardEdge,
                       decoration: widget.playStoreModel.backgroundIcon == null
                           ? null
-                          : BoxDecorationHelper.boxDecoration(member, widget.playStoreModel.backgroundIcon),
+                          : BoxDecorationHelper.boxDecoration(app, member, widget.playStoreModel.backgroundIcon),
                       child: const Icon(Icons.add))));
             }
             for (var model in state.values!) {
               if (model != null) {
                 var logo = Container(
+                  clipBehavior: (widget.playStoreModel.backgroundIcon == null) ? Clip.none : Clip.hardEdge,
                   decoration: widget.playStoreModel.backgroundIcon == null
                       ? null
-                      : BoxDecorationHelper.boxDecoration(member, widget.playStoreModel.backgroundIcon),
+                      : BoxDecorationHelper.boxDecoration(app, member, widget.playStoreModel.backgroundIcon),
                   child: ((model.logo != null) && (model.logo!.url != null))
                       ? Image.network(model.logo!.url!)
                       : const Icon(Icons.help),
