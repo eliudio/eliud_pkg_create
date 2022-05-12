@@ -1,6 +1,7 @@
 {
   "id": "PlayStore",
   "packageName": "eliud_pkg_create",
+  "packageFriendlyName": "create",
   "isAppModel": true,
   "generate": {
     "generateComponent": true,
@@ -71,8 +72,7 @@
     }
   ],
   "listFields": {
-    "title": "value.documentID != null ? Center(child: StyleRegistry.registry().styleWithApp(app).frontEndStyle().textStyle().text(app, context, value.documentID!)) : Container()",
-    "subTitle": "value.description != null ? Center(child: StyleRegistry.registry().styleWithApp(app).frontEndStyle().textStyle().text(app, context, value.description!)) : Container()"
+    "title": "value.description != null ? Center(child: text(app, context, value.description!)) : value.documentID != null ? Center(child: text(app, context, value.documentID!)) : Container()"
   },
   "depends": ["eliud_core"]
 }

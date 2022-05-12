@@ -89,7 +89,8 @@ class _PluginsWidgetState extends State<PluginsWidget>
 
   @override
   void initState() {
-    items = widget.pluginsWidthComponents.map((item) => item.name).toList();
+    items = widget.pluginsWidthComponents.map((item) => item.friendlyName).toList();
+    //items!.sort();
     initInnerItems(0);
 
     super.initState();

@@ -1,3 +1,4 @@
+import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -24,7 +25,6 @@ class BodyComponentsCreateWidget extends StatefulWidget {
     required this.app,
     Key? key,
     required this.widgetWidth,
-
   }) : super(key: key);
 
   @override
@@ -33,20 +33,22 @@ class BodyComponentsCreateWidget extends StatefulWidget {
   }
 
   static Widget getIt(
-      BuildContext context,
-      int containerPrivilege,
-      AppModel app,
-      List<BodyComponentModel> bodyComponents,
-      double widgetWidth,
-      /*double widgetHeight
-      */) {
+    BuildContext context,
+    int containerPrivilege,
+    AppModel app,
+    List<BodyComponentModel> bodyComponents,
+    double widgetWidth,
+    /*double widgetHeight
+      */
+  ) {
     if (app == null) throw Exception("No app selected");
     return BlocProvider<BodyComponentsCreateBloc>(
       create: (context) => BodyComponentsCreateBloc(
         app,
         bodyComponents,
       )..add(BodyComponentsCreateInitialiseEvent(bodyComponents)),
-      child: BodyComponentsCreateWidget._(app: app,
+      child: BodyComponentsCreateWidget._(
+        app: app,
         containerPrivilege: containerPrivilege,
         widgetWidth: widgetWidth,
       ),
@@ -86,10 +88,11 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
                             if (item == state.currentlySelected)
                               theKey = currentVisible;
                             count++;
-                            return getListTile(context,widget.app,
+                            return getListTile(context, widget.app,
                                 key: theKey,
                                 onTap: () => details(context, item),
-                                trailing: PopupMenuItemChoices(app: widget.app,
+                                trailing: PopupMenuItemChoices(
+                                  app: widget.app,
                                   isFirst: (count != 1),
                                   isLast: (count != size),
                                   actionUp: () =>
@@ -108,11 +111,7 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
                                       .add(BodyComponentsCreateDeleteMenuItem(
                                           item)),
                                 ),
-                                title: text(widget.app,
-                                    context,
-                                    item.componentName! +
-                                        " - " +
-                                        item.componentId!));
+                                title: title(item.componentName!, item.componentId!));
                           }).toList())))
                 ]),
             topicContainer(widget.app, context,
@@ -120,7 +119,8 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
                 collapsible: true,
                 collapsed: true,
                 children: [
-                  PluginsWidget(app: widget.app,
+                  PluginsWidget(
+                    app: widget.app,
                     widgetHeight: 200, //max(heightUnit() * 2, 150) - 10,
                     widgetWidth: widget.widgetWidth,
                     containerPrivilege: widget.containerPrivilege,
@@ -133,6 +133,26 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
         return progressIndicator(widget.app, context);
       }
     });
+  }
+
+  Widget title(String componentName, String componentId) {
+    var componentConstructor =
+        Registry.registry()!.registryMap()[componentName];
+    if (componentConstructor != null) {
+      return FutureBuilder<dynamic>(
+          future:
+              componentConstructor.getModel(app: widget.app, id: componentId),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var model = snapshot.data;
+              return text(widget.app, context, componentName + '-' + (model.description ?? componentId));
+            } else {
+              return Container();
+            }
+          });
+    } else {
+      return text(widget.app, context, '?');
+    }
   }
 
   void details(BuildContext context, BodyComponentModel bodyComponentModel) {
@@ -152,5 +172,4 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
       }
     }
   }
-
 }

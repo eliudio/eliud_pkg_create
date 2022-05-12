@@ -41,6 +41,7 @@ class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
         PlayStoreModel(
           appId: app.documentID,
           documentID: newRandomKey(),
+          description: 'New playstore',
           conditions: StorageConditionsModel(
               privilegeLevelRequired:
                   PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),

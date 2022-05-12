@@ -47,11 +47,16 @@ class BodyComponentsCreateInitialised extends BodyComponentsCreateState {
 }
 
 List<PluginWithComponents> retrievePluginsWithComponents() =>
-    Registry.registry()!.componentSpecMap().entries.map((entry) => PluginWithComponents(entry.key, entry.value)).toList();
+    Registry.registry()!.componentSpecMap().entries.map((entry) {
+      var key = entry.key;
+      var friendlyName = Registry.registry()!.packageFriendlyNames()[key];
+      return PluginWithComponents(key, friendlyName ?? '?', entry.value);
+    }).toList();
 
 class PluginWithComponents {
   final String name;
+  final String friendlyName;
   final List<ComponentSpec> componentSpec;
 
-  PluginWithComponents(this.name, this.componentSpec);
+  PluginWithComponents(this.name, this.friendlyName, this.componentSpec);
 }

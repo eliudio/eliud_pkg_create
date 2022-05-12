@@ -34,7 +34,7 @@ class ComponentRegistry {
     Registry.registry()!.register(componentName: "eliud_pkg_create_internalWidgets", componentConstructor: ListComponentFactory());
     Registry.registry()!.addDropDownSupporter("playStores", DropdownButtonComponentFactory());
     Registry.registry()!.register(componentName: "playStores", componentConstructor: PlayStoreComponentConstructorDefault());
-    Registry.registry()!.addComponentSpec('eliud_pkg_create', [
+    Registry.registry()!.addComponentSpec('eliud_pkg_create', 'create', [
       ComponentSpec('playStores', PlayStoreComponentConstructorDefault(), PlayStoreComponentSelector(), PlayStoreComponentEditorConstructor(), ), 
     ]);
 
