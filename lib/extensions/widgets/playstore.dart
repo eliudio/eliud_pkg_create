@@ -31,8 +31,6 @@ class PlayStore extends StatefulWidget {
 }
 
 class PlayStoreState extends State<PlayStore> {
-  static double size = 150.0;
-  static double textHeight = 40.0;
   PlayStoreState();
 
   Widget alertWidget({title = String, content = String}) {
