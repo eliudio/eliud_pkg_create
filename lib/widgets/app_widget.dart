@@ -615,6 +615,15 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
               app.autoPrivileged1 = value ?? false;
             });
           }),
+          checkboxListTile(
+              widget.app,
+              context,
+              'Featured',
+              app.isFeatured ?? false, (value) {
+            setState(() {
+              app.isFeatured = value ?? false;
+            });
+          }),
         ]);
   }
 
