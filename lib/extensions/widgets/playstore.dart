@@ -55,13 +55,10 @@ class PlayStoreState extends State<PlayStore> {
                     newApp(context, member, app);
                   },
                   child: Container(
-                      clipBehavior:
-                          (widget.playStoreModel.backgroundIcon == null)
-                              ? Clip.none
-                              : Clip.hardEdge,
-                      decoration: widget.playStoreModel.backgroundIcon == null
-                          ? null
-                          : BoxDecorationHelper.boxDecoration(app, member,
+                      clipBehavior:BoxDecorationHelper.determineClipBehaviour(app, member, widget.playStoreModel.backgroundIcon),
+                      margin: BoxDecorationHelper.determineMargin(app, member, widget.playStoreModel.backgroundIcon),
+                      padding: BoxDecorationHelper.determinePadding(app, member, widget.playStoreModel.backgroundIcon),
+                      decoration: BoxDecorationHelper.boxDecoration(app, member,
                               widget.playStoreModel.backgroundIcon),
                       child: const Icon(Icons.add))));
             }
@@ -69,14 +66,10 @@ class PlayStoreState extends State<PlayStore> {
               if (model != null) {
                 var logo = (widget.incName)
                     ? Container(
-                        padding: const EdgeInsets.all(5.0),
-                        clipBehavior:
-                            (widget.playStoreModel.backgroundIcon == null)
-                                ? Clip.none
-                                : Clip.hardEdge,
-                        decoration: widget.playStoreModel.backgroundIcon == null
-                            ? null
-                            : BoxDecorationHelper.boxDecoration(app, member,
+                        clipBehavior:BoxDecorationHelper.determineClipBehaviour(app, member, widget.playStoreModel.backgroundIcon),
+                        margin: BoxDecorationHelper.determineMargin(app, member, widget.playStoreModel.backgroundIcon),
+                        padding: BoxDecorationHelper.determinePadding(app, member, widget.playStoreModel.backgroundIcon),
+                        decoration: BoxDecorationHelper.boxDecoration(app, member,
                                 widget.playStoreModel.backgroundIcon),
                         child: ListView(
                             shrinkWrap: true,
@@ -99,13 +92,10 @@ class PlayStoreState extends State<PlayStore> {
                                               ''))),
                             ]))
                     : Container(
-                        clipBehavior:
-                            (widget.playStoreModel.backgroundIcon == null)
-                                ? Clip.none
-                                : Clip.hardEdge,
-                        decoration: widget.playStoreModel.backgroundIcon == null
-                            ? null
-                            : BoxDecorationHelper.boxDecoration(app, member,
+                        clipBehavior: BoxDecorationHelper.determineClipBehaviour(app, member, widget.playStoreModel.backgroundIcon),
+                        margin: BoxDecorationHelper.determineMargin(app, member, widget.playStoreModel.backgroundIcon),
+                        padding: BoxDecorationHelper.determinePadding(app, member, widget.playStoreModel.backgroundIcon),
+                        decoration: BoxDecorationHelper.boxDecoration(app, member,
                                 widget.playStoreModel.backgroundIcon),
                         child:
                             ((model.logo != null) && (model.logo!.url != null))

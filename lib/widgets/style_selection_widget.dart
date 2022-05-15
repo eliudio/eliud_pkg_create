@@ -49,7 +49,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
         physics: ScrollPhysics(),
         itemCount: childDocuments.length,
         itemBuilder: (context, position) {
-          var styleFamilyState = childDocuments[position];
+          var styleFamilyState =  childDocuments[position];
           var isCurrent = currentlySelected != null &&
               currentlySelected.styleFamily == styleFamilyState.styleFamily;
           List<Widget> buttons = _getStyles(styleFamilyState.allStyles, currentlySelected);
