@@ -8,6 +8,7 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_public_info_list_bloc.dart';
 import 'package:eliud_core/model/member_public_info_list_event.dart';
 import 'package:eliud_core/model/member_public_info_list_state.dart';
+import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
@@ -80,6 +81,29 @@ class MemberAppsWidget extends StatefulWidget {
 class _MemberAppsWidgetState extends State<MemberAppsWidget> {
   String? selectedMember;
   bool incName = false;
+  double? width = 300;
+  final _buttonKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+
+//    WidgetsBinding.instance?.addPostFrameCallback(_getWidgetInfo);
+  }
+
+/*
+  void _getWidgetInfo(_) {
+    var renderButtonObject = _buttonKey.currentContext?.findRenderObject();
+    if (renderButtonObject is RenderBox) {
+      var renderButtonBox = renderButtonObject;
+
+      var sizeButtonBox = renderButtonBox.size;
+      setState(() {
+        width = sizeButtonBox.width;
+      });
+    }
+  }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -99,38 +123,35 @@ class _MemberAppsWidgetState extends State<MemberAppsWidget> {
                 shrinkWrap: true,
                 physics: ScrollPhysics(),
                 children: [
-                  Row(children: [
-                    Spacer(),
+                  Column(children: [
                     BlocProvider<MemberPublicInfoListBloc>(
-                        child: Center(
-                            child: MemberPublicInfoDropdownButtonWidget(
-                              app: widget.app,
-                              value: selectedMember,
-                              currentMemberId: currentMemberId,
-                              trigger: (String? value) {
-                                setState(() {
-                                  selectedMember = value;
-                                  BlocProvider.of<AppListBloc>(context).add(
-                                      AppChangeQuery(
-                                          newQuery:
-                                          getQuery(value, currentMemberId)));
-                                });
-                              },
-                            )),
+                        child: getListTile(context, widget.app,
+                            title: MemberPublicInfoDropdownButtonWidget(
+                                  app: widget.app,
+                                  value: selectedMember,
+                                  currentMemberId: currentMemberId,
+                                  trigger: (String? value) {
+                                    setState(() {
+                                      selectedMember = value;
+                                      BlocProvider.of<AppListBloc>(context).add(
+                                          AppChangeQuery(
+                                              newQuery: getQuery(
+                                                  value, currentMemberId)));
+                                    });
+                                  }),
+                            ),
                         create: (context) => MemberPublicInfoListBloc(
-                          memberPublicInfoRepository:
-                          memberPublicInfoRepository()!,
-                        )..add(LoadMemberPublicInfoList())),
-                    Spacer(),
-                    Container(width: 300, child:
+                              memberPublicInfoRepository:
+                                  memberPublicInfoRepository()!,
+                            )..add(LoadMemberPublicInfoList())),
                     checkboxListTile(
                         widget.app, context, 'Include name', incName, (value) {
                       setState(() {
                         incName = value ?? false;
                       });
-                    })),
-                    Spacer(),
+                    }),
                   ]),
+                  divider(widget.app, context),
                   PlayStore(widget.app, widget.playStoreModel, incName)
                 ]);
           } else {
@@ -228,8 +249,8 @@ class MemberPublicInfoDropdownButtonWidgetState
           });
         }
         return DropdownButton<String>(
+          isExpanded: true,
           isDense: false,
-          isExpanded: false,
           items: items,
           value: widget.value,
           hint: text(widget.app, context, 'Select a member'),
