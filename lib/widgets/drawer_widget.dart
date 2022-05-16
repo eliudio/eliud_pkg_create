@@ -280,18 +280,21 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
     var items = <PopupMenuItem<int>>[];
     if (Registry.registry()!.getMediumApi().hasCamera()) {
       items.add(
-        PopupMenuItem<int>(
-            child: text(widget.app, context, 'Take photo'), value: 0),
+        popupMenuItem<int>(
+            widget.app, context,
+            label: 'Take photo', value: 0),
       );
     }
-    items.add(PopupMenuItem<int>(
-        child: text(widget.app, context, 'Upload photo'), value: 1));
-    items.add(PopupMenuItem<int>(
-        child: text(widget.app, context, 'Use member profile photo'),
+    items.add(popupMenuItem<int>(
+        widget.app, context,
+        label: 'Upload photo', value: 1));
+    items.add(popupMenuItem<int>(
+        widget.app, context,
+        label: 'Use member profile photo',
         value: 2));
-    return PopupMenuButton(
+    return popupMenuButton(
+        widget.app, context,
         tooltip: 'Add photo',
-        padding: const EdgeInsets.all(0.0),
         child: const Icon(Icons.photo, size: 40),
         itemBuilder: (_) => items,
         onSelected: (choice) {

@@ -1,6 +1,7 @@
 import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
+import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
@@ -53,26 +54,30 @@ class _LogoWidgetState extends State<LogoWidget> {
 
   Widget tile() {
     return getListTile(context,widget.app,
-        trailing: PopupMenuButton<int>(
+        trailing: popupMenuButton<int>(
+            widget.app, context,
             child: Icon(Icons.more_vert),
-            elevation: 10,
             itemBuilder: (context) => [
               if (Registry.registry()!.getMediumApi().hasCamera())
-                PopupMenuItem(
+                popupMenuItem(
+                  widget.app, context,
                   value: 0,
-                  child: text(widget.app, context, 'Take photo'),
+                  label: 'Take photo',
                 ),
-              PopupMenuItem(
+              popupMenuItem(
+                widget.app, context,
                 value: 1,
-                child: text(widget.app, context, 'Upload logo'),
+                label: 'Upload logo',
               ),
-              /*if (Registry.registry()!.getMediumApi().hasAccessToLocalFilesystem()) */PopupMenuItem(
+              popupMenuItem(
+                widget.app, context,
                 value: 2,
-                child: text(widget.app, context, 'Random logo'),
+                label: 'Random logo',
               ),
-              PopupMenuItem(
+              popupMenuItem(
+                widget.app, context,
                 value: 3,
-                child: text(widget.app, context, 'Clear image'),
+                label: 'Clear image',
               ),
             ],
             onSelected: (value) async {

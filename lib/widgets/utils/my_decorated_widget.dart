@@ -1,5 +1,6 @@
 import 'package:eliud_core/decoration/decoration.dart' as deco;
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_pkg_etc/widgets/decorator/creator_button.dart';
@@ -43,8 +44,9 @@ class MultipleActions extends Action {
       context: context,
       position: RelativeRect.fromLTRB(x, y, x, y),
       items: doThis
-          .map((value) => PopupMenuItem<String>(
-              child: text(app, context, value.label), value: value.label))
+          .map((value) => popupMenuItem<String>(
+          app, context,
+              label: value.label, value: value.label))
           .toList(),
       elevation: 8.0,
     );

@@ -335,17 +335,19 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
 
   PopupMenuButton<int> availableMenuItemPopup(
       MenuDefCreateEvent eventWhenAdded, VoidCallback updateAction) {
-    return PopupMenuButton<int>(
+    return popupMenuButton<int>(
+        widget.app, context,
         child: const Icon(Icons.more_vert),
-        elevation: 10,
         itemBuilder: (context) => [
-              PopupMenuItem(
+              popupMenuItem(
+                widget.app, context,
                 value: 1,
-                child: text(widget.app, context, 'Add to menu'),
+                label: 'Add to menu',
               ),
-              PopupMenuItem(
+              popupMenuItem(
+                widget.app, context,
                 value: 2,
-                child: text(widget.app, context, 'Update'),
+                label: 'Update',
               ),
             ],
         onSelected: (value) {

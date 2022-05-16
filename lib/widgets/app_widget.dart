@@ -195,45 +195,45 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                     item!,
                                     "Update page",
                                   ),
-                              trailing: PopupMenuButton<int>(
+                              trailing: popupMenuButton<int>(
+                                widget.app, context,
                                   child: Icon(Icons.more_vert),
-                                  elevation: 10,
                                   itemBuilder: (context) => [
-                                        PopupMenuItem(
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 0,
-                                          child: text(
-                                              widget.app, context, 'Details'),
+                                          label: 'Details',
                                         ),
-                                        PopupMenuDivider(),
-                                        PopupMenuItem(
+                                        popupMenuDivider(widget.app, context),
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 1,
-                                          child: text(widget.app, context,
-                                              'Set as public homepage'),
+                                          label: 'Set as public homepage',
                                         ),
-                                        PopupMenuItem(
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 2,
-                                          child: text(widget.app, context,
-                                              'Set as homepage for subscribed member'),
+                                          label: 'Set as homepage for subscribed member',
                                         ),
-                                        PopupMenuItem(
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 3,
-                                          child: text(widget.app, context,
-                                              'Set as homepage for suscribed member, level 1'),
+                                          label: 'Set as homepage for suscribed member, level 1',
                                         ),
-                                        PopupMenuItem(
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 4,
-                                          child: text(widget.app, context,
-                                              'Set as homepage for suscribed member, level 2'),
+                                          label: 'Set as homepage for suscribed member, level 2',
                                         ),
-                                        PopupMenuItem(
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 5,
-                                          child: text(widget.app, context,
-                                              'Set as homepage for blocked member'),
+                                          label: 'Set as homepage for blocked member',
                                         ),
-                                        PopupMenuItem(
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 6,
-                                          child: text(widget.app, context,
-                                              'Set as homepage for owner'),
+                                          label: 'Set as homepage for owner',
                                         ),
                                       ],
                                   onSelected: (value) {
@@ -318,14 +318,14 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                     item!,
                                     "Update dialog",
                                   ),
-                              trailing: PopupMenuButton<int>(
+                              trailing: popupMenuButton<int>(
+                                widget.app, context,
                                   child: Icon(Icons.more_vert),
-                                  elevation: 10,
                                   itemBuilder: (context) => [
-                                        PopupMenuItem(
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 0,
-                                          child: text(
-                                              widget.app, context, 'Details'),
+                                          label: 'Details',
                                         ),
                                       ],
                                   onSelected: (value) {
@@ -385,19 +385,19 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                             children:
                                 state.appModel.policies!.policies!.map((item) {
                           return getListTile(context, widget.app,
-                              trailing: PopupMenuButton<int>(
+                              trailing: popupMenuButton<int>(
+                                  widget.app, context,
                                   child: Icon(Icons.more_vert),
-                                  elevation: 10,
                                   itemBuilder: (context) => [
-                                        PopupMenuItem(
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 0,
-                                          child: text(
-                                              widget.app, context, 'Delete'),
+                                          label: 'Delete',
                                         ),
-                                        PopupMenuItem(
+                                        popupMenuItem(
+                                          widget.app, context,
                                           value: 1,
-                                          child: text(
-                                              widget.app, context, 'Rename'),
+                                          label: 'Rename',
                                         ),
                                       ],
                                   onSelected: (value) {

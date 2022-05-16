@@ -1,4 +1,5 @@
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -27,27 +28,31 @@ class _PopupMenuItemChoicesState extends State<PopupMenuItemChoices> {
   Widget build(BuildContext context) {
     var menuItems = [
       if (widget.isFirst)
-        PopupMenuItem(
+        popupMenuItem(
+          widget.app, context,
           value: 1,
-          child: text(widget.app, context, 'Move up'),
+          label: 'Move up'
         ),
       if (widget.isLast)
-        PopupMenuItem(
+        popupMenuItem(
+          widget.app, context,
           value: 2,
-          child: text(widget.app, context, 'Move down'),
+          label: 'Move down'
         ),
-      PopupMenuItem(
+      popupMenuItem(
+        widget.app, context,
         value: 3,
-        child: text(widget.app, context, 'Details'),
+        label: 'Details'
       ),
-      PopupMenuItem(
+      popupMenuItem(
+        widget.app, context,
         value: 4,
-        child: text(widget.app, context, 'Delete'),
+        label: 'Delete'
       ),
     ];
-    return PopupMenuButton<int>(
+    return popupMenuButton<int>(
+        widget.app, context,
         child: Icon(Icons.more_vert),
-        elevation: 10,
         itemBuilder: (context) => menuItems,
         onSelected: (value) {
           if (value == 1) {
