@@ -6,6 +6,7 @@ import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/component/update_component.dart';
+import 'package:eliud_core/tools/component_title_helper.dart';
 import 'package:eliud_pkg_create/widgets/bodycomponents/plugins_widget.dart';
 import 'package:eliud_pkg_create/widgets/utils/popup_menu_item_choices.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +112,7 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
                                       .add(BodyComponentsCreateDeleteMenuItem(
                                           item)),
                                 ),
-                                title: title(item.componentName!, item.componentId!));
+                                title: ComponentTitleHelper.title(context, widget.app, item.componentName!, item.componentId!));
                           }).toList())))
                 ]),
             topicContainer(widget.app, context,
@@ -133,26 +134,6 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
         return progressIndicator(widget.app, context);
       }
     });
-  }
-
-  Widget title(String componentName, String componentId) {
-    var componentConstructor =
-        Registry.registry()!.registryMap()[componentName];
-    if (componentConstructor != null) {
-      return FutureBuilder<dynamic>(
-          future:
-              componentConstructor.getModel(app: widget.app, id: componentId),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              var model = snapshot.data;
-              return text(widget.app, context, componentName + '-' + (model.description ?? componentId));
-            } else {
-              return Container();
-            }
-          });
-    } else {
-      return text(widget.app, context, '?');
-    }
   }
 
   void details(BuildContext context, BodyComponentModel bodyComponentModel) {
