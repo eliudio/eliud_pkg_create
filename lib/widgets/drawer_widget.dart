@@ -18,6 +18,7 @@ import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/screen_size.dart';
+import 'package:eliud_core/tools/widgets/background_widget.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/utils/styles.dart';
@@ -103,71 +104,142 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
     return BlocBuilder<AccessBloc, AccessState>(
         builder: (context, accessState) {
       if (accessState is AccessDetermined) {
-        return BlocBuilder<DrawerCreateBloc, DrawerCreateState>(
-            builder: (context, state) {
-          if (state is DrawerCreateValidated) {
-            return ListView(
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                children: [
-                  HeaderWidget(
-                    app: widget.app,
-                    cancelAction: () async {
-                      return true;
-                    },
-                    okAction: () async {
-                      BlocProvider.of<DrawerCreateBloc>(context)
-                          .add(DrawerCreateEventApplyChanges(true));
-                      return true;
-                    },
-                    title: 'Update drawer',
-                  ),
-                  topicContainer(widget.app, context,
-                      title: 'General',
-                      collapsible: true,
-                      collapsed: true,
-                      children: [
-                        getListTile(
-                          context,
-                          widget.app,
-                          leading: Icon(Icons.description),
-                          title: dialogField(widget.app, context,
-                              valueChanged: (value) =>
-                                  state.drawerModel.headerText = value,
-                              initialValue: state.drawerModel.headerText,
-                              decoration: inputDecoration(
-                                  widget.app, context, "Header text")),
-                        ),
-                        _mediaButtons(context, state, widget.app,
-                            accessState.getMember()!.documentID!),
-                        getListTile(context, widget.app,
+        if (accessState.getMember() != null) {
+          var memberId = accessState.getMember()!.documentID!;
+          return BlocBuilder<DrawerCreateBloc, DrawerCreateState>(
+              builder: (context, state) {
+            if (state is DrawerCreateValidated) {
+              return ListView(
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  children: [
+                    HeaderWidget(
+                      app: widget.app,
+                      cancelAction: () async {
+                        return true;
+                      },
+                      okAction: () async {
+                        BlocProvider.of<DrawerCreateBloc>(context)
+                            .add(DrawerCreateEventApplyChanges(true));
+                        return true;
+                      },
+                      title: 'Update drawer',
+                    ),
+                    topicContainer(widget.app, context,
+                        title: 'Header',
+                        collapsible: true,
+                        collapsed: true,
+                        children: [
+                          getListTile(
+                            context,
+                            widget.app,
                             leading: Icon(Icons.description),
-                            title: dialogField(
-                              widget.app,
-                              context,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: 3,
-                              valueChanged: (value) =>
-                                  state.drawerModel.secondHeaderText = value,
-                              initialValue: state.drawerModel.secondHeaderText,
-                              decoration: inputDecoration(
+                            title: dialogField(widget.app, context,
+                                valueChanged: (value) =>
+                                    state.drawerModel.headerText = value,
+                                initialValue: state.drawerModel.headerText,
+                                decoration: inputDecoration(
+                                    widget.app, context, "Header text")),
+                          ),
+                          _mediaButtons(context, state, widget.app, memberId),
+                          getListTile(context, widget.app,
+                              leading: Icon(Icons.description),
+                              title: dialogField(
                                 widget.app,
                                 context,
-                                'Second Header text',
-                              ),
-                            )),
-                      ]),
-                  MenuDefCreateWidget.getIt(
-                    context,
-                    widget.app,
-                    state.drawerModel
-                        .menu!, /*widget.widgetWidth, max(widget.widgetHeight - 300, 200)*/
-                  )
-                ]);
-          } else {
-            return progressIndicator(widget.app, context);
-          }
-        });
+                                keyboardType: TextInputType.multiline,
+                                maxLines: 3,
+                                valueChanged: (value) =>
+                                    state.drawerModel.secondHeaderText = value,
+                                initialValue:
+                                    state.drawerModel.secondHeaderText,
+                                decoration: inputDecoration(
+                                  widget.app,
+                                  context,
+                                  'Second Header text',
+                                ),
+                              )),
+                        ]),
+                    topicContainer(widget.app, context,
+                        title: 'Backgrounds',
+                        collapsible: true,
+                        collapsed: true,
+                        children: [
+                          topicContainer(widget.app, context,
+                              title: 'Header Background override',
+                              collapsible: true,
+                              collapsed: true,
+                              children: [
+                                checkboxListTile(
+                                    widget.app,
+                                    context,
+                                    'Header Background override?',
+                                    state.drawerModel.headerBackgroundOverride !=
+                                        null, (value) {
+                                  setState(() {
+                                    if (value!) {
+                                      state.drawerModel.headerBackgroundOverride =
+                                          BackgroundModel();
+                                    } else {
+                                      state.drawerModel.headerBackgroundOverride =
+                                      null;
+                                    }
+                                  });
+                                }),
+                                if (state.drawerModel.headerBackgroundOverride !=
+                                    null)
+                                  BackgroundWidget(
+                                      app: widget.app,
+                                      memberId: memberId,
+                                      value:
+                                      state.drawerModel.headerBackgroundOverride!,
+                                      label: 'Header Background'),
+                              ]),
+                          topicContainer(widget.app, context,
+                              title: 'Background override',
+                              collapsible: true,
+                              collapsed: true,
+                              children: [
+                                checkboxListTile(
+                                    widget.app,
+                                    context,
+                                    'Background override?',
+                                    state.drawerModel.backgroundOverride !=
+                                        null, (value) {
+                                  setState(() {
+                                    if (value!) {
+                                      state.drawerModel.backgroundOverride =
+                                          BackgroundModel();
+                                    } else {
+                                      state.drawerModel.backgroundOverride =
+                                      null;
+                                    }
+                                  });
+                                }),
+                                if (state.drawerModel.backgroundOverride !=
+                                    null)
+                                  BackgroundWidget(
+                                      app: widget.app,
+                                      memberId: memberId,
+                                      value:
+                                      state.drawerModel.backgroundOverride!,
+                                      label: 'Background'),
+                              ]),
+                        ]),
+                    MenuDefCreateWidget.getIt(
+                      context,
+                      widget.app,
+                      state.drawerModel
+                          .menu!, /*widget.widgetWidth, max(widget.widgetHeight - 300, 200)*/
+                    )
+                  ]);
+            } else {
+              return progressIndicator(widget.app, context);
+            }
+          });
+        } else {
+          return text(widget.app, context, 'No member');
+        }
       } else {
         return progressIndicator(widget.app, context);
       }
@@ -280,20 +352,14 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
     var items = <PopupMenuItem<int>>[];
     if (Registry.registry()!.getMediumApi().hasCamera()) {
       items.add(
-        popupMenuItem<int>(
-            widget.app, context,
-            label: 'Take photo', value: 0),
+        popupMenuItem<int>(widget.app, context, label: 'Take photo', value: 0),
       );
     }
-    items.add(popupMenuItem<int>(
-        widget.app, context,
+    items.add(popupMenuItem<int>(widget.app, context,
         label: 'Upload photo', value: 1));
-    items.add(popupMenuItem<int>(
-        widget.app, context,
-        label: 'Use member profile photo',
-        value: 2));
-    return popupMenuButton(
-        widget.app, context,
+    items.add(popupMenuItem<int>(widget.app, context,
+        label: 'Use member profile photo', value: 2));
+    return popupMenuButton(widget.app, context,
         tooltip: 'Add photo',
         child: const Icon(Icons.photo, size: 40),
         itemBuilder: (_) => items,
