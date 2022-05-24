@@ -10,15 +10,16 @@ class WizardBloc extends Bloc<WizardEvent, WizardState> {
   final AppModel app;
   final AccessBloc accessBloc;
 
-  WizardBloc(this.app, this.accessBloc) : super(NewAppCreateUninitialised());
+  WizardBloc(this.app, this.accessBloc) : super(NewAppCreateUninitialised()) {
+    on<WizardInitialise>((event, emit) {
+      emit(WizardAllowEnterDetails(app, event.member));
+    });
 
-  @override
-  Stream<WizardState> mapEventToState(WizardEvent event) async* {
-    if (event is WizardInitialise) {
-      yield WizardAllowEnterDetails(app, event.member);
-    } else if ((state is WizardInitialised) && (event is WizardConfirm)) {
+    //else if ((state is WizardInitialised) && (event is WizardConfirm)) {
+
+    on<WizardConfirm>((event, emit) {
       var theState = state as WizardInitialised;
-      yield WizardRunning(theState.app, theState.member, event.wizardMessage);
+      emit(WizardRunning(theState.app, theState.member, event.wizardMessage));
       WizardRunner(
         theState.app,
         theState.member,
@@ -28,19 +29,24 @@ class WizardBloc extends Bloc<WizardEvent, WizardState> {
         styleName: event.styleName,
         accessBloc: accessBloc,
       ).create(accessBloc, this).then((value) => add(WizardFinished(true)));
-    } else if (state is WizardRunning) {
+    });
+
+    on<WizardFinished>((event, emit) {
       var theState = state as WizardRunning;
-      if (event is WizardFinished) {
-        yield WizardCreated(theState.app, theState.member,
-            theState.wizardMessage, event.success);
-      } else if (event is WizardProgressed) {
-        var theState = state as WizardRunning;
-        yield WizardCreateInProgress(theState.app, theState.member,
-            theState.wizardMessage, event.progress);
-      } else if (event is WizardCancelled) {
-        yield WizardCreateCancelled(
-            theState.app, theState.member, theState.wizardMessage);
-      }
-    }
+      emit(WizardCreated(theState.app, theState.member, theState.wizardMessage,
+          event.success));
+    });
+
+    on<WizardProgressed>((event, emit) {
+      var theState = state as WizardRunning;
+      emit(WizardCreateInProgress(theState.app, theState.member,
+          theState.wizardMessage, event.progress));
+    });
+
+    on<WizardCancelled>((event, emit) {
+      var theState = state as WizardRunning;
+      emit(WizardCreateCancelled(
+          theState.app, theState.member, theState.wizardMessage));
+    });
   }
 }

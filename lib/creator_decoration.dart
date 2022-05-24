@@ -57,7 +57,7 @@ class CreatorDecoration extends deco.Decoration {
               openFlexibleDialog(
                 app,
                 context,
-                app.documentID! + '/_appbar',
+                app.documentID + '/_appbar',
                 includeHeading: false,
                 widthFraction: .9,
                 child: PrivilegeWidget(
@@ -212,7 +212,7 @@ class CreatorDecoration extends deco.Decoration {
                             ),
                             action: (state) {
                               openComplexDialog(
-                                  app, context, app.documentID! + '/_style',
+                                  app, context, app.documentID + '/_style',
                                   widthFraction: .5,
                                   includeHeading: false,
                                   child: StyleSelectionWidget.getIt(
@@ -230,7 +230,7 @@ class CreatorDecoration extends deco.Decoration {
                         openFlexibleDialog(
                           app,
                           context,
-                          app.documentID! + '/_appcreate',
+                          app.documentID + '/_appcreate',
                           includeHeading: false,
                           widthFraction: fraction,
                           child: AppCreateWidget.getIt(
@@ -274,7 +274,7 @@ class CreatorDecoration extends deco.Decoration {
                   );
                 }),
                 ActionWithLabel('Create page', () {
-                  openPage(context, app, true, newPageDefaults(app.documentID!),
+                  openPage(context, app, true, newPageDefaults(app.documentID),
                       'Create page');
                 }),
               ]),
@@ -334,7 +334,7 @@ class CreatorDecoration extends deco.Decoration {
                       ),
                       action: (state) {
                         openComplexDialog(
-                            app, context, app.documentID! + '/_style',
+                            app, context, app.documentID + '/_style',
                             widthFraction: .5,
                             includeHeading: false,
                             child: StyleSelectionWidget.getIt(
@@ -352,7 +352,7 @@ class CreatorDecoration extends deco.Decoration {
                   openFlexibleDialog(
                     app,
                     context,
-                    app.documentID! + '/_appcreate',
+                    app.documentID + '/_appcreate',
                     includeHeading: false,
                     widthFraction: fraction,
                     child: AppCreateWidget.getIt(
@@ -424,7 +424,7 @@ class CreatorDecoration extends deco.Decoration {
             );
           }),
           ActionWithLabel('Create dialog', () {
-            openDialog(context, app, true, newDialogDefaults(app.documentID!),
+            openDialog(context, app, true, newDialogDefaults(app.documentID),
                 'Create dialog');
           }),
         ]),

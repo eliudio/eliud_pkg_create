@@ -13,37 +13,29 @@ class DialogCreateBloc extends Bloc<DialogCreateEvent, DialogCreateState> {
 
   DialogCreateBloc(this.appId, DialogModel initialiseWithDialog)
       : dialogModel = deepCopy(initialiseWithDialog),
-        super(DialogCreateUninitialised());
-
-  @override
-  Stream<DialogCreateState> mapEventToState(DialogCreateEvent event) async* {
-    if (event is DialogCreateEventValidateEvent) {
+        super(DialogCreateUninitialised()) {
+    on<DialogCreateEventValidateEvent>((event, emit) {
       // convention is that the ID of the appBar, drawers and home menu are the same ID as that of the app
       var _homeMenuId = homeMenuID(appId);
-      // retrieve with links
-/*
-      var newDialogModel = await dialogRepository(appId: theState.dialogModel.appId)!
-          .get(event.dialogModel.documentID);
-*/
-
       event.dialogModel.conditions ??= StorageConditionsModel(
-          privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple);
+          privilegeLevelRequired:
+              PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple);
       // the updates happen on a (deep) copy
-      yield DialogCreateValidated(deepCopy(event.dialogModel));
-    } else if (state is DialogCreateInitialised) {
+      emit(DialogCreateValidated(deepCopy(event.dialogModel)));
+    });
+
+    on<DialogCreateEventApplyChanges>((event, emit) async {
       var theState = state as DialogCreateInitialised;
-      if (event is DialogCreateEventApplyChanges) {
-        var dialog = await dialogRepository(appId: theState.dialogModel.appId)!
-            .get(theState.dialogModel.documentID);
-        if (dialog == null) {
-          await dialogRepository(appId: theState.dialogModel.appId)!
-              .add(theState.dialogModel);
-        } else {
-          await dialogRepository(appId: theState.dialogModel.appId)!
-              .update(theState.dialogModel);
-        }
+      var dialog = await dialogRepository(appId: theState.dialogModel.appId)!
+          .get(theState.dialogModel.documentID);
+      if (dialog == null) {
+        await dialogRepository(appId: theState.dialogModel.appId)!
+            .add(theState.dialogModel);
+      } else {
+        await dialogRepository(appId: theState.dialogModel.appId)!
+            .update(theState.dialogModel);
       }
-    }
+    });
   }
 
   static DialogModel deepCopy(DialogModel from) {

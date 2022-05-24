@@ -52,11 +52,11 @@ class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
   @override
   void updateComponentWithID(AppModel app, BuildContext context, String id,
       EditorFeedback feedback) async {
-    var playStore = await playStoreRepository(appId: app.documentID!)!.get(id);
+    var playStore = await playStoreRepository(appId: app.documentID)!.get(id);
     if (playStore != null) {
       _openIt(app, context, false, playStore, feedback);
     } else {
-      openErrorDialog(app, context, app.documentID! + '/_error',
+      openErrorDialog(app, context, app.documentID + '/_error',
           title: 'Error',
           errorMessage: 'Cannot find notification dashboard with id $id');
     }
@@ -67,7 +67,7 @@ class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
     openComplexDialog(
       app,
       context,
-      app.documentID! + '/notificationdashboard',
+      app.documentID + '/notificationdashboard',
       title: create
           ? 'Create Notification Dashboard'
           : 'Update Notification Dashboard',
@@ -75,7 +75,7 @@ class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
       widthFraction: .9,
       child: BlocProvider<PlayStoreBloc>(
           create: (context) => PlayStoreBloc(
-                app.documentID!,
+                app.documentID,
                 feedback,
               )..add(EditorBaseInitialise<PlayStoreModel>(model)),
           child: PlayStoreComponentEditor(
@@ -105,7 +105,7 @@ class _PlayStoreComponentEditorState extends State<PlayStoreComponentEditor> {
       if (accessState is AccessDetermined) {
         var member = accessState.getMember();
         if (member != null) {
-          var memberId = member.documentID!;
+          var memberId = member.documentID;
           return BlocBuilder<PlayStoreBloc, EditorBaseState<PlayStoreModel>>(
               builder: (ppContext, playStoreState) {
             if (playStoreState is EditorBaseInitialised<PlayStoreModel>) {
@@ -134,7 +134,7 @@ class _PlayStoreComponentEditorState extends State<PlayStoreComponentEditor> {
                           getListTile(context, widget.app,
                               leading: Icon(Icons.vpn_key),
                               title: text(widget.app, context,
-                                  playStoreState.model.documentID!)),
+                                  playStoreState.model.documentID)),
                           getListTile(context, widget.app,
                               leading: Icon(Icons.description),
                               title: dialogField(

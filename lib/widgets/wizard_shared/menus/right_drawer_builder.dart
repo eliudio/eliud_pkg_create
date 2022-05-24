@@ -11,14 +11,14 @@ import 'with_menu.dart';
 
 class RightDrawerBuilder extends WithMenu {
   RightDrawerBuilder(AppModel app, ):
-        super(app, name: 'Left drawer', identifier: drawerID(app.documentID!, DrawerType.Right), );
+        super(app, name: 'Left drawer', identifier: drawerID(app.documentID, DrawerType.Right), );
 
   Future<DrawerModel> getOrCreate() async {
-    var drawerModel = await drawerRepository(appId: app.documentID!)!.get(identifier);
+    var drawerModel = await drawerRepository(appId: app.documentID)!.get(identifier);
     if (drawerModel == null) {
       drawerModel = DrawerModel(
           documentID: identifier,
-          appId: app.documentID!,
+          appId: app.documentID,
           name: 'Profile Drawer',
           headerText: '',
           secondHeaderText: 'name: \${userName}\ngroup: \${userGroup}',
@@ -26,7 +26,7 @@ class RightDrawerBuilder extends WithMenu {
           popupMenuBackgroundColor: RgbModel(r: 255, g: 0, b: 0, opacity: 1.00),
           menu: await menuDef());
 
-      await drawerRepository(appId: app.documentID!)!.add(drawerModel);
+      await drawerRepository(appId: app.documentID)!.add(drawerModel);
     }
     return drawerModel;
   }

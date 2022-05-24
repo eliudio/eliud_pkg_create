@@ -28,7 +28,7 @@ class PlayStoreEntity {
   final BackgroundEntity? backgroundIcon;
   final StorageConditionsEntity? conditions;
 
-  PlayStoreEntity({this.appId, this.description, this.backgroundIcon, this.conditions, });
+  PlayStoreEntity({required this.appId, this.description, this.backgroundIcon, this.conditions, });
 
 
   List<Object?> get props => [appId, description, backgroundIcon, conditions, ];

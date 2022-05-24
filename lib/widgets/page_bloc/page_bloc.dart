@@ -10,12 +10,11 @@ import 'page_state.dart';
 class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
   final String appId;
 
-  PageCreateBloc(this.appId, PageModel initialiseWithPage, )
-      : super(PageCreateUninitialised());
-
-  @override
-  Stream<PageCreateState> mapEventToState(PageCreateEvent event) async* {
-    if (event is PageCreateEventValidateEvent) {
+  PageCreateBloc(
+    this.appId,
+    PageModel initialiseWithPage,
+  ) : super(PageCreateUninitialised()) {
+    on<PageCreateEventValidateEvent>((event, emit) async {
       // convention is that the ID of the appBar, drawers and home menu are the same ID as that of the app
       var _homeMenuId = homeMenuID(appId);
       if (event.pageModel.homeMenu == null) {
@@ -42,8 +41,7 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
 
       var _leftDrawerId = drawerID(appId, DrawerType.Left);
       if (event.pageModel.drawer == null) {
-        event.pageModel.drawer =
-            await getDrawer(appId, DrawerType.Left);
+        event.pageModel.drawer = await getDrawer(appId, DrawerType.Left);
       } else {
         // if left drawer is specified, make sure the ID is in line with the convention (of the ID)
         if (event.pageModel.drawer!.documentID != _leftDrawerId) {
@@ -54,8 +52,7 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
 
       var _rightDrawerId = drawerID(appId, DrawerType.Right);
       if (event.pageModel.endDrawer == null) {
-        event.pageModel.endDrawer =
-            await getDrawer(appId, DrawerType.Right);
+        event.pageModel.endDrawer = await getDrawer(appId, DrawerType.Right);
       } else {
         // if right drawer is specified, make sure the ID is in line with the convention (of the ID)
         if (event.pageModel.endDrawer!.documentID != _rightDrawerId) {
@@ -65,66 +62,68 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
       }
 
       event.pageModel.conditions ??= StorageConditionsModel(
-            privilegeLevelRequired: PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,);
+        privilegeLevelRequired:
+            PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
+      );
       // the updates happen on a (deep) copy
-      yield PageCreateValidated(deepCopy(event.pageModel));
-    } else if (state is PageCreateInitialised) {
+      emit(PageCreateValidated(deepCopy(event.pageModel)));
+    });
+
+    on<PageCreateEventApplyChanges>((event, emit) async {
       var theState = state as PageCreateInitialised;
-      if (event is PageCreateEventApplyChanges) {
-        if (event.save) {
-          var homeMenu =
-              await homeMenuRepository(appId: theState.pageModel.appId)!
-                  .get(theState.pageModel.homeMenu!.documentID);
-          if (homeMenu == null) {
+      if (event.save) {
+        var homeMenu =
             await homeMenuRepository(appId: theState.pageModel.appId)!
-                .add(theState.pageModel.homeMenu!);
-          } else {
-            await homeMenuRepository(appId: theState.pageModel.appId)!
-                .update(theState.pageModel.homeMenu!);
-          }
-
-          var appBar = await appBarRepository(appId: theState.pageModel.appId)!
-              .get(theState.pageModel.appBar!.documentID);
-          if (appBar == null) {
-            await appBarRepository(appId: theState.pageModel.appId)!
-                .add(theState.pageModel.appBar!);
-          } else {
-            await appBarRepository(appId: theState.pageModel.appId)!
-                .update(theState.pageModel.appBar!);
-          }
+                .get(theState.pageModel.homeMenu!.documentID);
+        if (homeMenu == null) {
+          await homeMenuRepository(appId: theState.pageModel.appId)!
+              .add(theState.pageModel.homeMenu!);
+        } else {
+          await homeMenuRepository(appId: theState.pageModel.appId)!
+              .update(theState.pageModel.homeMenu!);
         }
 
-        var drawer = await appBarRepository(appId: theState.pageModel.appId)!
-            .get(theState.pageModel.drawer!.documentID);
-        if (drawer == null) {
-          await drawerRepository(appId: theState.pageModel.appId)!
-              .add(theState.pageModel.drawer!);
+        var appBar = await appBarRepository(appId: theState.pageModel.appId)!
+            .get(theState.pageModel.appBar!.documentID);
+        if (appBar == null) {
+          await appBarRepository(appId: theState.pageModel.appId)!
+              .add(theState.pageModel.appBar!);
         } else {
-          await drawerRepository(appId: theState.pageModel.appId)!
-              .update(theState.pageModel.drawer!);
-        }
-
-        var endDrawer = await appBarRepository(appId: theState.pageModel.appId)!
-            .get(theState.pageModel.endDrawer!.documentID);
-        if (endDrawer == null) {
-          await drawerRepository(appId: theState.pageModel.appId)!
-              .add(theState.pageModel.endDrawer!);
-        } else {
-          await drawerRepository(appId: theState.pageModel.appId)!
-              .update(theState.pageModel.endDrawer!);
-        }
-
-        var page = await pageRepository(appId: theState.pageModel.appId)!
-            .get(theState.pageModel.documentID);
-        if (page == null) {
-          await pageRepository(appId: theState.pageModel.appId)!
-              .add(theState.pageModel);
-        } else {
-          await pageRepository(appId: theState.pageModel.appId)!
-              .update(theState.pageModel);
+          await appBarRepository(appId: theState.pageModel.appId)!
+              .update(theState.pageModel.appBar!);
         }
       }
-    }
+
+      var drawer = await appBarRepository(appId: theState.pageModel.appId)!
+          .get(theState.pageModel.drawer!.documentID);
+      if (drawer == null) {
+        await drawerRepository(appId: theState.pageModel.appId)!
+            .add(theState.pageModel.drawer!);
+      } else {
+        await drawerRepository(appId: theState.pageModel.appId)!
+            .update(theState.pageModel.drawer!);
+      }
+
+      var endDrawer = await appBarRepository(appId: theState.pageModel.appId)!
+          .get(theState.pageModel.endDrawer!.documentID);
+      if (endDrawer == null) {
+        await drawerRepository(appId: theState.pageModel.appId)!
+            .add(theState.pageModel.endDrawer!);
+      } else {
+        await drawerRepository(appId: theState.pageModel.appId)!
+            .update(theState.pageModel.endDrawer!);
+      }
+
+      var page = await pageRepository(appId: theState.pageModel.appId)!
+          .get(theState.pageModel.documentID);
+      if (page == null) {
+        await pageRepository(appId: theState.pageModel.appId)!
+            .add(theState.pageModel);
+      } else {
+        await pageRepository(appId: theState.pageModel.appId)!
+            .update(theState.pageModel);
+      }
+    });
   }
 
   static PageModel deepCopy(PageModel from) {

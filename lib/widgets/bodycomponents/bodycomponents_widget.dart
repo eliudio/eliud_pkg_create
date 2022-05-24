@@ -144,7 +144,7 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
   void ensureCurrentIsVisible() {
     if (currentVisible != null) {
       if (WidgetsBinding.instance != null) {
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           var context = currentVisible!.currentContext;
           if (context != null) {
             Scrollable.ensureVisible(context);

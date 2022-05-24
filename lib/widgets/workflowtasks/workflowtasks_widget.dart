@@ -160,7 +160,7 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
     openComplexDialog(
       widget.app,
       context,
-      widget.app.documentID! + '/_createtask',
+      widget.app.documentID + '/_createtask',
       title: 'Create divider',
       includeHeading: false,
       widthFraction: .9,
@@ -185,7 +185,7 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
   void ensureCurrentIsVisible() {
     if (currentVisible != null) {
       if (WidgetsBinding.instance != null) {
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           var context = currentVisible!.currentContext;
           if (context != null) {
             Scrollable.ensureVisible(context);

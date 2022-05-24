@@ -19,7 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void openWorkflow(BuildContext context, AppModel app, bool create, WorkflowModel model, String title,
     {VoidCallback? callOnAction, double? fraction}) {
-  openFlexibleDialog(app,context, app.documentID! + '/_workflow',
+  openFlexibleDialog(app,context, app.documentID + '/_workflow',
       includeHeading: false,
       widthFraction: fraction,
       child: WorkflowCreateWidget.getIt(
@@ -61,7 +61,7 @@ class WorkflowCreateWidget extends StatefulWidget {
   ) {
     return BlocProvider<WorkflowCreateBloc>(
       create: (context) =>
-      WorkflowCreateBloc(app.documentID!, appBarModel, callOnAction)
+      WorkflowCreateBloc(app.documentID, appBarModel, callOnAction)
             ..add(WorkflowCreateEventValidateEvent(appBarModel)),
       child: WorkflowCreateWidget._(
         app: app,
@@ -90,7 +90,7 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
             },
             title: widget.create
                 ? 'Create new Workflow'
-                : 'Change Workflow ' + state.workflowModel.documentID!,
+                : 'Change Workflow ' + state.workflowModel.documentID,
           ),
           divider(widget.app,context),
           if (widget.create)
@@ -113,7 +113,7 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
                                 labelText: 'Identifier',
                               ),
                             )
-                          : text(widget.app,context, state.workflowModel.documentID!))
+                          : text(widget.app,context, state.workflowModel.documentID))
                 ]),
           WorkflowTasksCreateWidget.getIt(
             context,

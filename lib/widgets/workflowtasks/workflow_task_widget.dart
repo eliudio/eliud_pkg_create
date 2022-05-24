@@ -76,7 +76,7 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
                           labelText: 'Identifier',
                         ),
                       )
-                    : text(widget.app, context, widget.model.documentID!)),
+                    : text(widget.app, context, widget.model.documentID)),
             getListTile(context, widget.app,
                 leading: Icon(Icons.description),
                 title: dialogField(widget.app,

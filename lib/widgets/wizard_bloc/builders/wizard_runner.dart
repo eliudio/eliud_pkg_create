@@ -81,8 +81,8 @@ class WizardRunner {
     required this.styleName,
     required this.accessBloc,
       }) {
-    appId = app.documentID!;
-    memberId = member.documentID!;
+    appId = app.documentID;
+    memberId = member.documentID;
   }
 
   var newlyCreatedApp;

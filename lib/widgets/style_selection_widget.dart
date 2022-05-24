@@ -71,7 +71,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                   ),
                   onTap: () {
                     openEntryDialog(widget.app, context,
-                        widget.app.documentID! + '/_newstyle',
+                        widget.app.documentID + '/_newstyle',
                         title: 'Provide name for the new style',
                         hintText: 'Style name',
                         ackButtonLabel: 'New',
@@ -152,7 +152,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                   style.update(widget.app, context);
                 } else if (value == 3) {
                   openEntryDialog(widget.app, context,
-                      widget.app.documentID! + '/_stylename',
+                      widget.app.documentID + '/_stylename',
                       title: 'Provide new name for copy of style',
                       hintText: 'Style name',
                       ackButtonLabel: 'Copy',
@@ -167,14 +167,14 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                     openMessageDialog(
                       widget.app,
                       context,
-                      widget.app.documentID! + '/_error',
+                      widget.app.documentID + '/_error',
                       title: 'Error',
                       message:
                           'This is the current style of the app, unable to delete',
                     );
                   } else {
                     openAckNackDialog(widget.app, context,
-                        widget.app.documentID! + '/_delete',
+                        widget.app.documentID + '/_delete',
                         title: 'Confirm',
                         message: 'Confirm deleting style ' +
                             style.styleFamily.familyName +

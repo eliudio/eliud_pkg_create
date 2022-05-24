@@ -29,7 +29,7 @@ void openPage(BuildContext context, AppModel app, bool create, PageModel model,
   openFlexibleDialog(
     app,
     context,
-    app.documentID! + '/_page',
+    app.documentID + '/_page',
     includeHeading: false,
     widthFraction: fraction,
     child: PageCreateWidget.getIt(
@@ -69,7 +69,7 @@ class PageCreateWidget extends StatefulWidget {
   ) {
     return BlocProvider<PageCreateBloc>(
       create: (context) => PageCreateBloc(
-        app.documentID!,
+        app.documentID,
         appBarModel,
       )..add(PageCreateEventValidateEvent(appBarModel)),
       child: PageCreateWidget._(
@@ -105,7 +105,7 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
             },
             title: widget.create
                 ? 'Create new page'
-                : 'Change page ' + state.pageModel.documentID!,
+                : 'Change page ' + state.pageModel.documentID,
           ),
           divider(widget.app, context),
           topicContainer(widget.app, context,
@@ -130,7 +130,7 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
                             ),
                           )
                         : text(
-                            widget.app, context, state.pageModel.documentID!))
+                            widget.app, context, state.pageModel.documentID))
               ]),
           topicContainer(widget.app, context,
               title: 'Layout',

@@ -40,8 +40,8 @@ class _PrivilegeWidgetState extends State<PrivilegeWidget> {
     super.initState();
     if (widget.currentAccess is LoggedIn) {
       var theAccess = widget.currentAccess as LoggedIn;
-      isBlocked = theAccess.isBlocked(widget.app.documentID!);
-      currentLevel = theAccess.getPrivilegeLevel(widget.app.documentID!);
+      isBlocked = theAccess.isBlocked(widget.app.documentID);
+      currentLevel = theAccess.getPrivilegeLevel(widget.app.documentID);
       appLevel = 'Current level: ' + privStringValue(currentLevel);
       appBlocked = 'Blocked: ' + (isBlocked ? 'yes' : 'no');
     } else {

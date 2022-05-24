@@ -30,9 +30,9 @@ String appID(String appID) {
   return appID;
 }
 
-MenuDefModel copyOrDefault(String documentID, MenuDefModel? menuDefModel) {
+MenuDefModel copyOrDefault(String appId, String documentID, MenuDefModel? menuDefModel) {
   if (menuDefModel == null) {
-    return newMenuDef(documentID);
+    return newMenuDef(appId, documentID);
   } else {
     if (menuDefModel.menuItems == null) {
       return menuDefModel.copyWith(menuItems: []);
@@ -52,8 +52,9 @@ Future<HomeMenuModel> homeMenu(String appId, {bool? store}) async {
   }
 }
 
-MenuDefModel newMenuDef(String id) => new MenuDefModel(
+MenuDefModel newMenuDef(String appId, String id) => new MenuDefModel(
       documentID: id,
+      appId: appId,
       name: 'no name',
       menuItems: [],
       admin: false,
@@ -63,7 +64,7 @@ Future<HomeMenuModel> newHomeMenu(String appId, {bool? store}) async {
   var homeMenuId = homeMenuID(appId);
   var menuDefModel = await menuDefRepository(appId: appId)!.get(homeMenuId);
   if (menuDefModel == null) {
-    menuDefModel = newMenuDef(homeMenuId);
+    menuDefModel = newMenuDef(appId, homeMenuId);
     await menuDefRepository(appId: appId)!.add(menuDefModel);
   }
   var homeMenuModel =
@@ -88,7 +89,7 @@ Future<AppBarModel> newAppBar(String appId, {bool? store}) async {
   var appBarId = appBarID(appId);
   var menuDefModel = await menuDefRepository(appId: appId)!.get(appBarId);
   if (menuDefModel == null) {
-    menuDefModel = newMenuDef(appBarId);
+    menuDefModel = newMenuDef(appId, appBarId);
     await menuDefRepository(appId: appId)!.add(menuDefModel);
   }
   var appBarModel = AppBarModel(
@@ -118,7 +119,7 @@ Future<DrawerModel> newDrawer(String appId, DrawerType drawerType,
   var drawerId = drawerID(appId, drawerType);
   var menuDefModel = await menuDefRepository(appId: appId)!.get(drawerId);
   if (menuDefModel == null) {
-    menuDefModel = newMenuDef(drawerId);
+    menuDefModel = newMenuDef(appId, drawerId);
     await menuDefRepository(appId: appId)!.add(menuDefModel);
   }
   var drawerModel =
@@ -145,6 +146,7 @@ DialogModel newDialogDefaults(String appId) => DialogModel(
 
 WorkflowModel newWorkflowDefaults(String appId) => WorkflowModel(
       documentID: newRandomKey(),
+      appId: appId,
       name: 'New workflow',
       workflowTask: [],
     );

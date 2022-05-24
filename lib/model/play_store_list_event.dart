@@ -77,7 +77,7 @@ class PlayStoreListUpdated extends PlayStoreListEvent {
 }
 
 class PlayStoreChangeQuery extends PlayStoreListEvent {
-  final EliudQuery newQuery;
+  final EliudQuery? newQuery;
 
   const PlayStoreChangeQuery({ required this.newQuery });
 

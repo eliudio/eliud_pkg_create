@@ -17,11 +17,11 @@ class LeftDrawerBuilder extends WithMenu {
     this.logo,
   }) : super(app,
             name: 'Left drawer',
-            identifier: drawerID(app.documentID!, DrawerType.Left));
+            identifier: drawerID(app.documentID, DrawerType.Left));
 
   Future<DrawerModel> getOrCreate() async {
     var drawerModel =
-        await drawerRepository(appId: app.documentID!)!.get(identifier);
+        await drawerRepository(appId: app.documentID)!.get(identifier);
     if (drawerModel == null) {
       var headerBackgroundOverride;
       if (logo != null) {
@@ -30,7 +30,7 @@ class LeftDrawerBuilder extends WithMenu {
 
       drawerModel = DrawerModel(
           documentID: identifier,
-          appId: app.documentID!,
+          appId: app.documentID,
           name: 'Drawer',
           headerText: '',
           headerBackgroundOverride: headerBackgroundOverride,
@@ -38,12 +38,12 @@ class LeftDrawerBuilder extends WithMenu {
           popupMenuBackgroundColor: RgbModel(r: 255, g: 0, b: 0, opacity: 1.00),
           menu: await menuDef());
 
-      await drawerRepository(appId: app.documentID!)!.add(drawerModel);
+      await drawerRepository(appId: app.documentID)!.add(drawerModel);
     } else {
       // update the logo with the logo provided
       if (logo != null) {
         var headerBackgroundOverride = _drawerHeaderBGOverride(logo);
-        await drawerRepository(appId: app.documentID!)!.update(drawerModel
+        await drawerRepository(appId: app.documentID)!.update(drawerModel
             .copyWith(headerBackgroundOverride: headerBackgroundOverride));
       }
     }

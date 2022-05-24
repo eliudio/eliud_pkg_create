@@ -23,7 +23,7 @@ void openAppBar(
   AppBarModel model,{
   double? fraction,
 }) {
-  openFlexibleDialog(app, context, app.documentID! + '/_appbar',
+  openFlexibleDialog(app, context, app.documentID + '/_appbar',
       includeHeading: false,
       widthFraction: fraction,
       child: AppBarCreateWidget.getIt(
@@ -57,7 +57,7 @@ class AppBarCreateWidget extends StatefulWidget {
       AppBarModel appBarModel, double widgetWidth, double widgetHeight) {
     return BlocProvider<AppBarCreateBloc>(
       create: (context) =>
-          AppBarCreateBloc(app.documentID!, appBarModel, )
+          AppBarCreateBloc(app.documentID, appBarModel, )
             ..add(AppBarCreateEventValidateEvent(appBarModel)),
       child: AppBarCreateWidget._(
         app: app,

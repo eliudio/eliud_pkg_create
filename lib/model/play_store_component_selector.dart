@@ -40,10 +40,10 @@ class PlayStoreComponentSelector extends ComponentSelector {
   @override
   Widget createSelectWidget(BuildContext context, AppModel app, int privilegeLevel, double height,
       SelectComponent selected, editorConstructor) {
-    var appId = app.documentID!;
+    var appId = app.documentID;
     return BlocProvider<PlayStoreListBloc>(
           create: (context) => PlayStoreListBloc(
-          eliudQuery: getComponentSelectorQuery(0, app.documentID!),
+          eliudQuery: getComponentSelectorQuery(0, app.documentID),
           playStoreRepository:
               playStoreRepository(appId: appId)!,
           )..add(LoadPlayStoreList()),
@@ -108,7 +108,7 @@ class _SelectPlayStoreWidgetState extends State<SelectPlayStoreWidget> with Tick
         (_privilegeTabController!.indexIsChanging)) {
         _currentPrivilege = _privilegeTabController!.index;
         BlocProvider.of<PlayStoreListBloc>(context).add(
-            PlayStoreChangeQuery(newQuery: getComponentSelectorQuery(_currentPrivilege, widget.app.documentID!)));
+            PlayStoreChangeQuery(newQuery: getComponentSelectorQuery(_currentPrivilege, widget.app.documentID)));
     }
   }
 
@@ -139,12 +139,12 @@ class _SelectPlayStoreWidgetState extends State<SelectPlayStoreWidget> with Tick
                       ],
                   onSelected: (selectedValue) {
                     if (selectedValue == 1) {
-                      widget.selected(value.documentID!);
+                      widget.selected(value.documentID);
                     } else if (selectedValue == 2) {
                       widget.editorConstructor.updateComponent(widget.app, context, value, (_) {});
                     }
                   }),
-              title: value.description != null ? Center(child: text(app, context, value.description!)) : value.documentID != null ? Center(child: text(app, context, value.documentID!)) : Container(),
+              title: value.description != null ? Center(child: text(app, context, value.description!)) : value.documentID != null ? Center(child: text(app, context, value.documentID)) : Container(),
               subtitle: null,
             );
           } else {

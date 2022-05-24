@@ -17,50 +17,55 @@ class DrawerCreateBloc extends Bloc<DrawerCreateEvent, DrawerCreateState> {
   final String appId;
   final DrawerType drawerType;
 
-  DrawerCreateBloc(this.appId, this.drawerType, DrawerModel initialiseWithDrawerModel, )
-      : drawerModel = deepCopy(appId, drawerType, initialiseWithDrawerModel), super(DrawerCreateUninitialised());
-
-  @override
-  Stream<DrawerCreateState> mapEventToState(DrawerCreateEvent event) async* {
-    if (event is DrawerCreateEventValidateEvent) {
+  DrawerCreateBloc(
+    this.appId,
+    this.drawerType,
+    DrawerModel initialiseWithDrawerModel,
+  )   : drawerModel = deepCopy(appId, drawerType, initialiseWithDrawerModel),
+        super(DrawerCreateUninitialised()) {
+    on<DrawerCreateEventValidateEvent>((event, emit) {
       // the updates happen on a (deep) copy
-      yield DrawerCreateValidated(deepCopy(appId, drawerType, event.drawerModel));
-    } else if (state is DrawerCreateInitialised) {
-      var theState = state as DrawerCreateInitialised;
-      if (event is DrawerCreateEventApplyChanges) {
-        drawerModel.menu = theState.drawerModel.menu;
-        drawerModel.headerText = theState.drawerModel.headerText;
-        drawerModel.headerBackgroundOverride = theState.drawerModel.headerBackgroundOverride;
-        drawerModel.secondHeaderText = theState.drawerModel.secondHeaderText;
-        if (event.save) {
-          var drawer = await drawerRepository(appId: drawerModel.appId)!
-              .get(theState.drawerModel.documentID);
-          if (drawer == null) {
-            await drawerRepository(appId: drawerModel.appId)!
-                .add(theState.drawerModel);
-          } else {
-            await drawerRepository(appId: drawerModel.appId)!
-                .update(theState.drawerModel);
-          }
+      emit(DrawerCreateValidated(
+          deepCopy(appId, drawerType, event.drawerModel)));
+    });
 
-          var menuDef = await menuDefRepository(appId: drawerModel.appId)!
-              .get(theState.drawerModel.menu!.documentID);
-          if (menuDef == null) {
-            await menuDefRepository(appId: drawerModel.appId)!
-                .add(theState.drawerModel.menu!);
-          } else {
-            await menuDefRepository(appId: drawerModel.appId)!
-                .update(theState.drawerModel.menu!);
-          }
+    on<DrawerCreateEventApplyChanges>((event, emit) async {
+      var theState = state as DrawerCreateInitialised;
+      drawerModel.menu = theState.drawerModel.menu;
+      drawerModel.headerText = theState.drawerModel.headerText;
+      drawerModel.headerBackgroundOverride =
+          theState.drawerModel.headerBackgroundOverride;
+      drawerModel.secondHeaderText = theState.drawerModel.secondHeaderText;
+      if (event.save) {
+        var drawer = await drawerRepository(appId: drawerModel.appId)!
+            .get(theState.drawerModel.documentID);
+        if (drawer == null) {
+          await drawerRepository(appId: drawerModel.appId)!
+              .add(theState.drawerModel);
+        } else {
+          await drawerRepository(appId: drawerModel.appId)!
+              .update(theState.drawerModel);
+        }
+
+        var menuDef = await menuDefRepository(appId: drawerModel.appId)!
+            .get(theState.drawerModel.menu!.documentID);
+        if (menuDef == null) {
+          await menuDefRepository(appId: drawerModel.appId)!
+              .add(theState.drawerModel.menu!);
+        } else {
+          await menuDefRepository(appId: drawerModel.appId)!
+              .update(theState.drawerModel.menu!);
         }
       }
-    }
+    });
   }
-  
-  static DrawerModel deepCopy(String appID, DrawerType drawerType, DrawerModel from) {
+
+  static DrawerModel deepCopy(
+      String appID, DrawerType drawerType, DrawerModel from) {
     var documentID = drawerID(appID, drawerType);
-    var iconMenu = copyOrDefault(documentID, from.menu);
-    var copyOfDrawerModel = from.copyWith(documentID: documentID, menu: iconMenu, headerText: from.headerText);
+    var iconMenu = copyOrDefault(appID, documentID, from.menu);
+    var copyOfDrawerModel = from.copyWith(
+        documentID: documentID, menu: iconMenu, headerText: from.headerText);
     return copyOfDrawerModel;
   }
 }

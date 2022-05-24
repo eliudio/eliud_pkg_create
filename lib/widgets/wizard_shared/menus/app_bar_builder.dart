@@ -8,18 +8,18 @@ import 'with_menu.dart';
 
 class AppBarBuilder extends WithMenu {
   AppBarBuilder(AppModel app):
-        super(app, name: 'Left drawer', identifier: appBarID(app.documentID!));
+        super(app, name: 'Left drawer', identifier: appBarID(app.documentID));
 
   Future<AppBarModel> getOrCreate() async {
-    var appBarModel = await appBarRepository(appId: app.documentID!)!.get(identifier);
+    var appBarModel = await appBarRepository(appId: app.documentID)!.get(identifier);
     if (appBarModel == null) {
       appBarModel = AppBarModel(
           documentID: identifier,
-          appId: app.documentID!,
+          appId: app.documentID,
           header: HeaderSelection.Title,
           iconMenu: await menuDef());
 
-      await appBarRepository(appId: app.documentID!)!.add(appBarModel);
+      await appBarRepository(appId: app.documentID)!.add(appBarModel);
     }
     return appBarModel;
   }

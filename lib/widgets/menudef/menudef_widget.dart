@@ -78,18 +78,18 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
   @override
   Widget build(BuildContext context) {
     var app = widget.app;
-    var appId = app.documentID!;
+    var appId = app.documentID;
     return MultiBlocProvider(
         providers: [
           BlocProvider<PageListBloc>(
             create: (context) => PageListBloc(
-              eliudQuery: getComponentSelectorQuery(0, widget.app.documentID!),
+              eliudQuery: getComponentSelectorQuery(0, widget.app.documentID),
               pageRepository: pageRepository(appId: appId)!,
             )..add(LoadPageList()),
           ),
           BlocProvider<DialogListBloc>(
             create: (context) => DialogListBloc(
-              eliudQuery: getComponentSelectorQuery(0, widget.app.documentID!),
+              eliudQuery: getComponentSelectorQuery(0, widget.app.documentID),
               dialogRepository: dialogRepository(appId: appId)!,
             )..add(LoadDialogList()),
           ),
@@ -251,7 +251,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                           app,
                                                           context,
                                                           workflow
-                                                              .documentID!));
+                                                              .documentID));
                                                 })),
                                         divider(app, context),
                                         GestureDetector(
@@ -262,7 +262,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                 app,
                                                 true,
                                                 newWorkflowDefaults(
-                                                    app.documentID!),
+                                                    app.documentID),
                                                 'Create workflow',
                                               );
                                             })
@@ -383,7 +383,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
   void ensureCurrentIsVisible() {
     if (currentVisible != null) {
       if (WidgetsBinding.instance != null) {
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           var context = currentVisible!.currentContext;
           if (context != null) {
             Scrollable.ensureVisible(context);
@@ -468,10 +468,10 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
       _currentPrivilege = _privilegeTabController!.index;
       BlocProvider.of<PageListBloc>(context).add(PageChangeQuery(
           newQuery: getComponentSelectorQuery(
-              _currentPrivilege, widget.app.documentID!)));
+              _currentPrivilege, widget.app.documentID)));
       BlocProvider.of<DialogListBloc>(context).add(DialogChangeQuery(
           newQuery: getComponentSelectorQuery(
-              _currentPrivilege, widget.app.documentID!)));
+              _currentPrivilege, widget.app.documentID)));
     }
   }
 
@@ -514,7 +514,7 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
                               trailing: widget.availableMenuItemPopup(page),
                               //Icon(Icons.add),
                               title:
-                                  text(widget.app, context, page!.documentID!));
+                                  text(widget.app, context, page!.documentID));
                         })),
                 divider(widget.app, context),
                 GestureDetector(
@@ -524,7 +524,7 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
                         context,
                         widget.app,
                         true,
-                        newPageDefaults(widget.app.documentID!),
+                        newPageDefaults(widget.app.documentID),
                         'Create page',
                       );
                     })
@@ -558,7 +558,7 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
                               ),
                               //Icon(Icons.add),
                               title: text(
-                                  widget.app, context, dialog!.documentID!));
+                                  widget.app, context, dialog!.documentID));
                         })),
                 divider(widget.app, context),
                 GestureDetector(
@@ -568,7 +568,7 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
                         context,
                         widget.app,
                         true,
-                        newDialogDefaults(widget.app.documentID!),
+                        newDialogDefaults(widget.app.documentID),
                         'Create dialog',
                       );
                     })

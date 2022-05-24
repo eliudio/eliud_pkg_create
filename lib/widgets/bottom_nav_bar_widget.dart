@@ -22,7 +22,7 @@ void openBottomNavBar(
   HomeMenuModel model, {
   double? fraction,
 }) {
-  openFlexibleDialog(app, context,app.documentID! + '/_bottomnavbar',
+  openFlexibleDialog(app, context,app.documentID + '/_bottomnavbar',
       includeHeading: false,
       widthFraction: fraction,
       child: BottomNavBarCreateWidget.getIt(
@@ -55,7 +55,7 @@ class BottomNavBarCreateWidget extends StatefulWidget {
   static Widget getIt(BuildContext context, AppModel app, HomeMenuModel homeMenuModel, double widgetWidth, double widgetHeight) {
     return BlocProvider<BottomNavBarCreateBloc>(
       create: (context) =>
-          BottomNavBarCreateBloc(app.documentID!, homeMenuModel)
+          BottomNavBarCreateBloc(app.documentID, homeMenuModel)
             ..add(BottomNavBarCreateEventValidateEvent(homeMenuModel)),
       child: BottomNavBarCreateWidget._(
         app: app,

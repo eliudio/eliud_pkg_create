@@ -23,6 +23,7 @@
   "fields": [
     {
       "fieldName": "documentID",
+      "required": true,
       "displayName": "Document ID",
       "group": "general",
       "fieldType": "String",
@@ -30,6 +31,7 @@
     },
     {
       "fieldName": "appId",
+      "required": true,
       "displayName": "App ID",
       "fieldType": "String",
       "iconName": "vpn_key",
@@ -72,7 +74,7 @@
     }
   ],
   "listFields": {
-    "title": "value.description != null ? Center(child: text(app, context, value.description!)) : value.documentID != null ? Center(child: text(app, context, value.documentID!)) : Container()"
+    "title": "value.description != null ? Center(child: text(app, context, value.description!)) : value.documentID != null ? Center(child: text(app, context, value.documentID)) : Container()"
   },
   "depends": ["eliud_core"]
 }

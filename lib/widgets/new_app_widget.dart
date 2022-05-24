@@ -30,7 +30,7 @@ void newApp(
   openFlexibleDialog(
     app,
     context,
-    app.documentID! + '/_newapp',
+    app.documentID + '/_newapp',
     includeHeading: false,
     widthFraction: fraction == null ? .5 : fraction,
     child: Container(
@@ -83,7 +83,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
         builder: (context, state) {
       if (state is SwitchApp) {
         BlocProvider.of<AccessBloc>(context).add(SwitchAppWithIDEvent(
-            appId: state.appToBeCreated.documentID!, goHome: true));
+            appId: state.appToBeCreated.documentID, goHome: true));
       } else if (state is NewAppCreateInitialised) {
         return Container(
             width: widget.widgetWidth,

@@ -33,7 +33,7 @@ void openDialog(
   openFlexibleDialog(
     app,
     context,
-    app.documentID! + '/_dialog',
+    app.documentID + '/_dialog',
     includeHeading: false,
     widthFraction: fraction,
     child: DialogCreateWidget.getIt(
@@ -73,7 +73,7 @@ class DialogCreateWidget extends StatefulWidget {
   ) {
     return BlocProvider<DialogCreateBloc>(
       create: (context) => DialogCreateBloc(
-        app.documentID!,
+        app.documentID,
         dialogModel,
       )..add(DialogCreateEventValidateEvent(dialogModel)),
       child: DialogCreateWidget._(
@@ -109,7 +109,7 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
             },
             title: widget.create
                 ? 'Create new dialog'
-                : 'Change dialog ' + state.dialogModel.documentID!,
+                : 'Change dialog ' + state.dialogModel.documentID,
           ),
           divider(widget.app, context),
           topicContainer(widget.app, context,
@@ -134,7 +134,7 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
                             ),
                           )
                         : text(
-                            widget.app, context, state.dialogModel.documentID!))
+                            widget.app, context, state.dialogModel.documentID))
               ]),
           topicContainer(widget.app, context,
               title: 'Layout',

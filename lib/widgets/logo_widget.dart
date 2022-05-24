@@ -85,7 +85,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                 Registry.registry()!.getMediumApi().takePhoto(
                     context,
                     widget.app,
-                    widget.app.ownerID!,
+                    widget.app.ownerID,
                         () => PublicMediumAccessRights(),
                         (photo) =>
                         _photoFeedbackFunction(photo),
@@ -95,7 +95,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                 Registry.registry()!.getMediumApi().uploadPhoto(
                     context,
                     widget.app,
-                    widget.app.ownerID!,
+                    widget.app.ownerID,
                         () => PublicMediumAccessRights(),
                         (photo) =>
                         _photoFeedbackFunction(photo),
@@ -103,7 +103,7 @@ class _LogoWidgetState extends State<LogoWidget> {
                     allowCrop: false);
               } else if (value == 2) {
                 var photo = await RandomLogo.getRandomPhoto(widget.app,
-                    widget.app.ownerID!, _photoUploading);
+                    widget.app.ownerID, _photoUploading);
                 _photoFeedbackFunction(photo);
               } else if (value == 3) {
                 _photoFeedbackFunction(null);

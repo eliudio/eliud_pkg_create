@@ -39,7 +39,7 @@ void openDrawer(BuildContext context, AppModel app, DrawerModel model,
   openFlexibleDialog(
     app,
     context,
-    app.documentID! + '/_drawer',
+    app.documentID + '/_drawer',
     includeHeading: false,
     widthFraction: fraction,
     child: DrawerCreateWidget.getIt(
@@ -83,7 +83,7 @@ class DrawerCreateWidget extends StatefulWidget {
       DrawerModel appBarModel, double widgetWidth, double widgetHeight) {
     return BlocProvider<DrawerCreateBloc>(
       create: (context) => DrawerCreateBloc(
-        app.documentID!,
+        app.documentID,
         drawerType,
         appBarModel,
       )..add(DrawerCreateEventValidateEvent(appBarModel)),
@@ -105,7 +105,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
         builder: (context, accessState) {
       if (accessState is AccessDetermined) {
         if (accessState.getMember() != null) {
-          var memberId = accessState.getMember()!.documentID!;
+          var memberId = accessState.getMember()!.documentID;
           return BlocBuilder<DrawerCreateBloc, DrawerCreateState>(
               builder: (context, state) {
             if (state is DrawerCreateValidated) {

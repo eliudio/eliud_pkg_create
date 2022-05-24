@@ -7,17 +7,17 @@ import 'with_menu.dart';
 
 class HomeMenuBuilder extends WithMenu {
   HomeMenuBuilder(AppModel app):
-        super(app, name: 'Left drawer', identifier: homeMenuID(app.documentID!));
+        super(app, name: 'Left drawer', identifier: homeMenuID(app.documentID));
 
   Future<HomeMenuModel> getOrCreate() async {
-    var homeMenuModel = await homeMenuRepository(appId: app.documentID!)!.get(identifier);
+    var homeMenuModel = await homeMenuRepository(appId: app.documentID)!.get(identifier);
     if (homeMenuModel == null) {
       homeMenuModel = HomeMenuModel(
           documentID: identifier,
-          appId: app.documentID!,
+          appId: app.documentID,
           name: 'Home menu',
           menu: await menuDef());
-      await homeMenuRepository(appId: app.documentID!)!.add(homeMenuModel);
+      await homeMenuRepository(appId: app.documentID)!.add(homeMenuModel);
     }
     return homeMenuModel;
   }

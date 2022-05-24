@@ -43,7 +43,7 @@ void openAppX(
   openFlexibleDialog(
     app,
     context,
-    app.documentID! + '/_app',
+    app.documentID + '/_app',
     includeHeading: false,
     widthFraction: fraction,
     child: AppCreateWidget.getIt(
@@ -78,7 +78,7 @@ class AppCreateWidget extends StatefulWidget {
   static Widget getIt(BuildContext context, AppModel app, bool create,
       double widgetWidth, double widgetHeight) {
     return BlocProvider<AppCreateBloc>(
-      create: (context) => AppCreateBloc(app.documentID!, app)
+      create: (context) => AppCreateBloc(app.documentID, app)
         ..add(AppCreateEventValidateEvent(app)),
       child: AppCreateWidget._(
         app: app,
@@ -292,7 +292,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               context,
                               widget.app,
                               true,
-                              newPageDefaults(widget.app.documentID!),
+                              newPageDefaults(widget.app.documentID),
                               'Create page');
                         })
                   ], shrinkWrap: true, physics: ScrollPhysics()),
@@ -350,7 +350,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               context,
                               widget.app,
                               true,
-                              newDialogDefaults(widget.app.documentID!),
+                              newDialogDefaults(widget.app.documentID),
                               'Create page');
                         })
                   ], shrinkWrap: true, physics: ScrollPhysics()),
@@ -410,7 +410,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                       openEntryDialog(
                                           widget.app,
                                           context,
-                                          widget.app.documentID! +
+                                          widget.app.documentID +
                                               '/_createdivider',
                                           title: 'Provide new name for policy',
                                           hintText: 'Policy name',
@@ -449,7 +449,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                   var documentId = newRandomKey();
                                   await PublicMediumHelper(
                                     state.appModel,
-                                    state.appModel.ownerID!,
+                                    state.appModel.ownerID,
                                   ).createThumbnailUploadPdfFile(
                                       documentId, path, documentId,
                                       feedbackFunction: (pdf) =>
@@ -563,7 +563,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         labelText: 'Identifier',
                       ),
                     )
-                  : text(widget.app, context, app.documentID!)),
+                  : text(widget.app, context, app.documentID)),
           getListTile(context, widget.app,
               leading: Icon(Icons.description),
               title: dialogField(

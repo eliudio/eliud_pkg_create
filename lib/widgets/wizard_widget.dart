@@ -33,7 +33,7 @@ void newWizard(
   openFlexibleDialog(
     app,
     context,
-    app.documentID! + '/_wizard',
+    app.documentID + '/_wizard',
     includeHeading: true,
     widthFraction: fraction == null ? .5 : fraction,
     title: 'Run Wizard',

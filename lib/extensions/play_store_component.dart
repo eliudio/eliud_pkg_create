@@ -35,7 +35,7 @@ class PlayStoreComponentConstructorDefault implements ComponentConstructor {
 
   @override
   Future<dynamic> getModel({required AppModel app, required String id}) async =>
-      await playStoreRepository(appId: app.documentID!)!.get(id);
+      await playStoreRepository(appId: app.documentID)!.get(id);
 }
 
 class PlayStoreBase extends AbstractPlayStoreComponent {
@@ -245,7 +245,7 @@ class MemberPublicInfoDropdownButtonWidgetState
             items.add(new DropdownMenuItem<String>(
                 value: element!.documentID,
                 child: text(
-                    widget.app, context, element.name ?? element.documentID!)));
+                    widget.app, context, element.name ?? element.documentID)));
           });
         }
         return DropdownButton<String>(

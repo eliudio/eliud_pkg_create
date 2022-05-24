@@ -26,23 +26,22 @@ class PlayStoreComponentBloc extends Bloc<PlayStoreComponentEvent, PlayStoreComp
   final PlayStoreRepository? playStoreRepository;
   StreamSubscription? _playStoreSubscription;
 
-  Stream<PlayStoreComponentState> _mapLoadPlayStoreComponentUpdateToState(String documentId) async* {
+  void _mapLoadPlayStoreComponentUpdateToState(String documentId) {
     _playStoreSubscription?.cancel();
     _playStoreSubscription = playStoreRepository!.listenTo(documentId, (value) {
-      if (value != null) add(PlayStoreComponentUpdated(value: value));
+      if (value != null) {
+        add(PlayStoreComponentUpdated(value: value));
+      }
     });
   }
 
-  PlayStoreComponentBloc({ this.playStoreRepository }): super(PlayStoreComponentUninitialized());
-
-  @override
-  Stream<PlayStoreComponentState> mapEventToState(PlayStoreComponentEvent event) async* {
-    final currentState = state;
-    if (event is FetchPlayStoreComponent) {
-      yield* _mapLoadPlayStoreComponentUpdateToState(event.id!);
-    } else if (event is PlayStoreComponentUpdated) {
-      yield PlayStoreComponentLoaded(value: event.value);
-    }
+  PlayStoreComponentBloc({ this.playStoreRepository }): super(PlayStoreComponentUninitialized()) {
+    on <FetchPlayStoreComponent> ((event, emit) {
+      _mapLoadPlayStoreComponentUpdateToState(event.id!);
+    });
+    on <PlayStoreComponentUpdated> ((event, emit) {
+      emit(PlayStoreComponentLoaded(value: event.value));
+    });
   }
 
   @override

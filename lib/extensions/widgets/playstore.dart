@@ -40,7 +40,7 @@ class PlayStoreState extends State<PlayStore> {
   @override
   Widget build(BuildContext context) {
     var app = widget.app;
-    var currentAppId = widget.app.documentID!;
+    var currentAppId = widget.app.documentID;
     return BlocBuilder<AccessBloc, AccessState>(
         builder: (context, accessState) {
       if (accessState is AccessDetermined) {
@@ -88,8 +88,7 @@ class PlayStoreState extends State<PlayStore> {
                                           widget.app,
                                           context,
                                           model.title ??
-                                              model.documentID ??
-                                              ''))),
+                                              model.documentID))),
                             ]))
                     : Container(
                         clipBehavior: BoxDecorationHelper.determineClipBehaviour(app, member, widget.playStoreModel.backgroundIcon),
@@ -109,7 +108,7 @@ class PlayStoreState extends State<PlayStore> {
                   component = GestureDetector(
                       onTap: () async {
                         EliudRouter.Router.navigateTo(context,
-                            SwitchApp(app, toAppID: model.documentID!));
+                            SwitchApp(app, toAppID: model.documentID));
                       },
                       child: logo);
                   components.add(component);

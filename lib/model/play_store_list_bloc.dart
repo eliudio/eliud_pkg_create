@@ -38,9 +38,47 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
   PlayStoreListBloc({this.paged, this.orderBy, this.descending, this.detailed, this.eliudQuery, required PlayStoreRepository playStoreRepository, this.playStoreLimit = 5})
       : assert(playStoreRepository != null),
         _playStoreRepository = playStoreRepository,
-        super(PlayStoreListLoading());
+        super(PlayStoreListLoading()) {
+    on <LoadPlayStoreList> ((event, emit) {
+      if ((detailed == null) || (!detailed!)) {
+        _mapLoadPlayStoreListToState();
+      } else {
+        _mapLoadPlayStoreListWithDetailsToState();
+      }
+    });
+    
+    on <NewPage> ((event, emit) {
+      pages = pages + 1; // it doesn't matter so much if we increase pages beyond the end
+      _mapLoadPlayStoreListWithDetailsToState();
+    });
+    
+    on <PlayStoreChangeQuery> ((event, emit) {
+      eliudQuery = event.newQuery;
+      if ((detailed == null) || (!detailed!)) {
+        _mapLoadPlayStoreListToState();
+      } else {
+        _mapLoadPlayStoreListWithDetailsToState();
+      }
+    });
+      
+    on <AddPlayStoreList> ((event, emit) async {
+      await _mapAddPlayStoreListToState(event);
+    });
+    
+    on <UpdatePlayStoreList> ((event, emit) async {
+      await _mapUpdatePlayStoreListToState(event);
+    });
+    
+    on <DeletePlayStoreList> ((event, emit) async {
+      await _mapDeletePlayStoreListToState(event);
+    });
+    
+    on <PlayStoreListUpdated> ((event, emit) {
+      emit(_mapPlayStoreListUpdatedToState(event));
+    });
+  }
 
-  Stream<PlayStoreListState> _mapLoadPlayStoreListToState() async* {
+  Future<void> _mapLoadPlayStoreListToState() async {
     int amountNow =  (state is PlayStoreListLoaded) ? (state as PlayStoreListLoaded).values!.length : 0;
     _playStoresListSubscription?.cancel();
     _playStoresListSubscription = _playStoreRepository.listen(
@@ -52,7 +90,7 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
     );
   }
 
-  Stream<PlayStoreListState> _mapLoadPlayStoreListWithDetailsToState() async* {
+  Future<void> _mapLoadPlayStoreListWithDetailsToState() async {
     int amountNow =  (state is PlayStoreListLoaded) ? (state as PlayStoreListLoaded).values!.length : 0;
     _playStoresListSubscription?.cancel();
     _playStoresListSubscription = _playStoreRepository.listenWithDetails(
@@ -64,58 +102,29 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
     );
   }
 
-  Stream<PlayStoreListState> _mapAddPlayStoreListToState(AddPlayStoreList event) async* {
+  Future<void> _mapAddPlayStoreListToState(AddPlayStoreList event) async {
     var value = event.value;
-    if (value != null) 
-      _playStoreRepository.add(value);
-  }
-
-  Stream<PlayStoreListState> _mapUpdatePlayStoreListToState(UpdatePlayStoreList event) async* {
-    var value = event.value;
-    if (value != null) 
-      _playStoreRepository.update(value);
-  }
-
-  Stream<PlayStoreListState> _mapDeletePlayStoreListToState(DeletePlayStoreList event) async* {
-    var value = event.value;
-    if (value != null) 
-      _playStoreRepository.delete(value);
-  }
-
-  Stream<PlayStoreListState> _mapPlayStoreListUpdatedToState(
-      PlayStoreListUpdated event) async* {
-    yield PlayStoreListLoaded(values: event.value, mightHaveMore: event.mightHaveMore);
-  }
-
-  @override
-  Stream<PlayStoreListState> mapEventToState(PlayStoreListEvent event) async* {
-    if (event is LoadPlayStoreList) {
-      if ((detailed == null) || (!detailed!)) {
-        yield* _mapLoadPlayStoreListToState();
-      } else {
-        yield* _mapLoadPlayStoreListWithDetailsToState();
-      }
-    }
-    if (event is NewPage) {
-      pages = pages + 1; // it doesn't matter so much if we increase pages beyond the end
-      yield* _mapLoadPlayStoreListWithDetailsToState();
-    } else if (event is PlayStoreChangeQuery) {
-      eliudQuery = event.newQuery;
-      if ((detailed == null) || (!detailed!)) {
-        yield* _mapLoadPlayStoreListToState();
-      } else {
-        yield* _mapLoadPlayStoreListWithDetailsToState();
-      }
-    } else if (event is AddPlayStoreList) {
-      yield* _mapAddPlayStoreListToState(event);
-    } else if (event is UpdatePlayStoreList) {
-      yield* _mapUpdatePlayStoreListToState(event);
-    } else if (event is DeletePlayStoreList) {
-      yield* _mapDeletePlayStoreListToState(event);
-    } else if (event is PlayStoreListUpdated) {
-      yield* _mapPlayStoreListUpdatedToState(event);
+    if (value != null) {
+      await _playStoreRepository.add(value);
     }
   }
+
+  Future<void> _mapUpdatePlayStoreListToState(UpdatePlayStoreList event) async {
+    var value = event.value;
+    if (value != null) {
+      await _playStoreRepository.update(value);
+    }
+  }
+
+  Future<void> _mapDeletePlayStoreListToState(DeletePlayStoreList event) async {
+    var value = event.value;
+    if (value != null) {
+      await _playStoreRepository.delete(value);
+    }
+  }
+
+  PlayStoreListLoaded _mapPlayStoreListUpdatedToState(
+      PlayStoreListUpdated event) => PlayStoreListLoaded(values: event.value, mightHaveMore: event.mightHaveMore);
 
   @override
   Future<void> close() {

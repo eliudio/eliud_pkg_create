@@ -114,9 +114,9 @@ class ListComponent extends StatelessWidget with HasFab {
           create: (context) => PlayStoreListBloc(
             eliudQuery: EliudQuery(theConditions: [
               EliudQueryCondition('conditions.privilegeLevelRequired', isEqualTo: privilegeLevel ?? 0),
-              EliudQueryCondition('appId', isEqualTo: app.documentID!),]
+              EliudQueryCondition('appId', isEqualTo: app.documentID),]
             ),
-            playStoreRepository: playStoreRepository(appId: app.documentID!)!,
+            playStoreRepository: playStoreRepository(appId: app.documentID)!,
           )..add(LoadPlayStoreList()),
         )
       ],
@@ -154,9 +154,9 @@ class DropdownButtonComponent extends StatelessWidget {
           create: (context) => PlayStoreListBloc(
             eliudQuery: EliudQuery(theConditions: [
               EliudQueryCondition('conditions.privilegeLevelRequired', isEqualTo: privilegeLevel ?? 0),
-              EliudQueryCondition('appId', isEqualTo: app.documentID!),]
+              EliudQueryCondition('appId', isEqualTo: app.documentID),]
             ),
-            playStoreRepository: playStoreRepository(appId: app.documentID!)!,
+            playStoreRepository: playStoreRepository(appId: app.documentID)!,
           )..add(LoadPlayStoreList()),
         )
       ],

@@ -25,18 +25,14 @@ class StyleSelectionBloc
     _styleFamilySubscription[styleFamily.familyName]?.cancel();
     _styleFamilySubscription[styleFamily.familyName] =
         styleFamily.listenToStyles(appId, (list) {
-          add(ChangedStyleFamilyState(styleFamily, list));
-        });
+      add(ChangedStyleFamilyState(styleFamily, list));
+    });
   }
 
   StyleSelectionBloc(AppModel initialiseWithApp, this.feedbackSelection)
       : app = initialiseWithApp.copyWith(),
-        super(StyleSelectionUninitialized());
-
-  @override
-  Stream<StyleSelectionState> mapEventToState(
-      StyleSelectionEvent event) async* {
-    if (event is InitialiseStyleSelectionEvent) {
+        super(StyleSelectionUninitialized()) {
+    on<InitialiseStyleSelectionEvent>((event, emit) {
       styleName = app.styleName;
       StyleFamily? styleFamily;
       if (event.family != null) {
@@ -49,7 +45,7 @@ class StyleSelectionBloc
           StyleRegistry.registry().registeredStyleFamilies.values.toList();
 
       var styleFamilyStates = families.map((styleFamily) {
-        listenToStyleFamily(app.documentID!, styleFamily);
+        listenToStyleFamily(app.documentID, styleFamily);
         return StyleFamilyState(styleFamily, []);
       }).toList();
       if (styleFamily != null) {
@@ -60,45 +56,53 @@ class StyleSelectionBloc
           style = styleFamily.getStyle(app, DefaultStyle.defaultStyleName);
         }
         if (style != null) {
-          yield StyleSelectionInitializedWithSelection(
+          emit(StyleSelectionInitializedWithSelection(
             families: styleFamilyStates,
             currentSelectedStyle: style,
-          );
+          ));
           return;
         }
       }
-      yield StyleSelectionInitializedWithoutSelection(
+      emit(StyleSelectionInitializedWithoutSelection(
         families: styleFamilyStates,
-      );
+      ));
+    });
 
-    }
-    if (event is ChangedStyleFamilyState) {
+    on<ChangedStyleFamilyState>((event, emit) {
       if (state is StyleSelectionInitialized) {
         var styleSelectionInitialized = state as StyleSelectionInitialized;
         var styleFamily = event.styleFamily;
         var styles = event.allStyles;
-        yield styleSelectionInitialized.copyWithNewStyleFamily(styleFamily, styles);
+        emit(styleSelectionInitialized.copyWithNewStyleFamily(
+            styleFamily, styles));
       }
-    }
-    if (event is AddNewStyleEvent) {
+    });
+
+    on<AddNewStyleEvent>((event, emit) async {
       await event.styleFamily.newStyle(app, event.newStyleName);
-    }
-    if (state is StyleSelectionInitialized) {
-      var theState = state as StyleSelectionInitialized;
-      if (event is SelectStyleEvent) {
-        yield selectStyle(event.style, state as StyleSelectionInitialized);
-      } else if (event is DeleteStyleEvent) {
-        event.style.styleFamily.delete(app, event.style);
-      } else if (event is StyleUpdatedEvent) {
-        event.style.styleFamily.update(app, event.style);
-      } else if (event is CopyStyleEvent) {
-        event.style.copy(app, event.newName);
-      } else if (event is StyleSelectionApplyChanges) {
-        if (event.save) {
-          appRepository(appId: app.documentID)!.update(app);
-        }
+    });
+
+    on<SelectStyleEvent>((event, emit) {
+      emit(selectStyle(event.style, state as StyleSelectionInitialized));
+    });
+
+    on<DeleteStyleEvent>((event, emit) async {
+      await event.style.styleFamily.delete(app, event.style);
+    });
+
+    on<StyleUpdatedEvent>((event, emit) async {
+      await event.style.styleFamily.update(app, event.style);
+    });
+
+    on<CopyStyleEvent>((event, emit) async {
+      await event.style.copy(app, event.newName);
+    });
+
+    on<StyleSelectionApplyChanges>((event, emit) async {
+      if (event.save) {
+        await appRepository(appId: app.documentID)!.update(app);
       }
-    }
+    });
   }
 
   StyleSelectionInitializedWithSelection selectStyle(

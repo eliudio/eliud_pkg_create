@@ -37,8 +37,8 @@ class AppBuilder {
     this.app,
     this.member,
   ) {
-    appId = app.documentID!;
-    memberId = member.documentID!;
+    appId = app.documentID;
+    memberId = member.documentID;
   }
 
   var leftDrawer;
@@ -209,6 +209,7 @@ class AppBuilder {
 
   Future<AccessModel> claimAccess(String appId, String ownerID) async {
     return await accessRepository(appId: appId)!.add(AccessModel(
+        appId: appId,
         documentID: ownerID,
         privilegeLevel: PrivilegeLevel.OwnerPrivilege,
         points: 0));

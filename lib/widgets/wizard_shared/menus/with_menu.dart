@@ -13,17 +13,18 @@ class WithMenu {
 
   Future<MenuDefModel> menuDef() async {
     var menuDefModel = MenuDefModel(
+      appId: app.documentID,
       documentID: identifier,
       name: name,
       menuItems: [],
       admin: false,
     );
-    await menuDefRepository(appId: app.documentID!)!.add(menuDefModel);
+    await menuDefRepository(appId: app.documentID)!.add(menuDefModel);
     return menuDefModel;
   }
 
   Future<void> updateMenuItems(List<MenuItemModel> items) async {
-    var menuDefModel = await menuDefRepository(appId: app.documentID!)!.get(identifier);
+    var menuDefModel = await menuDefRepository(appId: app.documentID)!.get(identifier);
     if (menuDefModel == null) {
       menuDefModel = await menuDef();
     }
@@ -35,7 +36,7 @@ class WithMenu {
       newItems.addAll(items);
     }
     menuDefModel = menuDefModel.copyWith(menuItems: newItems);
-    await menuDefRepository(appId: app.documentID!)!.update(menuDefModel);
+    await menuDefRepository(appId: app.documentID)!.update(menuDefModel);
   }
 
 }

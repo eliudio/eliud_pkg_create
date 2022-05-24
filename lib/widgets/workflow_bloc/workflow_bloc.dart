@@ -5,39 +5,39 @@ import 'package:flutter/material.dart';
 import 'workflow_event.dart';
 import 'workflow_state.dart';
 
-class WorkflowCreateBloc extends Bloc<WorkflowCreateEvent, WorkflowCreateState> {
+class WorkflowCreateBloc
+    extends Bloc<WorkflowCreateEvent, WorkflowCreateState> {
   final WorkflowModel workflowModel;
   final String appId;
   final VoidCallback? callOnAction;
 
-  WorkflowCreateBloc(this.appId, WorkflowModel initialiseWithWorkflowModel, this.callOnAction)
+  WorkflowCreateBloc(
+      this.appId, WorkflowModel initialiseWithWorkflowModel, this.callOnAction)
       : workflowModel = deepCopy(initialiseWithWorkflowModel),
-        super(WorkflowCreateUninitialised());
+        super(WorkflowCreateUninitialised()) {
+    on<WorkflowCreateEventValidateEvent>((event, emit) {
+      emit(WorkflowCreateValidated(deepCopy(event.workflowModel)));
+    });
 
-  @override
-  Stream<WorkflowCreateState> mapEventToState(WorkflowCreateEvent event) async* {
-    if (event is WorkflowCreateEventValidateEvent) {
-      yield WorkflowCreateValidated(deepCopy(event.workflowModel));
-    } else if (state is WorkflowCreateInitialised) {
+    on<WorkflowCreateEventApplyChanges>((event, emit) async {
       var theState = state as WorkflowCreateInitialised;
-      if (event is WorkflowCreateEventApplyChanges) {
-        workflowModel.name = theState.workflowModel.name;
-        workflowModel.workflowTask = theState.workflowModel.workflowTask;
-        if (event.save) {
-          var wf = await workflowRepository(appId: appId)!
-              .get(theState.workflowModel.documentID);
-          if (wf == null) {
-            await workflowRepository(appId: appId)!.add(theState.workflowModel);
-          } else {
-            await workflowRepository(appId: appId)!.update(theState.workflowModel);
-          }
-        }
-
-        if (callOnAction != null) {
-          callOnAction!();
+      workflowModel.name = theState.workflowModel.name;
+      workflowModel.workflowTask = theState.workflowModel.workflowTask;
+      if (event.save) {
+        var wf = await workflowRepository(appId: appId)!
+            .get(theState.workflowModel.documentID);
+        if (wf == null) {
+          await workflowRepository(appId: appId)!.add(theState.workflowModel);
+        } else {
+          await workflowRepository(appId: appId)!
+              .update(theState.workflowModel);
         }
       }
-    }
+
+      if (callOnAction != null) {
+        callOnAction!();
+      }
+    });
   }
 
   static WorkflowModel deepCopy(WorkflowModel from) {

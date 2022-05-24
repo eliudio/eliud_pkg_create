@@ -39,7 +39,7 @@ abstract class AbstractPlayStoreComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<PlayStoreComponentBloc> (
           create: (context) => PlayStoreComponentBloc(
-            playStoreRepository: playStoreRepository(appId: app.documentID!)!)
+            playStoreRepository: playStoreRepository(appId: app.documentID)!)
         ..add(FetchPlayStoreComponent(id: playStoreId)),
       child: _playStoreBlockBuilder(context),
     );

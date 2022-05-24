@@ -51,59 +51,51 @@ class PlayStoreFormBloc extends Bloc<PlayStoreFormEvent, PlayStoreFormState> {
   Stream<PlayStoreFormState> mapEventToState(PlayStoreFormEvent event) async* {
     final currentState = state;
     if (currentState is PlayStoreFormUninitialized) {
-      if (event is InitialiseNewPlayStoreFormEvent) {
+      on <InitialiseNewPlayStoreFormEvent> ((event, emit) {
         PlayStoreFormLoaded loaded = PlayStoreFormLoaded(value: PlayStoreModel(
                                                documentID: "",
                                  appId: "",
                                  description: "",
 
         ));
-        yield loaded;
-        return;
-
-      }
+        emit(loaded);
+      });
 
 
       if (event is InitialisePlayStoreFormEvent) {
         // Need to re-retrieve the document from the repository so that I get all associated types
         PlayStoreFormLoaded loaded = PlayStoreFormLoaded(value: await playStoreRepository(appId: appId)!.get(event.value!.documentID));
-        yield loaded;
-        return;
+        emit(loaded);
       } else if (event is InitialisePlayStoreFormNoLoadEvent) {
         PlayStoreFormLoaded loaded = PlayStoreFormLoaded(value: event.value);
-        yield loaded;
-        return;
+        emit(loaded);
       }
     } else if (currentState is PlayStoreFormInitialized) {
       PlayStoreModel? newValue = null;
-      if (event is ChangedPlayStoreDocumentID) {
+      on <ChangedPlayStoreDocumentID> ((event, emit) async {
         newValue = currentState.value!.copyWith(documentID: event.value);
         if (formAction == FormAction.AddAction) {
-          yield* _isDocumentIDValid(event.value, newValue).asStream();
+          emit(await _isDocumentIDValid(event.value, newValue!));
         } else {
-          yield SubmittablePlayStoreForm(value: newValue);
+          emit(SubmittablePlayStoreForm(value: newValue));
         }
 
-        return;
-      }
-      if (event is ChangedPlayStoreDescription) {
+      });
+      on <ChangedPlayStoreDescription> ((event, emit) async {
         newValue = currentState.value!.copyWith(description: event.value);
-        yield SubmittablePlayStoreForm(value: newValue);
+        emit(SubmittablePlayStoreForm(value: newValue));
 
-        return;
-      }
-      if (event is ChangedPlayStoreBackgroundIcon) {
+      });
+      on <ChangedPlayStoreBackgroundIcon> ((event, emit) async {
         newValue = currentState.value!.copyWith(backgroundIcon: event.value);
-        yield SubmittablePlayStoreForm(value: newValue);
+        emit(SubmittablePlayStoreForm(value: newValue));
 
-        return;
-      }
-      if (event is ChangedPlayStoreConditions) {
+      });
+      on <ChangedPlayStoreConditions> ((event, emit) async {
         newValue = currentState.value!.copyWith(conditions: event.value);
-        yield SubmittablePlayStoreForm(value: newValue);
+        emit(SubmittablePlayStoreForm(value: newValue));
 
-        return;
-      }
+      });
     }
   }
 
