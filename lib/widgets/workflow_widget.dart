@@ -93,7 +93,6 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
                 : 'Change Workflow ' + state.workflowModel.documentID,
           ),
           divider(widget.app,context),
-          if (widget.create)
             topicContainer(widget.app,context,
                 title: 'General',
                 collapsible: true,
@@ -113,7 +112,22 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
                                 labelText: 'Identifier',
                               ),
                             )
-                          : text(widget.app,context, state.workflowModel.documentID))
+                          : text(widget.app,context, state.workflowModel.documentID)),
+                  getListTile(context, widget.app,
+                      leading: Icon(Icons.description),
+                      title: dialogField(
+                        widget.app,
+                        context,
+                        initialValue: state.workflowModel.name,
+                        valueChanged: (value) {
+                          state.workflowModel.name = value;
+                        },
+                        maxLines: 1,
+                        decoration: const InputDecoration(
+                          hintText: 'Name',
+                          labelText: 'Name',
+                        ),
+                      )),
                 ]),
           WorkflowTasksCreateWidget.getIt(
             context,

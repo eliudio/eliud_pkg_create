@@ -9,20 +9,38 @@ import 'package:eliud_pkg_text/wizards/builders/page/page_with_text.dart';
 
 class HelloWorldPageBuilder extends PageBuilder {
   HelloWorldPageBuilder(
-      String uniqueId,
-      String pageId,
-      AppModel app,
-      String memberId,
-      HomeMenuModel theHomeMenu,
-      AppBarModel theAppBar,
-      DrawerModel leftDrawer,
-      DrawerModel rightDrawer,
-      )
-      : super(uniqueId, pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer,
-            rightDrawer,
-  );
+    String uniqueId,
+    String pageId,
+    AppModel app,
+    String memberId,
+    HomeMenuModel theHomeMenu,
+    AppBarModel theAppBar,
+    DrawerModel leftDrawer,
+    DrawerModel rightDrawer,
+  ) : super(
+          uniqueId,
+          pageId,
+          app,
+          memberId,
+          theHomeMenu,
+          theAppBar,
+          leftDrawer,
+          rightDrawer,
+        );
 
   Future<PageModel> create() async {
-    return PageWithTextBuilder(uniqueId, 'Hello', 'Hello world', pageId, app, memberId, theHomeMenu, theAppBar, leftDrawer, rightDrawer, ).create();
+    return PageWithTextBuilder(
+      uniqueId,
+      'Hello',
+      'Hello world',
+      'Hello world',
+      pageId,
+      app,
+      memberId,
+      theHomeMenu,
+      theAppBar,
+      leftDrawer,
+      rightDrawer,
+    ).create();
   }
 }

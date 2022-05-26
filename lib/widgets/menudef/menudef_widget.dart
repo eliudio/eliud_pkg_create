@@ -251,7 +251,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                           app,
                                                           context,
                                                           workflow
-                                                              .documentID));
+                                                              .name ?? workflow.documentID));
                                                 })),
                                         divider(app, context),
                                         GestureDetector(
@@ -514,7 +514,7 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
                               trailing: widget.availableMenuItemPopup(page),
                               //Icon(Icons.add),
                               title:
-                                  text(widget.app, context, page!.documentID));
+                                  text(widget.app, context, page!.description ?? page.title ?? page.documentID));
                         })),
                 divider(widget.app, context),
                 GestureDetector(
@@ -558,7 +558,7 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
                               ),
                               //Icon(Icons.add),
                               title: text(
-                                  widget.app, context, dialog!.documentID));
+                                  widget.app, context, dialog!.description ?? dialog.title ?? dialog.documentID));
                         })),
                 divider(widget.app, context),
                 GestureDetector(

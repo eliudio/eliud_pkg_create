@@ -134,7 +134,37 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
                             ),
                           )
                         : text(
-                            widget.app, context, state.dialogModel.documentID))
+                            widget.app, context, state.dialogModel.documentID)),
+                getListTile(context, widget.app,
+                    leading: Icon(Icons.description),
+                    title: dialogField(
+                      widget.app,
+                      context,
+                      initialValue: state.dialogModel.description,
+                      valueChanged: (value) {
+                        state.dialogModel.description = value;
+                      },
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                        hintText: 'Description',
+                        labelText: 'Description',
+                      ),
+                    )),
+                getListTile(context, widget.app,
+                    leading: Icon(Icons.description),
+                    title: dialogField(
+                      widget.app,
+                      context,
+                      initialValue: state.dialogModel.title,
+                      valueChanged: (value) {
+                        state.dialogModel.title = value;
+                      },
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                        hintText: 'Title',
+                        labelText: 'Title',
+                      ),
+                    )),
               ]),
           topicContainer(widget.app, context,
               title: 'Layout',

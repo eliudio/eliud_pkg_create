@@ -63,6 +63,7 @@ class AdminApp extends AdminAppInstallerBase {
         appId: appId,
         documentID: "eliud_pkg_create_playstores_page",
         title: "PlayStores",
+        description: "PlayStores",
         drawer: _drawer,
         endDrawer: _endDrawer,
         appBar: _appBar,

@@ -279,10 +279,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                   }),
                               title: text(
                                   widget.app,
-                                  context,
-                                  ((item != null) && (item.title != null))
-                                      ? item.title!
-                                      : '?'));
+                                  context, item!.title! ?? item.description?? item.documentID));
                         }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
@@ -339,8 +336,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                       );
                                     }
                                   }),
-                              title: text(widget.app, context,
-                                  item != null ? item.title! : '?'));
+                              title: text(widget.app, context, item!.description ?? item.title ?? item.documentID
+                              ));
                         }).toList())),
                     divider(widget.app, context),
                     GestureDetector(

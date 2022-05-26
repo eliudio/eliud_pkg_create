@@ -130,7 +130,37 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
                             ),
                           )
                         : text(
-                            widget.app, context, state.pageModel.documentID))
+                            widget.app, context, state.pageModel.documentID)),
+                getListTile(context, widget.app,
+                    leading: Icon(Icons.description),
+                    title: dialogField(
+                      widget.app,
+                      context,
+                      initialValue: state.pageModel.description,
+                      valueChanged: (value) {
+                        state.pageModel.description = value;
+                      },
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                        hintText: 'Description',
+                        labelText: 'Description',
+                      ),
+                    )),
+                getListTile(context, widget.app,
+                    leading: Icon(Icons.description),
+                    title: dialogField(
+                      widget.app,
+                      context,
+                      initialValue: state.pageModel.title,
+                      valueChanged: (value) {
+                        state.pageModel.title = value;
+                      },
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                        hintText: 'Title',
+                        labelText: 'Title',
+                      ),
+                    )),
               ]),
           topicContainer(widget.app, context,
               title: 'Layout',
