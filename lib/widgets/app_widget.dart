@@ -279,7 +279,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                   }),
                               title: text(
                                   widget.app,
-                                  context, item!.title! ?? item.description?? item.documentID));
+                                  context, item!.title ?? item.description?? item.documentID));
                         }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
