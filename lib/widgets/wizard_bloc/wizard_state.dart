@@ -66,7 +66,7 @@ class WizardRunning extends WizardInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WizardCreateInProgress &&
+          other is WizardRunning &&
               app == other.app &&
               member == other.member &&
               wizardMessage == other.wizardMessage;

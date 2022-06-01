@@ -19,7 +19,7 @@ class WizardBloc extends Bloc<WizardEvent, WizardState> {
 
     on<WizardConfirm>((event, emit) {
       var theState = state as WizardInitialised;
-      emit(WizardRunning(theState.app, theState.member, event.wizardMessage));
+//      emit(WizardRunning(theState.app, theState.member, event.wizardMessage));
       WizardRunner(
         theState.app,
         theState.member,
