@@ -368,7 +368,6 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
             Registry.registry()!.getMediumApi().takePhoto(
                 context,
                 widget.app,
-                ownerId,
                 () => PublicMediumAccessRights(),
                 (photo) => _photoFeedbackFunction(drawerModel, photo),
                 _photoUploading,
@@ -378,7 +377,6 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
             Registry.registry()!.getMediumApi().uploadPhoto(
                 context,
                 widget.app,
-                ownerId,
                 () => PlatformMediumAccessRights(
                     PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
                 (photo) => _photoFeedbackFunction(drawerModel, photo),

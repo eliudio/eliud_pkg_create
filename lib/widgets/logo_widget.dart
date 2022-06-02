@@ -85,7 +85,6 @@ class _LogoWidgetState extends State<LogoWidget> {
                 Registry.registry()!.getMediumApi().takePhoto(
                     context,
                     widget.app,
-                    widget.app.ownerID,
                         () => PublicMediumAccessRights(),
                         (photo) =>
                         _photoFeedbackFunction(photo),
@@ -95,7 +94,6 @@ class _LogoWidgetState extends State<LogoWidget> {
                 Registry.registry()!.getMediumApi().uploadPhoto(
                     context,
                     widget.app,
-                    widget.app.ownerID,
                         () => PublicMediumAccessRights(),
                         (photo) =>
                         _photoFeedbackFunction(photo),
