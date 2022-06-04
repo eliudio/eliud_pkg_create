@@ -351,6 +351,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  easy_image_viewer:
+    dependency: transitive
+    description:
+      name: easy_image_viewer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   eliud_core:
     dependency: "direct main"
     description:
@@ -552,13 +559,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
-  flutter_carousel_slider:
-    dependency: transitive
-    description:
-      name: flutter_carousel_slider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.8"
   flutter_circular_text:
     dependency: transitive
     description:
@@ -629,13 +629,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  flutter_staggered_grid_view:
-    dependency: transitive
-    description:
-      name: flutter_staggered_grid_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.1"
   flutter_svg:
     dependency: transitive
     description:
