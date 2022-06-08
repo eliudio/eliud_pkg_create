@@ -19,6 +19,7 @@ import 'package:eliud_core/tools/storage/public_medium_helper.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
+import 'package:eliud_pkg_create/widgets/utils/JsonWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'app_bloc/app_bloc.dart';
@@ -532,6 +533,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                       Spacer(),
                     ]))
               ]),
+          JsonWidget<AppModel>(app: widget.app, model: state.appModel)
         ]);
       } else {
         return progressIndicator(widget.app, context);

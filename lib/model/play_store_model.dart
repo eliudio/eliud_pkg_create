@@ -65,6 +65,10 @@ class PlayStoreModel implements ModelBase, WithAppId {
           backgroundIcon == other.backgroundIcon &&
           conditions == other.conditions;
 
+  String toJsonString({String? appId}) {
+    return toEntity(appId: appId).toJsonString();
+  }
+
   @override
   String toString() {
     return 'PlayStoreModel{documentID: $documentID, appId: $appId, description: $description, backgroundIcon: $backgroundIcon, conditions: $conditions}';
