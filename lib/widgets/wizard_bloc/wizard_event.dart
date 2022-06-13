@@ -24,7 +24,6 @@ class WizardInitialise extends WizardEvent {
 }
 
 class WizardConfirm extends WizardEvent {
-  final String wizardMessage;
   final bool autoPrivileged1;
   final String? styleFamily;
   final String? styleName;
@@ -33,7 +32,6 @@ class WizardConfirm extends WizardEvent {
   final Map<String, NewAppWizardParameters> newAppWizardParameters;
 
   WizardConfirm({
-    required this.wizardMessage,
     required this.newAppWizardParameters,
     required this.autoPrivileged1,
     required this.styleFamily,
@@ -50,26 +48,26 @@ class WizardConfirm extends WizardEvent {
       identical(this, other) ||
       other is WizardConfirm &&
           autoPrivileged1 == other.autoPrivileged1 &&
-          wizardMessage == other.wizardMessage &&
           mapEquals(newAppWizardParameters, other.newAppWizardParameters);
 }
 
 class WizardProgressed extends WizardEvent {
   final double progress;
 
-  WizardProgressed(this.progress);
+  WizardProgressed(this.progress, );
 
   @override
   List<Object?> get props => [progress];
 
   @override
   bool operator ==(Object other) =>
+      false ||
       identical(this, other) ||
-      other is WizardProgressed &&
-      progress == other.progress;
+      other is WizardProgressed && progress == other.progress;
 }
 
 class WizardCancelled extends WizardEvent {
+
   WizardCancelled();
 
   @override
@@ -77,13 +75,14 @@ class WizardCancelled extends WizardEvent {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is WizardCancelled;
+      other is WizardCancelled &&
+      identical(this, other);
 }
 
 class WizardFinished extends WizardEvent {
   final bool success;
 
-  WizardFinished(this.success);
+  WizardFinished(this.success, );
 
   @override
   List<Object?> get props => [];

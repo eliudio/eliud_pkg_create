@@ -198,7 +198,6 @@ class _WizardWidgetState extends State<WizardWidget> {
             theAppWizardParameters[currentActiveWizardData!.wizardName] =
                 currentActiveWizardData!.parameters;
             BlocProvider.of<WizardBloc>(context).add(WizardConfirm(
-              wizardMessage: currentActiveWizardData!.wizardName,
               newAppWizardParameters: theAppWizardParameters,
               autoPrivileged1: autoPrivileged1,
               styleFamily: styleFamily,
