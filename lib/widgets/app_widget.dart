@@ -1,9 +1,12 @@
-import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/core/base/model_base.dart';
+import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/core/registry.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_bloc.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_event.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_widget.dart';
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/app_policy_item_model.dart';
-import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -19,7 +22,6 @@ import 'package:eliud_core/tools/storage/public_medium_helper.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_create/widgets/utils/JsonWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'app_bloc/app_bloc.dart';
@@ -27,6 +29,7 @@ import 'app_bloc/app_event.dart';
 import 'app_bloc/app_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'appbar_widget.dart';
+import 'bodycomponents/bodycomponents__bloc/bodycomponents_create_state.dart';
 import 'bottom_nav_bar_widget.dart';
 import 'dialog_widget.dart';
 import 'drawer_widget.dart';
@@ -131,17 +134,18 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
               collapsed: true,
               children: [
                 Registry.registry()!.getMediumApi().getPublicPhotoWidget(
-                  context: context,
-                  allowCrop: true,
-                  defaultImage: 'packages/eliud_pkg_create/assets/rodentia-icons_preferences-desktop-personal.png',
-                  feedbackFunction: (mediumModel) {
-                    setState(() {
-                      state.appModel.anonymousProfilePhoto = mediumModel;
-                    });
-                  },
-                  app: widget.app,
-                  initialImage: state.appModel.anonymousProfilePhoto ,
-                ),
+                      context: context,
+                      allowCrop: true,
+                      defaultImage:
+                          'packages/eliud_pkg_create/assets/rodentia-icons_preferences-desktop-personal.png',
+                      feedbackFunction: (mediumModel) {
+                        setState(() {
+                          state.appModel.anonymousProfilePhoto = mediumModel;
+                        });
+                      },
+                      app: widget.app,
+                      initialImage: state.appModel.anonymousProfilePhoto,
+                    ),
               ]),
           topicContainer(widget.app, context,
               title: 'Home pages',
@@ -193,46 +197,57 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                     context,
                                     widget.app,
                                     false,
-                                    item!,
+                                    item,
                                     "Update page",
                                   ),
                               trailing: popupMenuButton<int>(
-                                widget.app, context,
+                                  widget.app, context,
                                   child: Icon(Icons.more_vert),
                                   itemBuilder: (context) => [
                                         popupMenuItem(
-                                          widget.app, context,
+                                          widget.app,
+                                          context,
                                           value: 0,
                                           label: 'Details',
                                         ),
                                         popupMenuDivider(widget.app, context),
                                         popupMenuItem(
-                                          widget.app, context,
+                                          widget.app,
+                                          context,
                                           value: 1,
                                           label: 'Set as public homepage',
                                         ),
                                         popupMenuItem(
-                                          widget.app, context,
+                                          widget.app,
+                                          context,
                                           value: 2,
-                                          label: 'Set as homepage for subscribed member',
+                                          label:
+                                              'Set as homepage for subscribed member',
                                         ),
                                         popupMenuItem(
-                                          widget.app, context,
+                                          widget.app,
+                                          context,
                                           value: 3,
-                                          label: 'Set as homepage for suscribed member, level 1',
+                                          label:
+                                              'Set as homepage for suscribed member, level 1',
                                         ),
                                         popupMenuItem(
-                                          widget.app, context,
+                                          widget.app,
+                                          context,
                                           value: 4,
-                                          label: 'Set as homepage for suscribed member, level 2',
+                                          label:
+                                              'Set as homepage for suscribed member, level 2',
                                         ),
                                         popupMenuItem(
-                                          widget.app, context,
+                                          widget.app,
+                                          context,
                                           value: 5,
-                                          label: 'Set as homepage for blocked member',
+                                          label:
+                                              'Set as homepage for blocked member',
                                         ),
                                         popupMenuItem(
-                                          widget.app, context,
+                                          widget.app,
+                                          context,
                                           value: 6,
                                           label: 'Set as homepage for owner',
                                         ),
@@ -244,43 +259,46 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           context,
                                           widget.app,
                                           false,
-                                          item!,
+                                          item,
                                           "Update page",
                                         );
                                         break;
                                       case 1:
                                         setState(() => state.appModel.homePages!
-                                            .homePagePublic = item!.documentID);
+                                            .homePagePublic = item.documentID);
                                         break;
                                       case 2:
                                         setState(() => state.appModel.homePages!
                                                 .homePageSubscribedMember =
-                                            item!.documentID);
+                                            item.documentID);
                                         break;
                                       case 3:
                                         setState(() => state.appModel.homePages!
                                                 .homePageLevel1Member =
-                                            item!.documentID);
+                                            item.documentID);
                                         break;
                                       case 4:
                                         setState(() => state.appModel.homePages!
                                                 .homePageLevel2Member =
-                                            item!.documentID);
+                                            item.documentID);
                                         break;
                                       case 5:
                                         setState(() => state.appModel.homePages!
                                                 .homePageBlockedMember =
-                                            item!.documentID);
+                                            item.documentID);
                                         break;
                                       case 6:
                                         setState(() => state.appModel.homePages!
-                                            .homePageOwner = item!.documentID);
+                                            .homePageOwner = item.documentID);
                                         break;
                                     }
                                   }),
                               title: text(
                                   widget.app,
-                                  context, item!.title ?? item.description?? item.documentID));
+                                  context,
+                                  item.title ??
+                                      item.description ??
+                                      item.documentID));
                         }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
@@ -313,32 +331,37 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                     context,
                                     widget.app,
                                     false,
-                                    item!,
+                                    item,
                                     "Update dialog",
                                   ),
-                              trailing: popupMenuButton<int>(
-                                widget.app, context,
-                                  child: Icon(Icons.more_vert),
-                                  itemBuilder: (context) => [
-                                        popupMenuItem(
-                                          widget.app, context,
-                                          value: 0,
-                                          label: 'Details',
-                                        ),
-                                      ],
-                                  onSelected: (value) {
-                                    if (value == 0) {
-                                      openDialog(
-                                        context,
-                                        widget.app,
-                                        false,
-                                        item!,
-                                        "Update dialog",
-                                      );
-                                    }
-                                  }),
-                              title: text(widget.app, context, item!.description ?? item.title ?? item.documentID
-                              ));
+                              trailing:
+                                  popupMenuButton<int>(widget.app, context,
+                                      child: Icon(Icons.more_vert),
+                                      itemBuilder: (context) => [
+                                            popupMenuItem(
+                                              widget.app,
+                                              context,
+                                              value: 0,
+                                              label: 'Details',
+                                            ),
+                                          ],
+                                      onSelected: (value) {
+                                        if (value == 0) {
+                                          openDialog(
+                                            context,
+                                            widget.app,
+                                            false,
+                                            item,
+                                            "Update dialog",
+                                          );
+                                        }
+                                      }),
+                              title: text(
+                                  widget.app,
+                                  context,
+                                  item.description ??
+                                      item.title ??
+                                      item.documentID));
                         }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
@@ -388,12 +411,14 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                   child: Icon(Icons.more_vert),
                                   itemBuilder: (context) => [
                                         popupMenuItem(
-                                          widget.app, context,
+                                          widget.app,
+                                          context,
                                           value: 0,
                                           label: 'Delete',
                                         ),
                                         popupMenuItem(
-                                          widget.app, context,
+                                          widget.app,
+                                          context,
                                           value: 1,
                                           label: 'Rename',
                                         ),
@@ -533,12 +558,74 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                       Spacer(),
                     ]))
               ]),
-          JsonWidget<AppModel>(app: widget.app, model: state.appModel)
+          ModelsJsonWidget.getIt(context, widget.app, getModelsJsonConstructJsonEvent(state)),
         ]);
       } else {
         return progressIndicator(widget.app, context);
       }
     });
+  }
+
+  Future<List<ModelsJsonTask>> getTasks(AppCreateInitialised appCreateInitialised, List<AbstractModelWithInformation> data) async {
+    List<ModelsJsonTask> tasks = [];
+
+    var pluginsWithComponents;
+    tasks.add(() async {
+      data.add(ModelWithInformation('app', appCreateInitialised.appModel));
+    });
+    tasks.add(() async {
+      data.add(
+          ModelWithInformation('appBar', appCreateInitialised.appBarModel));
+    });
+    tasks.add(() async {
+      data.add(
+          ModelWithInformation('homeMenu', appCreateInitialised.homeMenuModel));
+    });
+    tasks.add(() async {
+      data.add(ModelWithInformation(
+          'leftDrawer', appCreateInitialised.leftDrawerModel));
+    });
+    tasks.add(() async {
+      data.add(ModelWithInformation(
+          'rightDrawer', appCreateInitialised.rightDrawerModel));
+    });
+    tasks.add(() async {
+      data.add(ModelsWithInformation('dialogs', appCreateInitialised.dialogs));
+    });
+    tasks.add(() async {
+      data.add(ModelsWithInformation('pages', appCreateInitialised.pages));
+    });
+    pluginsWithComponents = await retrievePluginsWithComponents();
+    for (var pluginsWithComponent in pluginsWithComponents) {
+      var pluginName = pluginsWithComponent.name;
+      for (var componentSpec in pluginsWithComponent.componentSpec) {
+        var repository = componentSpec.retrieveRepository(
+            appId: appCreateInitialised.appModel.documentID)
+        as RepositoryBase<ModelBase>;
+
+        tasks.add(() async {
+          var allValues = <ModelBase>[];
+          var countDown = 3;
+          while (countDown >= 0) {
+            var values = await repository.valuesList(privilegeLevel: countDown);
+            allValues.addAll(values.map((e) => e!).toList());
+            countDown--;
+          }
+
+          if (allValues.isNotEmpty) {
+            var componentName = componentSpec.name;
+            var fullName = pluginName + "-" + componentName;
+            data.add(ModelsWithInformation(fullName, allValues));
+          }
+        });
+      }
+    }
+    return tasks;
+  }
+
+  ModelsJsonConstructJsonEvent getModelsJsonConstructJsonEvent(AppCreateInitialised appCreateInitialised) {
+    List<AbstractModelWithInformation> data = [];
+    return ModelsJsonConstructJsonEvent(() => getTasks(appCreateInitialised, data), data);
   }
 
   Widget _general(BuildContext context, AppModel app, bool create) {
@@ -615,10 +702,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
             });
           }),
           checkboxListTile(
-              widget.app,
-              context,
-              'Featured',
-              app.isFeatured ?? false, (value) {
+              widget.app, context, 'Featured', app.isFeatured ?? false,
+              (value) {
             setState(() {
               app.isFeatured = value ?? false;
             });

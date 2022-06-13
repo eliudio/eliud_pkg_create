@@ -27,8 +27,8 @@ class AppCreateUninitialised extends AppCreateState {
 
 abstract class AppCreateInitialised extends AppCreateState {
   final AppModel appModel;
-  final List<PageModel?> pages;
-  final List<DialogModel?> dialogs;
+  final List<PageModel> pages;
+  final List<DialogModel> dialogs;
   final HomeMenuModel homeMenuModel;
   final AppBarModel appBarModel;
   final DrawerModel leftDrawerModel;
@@ -47,8 +47,8 @@ abstract class AppCreateInitialised extends AppCreateState {
 class AppCreateValidated extends AppCreateInitialised {
   AppCreateValidated(
       AppModel appModel,
-      List<PageModel?> pages,
-      List<DialogModel?> dialogs,
+      List<PageModel> pages,
+      List<DialogModel> dialogs,
       HomeMenuModel homeMenuModel,
       AppBarModel appBarModel,
       DrawerModel leftDrawerModel,
@@ -75,8 +75,8 @@ class AppCreateValidated extends AppCreateInitialised {
 class AppCreateChangesApplied extends AppCreateInitialised {
   AppCreateChangesApplied(
       AppModel appModel,
-      List<PageModel?> pages,
-      List<DialogModel?> dialogs,
+      List<PageModel> pages,
+      List<DialogModel> dialogs,
       HomeMenuModel homeMenuModel,
       AppBarModel appBarModel,
       DrawerModel leftDrawerModel,

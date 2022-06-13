@@ -32,21 +32,23 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
   )   : appModel = deepCopy(appId, initialiseWithApp),
         super(AppCreateUninitialised()) {
     on<AppCreateEventValidateEvent>((event, emit) async {
-      var pages = <PageModel?>[];
+      var pages = <PageModel>[];
       {
         var countDown = 3;
         while (countDown >= 0) {
-          pages.addAll(await pageRepository(appId: appId)!
-              .valuesList(privilegeLevel: countDown));
+          var newPages = await pageRepository(appId: appId)!
+              .valuesList(privilegeLevel: countDown);
+          pages.addAll(newPages.map((e) => e!).toList());
           countDown--;
         }
       }
-      var dialogs = <DialogModel?>[];
+      var dialogs = <DialogModel>[];
       {
         var countDown = 3;
         while (countDown >= 0) {
-          dialogs.addAll(await dialogRepository(appId: appId)!
-              .valuesList(privilegeLevel: countDown));
+          var newDialogs = await dialogRepository(appId: appId)!
+              .valuesList(privilegeLevel: countDown);
+          dialogs.addAll(newDialogs.map((d) => d!).toList());
           countDown--;
         }
       }
