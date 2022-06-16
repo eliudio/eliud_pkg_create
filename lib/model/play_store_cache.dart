@@ -47,6 +47,14 @@ class PlayStoreCache implements PlayStoreRepository {
     });
   }
 
+  Future<PlayStoreEntity> addEntity(String documentID, PlayStoreEntity value) {
+    return reference.addEntity(documentID, value);
+  }
+
+  Future<PlayStoreEntity> updateEntity(String documentID, PlayStoreEntity value) {
+    return reference.updateEntity(documentID, value);
+  }
+
   Future<void> delete(PlayStoreModel value){
     fullCache.remove(value.documentID);
     reference.delete(value);

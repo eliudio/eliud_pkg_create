@@ -28,7 +28,9 @@ class NewAppCreateEventInitialise extends NewAppCreateEvent {
 }
 
 class NewAppCreateConfirm extends NewAppCreateEvent {
-  NewAppCreateConfirm();
+  final bool fromClipboard;
+
+  NewAppCreateConfirm(this.fromClipboard);
 
   @override
   List<Object?> get props => [

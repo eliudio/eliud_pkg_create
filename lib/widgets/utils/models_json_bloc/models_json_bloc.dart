@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/core/base/model_base.dart';
+import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'models_json_event.dart';
@@ -23,6 +24,7 @@ class ModelWithInformation extends AbstractModelWithInformation {
   }
 }
 
+
 class ModelsWithInformation extends AbstractModelWithInformation {
   final List<ModelBase> models;
 
@@ -30,11 +32,42 @@ class ModelsWithInformation extends AbstractModelWithInformation {
 
   Future<String> toRichJsonString({required String appId}) async {
     var jsonString = "[";
+    int i = 0;
+    int size = models.length;
     for (var model in models) {
       var modelJson = await model.toRichJsonString(appId: appId);
       jsonString = jsonString + modelJson;
-      if (models.last != model) {
+      i++;
+      if (i != size) {
         jsonString = jsonString + ",";
+      }
+    }
+    jsonString = jsonString + "]";
+    return jsonString;
+  }
+}
+
+class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
+  final RepositoryBase<ModelBase> repository;
+  final List<String> documentIDs;
+
+  ModelDocumentIDsWithInformation(this.repository, String label, this.documentIDs) : super(label);
+
+  Future<String> toRichJsonString({required String appId}) async {
+    var jsonString = "[";
+    int i = 0;
+    int size = documentIDs.length;
+    for (var documentID in documentIDs) {
+      var model = await repository.get(documentID);
+      if (model != null) {
+        var modelJson = await model.toRichJsonString(appId: appId);
+        jsonString = jsonString + modelJson;
+        i++;
+        if (i != size) {
+          jsonString = jsonString + ",";
+        }
+      } else {
+        print('Model not found for documentID $documentID');
       }
     }
     jsonString = jsonString + "]";

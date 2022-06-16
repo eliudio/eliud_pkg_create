@@ -38,6 +38,8 @@ typedef PlayStoreModelTrigger(List<PlayStoreModel?> list);
 typedef PlayStoreChanged(PlayStoreModel? value);
 
 abstract class PlayStoreRepository extends RepositoryBase<PlayStoreModel> {
+  Future<PlayStoreEntity> addEntity(String documentID, PlayStoreEntity value);
+  Future<PlayStoreEntity> updateEntity(String documentID, PlayStoreEntity value);
   Future<PlayStoreModel> add(PlayStoreModel value);
   Future<void> delete(PlayStoreModel value);
   Future<PlayStoreModel?> get(String? id, { Function(Exception)? onError });

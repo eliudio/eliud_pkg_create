@@ -77,6 +77,8 @@ class NewAppCreateWidget extends StatefulWidget {
 }
 
 class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
+  bool _fromClipboard = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewAppCreateBloc, NewAppCreateState>(
@@ -103,8 +105,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                 okAction: ((state is NewAppCreateAllowEnterDetails) || (state is NewAppCreateError))
                     ? () async {
                         BlocProvider.of<NewAppCreateBloc>(context)
-                            .add(NewAppCreateConfirm(
-                        ));
+                            .add(NewAppCreateConfirm(_fromClipboard));
                         return false;
                       }
                     : null,
@@ -112,6 +113,17 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
               ),
               if (state is NewAppCreateError) text(widget.app, context, state.error),
               if ((state is NewAppCreateAllowEnterDetails) || (state is NewAppCreateError)) enterDetails(state),
+                  if ((state is NewAppCreateAllowEnterDetails) || (state is NewAppCreateError)) checkboxListTile(
+                    widget.app,
+                    context,
+                    'Create from clipboard',
+                    _fromClipboard,
+                        (value) {
+                      setState(() {
+                        _fromClipboard = value!;
+                      });
+                    },
+                  ),
               if (state is NewAppCreateCreateInProgress) _progress(state),
             ]));
       }

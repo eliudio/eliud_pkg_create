@@ -24,6 +24,7 @@ import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../jsontomodeltojson/modeltojsonhelper.dart';
 import 'app_bloc/app_bloc.dart';
 import 'app_bloc/app_event.dart';
 import 'app_bloc/app_state.dart';
@@ -38,27 +39,6 @@ import 'package:file_picker/file_picker.dart';
 import 'logo_widget.dart';
 
 typedef BlocProvider BlocProviderProvider(Widget child);
-
-void openAppX(
-  BuildContext context,
-  AppModel app, {
-  double? fraction,
-}) {
-  openFlexibleDialog(
-    app,
-    context,
-    app.documentID + '/_app',
-    includeHeading: false,
-    widthFraction: fraction,
-    child: AppCreateWidget.getIt(
-      context,
-      app,
-      false,
-      fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
-      fullScreenHeight(context) - 100,
-    ),
-  );
-}
 
 class AppCreateWidget extends StatefulWidget {
   final bool create;
@@ -558,7 +538,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                       Spacer(),
                     ]))
               ]),
-          ModelsJsonWidget.getIt(context, widget.app, getModelsJsonConstructJsonEvent(state)),
+          ModelsJsonWidget.getIt(
+              context, widget.app, getModelsJsonConstructJsonEvent(state)),
         ]);
       } else {
         return progressIndicator(widget.app, context);
@@ -566,66 +547,25 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
     });
   }
 
-  Future<List<ModelsJsonTask>> getTasks(AppCreateInitialised appCreateInitialised, List<AbstractModelWithInformation> data) async {
-    List<ModelsJsonTask> tasks = [];
-
-    var pluginsWithComponents;
-    tasks.add(() async {
-      data.add(ModelWithInformation('app', appCreateInitialised.appModel));
-    });
-    tasks.add(() async {
-      data.add(
-          ModelWithInformation('appBar', appCreateInitialised.appBarModel));
-    });
-    tasks.add(() async {
-      data.add(
-          ModelWithInformation('homeMenu', appCreateInitialised.homeMenuModel));
-    });
-    tasks.add(() async {
-      data.add(ModelWithInformation(
-          'leftDrawer', appCreateInitialised.leftDrawerModel));
-    });
-    tasks.add(() async {
-      data.add(ModelWithInformation(
-          'rightDrawer', appCreateInitialised.rightDrawerModel));
-    });
-    tasks.add(() async {
-      data.add(ModelsWithInformation('dialogs', appCreateInitialised.dialogs));
-    });
-    tasks.add(() async {
-      data.add(ModelsWithInformation('pages', appCreateInitialised.pages));
-    });
-    pluginsWithComponents = await retrievePluginsWithComponents();
-    for (var pluginsWithComponent in pluginsWithComponents) {
-      var pluginName = pluginsWithComponent.name;
-      for (var componentSpec in pluginsWithComponent.componentSpec) {
-        var repository = componentSpec.retrieveRepository(
-            appId: appCreateInitialised.appModel.documentID)
-        as RepositoryBase<ModelBase>;
-
-        tasks.add(() async {
-          var allValues = <ModelBase>[];
-          var countDown = 3;
-          while (countDown >= 0) {
-            var values = await repository.valuesList(privilegeLevel: countDown);
-            allValues.addAll(values.map((e) => e!).toList());
-            countDown--;
-          }
-
-          if (allValues.isNotEmpty) {
-            var componentName = componentSpec.name;
-            var fullName = pluginName + "-" + componentName;
-            data.add(ModelsWithInformation(fullName, allValues));
-          }
-        });
-      }
-    }
-    return tasks;
+  Future<List<ModelsJsonTask>> getTasks(
+      AppCreateInitialised appCreateInitialised,
+      List<AbstractModelWithInformation> data) async {
+    return ModelsToJsonHelper.getTasksForApp(
+        appCreateInitialised.appModel,
+        appCreateInitialised.appBarModel,
+        appCreateInitialised.homeMenuModel,
+        appCreateInitialised.leftDrawerModel,
+        appCreateInitialised.rightDrawerModel,
+        appCreateInitialised.dialogs,
+        appCreateInitialised.pages,
+        data);
   }
 
-  ModelsJsonConstructJsonEvent getModelsJsonConstructJsonEvent(AppCreateInitialised appCreateInitialised) {
+  ModelsJsonConstructJsonEvent getModelsJsonConstructJsonEvent(
+      AppCreateInitialised appCreateInitialised) {
     List<AbstractModelWithInformation> data = [];
-    return ModelsJsonConstructJsonEvent(() => getTasks(appCreateInitialised, data), data);
+    return ModelsJsonConstructJsonEvent(
+        () => getTasks(appCreateInitialised, data), data);
   }
 
   Widget _general(BuildContext context, AppModel app, bool create) {

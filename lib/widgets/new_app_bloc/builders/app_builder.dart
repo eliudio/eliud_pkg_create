@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/core/wizards/tools/documentIdentifier.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
+import 'package:eliud_core/model/app_bar_entity.dart';
+import 'package:eliud_core/model/app_entity.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/access_model.dart';
 import 'package:eliud_core/package/access_rights.dart';
@@ -14,6 +18,9 @@ import 'package:eliud_core/model/app_home_page_references_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
+import 'package:flutter/services.dart';
+import '../../../jsontomodeltojson/jsonconst.dart';
+import '../../../jsontomodeltojson/jsontomodelhelper.dart';
 import '../new_app_bloc.dart';
 import '../new_app_event.dart';
 import '../new_app_state.dart';
@@ -48,9 +55,9 @@ class AppBuilder {
 
   var newlyCreatedApp;
 
-  Future<AppModel> create(NewAppCreateBloc newAppCreateBloc) async {
+  Future<AppModel> create(
+      NewAppCreateBloc newAppCreateBloc, bool fromClipBoard) async {
     List<NewAppTask> tasks = [];
-
     // create the app
     tasks.add(() async {
       newlyCreatedApp = await appRepository()!.add(AppModel(
@@ -70,94 +77,13 @@ class AppBuilder {
       claimOwnerShipApplication(appId, memberId);
     });
 
-    PublicMediumModel? logo;
-    tasks.add(() async {
-      print("Logo");
-      try {
-        logo = await RandomLogo.getRandomPhoto(app, memberId, null);
-      } catch (_) {
-      }
-    });
-
-
-    PublicMediumModel? anonymousMedium;
-    tasks.add(() async {
-      print("Anonymous photo");
-      try {
-        anonymousMedium = await PublicMediumAccessRights()
-            .getMediumHelper(
-          app,
-          memberId,
-        ).createThumbnailUploadPhotoAsset(newRandomKey(), 'packages/eliud_pkg_create/assets/rodentia-icons_preferences-desktop-personal.png');
-      } catch (_) {
-      }
-    });
-
-    tasks.add(() async {
-      print("leftDrawer");
-      leftDrawer = await LeftDrawerBuilder(
-        app,
-        logo: logo
-      ).getOrCreate();
-    });
-
-    tasks.add(() async {
-      print("rightDrawer");
-      rightDrawer = await RightDrawerBuilder(
-        app,
-      ).getOrCreate();
-    });
-
-    tasks.add(() async {
-      print("HomeMenu");
-      theHomeMenu = await HomeMenuBuilder(
-        app,
-      ).getOrCreate();
-    });
-
-    tasks.add(() async {
-      print("AppBar");
-      theAppBar = await AppBarBuilder(
-        app,
-      ).getOrCreate();
-    });
-
-    tasks.add(() async {
-      print("Welcome Page");
-      await HelloWorldPageBuilder(uniqueId,
-        HELLO_WORLD_PAGE_ID,
-        app,
-        memberId,
-        theHomeMenu,
-        theAppBar,
-        leftDrawer,
-        rightDrawer,
-      ).create();
-    });
-
-    // app
-    tasks.add(() async {
-      print("App");
-      var newApp = AppModel(
-        documentID: appId,
-        title: 'New application',
-        ownerID: memberId,
-        appStatus: AppStatus.Live,
-        email: member.email,
-        logo: logo,
-        anonymousProfilePhoto: anonymousMedium,
-        homePages: AppHomePageReferencesModel(
-            homePageBlockedMember: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
-            homePagePublic: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
-            homePageSubscribedMember: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
-            homePageLevel1Member: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
-            homePageLevel2Member: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
-            homePageOwner: constructDocumentId(uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
-        ),
-        description: 'Your new application',
-      );
-      newlyCreatedApp = await appRepository()!.update(newApp);
-    });
+    List<NewAppTask> newTasks = [];
+    if (fromClipBoard) {
+      newTasks = await createAppFromClipboard(newAppCreateBloc);
+    } else {
+      newTasks = await createApp(newAppCreateBloc);
+    }
+    tasks.addAll(newTasks);
 
     var progressManager = ProgressManager(tasks.length,
         (progress) => newAppCreateBloc.add(NewAppCreateProgressed(progress)));
@@ -187,6 +113,119 @@ class AppBuilder {
     } else {
       throw Exception("no app created");
     }
+  }
+
+  Future<List<NewAppTask>> createAppFromClipboard(
+      NewAppCreateBloc newAppCreateBloc) async {
+    var json = await Clipboard.getData(Clipboard.kTextPlain);
+    if (json != null) {
+      var jsonText = json.text;
+      if (jsonText != null) {
+        return JsonToModelsHelper.createAppFromJson(appId, jsonText, memberId);
+      } else {
+        throw Exception("Json text is null");
+      }
+    } else {
+      throw Exception("json is null");
+    }
+  }
+
+  Future<List<NewAppTask>> createApp(NewAppCreateBloc newAppCreateBloc) async {
+    List<NewAppTask> tasks = [];
+
+    PublicMediumModel? logo;
+    tasks.add(() async {
+      print("Logo");
+      try {
+        logo = await RandomLogo.getRandomPhoto(app, memberId, null);
+      } catch (_) {}
+    });
+
+    PublicMediumModel? anonymousMedium;
+    tasks.add(() async {
+      print("Anonymous photo");
+      try {
+        anonymousMedium = await PublicMediumAccessRights()
+            .getMediumHelper(
+              app,
+              memberId,
+            )
+            .createThumbnailUploadPhotoAsset(newRandomKey(),
+                'packages/eliud_pkg_create/assets/rodentia-icons_preferences-desktop-personal.png');
+      } catch (_) {}
+    });
+
+    tasks.add(() async {
+      print("leftDrawer");
+      leftDrawer = await LeftDrawerBuilder(app, logo: logo).getOrCreate();
+    });
+
+    tasks.add(() async {
+      print("rightDrawer");
+      rightDrawer = await RightDrawerBuilder(
+        app,
+      ).getOrCreate();
+    });
+
+    tasks.add(() async {
+      print("HomeMenu");
+      theHomeMenu = await HomeMenuBuilder(
+        app,
+      ).getOrCreate();
+    });
+
+    tasks.add(() async {
+      print("AppBar");
+      theAppBar = await AppBarBuilder(
+        app,
+      ).getOrCreate();
+    });
+
+    tasks.add(() async {
+      print("Welcome Page");
+      await HelloWorldPageBuilder(
+        uniqueId,
+        HELLO_WORLD_PAGE_ID,
+        app,
+        memberId,
+        theHomeMenu,
+        theAppBar,
+        leftDrawer,
+        rightDrawer,
+      ).create();
+    });
+
+    // app
+    tasks.add(() async {
+      print("App");
+      var newApp = AppModel(
+        documentID: appId,
+        title: 'New application',
+        ownerID: memberId,
+        appStatus: AppStatus.Live,
+        email: member.email,
+        logo: logo,
+        anonymousProfilePhoto: anonymousMedium,
+        homePages: AppHomePageReferencesModel(
+          homePageBlockedMember: constructDocumentId(
+              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+          homePagePublic: constructDocumentId(
+              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+          homePageSubscribedMember: constructDocumentId(
+              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+          homePageLevel1Member: constructDocumentId(
+              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+          homePageLevel2Member: constructDocumentId(
+              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+          homePageOwner: constructDocumentId(
+              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+        ),
+        description: 'Your new application',
+      );
+      newlyCreatedApp = await appRepository()!.update(newApp);
+    });
+
+    return tasks;
   }
 
   // Start the installation by claiming ownership of the app.

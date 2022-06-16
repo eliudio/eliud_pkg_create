@@ -36,6 +36,14 @@ import 'package:eliud_core/tools/firestore/firestore_tools.dart';
 import 'package:eliud_core/tools/common_tools.dart';
 
 class PlayStoreFirestore implements PlayStoreRepository {
+  Future<PlayStoreEntity> addEntity(String documentID, PlayStoreEntity value) {
+    return PlayStoreCollection.doc(documentID).set(value.toDocument()).then((_) => value);
+  }
+
+  Future<PlayStoreEntity> updateEntity(String documentID, PlayStoreEntity value) {
+    return PlayStoreCollection.doc(documentID).update(value.toDocument()).then((_) => value);
+  }
+
   Future<PlayStoreModel> add(PlayStoreModel value) {
     return PlayStoreCollection.doc(value.documentID).set(value.toEntity(appId: appId).toDocument()).then((_) => value);
   }
@@ -54,6 +62,21 @@ class PlayStoreFirestore implements PlayStoreRepository {
 
   Future<PlayStoreModel?> _populateDocPlus(DocumentSnapshot value) async {
     return PlayStoreModel.fromEntityPlus(value.id, PlayStoreEntity.fromMap(value.data()), appId: appId);  }
+
+  Future<PlayStoreEntity?> getEntity(String? id, {Function(Exception)? onError}) async {
+    try {
+      var collection = PlayStoreCollection.doc(id);
+      var doc = await collection.get();
+      return PlayStoreEntity.fromMap(doc.data());
+    } on Exception catch(e) {
+      if (onError != null) {
+        onError(e);
+      } else {
+        print("Error whilst retrieving PlayStore with id $id");
+        print("Exceptoin: $e");
+      }
+    };
+  }
 
   Future<PlayStoreModel?> get(String? id, {Function(Exception)? onError}) async {
     try {
