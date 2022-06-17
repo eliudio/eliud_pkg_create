@@ -21,11 +21,9 @@ import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/widgets/privilege_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/style_selection_widget.dart';
+import 'package:eliud_pkg_create/widgets/utils/creator_button.dart';
 import 'package:eliud_pkg_create/widgets/utils/my_decorated_widget.dart';
-import 'package:eliud_pkg_create/widgets/utils/my_decorated_widget2.dart';
 import 'package:eliud_pkg_create/widgets/wizard_widget.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/creator_button.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/decorated_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -47,30 +45,31 @@ class CreatorDecoration extends deco.Decoration {
       return MyDecoratedWidget(
         isCreationMode: _isCreationMode,
         originalWidgetKey: appBarKey,
-        createOriginalWidget: disableSimulatePrivilege ? createOriginalAppBar :
-          () {
-          return MyDecoratedWidget(
-            isCreationMode: _isCreationMode,
-            originalWidgetKey: appBarKey,
-            createOriginalWidget: createOriginalAppBar,
-            action: SingleAction(() {
-              openFlexibleDialog(
-                app,
-                context,
-                app.documentID + '/_appbar',
-                includeHeading: false,
-                widthFraction: .9,
-                child: PrivilegeWidget(
-                  app: app,
-                  currentAccess: currentAccess,
-                ),
-              );
-            }),
-            ensureHeight: false,
-            initialPosition: InitialPosition.LeftBottom,
-            label: 'privilege',
-          );
-        },
+        createOriginalWidget: disableSimulatePrivilege
+            ? createOriginalAppBar
+            : () {
+                return MyDecoratedWidget(
+                  isCreationMode: _isCreationMode,
+                  originalWidgetKey: appBarKey,
+                  createOriginalWidget: createOriginalAppBar,
+                  action: SingleAction(() {
+                    openFlexibleDialog(
+                      app,
+                      context,
+                      app.documentID + '/_appbar',
+                      includeHeading: false,
+                      widthFraction: .9,
+                      child: PrivilegeWidget(
+                        app: app,
+                        currentAccess: currentAccess,
+                      ),
+                    );
+                  }),
+                  ensureHeight: false,
+                  initialPosition: InitialPosition.LeftBottom,
+                  label: 'privilege',
+                );
+              },
         action: SingleAction(() {
           openAppBar(context, app, model, fraction: fraction);
         }),
@@ -162,24 +161,14 @@ class CreatorDecoration extends deco.Decoration {
 
     return (() {
       // Button for the decorator itself
-      return DecoratedWidget(
-          backgroundColor: Constants.BACKGROUND_COLOR,
-          textColor: Constants.TEXT_COLOR,
-          iconOn: Icon(
-            Icons.edit,
-            color: Constants.ICON_COLOR,
-            size: 15,
-          ),
-          iconOff: Icon(
-            Icons.edit_outlined,
-            color: Constants.ICON_COLOR,
-            size: 15,
-          ),
-          bordercolor: Constants.BORDER_COLOR,
+      return MyDecoratedWidget(
 //        label: 'creator',
+          action: SingleAction(() {
+            _isCreationMode.value = !_isCreationMode.value;
+          }),
           ensureHeight: false,
           initialPosition: InitialPosition.CenterBottom,
-          isCreationMode: _isCreationMode,
+          isCreationMode: ValueNotifier<bool>(true),
           originalWidgetKey: originalPageKey,
           createOriginalWidget: () {
             // Button for the page
@@ -188,7 +177,8 @@ class CreatorDecoration extends deco.Decoration {
               originalWidgetKey: originalPageKey,
               createOriginalWidget: () {
                 // Button for the wizard
-                return MyDecoratedWidget2(
+                return MyDecoratedWidget(
+                  isCreationMode: _isCreationMode,
                   icon: Icon(
                     Icons.star,
                     color: Constants.ICON_COLOR,
@@ -202,7 +192,8 @@ class CreatorDecoration extends deco.Decoration {
                       originalWidgetKey: originalPageKey,
                       createOriginalWidget: () {
                         if (app != null) {
-                          return MyDecoratedWidget2(
+                          return MyDecoratedWidget(
+                            isCreationMode: _isCreationMode,
                             originalWidgetKey: originalPageKey,
                             createOriginalWidget: createOriginalPage,
                             icon: Icon(
@@ -210,7 +201,7 @@ class CreatorDecoration extends deco.Decoration {
                               color: Constants.ICON_COLOR,
                               size: CreatorButton.BUTTON_HEIGHT * .7,
                             ),
-                            action: (state) {
+                            action: SingleAction(() {
                               openComplexDialog(
                                   app, context, app.documentID + '/_style',
                                   widthFraction: .5,
@@ -218,7 +209,7 @@ class CreatorDecoration extends deco.Decoration {
                                   child: StyleSelectionWidget.getIt(
                                       context, app, true, false, false),
                                   title: 'Style');
-                            },
+                            }),
                             ensureHeight: false,
                             initialPosition: InitialPosition.RightBottom,
                           );
@@ -247,7 +238,7 @@ class CreatorDecoration extends deco.Decoration {
                       label: 'app',
                     );
                   },
-                  action: (state) {
+                  action: SingleAction(() {
                     var member = AccessBloc.member(context);
                     if (member != null) {
                       newWizard(
@@ -257,7 +248,7 @@ class CreatorDecoration extends deco.Decoration {
                         fraction: .9,
                       );
                     }
-                  },
+                  }),
                   ensureHeight: false,
                   initialPosition: InitialPosition.LeftBottom,
 //                  label: 'wizard',
@@ -293,24 +284,14 @@ class CreatorDecoration extends deco.Decoration {
 
     return (() {
       // Button for the decorator itself
-      return DecoratedWidget(
-        backgroundColor: Constants.BACKGROUND_COLOR,
-        textColor: Constants.TEXT_COLOR,
-        iconOn: Icon(
-          Icons.edit,
-          color: Constants.ICON_COLOR,
-          size: 15,
-        ),
-        iconOff: Icon(
-          Icons.edit_outlined,
-          color: Constants.ICON_COLOR,
-          size: 15,
-        ),
-        bordercolor: Constants.BORDER_COLOR,
+      return MyDecoratedWidget(
+        action: SingleAction(() {
+          _isCreationMode.value = !_isCreationMode.value;
+        }),
 //        label: 'creator',
         ensureHeight: false,
         initialPosition: InitialPosition.RightAlmostBottom,
-        isCreationMode: _isCreationMode,
+        isCreationMode: ValueNotifier<bool>(true),
         originalWidgetKey: originalPageKey,
         createOriginalWidget: () {
           // Button for the wizard
@@ -324,7 +305,8 @@ class CreatorDecoration extends deco.Decoration {
                 originalWidgetKey: originalPageKey,
                 createOriginalWidget: () {
                   if (app != null) {
-                    return MyDecoratedWidget2(
+                    return MyDecoratedWidget(
+                      isCreationMode: _isCreationMode,
                       originalWidgetKey: originalPageKey,
                       createOriginalWidget: createOriginalPage,
                       icon: Icon(
@@ -332,7 +314,7 @@ class CreatorDecoration extends deco.Decoration {
                         color: Constants.ICON_COLOR,
                         size: CreatorButton.BUTTON_HEIGHT * .7,
                       ),
-                      action: (state) {
+                      action: SingleAction(() {
                         openComplexDialog(
                             app, context, app.documentID + '/_style',
                             widthFraction: .5,
@@ -340,7 +322,7 @@ class CreatorDecoration extends deco.Decoration {
                             child: StyleSelectionWidget.getIt(
                                 context, app, true, false, false),
                             title: 'Style');
-                      },
+                      }),
                       ensureHeight: false,
                       initialPosition: InitialPosition.RightBottom,
                     );

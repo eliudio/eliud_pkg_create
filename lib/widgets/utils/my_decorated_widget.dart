@@ -3,10 +3,10 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
-import 'package:eliud_pkg_etc/widgets/decorator/creator_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import '../../tools/constants.dart';
+import 'creator_button.dart';
 
 typedef StateCallBack = void Function();
 
@@ -65,7 +65,8 @@ class MyDecoratedWidget extends StatefulWidget {
   final Key? originalWidgetKey;
   final bool ensureHeight;
   final InitialPosition initialPosition;
-  final String label;
+  final String? label;
+  final Widget? icon;
   final Action action;
 
   MyDecoratedWidget({
@@ -76,7 +77,8 @@ class MyDecoratedWidget extends StatefulWidget {
     required this.createOriginalWidget,
     required this.ensureHeight,
     required this.initialPosition,
-    required this.label,
+    this.label,
+    this.icon,
     required this.action,
   }) : super(key: key);
 
@@ -99,7 +101,7 @@ class _MyDecoratedDialogWidgetState extends State<MyDecoratedWidget> {
             return CreatorButton(
                 backgroundColor: Constants.BACKGROUND_COLOR,
                 textColor: Constants.TEXT_COLOR,
-                icon: Icon(
+                icon: widget.icon ?? Icon(
                   Icons.edit,
                   color: Constants.ICON_COLOR,
                   size: CreatorButton.BUTTON_HEIGHT * .7,
