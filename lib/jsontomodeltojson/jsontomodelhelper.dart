@@ -18,7 +18,12 @@ class JsonToModelsHelper {
 
     Map<String, dynamic>? map;
     tasks.add(() async {
-      map = jsonDecode(jsonText);
+      try {
+        map = jsonDecode(jsonText);
+      } catch (e) {
+        print('Exception during jsonDecode');
+        print('json: ' + jsonText);
+      }
     });
 
     tasks.add(() async {
@@ -76,6 +81,13 @@ class JsonToModelsHelper {
           for (var menuDef in menuDefs) {
             var documentID = menuDef['documentID'];
             menuDef['appId'] = appId;
+            var menuItems = menuDef['menuItems'];
+            for (var menuItem in menuItems) {
+              var action = menuItem['action'];
+              if (action != null) {
+                  action['appID'] = appId;
+              }
+            }
             var menuDefEntity = MenuDefEntity.fromMap(
                 menuDef);
             if (menuDefEntity != null) {
