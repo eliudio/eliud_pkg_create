@@ -6,7 +6,9 @@ import 'package:eliud_core/core/editor/editor_base_bloc/editor_base_bloc.dart';
 import 'package:eliud_pkg_create/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
 
-class PlayStoreBloc extends EditorBaseBloc<PlayStoreModel> {
+import '../../model/play_store_entity.dart';
+
+class PlayStoreBloc extends EditorBaseBloc<PlayStoreModel, PlayStoreEntity> {
   PlayStoreBloc(String appId, EditorFeedback feedback)
       : super(appId, playStoreRepository(appId: appId)!, feedback);
 

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
+import 'package:eliud_core/core/base/entity_base.dart';
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/model/app_model.dart';
@@ -11,7 +14,7 @@ abstract class AbstractModelWithInformation {
 
   AbstractModelWithInformation(this.label);
 
-  Future<String> toRichJsonString({required String appId});
+  Future<dynamic> toRichMap({required String appId, required List<ModelBase> referencedModels});
 }
 
 class ModelWithInformation extends AbstractModelWithInformation {
@@ -19,59 +22,43 @@ class ModelWithInformation extends AbstractModelWithInformation {
 
   ModelWithInformation(String label, this.model) : super(label);
 
-  Future<String> toRichJsonString({required String appId}) {
-    return model.toRichJsonString(appId: appId);
+  Future<Map<String, dynamic>> toRichMap({required String appId, required List<ModelBase> referencedModels}) async {
+    return await model.toEntity(appId: appId, referencesCollector: referencedModels).toDocument();
   }
-}
 
+}
 
 class ModelsWithInformation extends AbstractModelWithInformation {
   final List<ModelBase> models;
 
   ModelsWithInformation(String label, this.models) : super(label);
 
-  Future<String> toRichJsonString({required String appId}) async {
-    var jsonString = "[";
-    int i = 0;
-    int size = models.length;
+  Future<List<dynamic>> toRichMap({required String appId, required List<ModelBase> referencedModels}) async {
+    List<dynamic> list = [];
     for (var model in models) {
-      var modelJson = await model.toRichJsonString(appId: appId);
-      jsonString = jsonString + modelJson;
-      i++;
-      if (i != size) {
-        jsonString = jsonString + ",";
-      }
+      list.add(await model.toEntity(appId: appId, referencesCollector: referencedModels).toDocument());
     }
-    jsonString = jsonString + "]";
-    return jsonString;
+    return list;
   }
 }
 
 class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
-  final RepositoryBase<ModelBase> repository;
+  final RepositoryBase<ModelBase, EntityBase> repository;
   final List<String> documentIDs;
 
   ModelDocumentIDsWithInformation(this.repository, String label, this.documentIDs) : super(label);
 
-  Future<String> toRichJsonString({required String appId}) async {
-    var jsonString = "[";
-    int i = 0;
-    int size = documentIDs.length;
+  Future<List<dynamic>> toRichMap({required String appId, required List<ModelBase> referencedModels}) async {
+    List<dynamic> list = [];
     for (var documentID in documentIDs) {
       var model = await repository.get(documentID);
       if (model != null) {
-        var modelJson = await model.toRichJsonString(appId: appId);
-        jsonString = jsonString + modelJson;
-        i++;
-        if (i != size) {
-          jsonString = jsonString + ",";
-        }
+        list.add(await model.toEntity(appId: appId, referencesCollector: referencedModels).toDocument());
       } else {
         print('Model not found for documentID $documentID');
       }
     }
-    jsonString = jsonString + "]";
-    return jsonString;
+    return list;
   }
 }
 
@@ -115,18 +102,20 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
     });
   }
 
-  Future<String> modelsToJson(AppModel app,List<AbstractModelWithInformation> modelsWithInformation) async {
+  Future<Map<String, dynamic>> modelsToRichMap(AppModel app, List<AbstractModelWithInformation> modelsWithInformation, ) async {
+    List<ModelBase> referencedModels = [];
     var appId = app.documentID;
-    var jsonString = "{";
+    final Map<String, dynamic> theMap = {};
     for (var modelWithInformation in modelsWithInformation) {
-      var modelJson = await modelWithInformation.toRichJsonString(appId: appId );
-      jsonString = jsonString + "\"" + modelWithInformation.label + "\":" + modelJson;
-      if (modelsWithInformation.last != modelWithInformation) {
-        jsonString = jsonString + ",";
-      }
+      theMap[modelWithInformation.label] = await modelWithInformation.toRichMap(appId: appId, referencedModels: referencedModels);
     }
-    jsonString = jsonString + "}";
-    return jsonString;
+    int i = 0;
+    i++;
+    // now also add the referencedModels
+    return theMap;
   }
 
+  Future<String> modelsToJson(AppModel app,List<AbstractModelWithInformation> modelsWithInformation) async {
+    return jsonEncode(await modelsToRichMap(app, modelsWithInformation));
+  }
 }

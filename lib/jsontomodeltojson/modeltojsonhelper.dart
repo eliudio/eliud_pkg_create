@@ -1,3 +1,4 @@
+import 'package:eliud_core/core/base/entity_base.dart';
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
@@ -70,7 +71,7 @@ class ModelsToJsonHelper {
       var pluginName = pluginsWithComponent.name;
       for (var componentSpec in pluginsWithComponent.componentSpec) {
         var repository = componentSpec.retrieveRepository(
-            appId: appModel.documentID) as RepositoryBase<ModelBase>;
+            appId: appModel.documentID) as RepositoryBase<ModelBase, EntityBase>;
 
         tasks.add(() async {
           var allValues = <ModelBase>[];

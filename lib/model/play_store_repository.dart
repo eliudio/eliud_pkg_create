@@ -37,7 +37,7 @@ import 'package:eliud_core/core/base/repository_base.dart';
 typedef PlayStoreModelTrigger(List<PlayStoreModel?> list);
 typedef PlayStoreChanged(PlayStoreModel? value);
 
-abstract class PlayStoreRepository extends RepositoryBase<PlayStoreModel> {
+abstract class PlayStoreRepository extends RepositoryBase<PlayStoreModel, PlayStoreEntity> {
   Future<PlayStoreEntity> addEntity(String documentID, PlayStoreEntity value);
   Future<PlayStoreEntity> updateEntity(String documentID, PlayStoreEntity value);
   Future<PlayStoreModel> add(PlayStoreModel value);

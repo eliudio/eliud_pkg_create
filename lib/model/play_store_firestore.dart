@@ -36,6 +36,11 @@ import 'package:eliud_core/tools/firestore/firestore_tools.dart';
 import 'package:eliud_core/tools/common_tools.dart';
 
 class PlayStoreFirestore implements PlayStoreRepository {
+  @override
+  PlayStoreEntity? fromMap(Object? o) {
+    return PlayStoreEntity.fromMap(o);
+  }
+
   Future<PlayStoreEntity> addEntity(String documentID, PlayStoreEntity value) {
     return PlayStoreCollection.doc(documentID).set(value.toDocument()).then((_) => value);
   }
