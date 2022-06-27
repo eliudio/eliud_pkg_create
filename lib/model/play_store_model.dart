@@ -40,6 +40,9 @@ import 'package:eliud_core/tools/random.dart';
 
 
 class PlayStoreModel implements ModelBase, WithAppId {
+  static const String packageName = 'eliud_pkg_create';
+  static const String id = 'PlayStore';
+
   String documentID;
   String appId;
   String? description;
@@ -73,7 +76,7 @@ class PlayStoreModel implements ModelBase, WithAppId {
     return 'PlayStoreModel{documentID: $documentID, appId: $appId, description: $description, backgroundIcon: $backgroundIcon, conditions: $conditions}';
   }
 
-  PlayStoreEntity toEntity({String? appId, List<ModelBase>? referencesCollector}) {
+  PlayStoreEntity toEntity({String? appId, Set<ModelReference>? referencesCollector}) {
     if (referencesCollector != null) {
     }
     return PlayStoreEntity(

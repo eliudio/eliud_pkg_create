@@ -53,6 +53,21 @@ List<PluginWithComponents> retrievePluginsWithComponents() =>
       return PluginWithComponents(key, friendlyName ?? '?', entry.value);
     }).toList();
 
+ComponentSpec getComponentSpec(String pluginName, String componentId) {
+  var plugin = Registry.registry()!.componentSpecMap()[pluginName];
+  if (plugin != null) {
+    for (var component in plugin) {
+      if (component.name == componentId) {
+        return component;
+      }
+    }
+    throw Exception("Plugin with name '$pluginName' does not contain component with id $componentId");
+  } else {
+    throw Exception("Plugin with name '$pluginName' does not exist");
+  }
+
+}
+
 class PluginWithComponents {
   final String name;
   final String friendlyName;

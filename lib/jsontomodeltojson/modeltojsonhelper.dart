@@ -26,12 +26,13 @@ class ModelsToJsonHelper {
       List<AbstractModelWithInformation> container) async {
     List<ModelsJsonTask> tasks = [];
 
-    List<MenuDefModel> menuDefModels = [];
+    Set<MenuDefModel> menuDefModels = Set<MenuDefModel>();
 
     var pluginsWithComponents;
     tasks.add(() async {
       container.add(ModelWithInformation(JsonConsts.app, appModel));
     });
+/*
     tasks.add(() async {
       container.add(ModelWithInformation(JsonConsts.appBar, appBarModel));
       if (appBarModel.iconMenu != null) {
@@ -60,12 +61,14 @@ class ModelsToJsonHelper {
     tasks.add(() async {
       container.add(ModelsWithInformation(JsonConsts.menuDef, menuDefModels));
     });
+*/
     tasks.add(() async {
       container.add(ModelDocumentIDsWithInformation(dialogRepository(appId: appModel.documentID)!, JsonConsts.dialogs, dialogs.map((e) => e.documentID).toList()));
     });
     tasks.add(() async {
       container.add(ModelDocumentIDsWithInformation(pageRepository(appId: appModel.documentID)!, JsonConsts.pages, pages.map((e) => e.documentID).toList()));
     });
+/*
     pluginsWithComponents = await retrievePluginsWithComponents();
     for (var pluginsWithComponent in pluginsWithComponents) {
       var pluginName = pluginsWithComponent.name;
@@ -90,6 +93,7 @@ class ModelsToJsonHelper {
         });
       }
     }
+*/
     return tasks;
   }
 }
