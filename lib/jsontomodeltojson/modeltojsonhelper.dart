@@ -68,7 +68,6 @@ class ModelsToJsonHelper {
     tasks.add(() async {
       container.add(ModelDocumentIDsWithInformation(pageRepository(appId: appModel.documentID)!, JsonConsts.pages, pages.map((e) => e.documentID).toList()));
     });
-/*
     pluginsWithComponents = await retrievePluginsWithComponents();
     for (var pluginsWithComponent in pluginsWithComponents) {
       var pluginName = pluginsWithComponent.name;
@@ -93,7 +92,6 @@ class ModelsToJsonHelper {
         });
       }
     }
-*/
     return tasks;
   }
 }

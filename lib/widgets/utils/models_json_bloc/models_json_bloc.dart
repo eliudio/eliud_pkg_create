@@ -1,10 +1,13 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/core/base/entity_base.dart';
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
+import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'models_json_event.dart';
 import 'models_json_state.dart';
@@ -25,7 +28,7 @@ class ModelWithInformation extends AbstractModelWithInformation {
   Future<Map<String, dynamic>> toRichMap({required String appId, required Set<ModelReference> referencedModels}) async {
     var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
     var doc = entity.toDocument();
-    entity.enrichedDocument(doc);
+    await entity.enrichedDocument(doc);
     doc['documentID'] = model.documentID;
     return doc;
   }
@@ -42,7 +45,7 @@ class ModelsWithInformation extends AbstractModelWithInformation {
     for (var model in models) {
       var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
       var doc = entity.toDocument();
-      entity.enrichedDocument(doc);
+      await entity.enrichedDocument(doc);
       doc['documentID'] = model.documentID;
       list.add(doc);
     }
@@ -63,7 +66,7 @@ class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
       if (model != null) {
         var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
         var doc = entity.toDocument();
-        entity.enrichedDocument(doc);
+        await entity.enrichedDocument(doc);
         doc['documentID'] = model.documentID;
         list.add(doc);
       } else {
@@ -103,7 +106,7 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
           }
           progressManager.progressedNextStep();
         }
-        var jsonString = await modelsToJson(app, event.dataContainer);
+        var jsonString = await modelsToJson(progressManager, app, event.dataContainer);
         emit(ModelsAndJsonAvailable(event.dataContainer, jsonString, ));
       }
     });
@@ -113,14 +116,18 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
     });
   }
 
-  Future<Map<String, dynamic>> modelsToRichMap(AppModel app, List<AbstractModelWithInformation> modelsWithInformation, ) async {
-    Set<ModelReference> referencedModels = Set<ModelReference>();
+  Future<Map<String, dynamic>> modelsToRichMap(ProgressManager progressManager, AppModel app, List<AbstractModelWithInformation> modelsWithInformation, ) async {
+    Set<ModelReference> referencedModels = LinkedHashSet<ModelReference>();
     var appId = app.documentID;
     final Map<String, dynamic> theMap = {};
     for (var modelWithInformation in modelsWithInformation) {
       theMap[modelWithInformation.label] = await modelWithInformation.toRichMap(appId: appId, referencedModels: referencedModels);
     }
 
+    //    progressManager.addAmountOfSteps(size);
+    Set<String> referencedModels2 = Set<String>();
+    referencedModels.retainWhere((element) => referencedModels2.add(element.key()));
+    int size = referencedModels.length;
     for (var referencedModel in referencedModels ) {
       var fullName = referencedModel.packageName + "-" + referencedModel.componentName;
       var map = theMap[fullName];
@@ -129,14 +136,16 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
       }
       var entity = referencedModel.referenced.toEntity(appId: appId);
       var doc = entity.toDocument();
-      entity.enrichedDocument(doc);
+      doc['documentID'] = referencedModel.referenced.documentID;
+      await entity.enrichedDocument(doc);
       theMap[fullName].add(doc);
+//      progressManager.progressedNextStep();
     }
 
     return theMap;
   }
 
-  Future<String> modelsToJson(AppModel app, List<AbstractModelWithInformation> modelsWithInformation) async {
-    return jsonEncode(await modelsToRichMap(app, modelsWithInformation));
+  Future<String> modelsToJson(ProgressManager progressManager, AppModel app, List<AbstractModelWithInformation> modelsWithInformation) async {
+    return jsonEncode(await modelsToRichMap(progressManager, app, modelsWithInformation));
   }
 }
