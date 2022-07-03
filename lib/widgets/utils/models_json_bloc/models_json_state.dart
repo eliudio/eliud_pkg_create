@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 
@@ -59,11 +60,13 @@ class ModelsJsonProgressed extends ModelsJsonState /*with HasDataContainer */{
 */
 }
 
-class ModelsAndJsonAvailable extends ModelsJsonState /*with HasDataContainer*/ {
+/*
+abstract class ModelsAndJsonAvailable extends ModelsJsonState */
+/*with HasDataContainer*//*
+ {
   final List<AbstractModelWithInformation> dataContainer;
-  final String jsonString;
 
-  ModelsAndJsonAvailable(this.dataContainer, this.jsonString) : super();
+  ModelsAndJsonAvailable(this.dataContainer, ) : super();
 
   @override
   List<Object?> get props => [];
@@ -72,12 +75,47 @@ class ModelsAndJsonAvailable extends ModelsJsonState /*with HasDataContainer*/ {
   bool operator ==(Object other) =>
       identical(this, other) ||
           other is ModelsAndJsonAvailable &&
-              jsonString == other.jsonString &&
               ListEquality().equals(dataContainer, other.dataContainer) ;
 
+*/
 /*
   @override
   List<AbstractModelWithInformation> getDataContainer() => dataContainer;
+*//*
+
+}
 */
+
+class ModelsAndJsonAvailableInClipboard extends ModelsJsonState {
+
 }
 
+class ModelsAndJsonError extends ModelsJsonState {
+  final String error;
+
+  ModelsAndJsonError(this.error);
+
+  @override
+  List<Object?> get props => [error];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is ModelsAndJsonError &&
+              error == other.error;
+}
+
+class ModelsAndJsonAvailableAsMemberMedium extends ModelsJsonState {
+  final MemberMediumModel memberMediumModel;
+
+  ModelsAndJsonAvailableAsMemberMedium(this.memberMediumModel);
+
+  @override
+  List<Object?> get props => [memberMediumModel];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is ModelsAndJsonAvailableAsMemberMedium &&
+          memberMediumModel == other.memberMediumModel;
+}

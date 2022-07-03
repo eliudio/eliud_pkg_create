@@ -8,7 +8,12 @@ import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
+import 'package:eliud_core/model/member_medium_model.dart';
+import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
+import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_core/tools/storage/member_medium_helper.dart';
+import 'package:flutter/services.dart';
 import 'models_json_event.dart';
 import 'models_json_state.dart';
 
@@ -87,65 +92,86 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
     });
 
     on<ModelsJsonConstructJsonEvent>((event, emit) async {
-      if (state is ModelsJsonInitialised) {
-        // Now run all tasks
-        var tasks = await event.retrieveTasks();
-        var progressManager = ProgressManager(tasks.length,
-                (progress) => add(ModelsJsonProgressedEvent(progress)));
+      emit(ModelsJsonInitialised());
+      // Now run all tasks
+      var tasks = await event.retrieveTasks();
+      addTasks(tasks, app, event);
 
-        int i = 0;
-        for (var task in tasks) {
-          i++;
-          try {
-            await task();
-          } catch (e) {
-            print('Exception running task ' +
-                i.toString() +
-                ', error: ' +
-                e.toString());
-          }
-          progressManager.progressedNextStep();
+      var progressManager = ProgressManager(tasks.length,
+              (progress) => add(ModelsJsonProgressedEvent(progress)));
+
+      int i = 0;
+      for (var task in tasks) {
+        i++;
+        try {
+          await task();
+        } catch (e) {
+          print('Exception running task ' +
+              i.toString() +
+              ', error: ' +
+              e.toString());
         }
-        var jsonString = await modelsToJson(progressManager, app, event.dataContainer);
-        emit(ModelsAndJsonAvailable(event.dataContainer, jsonString, ));
+        progressManager.progressedNextStep();
       }
     });
 
     on<ModelsJsonProgressedEvent>((event, emit) async {
+      if (state is ModelsAndJsonAvailableAsMemberMedium) return;
+      if (state is ModelsAndJsonAvailableInClipboard) return;
+      if (state is ModelsAndJsonError) return;
       emit(ModelsJsonProgressed(event.progress, event.dataContainer, ));
     });
   }
 
-  Future<Map<String, dynamic>> modelsToRichMap(ProgressManager progressManager, AppModel app, List<AbstractModelWithInformation> modelsWithInformation, ) async {
+  Future<void> addTasks(List<ModelsJsonTask> tasks, AppModel app, ModelsJsonConstructJsonEvent event) async {
+    List<AbstractModelWithInformation> modelsWithInformation = event.dataContainer;
     Set<ModelReference> referencedModels = LinkedHashSet<ModelReference>();
     var appId = app.documentID;
     final Map<String, dynamic> theMap = {};
-    for (var modelWithInformation in modelsWithInformation) {
-      theMap[modelWithInformation.label] = await modelWithInformation.toRichMap(appId: appId, referencedModels: referencedModels);
-    }
-
-    //    progressManager.addAmountOfSteps(size);
-    Set<String> referencedModels2 = Set<String>();
-    referencedModels.retainWhere((element) => referencedModels2.add(element.key()));
-    int size = referencedModels.length;
-    for (var referencedModel in referencedModels ) {
-      var fullName = referencedModel.packageName + "-" + referencedModel.componentName;
-      var map = theMap[fullName];
-      if (map == null) {
-        theMap[fullName] = [];
+    tasks.add(() async {
+      for (var modelWithInformation in modelsWithInformation) {
+          theMap[modelWithInformation.label] = await modelWithInformation.toRichMap(appId: appId, referencedModels: referencedModels);
       }
-      var entity = referencedModel.referenced.toEntity(appId: appId);
-      var doc = entity.toDocument();
-      doc['documentID'] = referencedModel.referenced.documentID;
-      await entity.enrichedDocument(doc);
-      theMap[fullName].add(doc);
-//      progressManager.progressedNextStep();
-    }
+    });
 
-    return theMap;
+    tasks.add(() async {
+      Set<String> referencedModels2 = Set<String>();
+      referencedModels.retainWhere((element) => referencedModels2.add(element.key()));
+      int size = referencedModels.length;
+      for (var referencedModel in referencedModels ) {
+        var fullName = referencedModel.packageName + "-" + referencedModel.componentName;
+        var map = theMap[fullName];
+        if (map == null) {
+          theMap[fullName] = [];
+        }
+        var entity = referencedModel.referenced.toEntity(appId: appId);
+        var doc = entity.toDocument();
+        doc['documentID'] = referencedModel.referenced.documentID;
+        await entity.enrichedDocument(doc);
+        theMap[fullName].add(doc);
+      }
+    });
+
+    tasks.add(() async {
+      var _jsonEncoded = jsonEncode(theMap);
+      if (event is ModelsJsonConstructJsonEventToClipboard) {
+        try {
+          await Clipboard.setData(
+              ClipboardData(text: _jsonEncoded));
+          emit(ModelsAndJsonAvailableInClipboard());
+        } catch (e) {
+          emit(ModelsAndJsonError("Couldn't copy the json to clipboard. It's likely too large"));
+        }
+      }  else if (event is ModelsJsonConstructJsonEventToMemberMediumModel) {
+        String docID = newRandomKey();
+        var memberMedium = await MemberMediumHelper(app, event.member.documentID, MemberMediumAccessibleByGroup.Me).uploadTextData(docID, _jsonEncoded, event.baseName);
+        await Clipboard.setData(
+            ClipboardData(text: memberMedium.url));
+        emit(ModelsAndJsonAvailableAsMemberMedium(memberMedium));
+      }
+    });
+
+
   }
 
-  Future<String> modelsToJson(ProgressManager progressManager, AppModel app, List<AbstractModelWithInformation> modelsWithInformation) async {
-    return jsonEncode(await modelsToRichMap(progressManager, app, modelsWithInformation));
-  }
 }

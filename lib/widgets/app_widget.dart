@@ -1,6 +1,9 @@
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
+import 'package:intl/intl.dart';
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/registry.dart';
+import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_bloc.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_event.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_widget.dart';
@@ -78,8 +81,14 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
   double? _progress;
   double? _progressPolicy;
 
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var member = AccessBloc.member(context);
+
     return BlocBuilder<AppCreateBloc, AppCreateState>(
         builder: (context, state) {
       if (state is AppCreateValidated) {
@@ -538,13 +547,29 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                       Spacer(),
                     ]))
               ]),
-          ModelsJsonWidget.getIt(
-              context, widget.app, getModelsJsonConstructJsonEvent(state)),
+          if (member == null)
+            text(widget.app, context,
+                "Not logged on, hence can't copy the widget to member medium"),
+          if (member != null)
+            ModelsJsonWidget.getIt(
+                context,
+                widget.app,
+                () => getModelsJsonConstructJsonEventToClipboard(state),
+                (baseName) =>
+                    getModelsJsonConstructJsonEventToMemberMediumModel(
+                        state, member, baseName),
+                getFilename()),
         ]);
       } else {
         return progressIndicator(widget.app, context);
       }
     });
+  }
+
+  String getFilename() {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('EEE d MMM y kk:mm:ss').format(now);
+    return 'backup app ' + widget.app.documentID + ' ' + formattedDate + '.app.json';
   }
 
   Future<List<ModelsJsonTask>> getTasks(
@@ -561,11 +586,22 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
         data);
   }
 
-  ModelsJsonConstructJsonEvent getModelsJsonConstructJsonEvent(
-      AppCreateInitialised appCreateInitialised) {
+  ModelsJsonConstructJsonEventToClipboard
+      getModelsJsonConstructJsonEventToClipboard(
+          AppCreateInitialised appCreateInitialised) {
     List<AbstractModelWithInformation> data = [];
-    return ModelsJsonConstructJsonEvent(
+    return ModelsJsonConstructJsonEventToClipboard(
         () => getTasks(appCreateInitialised, data), data);
+  }
+
+  ModelsJsonConstructJsonEventToMemberMediumModel
+      getModelsJsonConstructJsonEventToMemberMediumModel(
+          AppCreateInitialised appCreateInitialised,
+          MemberModel member,
+          String baseName) {
+    List<AbstractModelWithInformation> data = [];
+    return ModelsJsonConstructJsonEventToMemberMediumModel(
+        () => getTasks(appCreateInitialised, data), data, member, baseName);
   }
 
   Widget _general(BuildContext context, AppModel app, bool create) {
@@ -657,7 +693,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
       _progressPolicy = null;
       appModel.policies!.policies!.add(AppPolicyItemModel(
           documentID: newRandomKey(),
-          name: publicMediumModel!.baseName,
+          name: publicMediumModel!.base,
           policy: publicMediumModel));
     });
   }

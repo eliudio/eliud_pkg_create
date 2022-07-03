@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:eliud_core/core/base/entity_base.dart';
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
@@ -94,4 +96,5 @@ class ModelsToJsonHelper {
     }
     return tasks;
   }
+
 }
