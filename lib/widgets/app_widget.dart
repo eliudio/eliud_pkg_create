@@ -569,7 +569,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
   String getFilename() {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('EEE d MMM y kk:mm:ss').format(now);
-    return 'backup app ' + widget.app.documentID + ' ' + formattedDate + '.app.json';
+    return widget.app.documentID + ' ' + formattedDate + '.app.json';
   }
 
   Future<List<ModelsJsonTask>> getTasks(

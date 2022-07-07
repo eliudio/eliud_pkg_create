@@ -1,7 +1,9 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/blocs/access/access_event.dart';
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/model/member_model.dart';
+import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
@@ -11,6 +13,8 @@ import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/new_app_event.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_destination_widget.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_select_membermedium.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -77,7 +81,15 @@ class NewAppCreateWidget extends StatefulWidget {
 }
 
 class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
-  bool _fromClipboard = false;
+  bool _fromExisting = false;
+  JsonDestination? jsonDestination;
+  MemberMediumModel? memberMediumModel;
+  String? url;
+
+  void initState() {
+    jsonDestination = JsonDestination.MemberMedium;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,28 +114,75 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                     return true;
                   }
                 },
-                okAction: ((state is NewAppCreateAllowEnterDetails) || (state is NewAppCreateError))
+                okAction: ((state is NewAppCreateAllowEnterDetails) ||
+                        (state is NewAppCreateError))
                     ? () async {
-                        BlocProvider.of<NewAppCreateBloc>(context)
-                            .add(NewAppCreateConfirm(_fromClipboard));
+                        BlocProvider.of<NewAppCreateBloc>(context).add(
+                            NewAppCreateConfirm(
+                                _fromExisting,
+                                jsonDestination == JsonDestination.MemberMedium
+                                    ? memberMediumModel
+                                    : null,
+                                jsonDestination == JsonDestination.URL
+                                    ? url
+                                    : null));
                         return false;
                       }
                     : null,
                 title: 'Create new App',
               ),
-              if (state is NewAppCreateError) text(widget.app, context, state.error),
-              if ((state is NewAppCreateAllowEnterDetails) || (state is NewAppCreateError)) enterDetails(state),
-                  if ((state is NewAppCreateAllowEnterDetails) || (state is NewAppCreateError)) checkboxListTile(
-                    widget.app,
-                    context,
-                    'Create from clipboard',
-                    _fromClipboard,
-                        (value) {
-                      setState(() {
-                        _fromClipboard = value!;
-                      });
-                    },
-                  ),
+              divider(widget.app, context),
+              if (state is NewAppCreateError)
+                text(widget.app, context, state.error),
+              if ((state is NewAppCreateAllowEnterDetails) ||
+                  (state is NewAppCreateError))
+                enterDetails(state),
+              if (((state is NewAppCreateAllowEnterDetails) ||
+                      (state is NewAppCreateError)) &&
+                  (_fromExisting))
+                topicContainer(widget.app, context,
+                    title: 'Source',
+                    collapsible: true,
+                    collapsed: true,
+                    children: [
+                      JsonDestinationWidget(
+                        app: widget.app,
+                        jsonDestination:
+                            jsonDestination ?? JsonDestination.MemberMedium,
+                        jsonDestinationCallback: (JsonDestination val) {
+                          setState(() {
+                            jsonDestination = val;
+                          });
+                        },
+                      ),
+                      if (jsonDestination == JsonDestination.MemberMedium)
+                        JsonMemberMediumWidget(
+                            app: widget.app,
+                            initialValue: memberMediumModel,
+                            jsonMemberMediumCallback: (value) {
+                              setState(() {
+                                memberMediumModel = value;
+                              });
+                            }),
+                      if (jsonDestination == JsonDestination.URL)
+                        getListTile(context, widget.app,
+                            leading: Icon(Icons.description),
+                            title: dialogField(
+                              widget.app,
+                              context,
+                              initialValue: url,
+                              valueChanged: (value) {
+                                setState(() {
+                                  url = value;
+                                });
+                              },
+                              maxLines: 1,
+                              decoration: const InputDecoration(
+                                hintText: 'URL',
+                                labelText: 'URL',
+                              ),
+                            )),
+                    ]),
               if (state is NewAppCreateCreateInProgress) _progress(state),
             ]));
       }
@@ -131,32 +190,41 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     });
   }
 
-  Widget enterDetails(NewAppCreateInitialised state) {
-    return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-      divider(widget.app, context),
-      getListTile(context, widget.app,
-          leading: Icon(Icons.vpn_key),
-          title: dialogField(
-            widget.app,
-            context,
-            initialValue: state.appToBeCreated.documentID,
-            inputFormatters: [
-              UpperCaseTextFormatter(),
-            ],
-            valueChanged: (value) {
-                state.appToBeCreated.documentID = value.toUpperCase();
-/*
+  Widget enterDetails(NewAppCreateInitialised state) =>
+      topicContainer(widget.app, context,
+          title: 'Generic',
+          collapsible: true,
+          collapsed: true,
+          children: [
+            getListTile(context, widget.app,
+                leading: Icon(Icons.vpn_key),
+                title: dialogField(
+                  widget.app,
+                  context,
+                  initialValue: state.appToBeCreated.documentID,
+                  inputFormatters: [
+                    UpperCaseTextFormatter(),
+                  ],
+                  valueChanged: (value) {
+                    state.appToBeCreated.documentID = value.toUpperCase();
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Identifier',
+                    labelText: 'Identifier',
+                  ),
+                )),
+            checkboxListTile(
+              widget.app,
+              context,
+              'Create from existing app',
+              _fromExisting,
+              (value) {
                 setState(() {
-              });
-*/
-            },
-            decoration: const InputDecoration(
-              hintText: 'Identifier',
-              labelText: 'Identifier',
+                  _fromExisting = value!;
+                });
+              },
             ),
-          )),
-    ]);
-  }
+          ]);
 
   Widget _progress(NewAppCreateCreateInProgress state) {
     return Container(
@@ -165,12 +233,12 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
         child: progressIndicatorWithValue(widget.app, context,
             value: state.progress));
   }
-
 }
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,

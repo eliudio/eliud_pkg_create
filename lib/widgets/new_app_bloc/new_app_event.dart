@@ -1,5 +1,6 @@
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
+import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:equatable/equatable.dart';
@@ -28,18 +29,22 @@ class NewAppCreateEventInitialise extends NewAppCreateEvent {
 }
 
 class NewAppCreateConfirm extends NewAppCreateEvent {
-  final bool fromClipboard;
+  final bool fromExisting;
+  MemberMediumModel? memberMediumModel; // if null then from clipboard or url
+  String? url; // if null then from memberMediumModel or clipboard
 
-  NewAppCreateConfirm(this.fromClipboard);
+  NewAppCreateConfirm(this.fromExisting, this.memberMediumModel, this.url);
 
   @override
-  List<Object?> get props => [
-      ];
+  List<Object?> get props => [];
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is NewAppCreateConfirm;
+      other is NewAppCreateConfirm &&
+          fromExisting == other.fromExisting &&
+          url == other.url &&
+          memberMediumModel == other.memberMediumModel;
 }
 
 class NewAppCreateProgressed extends NewAppCreateEvent {

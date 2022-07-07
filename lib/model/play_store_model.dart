@@ -76,7 +76,7 @@ class PlayStoreModel implements ModelBase, WithAppId {
     return 'PlayStoreModel{documentID: $documentID, appId: $appId, description: $description, backgroundIcon: $backgroundIcon, conditions: $conditions}';
   }
 
-  PlayStoreEntity toEntity({String? appId, Set<ModelReference>? referencesCollector}) {
+  PlayStoreEntity toEntity({String? appId, List<ModelReference>? referencesCollector}) {
     if (referencesCollector != null) {
     }
     return PlayStoreEntity(

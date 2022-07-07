@@ -25,7 +25,7 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
         AppBuilder(
           theState.appToBeCreated,
           theState.member,
-        ).create(this, event.fromClipboard);
+        ).create(this, event.fromExisting, event.memberMediumModel, event.url);
       } else {
         emit(NewAppCreateError(theState.appToBeCreated, theState.member,
             'App with ID $appId already exists. Choose a unique identifier'));

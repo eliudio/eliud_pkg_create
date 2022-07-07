@@ -3,14 +3,12 @@ import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-enum JsonDestination { Clipboard, MemberMedium}
+enum JsonDestination { Clipboard, MemberMedium, URL}
 
 JsonDestination toJsonDestination(int? index) {
-  if (index == 0) {
-    return JsonDestination.Clipboard;
-  } else {
-    return JsonDestination.MemberMedium;
-  }
+  if (index == 0) return JsonDestination.Clipboard;
+  if (index == 1) return JsonDestination.MemberMedium;
+  return JsonDestination.URL;
 }
 
 
@@ -49,6 +47,8 @@ class _JsonDestinationWidgetState extends State<JsonDestinationWidget> {
         return 'Clipboard';
       case JsonDestination.MemberMedium:
         return 'Member Medium';
+      case JsonDestination.URL:
+        return 'URL';
     }
     return '?';
   }
@@ -78,6 +78,7 @@ class _JsonDestinationWidgetState extends State<JsonDestinationWidget> {
   Widget build(BuildContext context) {
     return ListView(children: [
       getPrivilegeOption(JsonDestination.MemberMedium),
+      getPrivilegeOption(JsonDestination.URL),
       getPrivilegeOption(JsonDestination.Clipboard)
     ], shrinkWrap: true, physics: ScrollPhysics());
   }

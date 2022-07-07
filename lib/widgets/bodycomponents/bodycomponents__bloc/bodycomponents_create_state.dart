@@ -1,3 +1,4 @@
+import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/tools/component/component_spec.dart';
@@ -53,6 +54,22 @@ List<PluginWithComponents> retrievePluginsWithComponents() =>
       return PluginWithComponents(key, friendlyName ?? '?', entry.value);
     }).toList();
 
+Future<RepositoryBase?> getRepository(
+    String appId, String searchPluginName, String searchComponentName) async {
+  var pluginsWithComponents = await retrievePluginsWithComponents();
+  for (var pluginsWithComponent in pluginsWithComponents) {
+    var pluginName = pluginsWithComponent.name;
+    for (var componentSpec in pluginsWithComponent.componentSpec) {
+      var componentName = componentSpec.name;
+      if ((searchPluginName == pluginName) &&
+          (searchComponentName == componentName)) {
+        return componentSpec.retrieveRepository(appId: appId);
+      }
+    }
+  }
+  return null;
+}
+
 ComponentSpec getComponentSpec(String pluginName, String componentId) {
   var plugin = Registry.registry()!.componentSpecMap()[pluginName];
   if (plugin != null) {
@@ -61,11 +78,11 @@ ComponentSpec getComponentSpec(String pluginName, String componentId) {
         return component;
       }
     }
-    throw Exception("Plugin with name '$pluginName' does not contain component with id $componentId");
+    throw Exception(
+        "Plugin with name '$pluginName' does not contain component with id $componentId");
   } else {
     throw Exception("Plugin with name '$pluginName' does not exist");
   }
-
 }
 
 class PluginWithComponents {

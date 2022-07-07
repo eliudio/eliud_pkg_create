@@ -34,36 +34,7 @@ class ModelsToJsonHelper {
     tasks.add(() async {
       container.add(ModelWithInformation(JsonConsts.app, appModel));
     });
-/*
-    tasks.add(() async {
-      container.add(ModelWithInformation(JsonConsts.appBar, appBarModel));
-      if (appBarModel.iconMenu != null) {
-        menuDefModels.add(appBarModel.iconMenu!);
-      }
-    });
-    tasks.add(() async {
-      container.add(ModelWithInformation(JsonConsts.homeMenu, homeMenuModel));
-      if (homeMenuModel.menu != null) {
-        menuDefModels.add(homeMenuModel.menu!);
-      }
-    });
-    tasks.add(() async {
-      container.add(ModelWithInformation(JsonConsts.leftDrawer, leftDrawerModel));
-      if (leftDrawerModel.menu != null) {
-        menuDefModels.add(leftDrawerModel.menu!);
-      }
-    });
-    tasks.add(() async {
-      container.add(ModelWithInformation(JsonConsts.rightDrawer, rightDrawerModel));
-      if (rightDrawerModel.menu != null) {
-        menuDefModels.add(rightDrawerModel.menu!);
-      }
-    });
 
-    tasks.add(() async {
-      container.add(ModelsWithInformation(JsonConsts.menuDef, menuDefModels));
-    });
-*/
     tasks.add(() async {
       container.add(ModelDocumentIDsWithInformation(dialogRepository(appId: appModel.documentID)!, JsonConsts.dialogs, dialogs.map((e) => e.documentID).toList()));
     });

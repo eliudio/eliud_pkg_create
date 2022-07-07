@@ -10,6 +10,7 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/model/member_model.dart';
+import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/storage/member_medium_helper.dart';
@@ -22,7 +23,7 @@ abstract class AbstractModelWithInformation {
 
   AbstractModelWithInformation(this.label);
 
-  Future<dynamic> toRichMap({required String appId, required Set<ModelReference> referencedModels});
+  Future<dynamic> toRichMap({required String appId, required List<ModelReference> referencedModels});
 }
 
 class ModelWithInformation extends AbstractModelWithInformation {
@@ -30,8 +31,9 @@ class ModelWithInformation extends AbstractModelWithInformation {
 
   ModelWithInformation(String label, this.model) : super(label);
 
-  Future<Map<String, dynamic>> toRichMap({required String appId, required Set<ModelReference> referencedModels}) async {
-    var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
+  Future<Map<String, dynamic>> toRichMap({required String appId, required List<ModelReference> referencedModels}) async {
+//    var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
+    var entity = await retrieveAndRecursivelyFindReferences(appId, model, referencedModels);
     var doc = entity.toDocument();
     await entity.enrichedDocument(doc);
     doc['documentID'] = model.documentID;
@@ -40,15 +42,28 @@ class ModelWithInformation extends AbstractModelWithInformation {
 
 }
 
+Future<EntityBase> retrieveAndRecursivelyFindReferences(String appId, ModelBase model, List<ModelReference> referencedModels) async {
+  List<ModelReference> newReferences = [];
+  var entity = await model.toEntity(appId: appId, referencesCollector: newReferences);
+  List<ModelReference> newReferences2 = [];
+  for (var newReferencedModel in newReferences) {
+    await retrieveAndRecursivelyFindReferences(appId, newReferencedModel.referenced, newReferences2);
+  }
+  referencedModels.addAll(newReferences);
+  referencedModels.addAll(newReferences2);
+  return entity;
+}
+
 class ModelsWithInformation extends AbstractModelWithInformation {
-  final Set<ModelBase> models;
+  final List<ModelBase> models;
 
   ModelsWithInformation(String label, this.models) : super(label);
 
-  Future<List<dynamic>> toRichMap({required String appId, required Set<ModelReference> referencedModels}) async {
+  Future<List<dynamic>> toRichMap({required String appId, required List<ModelReference> referencedModels}) async {
     List<dynamic> list = [];
     for (var model in models) {
-      var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
+//      var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
+      var entity = await retrieveAndRecursivelyFindReferences(appId, model, referencedModels);
       var doc = entity.toDocument();
       await entity.enrichedDocument(doc);
       doc['documentID'] = model.documentID;
@@ -64,12 +79,12 @@ class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
 
   ModelDocumentIDsWithInformation(this.repository, String label, this.documentIDs) : super(label);
 
-  Future<List<dynamic>> toRichMap({required String appId, required Set<ModelReference> referencedModels}) async {
+  Future<List<dynamic>> toRichMap({required String appId, required List<ModelReference> referencedModels}) async {
     List<dynamic> list = [];
     for (var documentID in documentIDs) {
       var model = await repository.get(documentID);
       if (model != null) {
-        var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
+        var entity = await retrieveAndRecursivelyFindReferences(appId, model, referencedModels);
         var doc = entity.toDocument();
         await entity.enrichedDocument(doc);
         doc['documentID'] = model.documentID;
@@ -125,26 +140,27 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
 
   Future<void> addTasks(List<ModelsJsonTask> tasks, AppModel app, ModelsJsonConstructJsonEvent event) async {
     List<AbstractModelWithInformation> modelsWithInformation = event.dataContainer;
-    Set<ModelReference> referencedModels = LinkedHashSet<ModelReference>();
+    List<ModelReference> referencedModels = [];
     var appId = app.documentID;
     final Map<String, dynamic> theMap = {};
     tasks.add(() async {
       for (var modelWithInformation in modelsWithInformation) {
-          theMap[modelWithInformation.label] = await modelWithInformation.toRichMap(appId: appId, referencedModels: referencedModels);
+        theMap[modelWithInformation.label] = await modelWithInformation.toRichMap(appId: appId, referencedModels: referencedModels);
       }
     });
 
     tasks.add(() async {
       Set<String> referencedModels2 = Set<String>();
       referencedModels.retainWhere((element) => referencedModels2.add(element.key()));
-      int size = referencedModels.length;
-      for (var referencedModel in referencedModels ) {
+//      int size = referencedModels.length;
+      for (var referencedModel in referencedModels) {
         var fullName = referencedModel.packageName + "-" + referencedModel.componentName;
         var map = theMap[fullName];
         if (map == null) {
           theMap[fullName] = [];
         }
-        var entity = referencedModel.referenced.toEntity(appId: appId);
+        var entity = referencedModel.referenced.toEntity(appId: appId/*, referencesCollector: referencedModels*/);
+//        var entity = await retrieveAndRecursivelyFindReferences(appId, referencedModel.referenced, referencedModels);
         var doc = entity.toDocument();
         doc['documentID'] = referencedModel.referenced.documentID;
         await entity.enrichedDocument(doc);

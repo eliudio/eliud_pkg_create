@@ -97,79 +97,101 @@ class _ModelsJsonWidgetState extends State<ModelsJsonWidget> {
               text(widget.app, context,
                   'Json representation available in clipboard'),
             if (state is ModelsAndJsonAvailableAsMemberMedium)
-              ListView(children: [
-                text(widget.app, context,
-                    'Medium document : ' + state.memberMediumModel.documentID),
-                text(widget.app, context,
-                    'Basename : ' + (state.memberMediumModel.base ?? '?')),
-                text(widget.app, context,
-                    'Extension : ' + (state.memberMediumModel.ext ?? '?')),
-                text(widget.app, context,
-                    'Url : ' + (state.memberMediumModel.url ?? '?')),
-                Center(
-                    child: button(widget.app, context,
-                        label: 'Copy url to clipboard', onPressed: () {
-                  Clipboard.setData(
-                      ClipboardData(text: state.memberMediumModel.url));
-                }))
-              ], shrinkWrap: true, physics: ScrollPhysics()),
-            if ((state is ModelsAndJsonError) ||
-                (state is ModelsAndJsonAvailableInClipboard) ||
-                (state is ModelsAndJsonAvailableAsMemberMedium))
-              divider(widget.app, context),
+              topicContainer(
+                widget.app,
+                context,
+                title: 'Results',
+                collapsible: true,
+                collapsed: true,
+                children: [
+                  text(
+                      widget.app,
+                      context,
+                      'Medium document : ' +
+                          state.memberMediumModel.documentID),
+                  text(widget.app, context,
+                      'Basename : ' + (state.memberMediumModel.base ?? '?')),
+                  text(widget.app, context,
+                      'Extension : ' + (state.memberMediumModel.ext ?? '?')),
+                  text(widget.app, context,
+                      'Url : ' + (state.memberMediumModel.url ?? '?')),
+                  Center(
+                      child: button(widget.app, context,
+                          label: 'Copy url to clipboard', onPressed: () {
+                    Clipboard.setData(
+                        ClipboardData(text: state.memberMediumModel.url));
+                  }))
+                ],
+              ),
             if ((state is ModelsJsonInitialised) ||
                 (state is ModelsAndJsonError) ||
                 (state is ModelsAndJsonAvailableInClipboard) ||
                 (state is ModelsAndJsonAvailableAsMemberMedium))
-              JsonDestinationWidget(
-                app: widget.app,
-                jsonDestination:
-                    jsonDestination ?? JsonDestination.MemberMedium,
-                jsonDestinationCallback: (JsonDestination val) {
-                  setState(() {
-                    jsonDestination = val;
-                  });
-                },
-              ),
+              topicContainer(widget.app, context,
+                  title: 'Destination type',
+                  collapsible: true,
+                  collapsed: true,
+                  children: [
+                    JsonDestinationWidget(
+                      app: widget.app,
+                      jsonDestination:
+                          jsonDestination ?? JsonDestination.MemberMedium,
+                      jsonDestinationCallback: (JsonDestination val) {
+                        setState(() {
+                          jsonDestination = val;
+                        });
+                      },
+                    ),
+                  ]),
             if (((state is ModelsJsonInitialised) ||
                     (state is ModelsAndJsonError) ||
                     (state is ModelsAndJsonAvailableInClipboard) ||
                     (state is ModelsAndJsonAvailableAsMemberMedium)) &&
                 (jsonDestination == JsonDestination.MemberMedium))
-              getListTile(context, widget.app,
-                  leading: Icon(Icons.description),
-                  title: dialogField(
-                    widget.app,
-                    context,
-                    initialValue: baseName,
-                    valueChanged: (value) {
-                      baseName = value;
-                    },
-                    maxLines: 1,
-                    decoration: const InputDecoration(
-                      hintText: 'Name',
-                      labelText: 'Name',
-                    ),
-                  )),
+              topicContainer(widget.app, context,
+                  title: 'Name',
+                  collapsible: true,
+                  collapsed: true,
+                  children: [
+                    getListTile(context, widget.app,
+                        leading: Icon(Icons.description),
+                        title: dialogField(
+                          widget.app,
+                          context,
+                          initialValue: baseName,
+                          valueChanged: (value) {
+                            baseName = value;
+                          },
+                          maxLines: 1,
+                          decoration: const InputDecoration(
+                            hintText: 'Name',
+                            labelText: 'Name',
+                          ),
+                        )),
+                  ]),
             if (((state is ModelsJsonInitialised) ||
-                (state is ModelsAndJsonError) ||
-                (state is ModelsAndJsonAvailableInClipboard) ||
-                (state is ModelsAndJsonAvailableAsMemberMedium)) &&
+                    (state is ModelsAndJsonError) ||
+                    (state is ModelsAndJsonAvailableInClipboard) ||
+                    (state is ModelsAndJsonAvailableAsMemberMedium)) &&
                 (jsonDestination == JsonDestination.Clipboard))
-              button(widget.app, context, label: 'Generate', onPressed: () {
+              Center(
+                  child: button(widget.app, context, label: 'Generate',
+                      onPressed: () {
                 BlocProvider.of<ModelsJsonBloc>(context).add(
                     widget.modelsJsonConstructJsonEventToClipboardCreator());
-              }),
+              })),
             if (((state is ModelsJsonInitialised) ||
-                (state is ModelsAndJsonError) ||
-                (state is ModelsAndJsonAvailableInClipboard) ||
-                (state is ModelsAndJsonAvailableAsMemberMedium)) &&
+                    (state is ModelsAndJsonError) ||
+                    (state is ModelsAndJsonAvailableInClipboard) ||
+                    (state is ModelsAndJsonAvailableAsMemberMedium)) &&
                 (jsonDestination == JsonDestination.MemberMedium))
-              button(widget.app, context, label: 'Generate', onPressed: () {
+              Center(
+                  child: button(widget.app, context, label: 'Generate',
+                      onPressed: () {
                 BlocProvider.of<ModelsJsonBloc>(context).add(widget
                     .modelsJsonConstructJsonEventToMemberMediumModelCreator(
                         baseName ?? '?'));
-              }),
+              })),
             if (state is ModelsJsonProgressed)
               progressIndicatorWithValue(widget.app, context,
                   value: state.progress),

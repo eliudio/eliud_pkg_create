@@ -1,13 +1,11 @@
-import 'dart:convert';
 
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/core/wizards/tools/documentIdentifier.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_bar_entity.dart';
-import 'package:eliud_core/model/app_entity.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/access_model.dart';
+import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/package/access_rights.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/widgets/new_app_bloc/builders/page/hello_world_page_builder.dart';
@@ -19,7 +17,6 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:flutter/services.dart';
-import '../../../jsontomodeltojson/jsonconst.dart';
 import '../../../jsontomodeltojson/jsontomodelhelper.dart';
 import '../new_app_bloc.dart';
 import '../new_app_event.dart';
@@ -30,10 +27,6 @@ import '../../wizard_shared/menus/left_drawer_builder.dart';
 import '../../wizard_shared/menus/right_drawer_builder.dart';
 
 typedef Evaluate = bool Function(ActionSpecification actionSpecification);
-
-const String exampleJson = """
-
-""";
 
 class AppBuilder {
   final String uniqueId = newRandomKey();
@@ -60,7 +53,7 @@ class AppBuilder {
   var newlyCreatedApp;
 
   Future<AppModel> create(
-      NewAppCreateBloc newAppCreateBloc, bool fromClipBoard) async {
+      NewAppCreateBloc newAppCreateBloc, bool fromExisting, MemberMediumModel? memberMediumModel, String? url) async {
     List<NewAppTask> tasks = [];
     // create the app
     tasks.add(() async {
@@ -82,9 +75,15 @@ class AppBuilder {
     });
 
     List<NewAppTask> newTasks = [];
-    if (fromClipBoard) {
-      var testTasks = await createApp(newAppCreateBloc);
-      newTasks = await createAppFromClipboard(newAppCreateBloc);
+    if (fromExisting) {
+      // var testTasks = await createApp(newAppCreateBloc);
+      if (url != null) {
+        newTasks = await createAppFromUrl(url);
+      } else if (memberMediumModel != null) {
+        newTasks = await createAppFromMemberMedium(memberMediumModel);
+      } else {
+        newTasks = await createAppFromClipboard();
+      }
     } else {
       newTasks = await createApp(newAppCreateBloc);
     }
@@ -120,24 +119,26 @@ class AppBuilder {
     }
   }
 
-  Future<List<NewAppTask>> createAppFromClipboard(
-      NewAppCreateBloc newAppCreateBloc) async {
-/*
+  Future<List<NewAppTask>> createAppFromClipboard() async {
     var json = await Clipboard.getData(Clipboard.kTextPlain);
     if (json != null) {
       var jsonText = json.text;
-*/
-      var jsonText = exampleJson;
       if (jsonText != null) {
         return JsonToModelsHelper.createAppFromJson(appId, memberId, jsonText);
       } else {
         throw Exception("Json text is null");
       }
-/*
     } else {
       throw Exception("json is null");
     }
-*/
+  }
+
+  Future<List<NewAppTask>> createAppFromMemberMedium(MemberMediumModel memberMediumModel) async {
+    return JsonToModelsHelper.createAppFromMemberMedium(appId, memberId, memberMediumModel);
+  }
+
+  Future<List<NewAppTask>> createAppFromUrl(String url) async {
+    return JsonToModelsHelper.createAppFromURL(appId, memberId, url);
   }
 
   Future<List<NewAppTask>> createApp(NewAppCreateBloc newAppCreateBloc) async {
