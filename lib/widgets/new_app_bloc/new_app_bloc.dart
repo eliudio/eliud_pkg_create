@@ -24,7 +24,7 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
         add(NewAppCreateProgressed(0));
         AppBuilder(
           theState.appToBeCreated,
-          theState.member,
+          event.loggedIn,
         ).create(this, event.fromExisting, event.memberMediumModel, event.url);
       } else {
         emit(NewAppCreateError(theState.appToBeCreated, theState.member,

@@ -1,5 +1,6 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/blocs/access/access_event.dart';
+import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/model/member_model.dart';
@@ -93,33 +94,37 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NewAppCreateBloc, NewAppCreateState>(
-        builder: (context, state) {
-      if (state is SwitchApp) {
-        BlocProvider.of<AccessBloc>(context).add(SwitchAppWithIDEvent(
-            appId: state.appToBeCreated.documentID, goHome: true));
-      } else if (state is NewAppCreateInitialised) {
-        return Container(
-            width: widget.widgetWidth,
-            child:
-                ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-              HeaderWidget(
-                app: widget.app,
-                cancelAction: () async {
-                  if (state is NewAppCreateCreateInProgress) {
-                    BlocProvider.of<NewAppCreateBloc>(context)
-                        .add(NewAppCancelled());
-                    return false;
-                  } else {
-                    return true;
-                  }
-                },
-                okAction: ((state is NewAppCreateAllowEnterDetails) ||
-                        (state is NewAppCreateError))
-                    ? () async {
+    var loggedInState = AccessBloc.getState(context);
+    if (loggedInState is LoggedIn) {
+      return BlocBuilder<NewAppCreateBloc, NewAppCreateState>(
+          builder: (context, state) {
+            if (state is SwitchApp) {
+              BlocProvider.of<AccessBloc>(context).add(SwitchAppWithIDEvent(
+                  appId: state.appToBeCreated.documentID, goHome: true));
+            } else if (state is NewAppCreateInitialised) {
+              return Container(
+                  width: widget.widgetWidth,
+                  child:
+                  ListView(
+                      shrinkWrap: true, physics: ScrollPhysics(), children: [
+                    HeaderWidget(
+                      app: widget.app,
+                      cancelAction: () async {
+                        if (state is NewAppCreateCreateInProgress) {
+                          BlocProvider.of<NewAppCreateBloc>(context)
+                              .add(NewAppCancelled());
+                          return false;
+                        } else {
+                          return true;
+                        }
+                      },
+                      okAction: ((state is NewAppCreateAllowEnterDetails) ||
+                          (state is NewAppCreateError))
+                          ? () async {
                         BlocProvider.of<NewAppCreateBloc>(context).add(
                             NewAppCreateConfirm(
                                 _fromExisting,
+                                loggedInState,
                                 jsonDestination == JsonDestination.MemberMedium
                                     ? memberMediumModel
                                     : null,
@@ -128,66 +133,69 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                                     : null));
                         return false;
                       }
-                    : null,
-                title: 'Create new App',
-              ),
-              divider(widget.app, context),
-              if (state is NewAppCreateError)
-                text(widget.app, context, state.error),
-              if ((state is NewAppCreateAllowEnterDetails) ||
-                  (state is NewAppCreateError))
-                enterDetails(state),
-              if (((state is NewAppCreateAllowEnterDetails) ||
-                      (state is NewAppCreateError)) &&
-                  (_fromExisting))
-                topicContainer(widget.app, context,
-                    title: 'Source',
-                    collapsible: true,
-                    collapsed: true,
-                    children: [
-                      JsonDestinationWidget(
-                        app: widget.app,
-                        jsonDestination:
-                            jsonDestination ?? JsonDestination.MemberMedium,
-                        jsonDestinationCallback: (JsonDestination val) {
-                          setState(() {
-                            jsonDestination = val;
-                          });
-                        },
-                      ),
-                      if (jsonDestination == JsonDestination.MemberMedium)
-                        JsonMemberMediumWidget(
-                            app: widget.app,
-                            initialValue: memberMediumModel,
-                            jsonMemberMediumCallback: (value) {
-                              setState(() {
-                                memberMediumModel = value;
-                              });
-                            }),
-                      if (jsonDestination == JsonDestination.URL)
-                        getListTile(context, widget.app,
-                            leading: Icon(Icons.description),
-                            title: dialogField(
-                              widget.app,
-                              context,
-                              initialValue: url,
-                              valueChanged: (value) {
+                          : null,
+                      title: 'Create new App',
+                    ),
+                    divider(widget.app, context),
+                    if (state is NewAppCreateError)
+                      text(widget.app, context, state.error),
+                    if ((state is NewAppCreateAllowEnterDetails) ||
+                        (state is NewAppCreateError))
+                      enterDetails(state),
+                    if (((state is NewAppCreateAllowEnterDetails) ||
+                        (state is NewAppCreateError)) &&
+                        (_fromExisting))
+                      topicContainer(widget.app, context,
+                          title: 'Source',
+                          collapsible: true,
+                          collapsed: true,
+                          children: [
+                            JsonDestinationWidget(
+                              app: widget.app,
+                              jsonDestination:
+                              jsonDestination ?? JsonDestination.MemberMedium,
+                              jsonDestinationCallback: (JsonDestination val) {
                                 setState(() {
-                                  url = value;
+                                  jsonDestination = val;
                                 });
                               },
-                              maxLines: 1,
-                              decoration: const InputDecoration(
-                                hintText: 'URL',
-                                labelText: 'URL',
-                              ),
-                            )),
-                    ]),
-              if (state is NewAppCreateCreateInProgress) _progress(state),
-            ]));
-      }
-      return progressIndicator(widget.app, context);
-    });
+                            ),
+                            if (jsonDestination == JsonDestination.MemberMedium)
+                              JsonMemberMediumWidget(
+                                  app: widget.app,
+                                  initialValue: memberMediumModel,
+                                  jsonMemberMediumCallback: (value) {
+                                    setState(() {
+                                      memberMediumModel = value;
+                                    });
+                                  }),
+                            if (jsonDestination == JsonDestination.URL)
+                              getListTile(context, widget.app,
+                                  leading: Icon(Icons.description),
+                                  title: dialogField(
+                                    widget.app,
+                                    context,
+                                    initialValue: url,
+                                    valueChanged: (value) {
+                                      setState(() {
+                                        url = value;
+                                      });
+                                    },
+                                    maxLines: 1,
+                                    decoration: const InputDecoration(
+                                      hintText: 'URL',
+                                      labelText: 'URL',
+                                    ),
+                                  )),
+                          ]),
+                    if (state is NewAppCreateCreateInProgress) _progress(state),
+                  ]));
+            }
+            return progressIndicator(widget.app, context);
+          });
+    } else {
+      return text(widget.app, context, 'You need to be logged in to create a new app');
+    }
   }
 
   Widget enterDetails(NewAppCreateInitialised state) =>

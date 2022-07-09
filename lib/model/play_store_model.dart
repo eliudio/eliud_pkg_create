@@ -41,7 +41,7 @@ import 'package:eliud_core/tools/random.dart';
 
 class PlayStoreModel implements ModelBase, WithAppId {
   static const String packageName = 'eliud_pkg_create';
-  static const String id = 'PlayStore';
+  static const String id = 'playStores';
 
   String documentID;
   String appId;

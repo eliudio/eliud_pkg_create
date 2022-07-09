@@ -1,3 +1,4 @@
+import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
@@ -30,10 +31,11 @@ class NewAppCreateEventInitialise extends NewAppCreateEvent {
 
 class NewAppCreateConfirm extends NewAppCreateEvent {
   final bool fromExisting;
+  final LoggedIn loggedIn;
   MemberMediumModel? memberMediumModel; // if null then from clipboard or url
   String? url; // if null then from memberMediumModel or clipboard
 
-  NewAppCreateConfirm(this.fromExisting, this.memberMediumModel, this.url);
+  NewAppCreateConfirm(this.fromExisting, this.loggedIn, this.memberMediumModel, this.url);
 
   @override
   List<Object?> get props => [];

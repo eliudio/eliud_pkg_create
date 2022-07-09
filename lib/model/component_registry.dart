@@ -38,6 +38,7 @@ class ComponentRegistry {
     Registry.registry()!.addComponentSpec('eliud_pkg_create', 'create', [
       ComponentSpec('playStores', PlayStoreComponentConstructorDefault(), PlayStoreComponentSelector(), PlayStoreComponentEditorConstructor(), ({String? appId}) => playStoreRepository(appId: appId)! ), 
     ]);
+      Registry.registry()!.registerRetrieveRepository('eliud_pkg_create', 'playStores', ({String? appId}) => playStoreRepository(appId: appId)!);
 
   }
 }

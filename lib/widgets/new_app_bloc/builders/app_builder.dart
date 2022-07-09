@@ -1,4 +1,6 @@
 
+import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
+import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/core/wizards/tools/documentIdentifier.dart';
@@ -31,7 +33,8 @@ typedef Evaluate = bool Function(ActionSpecification actionSpecification);
 class AppBuilder {
   final String uniqueId = newRandomKey();
   final AppModel app;
-  final MemberModel member;
+  final LoggedIn loggedIn;
+  late MemberModel member;
   late String appId;
   late String memberId;
 
@@ -39,9 +42,10 @@ class AppBuilder {
 
   AppBuilder(
     this.app,
-    this.member,
+    this.loggedIn,
   ) {
     appId = app.documentID;
+    member = loggedIn.member;
     memberId = member.documentID;
   }
 
@@ -124,7 +128,7 @@ class AppBuilder {
     if (json != null) {
       var jsonText = json.text;
       if (jsonText != null) {
-        return JsonToModelsHelper.createAppFromJson(appId, memberId, jsonText);
+        return JsonToModelsHelper.createAppFromJson(app, memberId, jsonText);
       } else {
         throw Exception("Json text is null");
       }
@@ -134,11 +138,11 @@ class AppBuilder {
   }
 
   Future<List<NewAppTask>> createAppFromMemberMedium(MemberMediumModel memberMediumModel) async {
-    return JsonToModelsHelper.createAppFromMemberMedium(appId, memberId, memberMediumModel);
+    return JsonToModelsHelper.createAppFromMemberMedium(app, memberId, memberMediumModel);
   }
 
   Future<List<NewAppTask>> createAppFromUrl(String url) async {
-    return JsonToModelsHelper.createAppFromURL(appId, memberId, url);
+    return JsonToModelsHelper.createAppFromURL(app, memberId, url);
   }
 
   Future<List<NewAppTask>> createApp(NewAppCreateBloc newAppCreateBloc) async {
@@ -258,10 +262,25 @@ class AppBuilder {
   }
 
   Future<AccessModel> claimAccess(String appId, String ownerID) async {
-    return await accessRepository(appId: appId)!.add(AccessModel(
+    var returnMe = await accessRepository(appId: appId)!.add(AccessModel(
         appId: appId,
         documentID: ownerID,
         privilegeLevel: PrivilegeLevel.OwnerPrivilege,
         points: 0));
+
+
+/*
+    // temporary mechanism to refresh claims
+    await loggedIn.refreshClaims();
+
+    await AbstractMainRepositorySingleton.singleton
+        .userRepository()!
+        .signOut();
+    await AbstractMainRepositorySingleton.singleton
+        .userRepository()!
+        .signInWithGoogle();
+*/
+
+    return returnMe;
   }
 }

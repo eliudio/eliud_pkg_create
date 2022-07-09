@@ -23,7 +23,8 @@ abstract class AbstractModelWithInformation {
 
   AbstractModelWithInformation(this.label);
 
-  Future<dynamic> toRichMap({required String appId, required List<ModelReference> referencedModels});
+  Future<dynamic> toRichMap(
+      {required String appId, required List<ModelReference> referencedModels});
 }
 
 class ModelWithInformation extends AbstractModelWithInformation {
@@ -31,23 +32,28 @@ class ModelWithInformation extends AbstractModelWithInformation {
 
   ModelWithInformation(String label, this.model) : super(label);
 
-  Future<Map<String, dynamic>> toRichMap({required String appId, required List<ModelReference> referencedModels}) async {
+  Future<Map<String, dynamic>> toRichMap(
+      {required String appId,
+      required List<ModelReference> referencedModels}) async {
 //    var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
-    var entity = await retrieveAndRecursivelyFindReferences(appId, model, referencedModels);
+    var entity = await retrieveAndRecursivelyFindReferences(
+        appId, model, referencedModels);
     var doc = entity.toDocument();
     await entity.enrichedDocument(doc);
     doc['documentID'] = model.documentID;
     return doc;
   }
-
 }
 
-Future<EntityBase> retrieveAndRecursivelyFindReferences(String appId, ModelBase model, List<ModelReference> referencedModels) async {
+Future<EntityBase> retrieveAndRecursivelyFindReferences(String appId,
+    ModelBase model, List<ModelReference> referencedModels) async {
   List<ModelReference> newReferences = [];
-  var entity = await model.toEntity(appId: appId, referencesCollector: newReferences);
+  var entity =
+      await model.toEntity(appId: appId, referencesCollector: newReferences);
   List<ModelReference> newReferences2 = [];
   for (var newReferencedModel in newReferences) {
-    await retrieveAndRecursivelyFindReferences(appId, newReferencedModel.referenced, newReferences2);
+    await retrieveAndRecursivelyFindReferences(
+        appId, newReferencedModel.referenced, newReferences2);
   }
   referencedModels.addAll(newReferences);
   referencedModels.addAll(newReferences2);
@@ -59,11 +65,13 @@ class ModelsWithInformation extends AbstractModelWithInformation {
 
   ModelsWithInformation(String label, this.models) : super(label);
 
-  Future<List<dynamic>> toRichMap({required String appId, required List<ModelReference> referencedModels}) async {
+  Future<List<dynamic>> toRichMap(
+      {required String appId,
+      required List<ModelReference> referencedModels}) async {
     List<dynamic> list = [];
     for (var model in models) {
-//      var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
-      var entity = await retrieveAndRecursivelyFindReferences(appId, model, referencedModels);
+      var entity = await retrieveAndRecursivelyFindReferences(
+          appId, model, referencedModels);
       var doc = entity.toDocument();
       await entity.enrichedDocument(doc);
       doc['documentID'] = model.documentID;
@@ -77,14 +85,19 @@ class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
   final RepositoryBase<ModelBase, EntityBase> repository;
   final List<String> documentIDs;
 
-  ModelDocumentIDsWithInformation(this.repository, String label, this.documentIDs) : super(label);
+  ModelDocumentIDsWithInformation(
+      this.repository, String label, this.documentIDs)
+      : super(label);
 
-  Future<List<dynamic>> toRichMap({required String appId, required List<ModelReference> referencedModels}) async {
+  Future<List<dynamic>> toRichMap(
+      {required String appId,
+      required List<ModelReference> referencedModels}) async {
     List<dynamic> list = [];
     for (var documentID in documentIDs) {
       var model = await repository.get(documentID);
       if (model != null) {
-        var entity = await retrieveAndRecursivelyFindReferences(appId, model, referencedModels);
+        var entity = await retrieveAndRecursivelyFindReferences(
+            appId, model, referencedModels);
         var doc = entity.toDocument();
         await entity.enrichedDocument(doc);
         doc['documentID'] = model.documentID;
@@ -100,8 +113,9 @@ class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
 class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
   final AppModel app;
 
-  ModelsJsonBloc(this.app,
-  ): super(ModelsJsonUninitialised()) {
+  ModelsJsonBloc(
+    this.app,
+  ) : super(ModelsJsonUninitialised()) {
     on<ModelsJsonInitialiseEvent>((event, emit) async {
       emit(ModelsJsonInitialised());
     });
@@ -112,8 +126,8 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
       var tasks = await event.retrieveTasks();
       addTasks(tasks, app, event);
 
-      var progressManager = ProgressManager(tasks.length,
-              (progress) => add(ModelsJsonProgressedEvent(progress)));
+      var progressManager = ProgressManager(
+          tasks.length, (progress) => add(ModelsJsonProgressedEvent(progress)));
 
       int i = 0;
       for (var task in tasks) {
@@ -134,33 +148,40 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
       if (state is ModelsAndJsonAvailableAsMemberMedium) return;
       if (state is ModelsAndJsonAvailableInClipboard) return;
       if (state is ModelsAndJsonError) return;
-      emit(ModelsJsonProgressed(event.progress, event.dataContainer, ));
+      emit(ModelsJsonProgressed(
+        event.progress,
+        event.dataContainer,
+      ));
     });
   }
 
-  Future<void> addTasks(List<ModelsJsonTask> tasks, AppModel app, ModelsJsonConstructJsonEvent event) async {
-    List<AbstractModelWithInformation> modelsWithInformation = event.dataContainer;
+  Future<void> addTasks(List<ModelsJsonTask> tasks, AppModel app,
+      ModelsJsonConstructJsonEvent event) async {
+    List<AbstractModelWithInformation> modelsWithInformation =
+        event.dataContainer;
     List<ModelReference> referencedModels = [];
     var appId = app.documentID;
     final Map<String, dynamic> theMap = {};
     tasks.add(() async {
       for (var modelWithInformation in modelsWithInformation) {
-        theMap[modelWithInformation.label] = await modelWithInformation.toRichMap(appId: appId, referencedModels: referencedModels);
+        theMap[modelWithInformation.label] = await modelWithInformation
+            .toRichMap(appId: appId, referencedModels: referencedModels);
       }
     });
 
     tasks.add(() async {
       Set<String> referencedModels2 = Set<String>();
-      referencedModels.retainWhere((element) => referencedModels2.add(element.key()));
-//      int size = referencedModels.length;
+      referencedModels
+          .retainWhere((element) => referencedModels2.add(element.key()));
       for (var referencedModel in referencedModels) {
-        var fullName = referencedModel.packageName + "-" + referencedModel.componentName;
+        var fullName =
+            referencedModel.packageName + "-" + referencedModel.componentName;
         var map = theMap[fullName];
         if (map == null) {
           theMap[fullName] = [];
         }
-        var entity = referencedModel.referenced.toEntity(appId: appId/*, referencesCollector: referencedModels*/);
-//        var entity = await retrieveAndRecursivelyFindReferences(appId, referencedModel.referenced, referencedModels);
+        var entity = referencedModel.referenced
+            .toEntity(appId: appId /*, referencesCollector: referencedModels*/);
         var doc = entity.toDocument();
         doc['documentID'] = referencedModel.referenced.documentID;
         await entity.enrichedDocument(doc);
@@ -172,22 +193,20 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
       var _jsonEncoded = jsonEncode(theMap);
       if (event is ModelsJsonConstructJsonEventToClipboard) {
         try {
-          await Clipboard.setData(
-              ClipboardData(text: _jsonEncoded));
+          await Clipboard.setData(ClipboardData(text: _jsonEncoded));
           emit(ModelsAndJsonAvailableInClipboard());
         } catch (e) {
-          emit(ModelsAndJsonError("Couldn't copy the json to clipboard. It's likely too large"));
+          emit(ModelsAndJsonError(
+              "Couldn't copy the json to clipboard. It's likely too large"));
         }
-      }  else if (event is ModelsJsonConstructJsonEventToMemberMediumModel) {
+      } else if (event is ModelsJsonConstructJsonEventToMemberMediumModel) {
         String docID = newRandomKey();
-        var memberMedium = await MemberMediumHelper(app, event.member.documentID, MemberMediumAccessibleByGroup.Me).uploadTextData(docID, _jsonEncoded, event.baseName);
-        await Clipboard.setData(
-            ClipboardData(text: memberMedium.url));
+        var memberMedium = await MemberMediumHelper(
+                app, event.member.documentID, MemberMediumAccessibleByGroup.Me)
+            .uploadTextData(docID, _jsonEncoded, event.baseName);
+        await Clipboard.setData(ClipboardData(text: memberMedium.url));
         emit(ModelsAndJsonAvailableAsMemberMedium(memberMedium));
       }
     });
-
-
   }
-
 }
