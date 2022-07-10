@@ -20,6 +20,7 @@ import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:flutter/services.dart';
 import '../../../jsontomodeltojson/jsontomodelhelper.dart';
+import '../../../tools/new_app_functions.dart';
 import '../new_app_bloc.dart';
 import '../new_app_event.dart';
 import '../new_app_state.dart';
@@ -261,26 +262,4 @@ class AppBuilder {
         .add(application);
   }
 
-  Future<AccessModel> claimAccess(String appId, String ownerID) async {
-    var returnMe = await accessRepository(appId: appId)!.add(AccessModel(
-        appId: appId,
-        documentID: ownerID,
-        privilegeLevel: PrivilegeLevel.OwnerPrivilege,
-        points: 0));
-
-
-/*
-    // temporary mechanism to refresh claims
-    await loggedIn.refreshClaims();
-
-    await AbstractMainRepositorySingleton.singleton
-        .userRepository()!
-        .signOut();
-    await AbstractMainRepositorySingleton.singleton
-        .userRepository()!
-        .signInWithGoogle();
-*/
-
-    return returnMe;
-  }
 }
