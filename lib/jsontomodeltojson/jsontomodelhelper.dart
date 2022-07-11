@@ -1,34 +1,23 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:eliud_core/core/base/entity_base.dart';
-import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_bar_entity.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_entity.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/dialog_entity.dart';
-import 'package:eliud_core/model/drawer_entity.dart';
-import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/home_menu_entity.dart';
-import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
-import 'package:eliud_core/model/menu_def_entity.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/page_entity.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
-import 'package:eliud_core/tools/component/component_spec.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_core/tools/storage/medium_helper.dart';
 import 'package:eliud_core/tools/storage/member_medium_helper.dart';
 import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_core/tools/storage/public_medium_helper.dart';
-import '../widgets/bodycomponents/bodycomponents__bloc/bodycomponents_create_state.dart';
 import 'jsonconst.dart';
 import 'package:http/http.dart' as http;
 
@@ -100,16 +89,17 @@ class JsonToModelsHelper {
             if (theItems != null) {
               restoreFromMap(theItems, menuDefRepository(appId: appId)!, appId,
                   postProcessing: (menuDef) {
-                    var menuItems = menuDef['menuItems'];
-                    for (var menuItem in menuItems) {
-                      var action = menuItem['action'];
-                      if (action != null) {
-                        action['appID'] = appId;
-                      }
-                    }
-                  });
+                var menuItems = menuDef['menuItems'];
+                for (var menuItem in menuItems) {
+                  var action = menuItem['action'];
+                  if (action != null) {
+                    action['appID'] = appId;
+                  }
+                }
+              });
             }
-          } else if (key == PlatformMediumModel.packageName + "-" + PlatformMediumModel.id) {
+          } else if (key ==
+              PlatformMediumModel.packageName + "-" + PlatformMediumModel.id) {
             var theItems = entry.value;
             if (theItems != null) {
               var repository = platformMediumRepository(appId: appId)!;
@@ -122,19 +112,25 @@ class JsonToModelsHelper {
                         memberId,
                         platformMedium.conditions == null
                             ? PrivilegeLevelRequiredSimple
-                            .NoPrivilegeRequiredSimple
-                            : toPrivilegeLevelRequiredSimple(
-                            platformMedium.conditions!.privilegeLevelRequired!));
-                    await upload(repository, helper, platformMedium.base,
-                        platformMedium.ext, platformMedium.mediumType ?? 0,
-                        theItem);
+                                .NoPrivilegeRequiredSimple
+                            : toPrivilegeLevelRequiredSimple(platformMedium
+                                .conditions!.privilegeLevelRequired!));
+                    await upload(
+                        repository,
+                        helper,
+                        platformMedium.base,
+                        platformMedium.ext,
+                        platformMedium.mediumType ?? 0,
+                        theItem,
+                        platformMedium.relatedMediumId);
                   }
                 } catch (e) {
                   print("Error whilst creating public medium " + e.toString());
                 }
               }
             }
-          } else if (key == MemberMediumModel.packageName + "-" + MemberMediumModel.id) {
+          } else if (key ==
+              MemberMediumModel.packageName + "-" + MemberMediumModel.id) {
             var theItems = entry.value;
             if (theItems != null) {
               var repository = memberMediumRepository(appId: appId)!;
@@ -143,41 +139,53 @@ class JsonToModelsHelper {
                   var memberMedium = repository.fromMap(theItem);
                   if (memberMedium != null) {
                     var memberMediumAccessibleByGroup =
-                    toMemberMediumAccessibleByGroup(
-                        memberMedium.accessibleByGroup ??
-                            MemberMediumAccessibleByGroup.Me.index);
+                        toMemberMediumAccessibleByGroup(
+                            memberMedium.accessibleByGroup ??
+                                MemberMediumAccessibleByGroup.Me.index);
                     var helper = MemberMediumHelper(
                         app, memberId, memberMediumAccessibleByGroup,
                         accessibleByMembers: memberMedium.accessibleByMembers);
-                    await upload(repository, helper, memberMedium.base,
-                        memberMedium.ext, memberMedium.mediumType ?? 0, theItem);
+                    await upload(
+                        repository,
+                        helper,
+                        memberMedium.base,
+                        memberMedium.ext,
+                        memberMedium.mediumType ?? 0,
+                        theItem,
+                        memberMedium.relatedMediumId);
                   }
                 } catch (e) {
                   print("Error whilst creating public medium " + e.toString());
                 }
               }
             }
-          } else if (key == PublicMediumModel.packageName + "-" + PublicMediumModel.id) {
-              var theItems = entry.value;
-              if (theItems != null) {
-                var repository = publicMediumRepository(appId: appId)!;
-                for (var theItem in theItems) {
-                  try {
-                    var publicMedium = repository.fromMap(theItem);
-                    if (publicMedium != null) {
-                      var helper = PublicMediumHelper(
-                        app,
-                        memberId,
-                      );
-                      await upload(repository, helper, publicMedium.base,
-                          publicMedium.ext, publicMedium.mediumType ?? 0,
-                          theItem);
-                    }
-                  } catch (e) {
-                    print("Error whilst creating public medium " + e.toString());
+          } else if (key ==
+              PublicMediumModel.packageName + "-" + PublicMediumModel.id) {
+            var theItems = entry.value;
+            if (theItems != null) {
+              var repository = publicMediumRepository(appId: appId)!;
+              for (var theItem in theItems) {
+                try {
+                  var publicMedium = repository.fromMap(theItem);
+                  if (publicMedium != null) {
+                    var helper = PublicMediumHelper(
+                      app,
+                      memberId,
+                    );
+                    await upload(
+                        repository,
+                        helper,
+                        publicMedium.base,
+                        publicMedium.ext,
+                        publicMedium.mediumType ?? 0,
+                        theItem,
+                        publicMedium.relatedMediumId);
                   }
+                } catch (e) {
+                  print("Error whilst creating public medium " + e.toString());
                 }
               }
+            }
           } else {
             var split = key.split('-');
             if (split.length == 2) {
@@ -206,8 +214,14 @@ class JsonToModelsHelper {
     return tasks;
   }
 
-  static Future<void> upload(RepositoryBase repository, MediumHelper helper,
-      String? base, String? ext, int mediumType, dynamic theItem) async {
+  static Future<void> upload(
+      RepositoryBase repository,
+      MediumHelper helper,
+      String? base,
+      String? ext,
+      int mediumType,
+      dynamic theItem,
+      String? relatedMediumId) async {
     var baseName = (base ?? 'noname') + "." + (ext ?? '');
     var thumbNailName = (base ?? 'noname') + "-thumb." + (ext ?? '');
     var extractItem = theItem['extract'];
@@ -215,20 +229,30 @@ class JsonToModelsHelper {
       var extract = Uint8List.fromList(extractItem.cast<int>());
       // Photo
       await helper.createThumbnailUploadPhotoData(
-          theItem['documentID'], extract, baseName, thumbNailName);
+          theItem['documentID'], extract, baseName, thumbNailName,
+          relatedMediumId: relatedMediumId);
     } else if (mediumType == 1) {
       var extract = Uint8List.fromList(extractItem.cast<int>());
       // Video
       await helper.createThumbnailUploadVideoData(
-          theItem['documentID'], extract, baseName, thumbNailName);
+        theItem['documentID'],
+        extract,
+        baseName,
+        thumbNailName,
+      );
     } else if (mediumType == 2) {
       var extract = Uint8List.fromList(extractItem.cast<int>());
       // Pdf
       await helper.createThumbnailUploadPhotoData(
-          theItem['documentID'], extract, baseName, thumbNailName);
+          theItem['documentID'], extract, baseName, thumbNailName,
+          relatedMediumId: relatedMediumId);
     } else if (mediumType == 3) {
       // Txt
-      await helper.uploadTextData(theItem['documentID'], extractItem, baseName);
+      await helper.uploadTextData(
+        theItem['documentID'],
+        extractItem,
+        baseName,
+      );
     }
   }
 
