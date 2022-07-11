@@ -114,19 +114,23 @@ class JsonToModelsHelper {
             if (theItems != null) {
               var repository = platformMediumRepository(appId: appId)!;
               for (var theItem in theItems) {
-                var platformMedium = repository.fromMap(theItem);
-                if (platformMedium != null) {
-                  var helper = PlatformMediumHelper(
-                      app,
-                      memberId,
-                      platformMedium.conditions == null
-                          ? PrivilegeLevelRequiredSimple
-                          .NoPrivilegeRequiredSimple
-                          : toPrivilegeLevelRequiredSimple(
-                          platformMedium.conditions!.privilegeLevelRequired!));
-                  await upload(repository, helper, platformMedium.base,
-                      platformMedium.ext, platformMedium.mediumType ?? 0,
-                      theItem);
+                try {
+                  var platformMedium = repository.fromMap(theItem);
+                  if (platformMedium != null) {
+                    var helper = PlatformMediumHelper(
+                        app,
+                        memberId,
+                        platformMedium.conditions == null
+                            ? PrivilegeLevelRequiredSimple
+                            .NoPrivilegeRequiredSimple
+                            : toPrivilegeLevelRequiredSimple(
+                            platformMedium.conditions!.privilegeLevelRequired!));
+                    await upload(repository, helper, platformMedium.base,
+                        platformMedium.ext, platformMedium.mediumType ?? 0,
+                        theItem);
+                  }
+                } catch (e) {
+                  print("Error whilst creating public medium " + e.toString());
                 }
               }
             }
@@ -135,36 +139,45 @@ class JsonToModelsHelper {
             if (theItems != null) {
               var repository = memberMediumRepository(appId: appId)!;
               for (var theItem in theItems) {
-                var memberMedium = repository.fromMap(theItem);
-                if (memberMedium != null) {
-                  var memberMediumAccessibleByGroup =
-                  toMemberMediumAccessibleByGroup(
-                      memberMedium.accessibleByGroup ??
-                          MemberMediumAccessibleByGroup.Me.index);
-                  var helper = MemberMediumHelper(
-                      app, memberId, memberMediumAccessibleByGroup,
-                      accessibleByMembers: memberMedium.accessibleByMembers);
-                  await upload(repository, helper, memberMedium.base,
-                      memberMedium.ext, memberMedium.mediumType ?? 0, theItem);
+                try {
+                  var memberMedium = repository.fromMap(theItem);
+                  if (memberMedium != null) {
+                    var memberMediumAccessibleByGroup =
+                    toMemberMediumAccessibleByGroup(
+                        memberMedium.accessibleByGroup ??
+                            MemberMediumAccessibleByGroup.Me.index);
+                    var helper = MemberMediumHelper(
+                        app, memberId, memberMediumAccessibleByGroup,
+                        accessibleByMembers: memberMedium.accessibleByMembers);
+                    await upload(repository, helper, memberMedium.base,
+                        memberMedium.ext, memberMedium.mediumType ?? 0, theItem);
+                  }
+                } catch (e) {
+                  print("Error whilst creating public medium " + e.toString());
                 }
               }
             }
           } else if (key == PublicMediumModel.packageName + "-" + PublicMediumModel.id) {
-            var theItems = entry.value;
-            if (theItems != null) {
-              var repository = publicMediumRepository(appId: appId)!;
-              for (var theItem in theItems) {
-                var publicMedium = repository.fromMap(theItem);
-                if (publicMedium != null) {
-                  var helper = PublicMediumHelper(
-                    app,
-                    memberId,
-                  );
-                  await upload(repository, helper, publicMedium.base,
-                      publicMedium.ext, publicMedium.mediumType ?? 0, theItem);
+              var theItems = entry.value;
+              if (theItems != null) {
+                var repository = publicMediumRepository(appId: appId)!;
+                for (var theItem in theItems) {
+                  try {
+                    var publicMedium = repository.fromMap(theItem);
+                    if (publicMedium != null) {
+                      var helper = PublicMediumHelper(
+                        app,
+                        memberId,
+                      );
+                      await upload(repository, helper, publicMedium.base,
+                          publicMedium.ext, publicMedium.mediumType ?? 0,
+                          theItem);
+                    }
+                  } catch (e) {
+                    print("Error whilst creating public medium " + e.toString());
+                  }
                 }
               }
-            }
           } else {
             var split = key.split('-');
             if (split.length == 2) {

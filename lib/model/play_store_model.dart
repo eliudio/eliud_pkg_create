@@ -76,14 +76,19 @@ class PlayStoreModel implements ModelBase, WithAppId {
     return 'PlayStoreModel{documentID: $documentID, appId: $appId, description: $description, backgroundIcon: $backgroundIcon, conditions: $conditions}';
   }
 
-  PlayStoreEntity toEntity({String? appId, List<ModelReference>? referencesCollector}) {
-    if (referencesCollector != null) {
-    }
+  Future<List<ModelReference>> collectReferences({String? appId}) async {
+    List<ModelReference> referencesCollector = [];
+    if (backgroundIcon != null) referencesCollector.addAll(await backgroundIcon!.collectReferences(appId: appId));
+    if (conditions != null) referencesCollector.addAll(await conditions!.collectReferences(appId: appId));
+    return referencesCollector;
+  }
+
+  PlayStoreEntity toEntity({String? appId}) {
     return PlayStoreEntity(
           appId: (appId != null) ? appId : null, 
           description: (description != null) ? description : null, 
-          backgroundIcon: (backgroundIcon != null) ? backgroundIcon!.toEntity(appId: appId, referencesCollector: referencesCollector) : null, 
-          conditions: (conditions != null) ? conditions!.toEntity(appId: appId, referencesCollector: referencesCollector) : null, 
+          backgroundIcon: (backgroundIcon != null) ? backgroundIcon!.toEntity(appId: appId) : null, 
+          conditions: (conditions != null) ? conditions!.toEntity(appId: appId) : null, 
     );
   }
 

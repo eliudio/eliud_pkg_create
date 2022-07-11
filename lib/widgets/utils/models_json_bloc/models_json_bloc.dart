@@ -10,6 +10,7 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/model/member_model.dart';
+import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'package:eliud_core/tools/random.dart';
@@ -47,38 +48,17 @@ class ModelWithInformation extends AbstractModelWithInformation {
 
 Future<EntityBase> retrieveAndRecursivelyFindReferences(String appId,
     ModelBase model, List<ModelReference> referencedModels) async {
-  List<ModelReference> newReferences = [];
   var entity =
-      await model.toEntity(appId: appId, referencesCollector: newReferences);
+      await model.toEntity(appId: appId, );
+  List<ModelReference> newReferences = await model.collectReferences(appId: appId);
   List<ModelReference> newReferences2 = [];
   for (var newReferencedModel in newReferences) {
-    await retrieveAndRecursivelyFindReferences(
-        appId, newReferencedModel.referenced, newReferences2);
+      await retrieveAndRecursivelyFindReferences(
+          appId,newReferencedModel. referenced, newReferences2);
   }
   referencedModels.addAll(newReferences);
   referencedModels.addAll(newReferences2);
   return entity;
-}
-
-class ModelsWithInformation extends AbstractModelWithInformation {
-  final List<ModelBase> models;
-
-  ModelsWithInformation(String label, this.models) : super(label);
-
-  Future<List<dynamic>> toRichMap(
-      {required String appId,
-      required List<ModelReference> referencedModels}) async {
-    List<dynamic> list = [];
-    for (var model in models) {
-      var entity = await retrieveAndRecursivelyFindReferences(
-          appId, model, referencedModels);
-      var doc = entity.toDocument();
-      await entity.enrichedDocument(doc);
-      doc['documentID'] = model.documentID;
-      list.add(doc);
-    }
-    return list;
-  }
 }
 
 class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
@@ -171,8 +151,10 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
 
     tasks.add(() async {
       Set<String> referencedModels2 = Set<String>();
+
       referencedModels
           .retainWhere((element) => referencedModels2.add(element.key()));
+
       for (var referencedModel in referencedModels) {
         var fullName =
             referencedModel.packageName + "-" + referencedModel.componentName;
@@ -181,7 +163,8 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
           theMap[fullName] = [];
         }
         var entity = referencedModel.referenced
-            .toEntity(appId: appId /*, referencesCollector: referencedModels*/);
+            .toEntity(
+            appId: appId /*, referencesCollector: referencedModels*/);
         var doc = entity.toDocument();
         doc['documentID'] = referencedModel.referenced.documentID;
         await entity.enrichedDocument(doc);
