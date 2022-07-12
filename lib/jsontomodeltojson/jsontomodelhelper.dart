@@ -269,10 +269,26 @@ class JsonToModelsHelper {
         if (postProcessing != null) {
           postProcessing(theItem);
         }
+
+
+        //replaceAll(theItem, 'appId', appId);
+        //replaceAll(theItem, 'appID', appId);
+
         var entity = repository.fromMap(theItem);
         if (entity != null) {
           repository.addEntity(documentID, entity);
         }
+      }
+    }
+  }
+
+  static void replaceAll(Map map, String key, String value) {
+    for (var theItem in map.entries) {
+      if (theItem.key == key) {
+        map[value] = value;
+      }
+      if (theItem.value is Map) {
+        replaceAll(theItem.value, key, value);
       }
     }
   }
