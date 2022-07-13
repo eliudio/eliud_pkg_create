@@ -31,7 +31,9 @@ class PlayStoreEntity implements EntityBase {
 
   PlayStoreEntity({required this.appId, this.description, this.backgroundIcon, this.conditions, });
 
-
+  PlayStoreEntity copyWith({String? documentID, String? appId, String? description, BackgroundEntity? backgroundIcon, StorageConditionsEntity? conditions, }) {
+    return PlayStoreEntity(appId : appId ?? this.appId, description : description ?? this.description, backgroundIcon : backgroundIcon ?? this.backgroundIcon, conditions : conditions ?? this.conditions, );
+  }
   List<Object?> get props => [appId, description, backgroundIcon, conditions, ];
 
   @override
@@ -78,6 +80,12 @@ class PlayStoreEntity implements EntityBase {
     if (conditions != null) theDocument["conditions"] = conditionsMap;
       else theDocument["conditions"] = null;
     return theDocument;
+  }
+
+  @override
+  PlayStoreEntity switchAppId({required String newAppId}) {
+    var newEntity = copyWith(appId: newAppId);
+    return newEntity;
   }
 
   static PlayStoreEntity? fromJsonString(String json) {

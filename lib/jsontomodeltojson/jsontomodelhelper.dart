@@ -1,11 +1,16 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:eliud_core/core/base/entity_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/app_entity.dart';
+import 'package:eliud_core/model/drawer_model.dart';
+import 'package:eliud_core/model/app_bar_model.dart';
+import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/model/dialog_entity.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
@@ -18,6 +23,7 @@ import 'package:eliud_core/tools/storage/medium_helper.dart';
 import 'package:eliud_core/tools/storage/member_medium_helper.dart';
 import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_core/tools/storage/public_medium_helper.dart';
+import '../tools/defaults.dart';
 import 'jsonconst.dart';
 import 'package:http/http.dart' as http;
 
@@ -46,8 +52,14 @@ class JsonToModelsHelper {
     var appId = app.documentID;
     List<NewAppTask> tasks = [];
 
+
     Map<String, dynamic>? map = jsonDecode(jsonText);
     if (map != null) {
+      var oldAppId = map['app']['documentID'];
+      var leftDrawerDocumentId = drawerID(appId, DrawerType.Left);
+      var rightDrawerDocumentId = drawerID(appId, DrawerType.Right);
+      var homeMenuId = homeMenuID(appId);
+      var appBarId = appBarID(appId);
       for (var entry in map.entries) {
         tasks.add(() async {
           var key = entry.key;
@@ -58,12 +70,55 @@ class JsonToModelsHelper {
             if (appEntity != null) {
               await appRepository()!.updateEntity(appId, appEntity);
             }
+          } else if (key == DrawerModel.packageName + "-" + DrawerModel.id) {
+            var values = entry.value;
+            for (var theItem in values) {
+              var documentID;
+              if (theItem['documentID'] == drawerID(oldAppId, DrawerType.Left)) {
+                documentID = leftDrawerDocumentId;
+              } else {
+                documentID = rightDrawerDocumentId;
+              }
+              theItem['appId'] = appId;
+              var entity = drawerRepository(appId: appId)!.fromMap(theItem);
+              if (entity != null) {
+                drawerRepository(appId: appId)!.addEntity(documentID, entity);
+              } else {
+                print("Error getting entity for " + theItem);
+              }
+            }
+          } else if (key == AppBarModel.packageName + "-" + AppBarModel.id) {
+            var values = entry.value;
+            for (var theItem in values) {
+              theItem['appId'] = appId;
+              var entity = appBarRepository(appId: appId)!.fromMap(theItem);
+              if (entity != null) {
+                appBarRepository(appId: appId)!.addEntity(appBarId, entity);
+              } else {
+                print("Error getting entity for " + theItem);
+              }
+            }
+          } else if (key == HomeMenuModel.packageName + "-" + HomeMenuModel.id) {
+            var values = entry.value;
+            for (var theItem in values) {
+              theItem['appId'] = appId;
+              var entity = homeMenuRepository(appId: appId)!.fromMap(theItem);
+              if (entity != null) {
+                homeMenuRepository(appId: appId)!.addEntity(homeMenuId, entity);
+              } else {
+                print("Error getting entity for " + theItem);
+              }
+            }
           } else if (key == JsonConsts.pages) {
             List<dynamic>? pages = entry.value;
             if (pages != null) {
               for (var page in pages) {
                 var documentID = page['documentID'];
                 page['appId'] = appId;
+                page['homeMenuId'] = homeMenuId;
+                page['drawerId'] = leftDrawerDocumentId;
+                page['endDrawerId'] = rightDrawerDocumentId;
+                page['appBarId'] = appBarId;
                 var pageEntity = PageEntity.fromMap(page);
                 if (pageEntity != null) {
                   await pageRepository(appId: appId)!
@@ -264,19 +319,18 @@ class JsonToModelsHelper {
   }) {
     if (theItems != null) {
       for (var theItem in theItems) {
-        theItem['appId'] = appId;
+//        theItem['appId'] = appId;
         var documentID = theItem['documentID'];
         if (postProcessing != null) {
           postProcessing(theItem);
         }
 
-
-        //replaceAll(theItem, 'appId', appId);
-        //replaceAll(theItem, 'appID', appId);
-
-        var entity = repository.fromMap(theItem);
+        EntityBase entity = repository.fromMap(theItem);
         if (entity != null) {
-          repository.addEntity(documentID, entity);
+          var newEntity = entity.switchAppId(newAppId: appId);
+          repository.addEntity(documentID, newEntity);
+        } else {
+          print("Error getting entity for " + theItem);
         }
       }
     }
