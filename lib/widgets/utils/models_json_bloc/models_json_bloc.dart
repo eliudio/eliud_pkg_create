@@ -1,17 +1,10 @@
-import 'dart:collection';
 import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/core/base/entity_base.dart';
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
-import 'package:eliud_core/model/member_model.dart';
-import 'package:eliud_core/model/platform_medium_model.dart';
-import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/storage/member_medium_helper.dart';
@@ -38,7 +31,7 @@ class ModelWithInformation extends AbstractModelWithInformation {
       required List<ModelReference> referencedModels}) async {
 //    var entity = await model.toEntity(appId: appId, referencesCollector: referencedModels);
     var entity = await retrieveAndRecursivelyFindReferences(
-        appId, model, referencedModels);
+        appId, model, [], referencedModels);
     var doc = entity.toDocument();
     await entity.enrichedDocument(doc);
     doc['documentID'] = model.documentID;
@@ -47,14 +40,27 @@ class ModelWithInformation extends AbstractModelWithInformation {
 }
 
 Future<EntityBase> retrieveAndRecursivelyFindReferences(String appId,
-    ModelBase model, List<ModelReference> referencedModels) async {
+    ModelBase model, List<ModelReference> callerReferencedModels, List<ModelReference> referencedModels) async {
   var entity =
       await model.toEntity(appId: appId, );
   List<ModelReference> newReferences = await model.collectReferences(appId: appId);
   List<ModelReference> newReferences2 = [];
+
+  List<ModelReference> newCallerReferencedModels = [];
+  newCallerReferencedModels.addAll(callerReferencedModels);
+  newCallerReferencedModels.addAll(newReferences);
   for (var newReferencedModel in newReferences) {
+    // make sure we're not calling infinite recursively
+    var found = false;
+    for (var callerReferencedModel in callerReferencedModels) {
+      if (callerReferencedModel.key() == newReferencedModel.key()) {
+        found = true;
+      }
+    }
+    if (!found) {
       await retrieveAndRecursivelyFindReferences(
-          appId,newReferencedModel. referenced, newReferences2);
+          appId, newReferencedModel.referenced, newReferences, newReferences2);
+    }
   }
   referencedModels.addAll(newReferences);
   referencedModels.addAll(newReferences2);
@@ -77,7 +83,7 @@ class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
       var model = await repository.get(documentID);
       if (model != null) {
         var entity = await retrieveAndRecursivelyFindReferences(
-            appId, model, referencedModels);
+            appId, model, [], referencedModels);
         var doc = entity.toDocument();
         await entity.enrichedDocument(doc);
         doc['documentID'] = model.documentID;
