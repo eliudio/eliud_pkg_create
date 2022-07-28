@@ -80,13 +80,14 @@ class MemberAppsWidget extends StatefulWidget {
 
 class _MemberAppsWidgetState extends State<MemberAppsWidget> {
   String? selectedMember;
-  bool incName = false;
+  late bool incName;
   double? width = 300;
   final _buttonKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+    incName = false;
 
 //    WidgetsBinding.instance?.addPostFrameCallback(_getWidgetInfo);
   }

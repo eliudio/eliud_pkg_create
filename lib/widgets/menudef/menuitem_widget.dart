@@ -2,6 +2,7 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/display_conditions_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
+import 'package:eliud_core/style/frontend/has_dialog_field.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/style/frontend/has_text_form_field.dart';
@@ -23,22 +24,10 @@ class MenuItemWidget extends StatefulWidget {
 }
 
 class _MenuItemWidgetState extends State<MenuItemWidget> {
-  final TextEditingController _textController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _textController.addListener(_onTextChanged);
-    _descriptionController.addListener(_onDescriptionChanged);
-  }
-
-  void _onTextChanged() {
-    widget.menuItemModel.text = _textController.text;
-  }
-
-  void _onDescriptionChanged() {
-    widget.menuItemModel.description = _descriptionController.text;
   }
 
   @override
@@ -48,11 +37,6 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
         privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
       );
     }
-    _textController.text =
-        widget.menuItemModel.text != null ? widget.menuItemModel.text! : '';
-    _descriptionController.text = widget.menuItemModel.description != null
-        ? widget.menuItemModel.description!
-        : '';
 
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
       topicContainer(widget.app, context,
@@ -60,28 +44,30 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
           collapsible: true,
           collapsed: true,
           children: [
-            textFormField(widget.app, context,
-                readOnly: false,
-                labelText: 'text',
-                icon: Icons.text_format,
-                textEditingController: _textController,
-                keyboardType: TextInputType.text, validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter text';
-              }
-              return null;
-            }, hintText: ''),
-            textFormField(widget.app, context,
-                readOnly: false,
-                labelText: 'description',
-                icon: Icons.text_format,
-                textEditingController: _descriptionController,
-                keyboardType: TextInputType.text, validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter description';
-              }
-              return null;
-            }, hintText: '')
+            dialogField(
+                widget.app,
+                context,
+                initialValue: widget.menuItemModel.text,
+                valueChanged: (value) {
+                  widget.menuItemModel.text = value;
+                },
+                maxLines: 1,
+                decoration: const InputDecoration(
+                  hintText: 'Text',
+                  labelText: 'Text',
+                )),
+            dialogField(
+                widget.app,
+                context,
+                initialValue: widget.menuItemModel.description,
+                valueChanged: (value) {
+                  widget.menuItemModel.description = value;
+                },
+                maxLines: 1,
+                decoration: const InputDecoration(
+                  hintText: 'Description',
+                  labelText: 'Description',
+                )),
           ]),
       topicContainer(widget.app, context,
           title: 'Icon',

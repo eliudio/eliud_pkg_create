@@ -85,6 +85,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
     super.initState();
   }
 
+  String comparable(String? title) => title == null ? '?' : title.toLowerCase();
+
   @override
   Widget build(BuildContext context) {
     var member = AccessBloc.member(context);
@@ -92,6 +94,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
     return BlocBuilder<AppCreateBloc, AppCreateState>(
         builder: (context, state) {
       if (state is AppCreateValidated) {
+        state.pages.sort((a, b) => (comparable(a.title) + a.documentID).compareTo((comparable(b.title) + b.documentID)));
+        state.dialogs.sort((a, b) => (comparable(a.title) + a.documentID).compareTo((comparable(b.title) + b.documentID)));
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           HeaderWidget(
             app: widget.app,
@@ -282,12 +286,14 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                         break;
                                     }
                                   }),
+                              subtitle: text(
+                                  widget.app,
+                                  context,
+                                  item.documentID),
                               title: text(
                                   widget.app,
                                   context,
-                                  item.title ??
-                                      item.description ??
-                                      item.documentID));
+                                  item.title ?? '?'));
                         }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
@@ -345,12 +351,14 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           );
                                         }
                                       }),
+                              subtitle: text(
+                                  widget.app,
+                                  context,
+                                  item.documentID),
                               title: text(
                                   widget.app,
                                   context,
-                                  item.description ??
-                                      item.title ??
-                                      item.documentID));
+                                  item.title ?? '?'));
                         }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
