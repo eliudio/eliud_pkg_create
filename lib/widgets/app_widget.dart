@@ -639,6 +639,20 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
               title: dialogField(
                 widget.app,
                 context,
+                initialValue: app.homeURL,
+                valueChanged: (value) {
+                  app.homeURL = value;
+                },
+                decoration: const InputDecoration(
+                  hintText: "e.g. https://www.minkey.io. This is usual as information, but actually used by some component, e.g. when presenting HTML: when HTML includes a link, this link will be evaluate and if it's a link within the app / website, it'll open that page, rather than open a browser",
+                  labelText: 'Home URL',
+                ),
+              )),
+          getListTile(context, widget.app,
+              leading: Icon(Icons.description),
+              title: dialogField(
+                widget.app,
+                context,
                 initialValue: app.title,
                 valueChanged: (value) {
                   app.title = value;
