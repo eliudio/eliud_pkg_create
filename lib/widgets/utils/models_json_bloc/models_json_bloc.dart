@@ -193,7 +193,11 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
         var memberMedium = await MemberMediumHelper(
                 app, event.member.documentID, MemberMediumAccessibleByGroup.Me)
             .uploadTextData(docID, _jsonEncoded, event.baseName);
-        await Clipboard.setData(ClipboardData(text: memberMedium.url));
+        try {
+          await Clipboard.setData(ClipboardData(text: memberMedium.url));
+        } catch (e) {
+          print("Can't set clipboard. Exception: " + e.toString());
+        }
         emit(ModelsAndJsonAvailableAsMemberMedium(memberMedium));
       }
     });

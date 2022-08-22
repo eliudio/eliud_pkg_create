@@ -122,7 +122,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
               },
               collapsed: true),
           topicContainer(widget.app, context,
-              title: 'Profile photo for members with not photo',
+              title: 'Profile photo for members with no photo',
               collapsible: true,
               collapsed: true,
               children: [
