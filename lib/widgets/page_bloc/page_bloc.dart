@@ -12,8 +12,9 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
 
   PageCreateBloc(
     this.appId,
-    PageModel initialiseWithPage,
   ) : super(PageCreateUninitialised()) {
+
+
     on<PageCreateEventValidateEvent>((event, emit) async {
       // convention is that the ID of the appBar, drawers and home menu are the same ID as that of the app
       var _homeMenuId = homeMenuID(appId);

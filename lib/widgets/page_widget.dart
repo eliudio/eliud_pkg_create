@@ -1,4 +1,6 @@
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -16,8 +18,12 @@ import 'package:eliud_pkg_create/widgets/page_bloc/page_bloc.dart';
 import 'package:eliud_pkg_create/widgets/page_bloc/page_event.dart';
 import 'package:eliud_pkg_create/widgets/page_bloc/page_state.dart';
 import 'package:eliud_pkg_create/widgets/privilege_widget.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_bloc.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_event.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../jsontomodeltojson/modeltojsonhelper.dart';
 import 'bodycomponents/bodycomponents_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -63,15 +69,14 @@ class PageCreateWidget extends StatefulWidget {
   static Widget getIt(
     BuildContext context,
     AppModel app,
-    PageModel appBarModel,
+    PageModel pageModel,
     bool create,
     double widgetWidth,
   ) {
     return BlocProvider<PageCreateBloc>(
       create: (context) => PageCreateBloc(
         app.documentID,
-        appBarModel,
-      )..add(PageCreateEventValidateEvent(appBarModel)),
+      )..add(PageCreateEventValidateEvent(pageModel)),
       child: PageCreateWidget._(
         app: app,
         create: create,
@@ -88,6 +93,8 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
     // layout
     // gridview
     // widgetWrapper
+
+    var member = AccessBloc.member(context);
 
     return BlocBuilder<PageCreateBloc, PageCreateState>(
         builder: (context, state) {
@@ -206,10 +213,49 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
               feedback: (_) {
                 setState(() {});
               }),
+          if (member == null)
+            text(widget.app, context,
+                "Not logged on, hence can't copy the widget to member medium"),
+          if (member != null)
+            ModelsJsonWidget.getIt(
+                context,
+                widget.app,
+                    () => getModelsJsonConstructJsonEventToClipboard(widget.app.documentID, state),
+                    (baseName) =>
+                    getModelsJsonConstructJsonEventToMemberMediumModel(widget.app.documentID,
+                        state, member, baseName),
+                getFilename(state)),
         ]);
       } else {
         return progressIndicator(widget.app, context);
       }
     });
   }
+
+  String getFilename(PageCreateValidated state) => getJsonFilename(state.pageModel.documentID, 'page');
+
+  ModelsJsonConstructJsonEventToClipboard getModelsJsonConstructJsonEventToClipboard(String appId,
+      PageCreateInitialised pageCreateInitialised) {
+    List<AbstractModelWithInformation> data = [];
+    return ModelsJsonConstructJsonEventToClipboard(
+            () => getTasks(appId, pageCreateInitialised, data), data);
+  }
+
+  ModelsJsonConstructJsonEventToMemberMediumModel getModelsJsonConstructJsonEventToMemberMediumModel(String appId,
+      PageCreateInitialised pageCreateInitialised,
+      MemberModel member,
+      String baseName) {
+    List<AbstractModelWithInformation> data = [];
+    return ModelsJsonConstructJsonEventToMemberMediumModel(
+            () => getTasks(appId, pageCreateInitialised, data), data, member, baseName);
+  }
+
+  Future<List<ModelsJsonTask>> getTasks(String appId,
+      PageCreateInitialised pageCreateInitialised,
+      List<AbstractModelWithInformation> data) async {
+    return ModelsToJsonHelper.getTasksForPage(appId,
+        pageCreateInitialised.pageModel,
+        data);
+  }
+
 }

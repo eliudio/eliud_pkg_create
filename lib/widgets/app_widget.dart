@@ -566,7 +566,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                 (baseName) =>
                     getModelsJsonConstructJsonEventToMemberMediumModel(
                         state, member, baseName),
-                getFilename()),
+                getFilename(state)),
         ]);
       } else {
         return progressIndicator(widget.app, context);
@@ -574,11 +574,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
     });
   }
 
-  String getFilename() {
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('EEE d MMM y kk:mm:ss').format(now);
-    return widget.app.documentID + ' ' + formattedDate + '.app.json';
-  }
+  String getFilename(AppCreateValidated state) => getJsonFilename(state.appModel.documentID, 'app');
 
   Future<List<ModelsJsonTask>> getTasks(
       AppCreateInitialised appCreateInitialised,

@@ -17,6 +17,7 @@ import 'package:eliud_pkg_create/widgets/appbar_widget.dart';
 import 'package:eliud_pkg_create/widgets/bottom_nav_bar_widget.dart';
 import 'package:eliud_pkg_create/widgets/dialog_widget.dart';
 import 'package:eliud_pkg_create/widgets/drawer_widget.dart';
+import 'package:eliud_pkg_create/widgets/from_json_widget.dart';
 import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/widgets/privilege_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
@@ -267,6 +268,18 @@ class CreatorDecoration extends deco.Decoration {
                 ActionWithLabel('Create page', () {
                   openPage(context, app, true, newPageDefaults(app.documentID),
                       'Create page');
+                }),
+                ActionWithLabel('Create page from existing page', () {
+                  var member = AccessBloc.member(context);
+                  if (member != null) {
+                    newFromJson(
+                      context,
+                      member,
+                      app,
+                    );
+                  } else {
+                    print("Can't create page without logged in member");
+                  }
                 }),
               ]),
               ensureHeight: false,

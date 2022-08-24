@@ -1,5 +1,7 @@
+import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
+import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
@@ -25,7 +27,6 @@ class PageCreateEventValidateEvent extends PageCreateEvent {
           other is PageCreateEventValidateEvent &&
               pageModel == other.pageModel;
 }
-
 class PageCreateEventApplyChanges extends PageCreateEvent {
   final bool save;
 

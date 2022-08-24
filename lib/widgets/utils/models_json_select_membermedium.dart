@@ -19,11 +19,13 @@ typedef JsonMemberMediumCallback = Function(MemberMediumModel? memberMedium);
 class JsonMemberMediumWidget extends StatefulWidget {
   final JsonMemberMediumCallback jsonMemberMediumCallback;
   final MemberMediumModel? initialValue;
+  final String ext;
   final AppModel app;
 
   JsonMemberMediumWidget({
     Key? key,
     required this.app,
+    required this.ext,
     required this.initialValue,
     required this.jsonMemberMediumCallback,
   }) : super(key: key);
@@ -46,7 +48,7 @@ class _JsonMemberMediumWidgetState extends State<JsonMemberMediumWidget> {
                       arrayContains: currentMember.documentID),
                   EliudQueryCondition('mediumType',
                       isEqualTo: MediumType.Text.index),
-                  EliudQueryCondition('ext', isEqualTo: 'app.json'),
+                  EliudQueryCondition('ext', isEqualTo: widget.ext),
                 ]),
                 orderBy: 'base',
                 descending: true,
@@ -84,7 +86,7 @@ class _JsonMemberMediumWidgetState extends State<JsonMemberMediumWidget> {
         }
         return DropdownButton<MemberMediumModel>(
           isDense: false,
-          isExpanded: false,
+          isExpanded: true,
           items: items,
           value: widget.initialValue,
           hint: text(widget.app, context, 'Select a medium'),

@@ -19,6 +19,7 @@ import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
+import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/storage/medium_helper.dart';
 import 'package:eliud_core/tools/storage/member_medium_helper.dart';
 import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
@@ -47,11 +48,29 @@ class JsonToModelsHelper {
     return createAppFromJson(app, memberId, json);
   }
 
+  static Future<List<NewAppTask>> createOtherFromURL(
+      AppModel app, String memberId, String url, bool includeMedia) async {
+    var theUrl = Uri.parse(url);
+    return _createOtherFromURI(app, memberId, theUrl, includeMedia);
+  }
+
+  static Future<List<NewAppTask>> createOtherFromMemberMedium(AppModel app,
+      String memberId, MemberMediumModel memberMediumModel, bool includeMedia) async {
+    var theUrl = Uri.parse(memberMediumModel.url!);
+    return _createOtherFromURI(app, memberId, theUrl, includeMedia);
+  }
+
+  static Future<List<NewAppTask>> _createOtherFromURI(
+      AppModel app, String memberId, Uri uri, bool includeMedia) async {
+    final response = await http.get(uri);
+    var json = String.fromCharCodes(response.bodyBytes);
+    return createOtherFromJson(app, memberId, json, includeMedia);
+  }
+
   static Future<List<NewAppTask>> createAppFromJson(
       AppModel app, String memberId, String jsonText) async {
     var appId = app.documentID;
     List<NewAppTask> tasks = [];
-
 
     Map<String, dynamic>? map = jsonDecode(jsonText);
     if (map != null) {
@@ -82,7 +101,7 @@ class JsonToModelsHelper {
               theItem['appId'] = appId;
               var entity = drawerRepository(appId: appId)!.fromMap(theItem);
               if (entity != null) {
-                drawerRepository(appId: appId)!.addEntity(documentID, entity);
+                await drawerRepository(appId: appId)!.addEntity(documentID, entity);
               } else {
                 print("Error getting entity for " + theItem);
               }
@@ -93,7 +112,7 @@ class JsonToModelsHelper {
               theItem['appId'] = appId;
               var entity = appBarRepository(appId: appId)!.fromMap(theItem);
               if (entity != null) {
-                appBarRepository(appId: appId)!.addEntity(appBarId, entity);
+                await appBarRepository(appId: appId)!.addEntity(appBarId, entity);
               } else {
                 print("Error getting entity for " + theItem);
               }
@@ -104,7 +123,7 @@ class JsonToModelsHelper {
               theItem['appId'] = appId;
               var entity = homeMenuRepository(appId: appId)!.fromMap(theItem);
               if (entity != null) {
-                homeMenuRepository(appId: appId)!.addEntity(homeMenuId, entity);
+                await homeMenuRepository(appId: appId)!.addEntity(homeMenuId, entity);
               } else {
                 print("Error getting entity for " + theItem);
               }
@@ -113,45 +132,29 @@ class JsonToModelsHelper {
             List<dynamic>? pages = entry.value;
             if (pages != null) {
               for (var page in pages) {
-                var documentID = page['documentID'];
-                page['appId'] = appId;
-                page['homeMenuId'] = homeMenuId;
-                page['drawerId'] = leftDrawerDocumentId;
-                page['endDrawerId'] = rightDrawerDocumentId;
-                page['appBarId'] = appBarId;
-                var pageEntity = PageEntity.fromMap(page);
-                if (pageEntity != null) {
-                  await pageRepository(appId: appId)!
-                      .addEntity(documentID, pageEntity);
-                }
+                await createPageEntity(page, appId, homeMenuId, leftDrawerDocumentId, rightDrawerDocumentId, appBarId);
               }
             }
           } else if (key == JsonConsts.dialogs) {
             List<dynamic>? dialogs = entry.value;
             if (dialogs != null) {
               for (var dialog in dialogs) {
-                var documentID = dialog['documentID'];
-                dialog['appId'] = appId;
-                var dialogEntity = DialogEntity.fromMap(dialog);
-                if (dialogEntity != null) {
-                  await dialogRepository(appId: appId)!
-                      .addEntity(documentID, dialogEntity);
-                }
+                await createDialogEntity(dialog, appId);
               }
             }
           } else if (key == MenuDefModel.packageName + "-" + MenuDefModel.id) {
             var theItems = entry.value;
             if (theItems != null) {
-              restoreFromMap(theItems, menuDefRepository(appId: appId)!, appId,
+              await restoreFromMap(theItems, menuDefRepository(appId: appId)!, appId,
                   postProcessing: (menuDef) {
-                var menuItems = menuDef['menuItems'];
-                for (var menuItem in menuItems) {
-                  var action = menuItem['action'];
-                  if (action != null) {
-                    action['appID'] = appId;
-                  }
-                }
-              });
+                    var menuItems = menuDef['menuItems'];
+                    for (var menuItem in menuItems) {
+                      var action = menuItem['action'];
+                      if (action != null) {
+                        action['appID'] = appId;
+                      }
+                    }
+                  });
             }
           } else if (key ==
               PlatformMediumModel.packageName + "-" + PlatformMediumModel.id) {
@@ -159,29 +162,7 @@ class JsonToModelsHelper {
             if (theItems != null) {
               var repository = platformMediumRepository(appId: appId)!;
               for (var theItem in theItems) {
-                try {
-                  var platformMedium = repository.fromMap(theItem);
-                  if (platformMedium != null) {
-                    var helper = PlatformMediumHelper(
-                        app,
-                        memberId,
-                        platformMedium.conditions == null
-                            ? PrivilegeLevelRequiredSimple
-                                .NoPrivilegeRequiredSimple
-                            : toPrivilegeLevelRequiredSimple(platformMedium
-                                .conditions!.privilegeLevelRequired!));
-                    await upload(
-                        repository,
-                        helper,
-                        platformMedium.base,
-                        platformMedium.ext,
-                        platformMedium.mediumType ?? 0,
-                        theItem,
-                        platformMedium.relatedMediumId);
-                  }
-                } catch (e) {
-                  print("Error whilst creating public medium " + e.toString());
-                }
+                await createPlatformMedium(theItem, app, memberId, repository);
               }
             }
           } else if (key ==
@@ -190,28 +171,7 @@ class JsonToModelsHelper {
             if (theItems != null) {
               var repository = memberMediumRepository(appId: appId)!;
               for (var theItem in theItems) {
-                try {
-                  var memberMedium = repository.fromMap(theItem);
-                  if (memberMedium != null) {
-                    var memberMediumAccessibleByGroup =
-                        toMemberMediumAccessibleByGroup(
-                            memberMedium.accessibleByGroup ??
-                                MemberMediumAccessibleByGroup.Me.index);
-                    var helper = MemberMediumHelper(
-                        app, memberId, memberMediumAccessibleByGroup,
-                        accessibleByMembers: memberMedium.accessibleByMembers);
-                    await upload(
-                        repository,
-                        helper,
-                        memberMedium.base,
-                        memberMedium.ext,
-                        memberMedium.mediumType ?? 0,
-                        theItem,
-                        memberMedium.relatedMediumId);
-                  }
-                } catch (e) {
-                  print("Error whilst creating public medium " + e.toString());
-                }
+                await createMemberMedium(theItem, app, memberId, repository);
               }
             }
           } else if (key ==
@@ -220,25 +180,7 @@ class JsonToModelsHelper {
             if (theItems != null) {
               var repository = publicMediumRepository(appId: appId)!;
               for (var theItem in theItems) {
-                try {
-                  var publicMedium = repository.fromMap(theItem);
-                  if (publicMedium != null) {
-                    var helper = PublicMediumHelper(
-                      app,
-                      memberId,
-                    );
-                    await upload(
-                        repository,
-                        helper,
-                        publicMedium.base,
-                        publicMedium.ext,
-                        publicMedium.mediumType ?? 0,
-                        theItem,
-                        publicMedium.relatedMediumId);
-                  }
-                } catch (e) {
-                  print("Error whilst creating public medium " + e.toString());
-                }
+                await createPublicMedium(theItem, app, memberId, repository);
               }
             }
           } else {
@@ -251,7 +193,7 @@ class JsonToModelsHelper {
                 var retrieveRepo = Registry.registry()!
                     .getRetrieveRepository(pluginName, componentId);
                 if (retrieveRepo != null) {
-                  restoreFromMap(values, retrieveRepo(appId: appId), appId);
+                  await restoreFromMap(values, retrieveRepo(appId: appId), appId);
                 } else {
                   print("Can't find repo for: " + key);
                 }
@@ -268,6 +210,237 @@ class JsonToModelsHelper {
 
     return tasks;
   }
+
+  static Future<List<NewAppTask>> createOtherFromJson(
+      AppModel app, String memberId, String jsonText, bool includeMedia) async {
+    var appId = app.documentID;
+    List<NewAppTask> tasks = [];
+
+    Map<String, dynamic>? map = jsonDecode(jsonText);
+    if (map != null) {
+      var leftDrawerDocumentId = drawerID(appId, DrawerType.Left);
+      var rightDrawerDocumentId = drawerID(appId, DrawerType.Right);
+      var homeMenuId = homeMenuID(appId);
+      var appBarId = appBarID(appId);
+
+      Map<String, String> newDocumentIds = {};
+
+      // pages and/or dialogs
+      for (var entry in map.entries) {
+        tasks.add(() async {
+          var key = entry.key;
+          if (key == JsonConsts.pages) {
+            List<dynamic>? pages = entry.value;
+            if (pages != null) {
+              for (var page in pages) {
+                page['documentID'] = newRandomKey();
+                var bodyComponents = page['bodyComponents'];
+                for (var bodyComponent in bodyComponents) {
+                  var oldComponentId = bodyComponent['componentId'];
+                  var newComponentId = newRandomKey();
+                  bodyComponent['componentId'] = newComponentId;
+                  newDocumentIds[oldComponentId] = newComponentId;
+                }
+                await createPageEntity(page, appId, homeMenuId, leftDrawerDocumentId, rightDrawerDocumentId, appBarId);
+              }
+            }
+          } else if (key == JsonConsts.dialogs) {
+            List<dynamic>? dialogs = entry.value;
+            if (dialogs != null) {
+              for (var dialog in dialogs) {
+                dialog['documentID'] = newRandomKey();
+                await createDialogEntity(dialog, appId);
+              }
+            }
+          }
+        });
+      }
+
+      // components
+      for (var entry in map.entries) {
+        tasks.add(() async {
+          var key = entry.key;
+          if (key == JsonConsts.app) {} else
+          if (key == DrawerModel.packageName + "-" + DrawerModel.id) {} else
+          if (key == AppBarModel.packageName + "-" + AppBarModel.id) {} else
+          if (key == HomeMenuModel.packageName + "-" + HomeMenuModel.id) {} else
+          if (key == JsonConsts.pages) {} else
+          if (key == JsonConsts.dialogs) {} else if (key ==
+              PlatformMediumModel.packageName + "-" +
+                  PlatformMediumModel.id) {} else if (key ==
+              MemberMediumModel.packageName + "-" +
+                  MemberMediumModel.id) {} else if (key ==
+              PublicMediumModel.packageName + "-" +
+                  PublicMediumModel.id) {} else {
+            var split = key.split('-');
+            if (split.length == 2) {
+              try {
+                var pluginName = split[0];
+                var componentId = split[1];
+                var values = entry.value;
+                var retrieveRepo = Registry.registry()!
+                    .getRetrieveRepository(pluginName, componentId);
+                if (retrieveRepo != null) {
+                  await restoreFromMap(
+                      values, retrieveRepo(appId: appId), appId,
+                      newDocumentIds: newDocumentIds);
+                } else {
+                  print("Can't find repo for: " + key);
+                }
+              } catch (e) {
+                print("Error processing " + key);
+              }
+            } else {
+              print("Dont know how to handle this entry with key: " + key);
+            }
+          }
+        });
+      }
+
+        // medium
+      if (includeMedia) {
+        for (var entry in map.entries) {
+          tasks.add(() async {
+            var key = entry.key;
+            if (key ==
+                PlatformMediumModel.packageName + "-" +
+                    PlatformMediumModel.id) {
+              var theItems = entry.value;
+              if (theItems != null) {
+                var repository = platformMediumRepository(appId: appId)!;
+                for (var theItem in theItems) {
+                  await createPlatformMedium(
+                      theItem, app, memberId, repository);
+                }
+              }
+            } else if (key ==
+                MemberMediumModel.packageName + "-" + MemberMediumModel.id) {
+              var theItems = entry.value;
+              if (theItems != null) {
+                var repository = memberMediumRepository(appId: appId)!;
+                for (var theItem in theItems) {
+                  await createMemberMedium(theItem, app, memberId, repository);
+                }
+              }
+            } else if (key ==
+                PublicMediumModel.packageName + "-" + PublicMediumModel.id) {
+              var theItems = entry.value;
+              if (theItems != null) {
+                var repository = publicMediumRepository(appId: appId)!;
+                for (var theItem in theItems) {
+                  await createPublicMedium(theItem, app, memberId, repository);
+                }
+              }
+            }
+          });
+        }
+      }
+    }
+
+    return tasks;
+  }
+
+  static Future<PageEntity> createPageEntity(dynamic page, String appId, String homeMenuId, String leftDrawerDocumentId, String rightDrawerDocumentId, String appBarId) async {
+    var documentID = page['documentID'];
+    page['appId'] = appId;
+    page['homeMenuId'] = homeMenuId;
+    page['drawerId'] = leftDrawerDocumentId;
+    page['endDrawerId'] = rightDrawerDocumentId;
+    page['appBarId'] = appBarId;
+    var pageEntity = PageEntity.fromMap(page);
+    if (pageEntity != null) {
+      return await pageRepository(appId: appId)!
+          .addEntity(documentID, pageEntity);
+    } else {
+      throw Exception('Can not create pageEntity');
+    }
+  }
+
+  static Future<DialogEntity> createDialogEntity(dynamic dialog, String appId, ) async {
+    var documentID = dialog['documentID'];
+    dialog['appId'] = appId;
+    var dialogEntity = DialogEntity.fromMap(dialog);
+    if (dialogEntity != null) {
+      return await dialogRepository(appId: appId)!
+          .addEntity(documentID, dialogEntity);
+    } else {
+      throw Exception('Can not create dialogEntity');
+    }
+  }
+
+  static Future<void> createPlatformMedium(dynamic theItem, AppModel app, String memberId, RepositoryBase repository) async {
+    try {
+      var platformMedium = repository.fromMap(theItem);
+      if (platformMedium != null) {
+        var helper = PlatformMediumHelper(
+            app,
+            memberId,
+            platformMedium.conditions == null
+                ? PrivilegeLevelRequiredSimple
+                .NoPrivilegeRequiredSimple
+                : toPrivilegeLevelRequiredSimple(platformMedium
+                .conditions!.privilegeLevelRequired!));
+        await upload(
+            repository,
+            helper,
+            platformMedium.base,
+            platformMedium.ext,
+            platformMedium.mediumType ?? 0,
+            theItem,
+            platformMedium.relatedMediumId);
+      }
+    } catch (e) {
+      print("Error whilst creating public medium " + e.toString());
+    }
+  }
+
+  static Future<void> createMemberMedium(dynamic theItem, AppModel app, String memberId, RepositoryBase repository) async {
+    try {
+      var memberMedium = repository.fromMap(theItem);
+      if (memberMedium != null) {
+        var memberMediumAccessibleByGroup =
+        toMemberMediumAccessibleByGroup(
+            memberMedium.accessibleByGroup ??
+                MemberMediumAccessibleByGroup.Me.index);
+        var helper = MemberMediumHelper(
+            app, memberId, memberMediumAccessibleByGroup,
+            accessibleByMembers: memberMedium.accessibleByMembers);
+        await upload(
+            repository,
+            helper,
+            memberMedium.base,
+            memberMedium.ext,
+            memberMedium.mediumType ?? 0,
+            theItem,
+            memberMedium.relatedMediumId);
+      }
+    } catch (e) {
+      print("Error whilst creating public medium " + e.toString());
+    }
+  }
+
+  static Future<void> createPublicMedium(dynamic theItem, AppModel app, String memberId, RepositoryBase repository) async {
+    try {
+      var publicMedium = repository.fromMap(theItem);
+      if (publicMedium != null) {
+        var helper = PublicMediumHelper(
+          app,
+          memberId,
+        );
+        await upload(
+            repository,
+            helper,
+            publicMedium.base,
+            publicMedium.ext,
+            publicMedium.mediumType ?? 0,
+            theItem,
+            publicMedium.relatedMediumId);
+      }
+    } catch (e) {
+      print("Error whilst creating public medium " + e.toString());
+    }
+  }
+
 
   static Future<void> upload(
       RepositoryBase repository,
@@ -311,27 +484,31 @@ class JsonToModelsHelper {
     }
   }
 
-  static void restoreFromMap(
+  static Future<void> restoreFromMap(
     dynamic theItems,
     RepositoryBase repository,
     String appId, {
     PostProcessing? postProcessing,
-  }) {
+    Map<String, String>? newDocumentIds
+  }) async {
     if (theItems != null) {
       for (var theItem in theItems) {
-//        theItem['appId'] = appId;
         var documentID = theItem['documentID'];
+        // potentially rename the document
+        if (newDocumentIds != null) {
+          var newDocumentID = newDocumentIds[documentID];
+          if (newDocumentID != null) {
+            theItem['documentID'] = newDocumentID;
+            documentID = newDocumentID;
+          }
+        }
         if (postProcessing != null) {
           postProcessing(theItem);
         }
 
         EntityBase entity = repository.fromMap(theItem);
-        if (entity != null) {
-          var newEntity = entity.switchAppId(newAppId: appId);
-          repository.addEntity(documentID, newEntity);
-        } else {
-          print("Error getting entity for " + theItem);
-        }
+        var newEntity = entity.switchAppId(newAppId: appId);
+        await repository.addEntity(documentID, newEntity);
       }
     }
   }

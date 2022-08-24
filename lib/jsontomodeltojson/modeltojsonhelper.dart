@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:eliud_core/core/base/entity_base.dart';
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
@@ -41,6 +39,8 @@ class ModelsToJsonHelper {
     tasks.add(() async {
       container.add(ModelDocumentIDsWithInformation(pageRepository(appId: appModel.documentID)!, JsonConsts.pages, pages.map((e) => e.documentID).toList()));
     });
+
+    // add all instances of all plugins
     pluginsWithComponents = await retrievePluginsWithComponents();
     for (var pluginsWithComponent in pluginsWithComponents) {
       var pluginName = pluginsWithComponent.name;
@@ -68,4 +68,44 @@ class ModelsToJsonHelper {
     return tasks;
   }
 
+  static Future<List<ModelsJsonTask>> getTasksForPage(String appId, PageModel page,
+      List<AbstractModelWithInformation> container) async {
+    List<ModelsJsonTask> tasks = [];
+
+    tasks.add(() async {
+      container.add(ModelDocumentIDsWithInformation(pageRepository(appId: appId)!, JsonConsts.pages, [page.documentID]));
+//      container.add(ModelDocumentIDsWithInformation(JsonConsts.pages, page));
+    });
+
+    // add all instances of all plugins used by this page
+    var pluginsWithComponents = await retrievePluginsWithComponents();
+    for (var pluginsWithComponent in pluginsWithComponents) {
+      var pluginName = pluginsWithComponent.name;
+      for (var componentSpec in pluginsWithComponent.componentSpec) {
+        if (page.bodyComponents != null) {
+          for (var bodyComponent in page.bodyComponents!) {
+            var componentName = componentSpec.name;
+            if (componentName == bodyComponent.componentName) {
+              tasks.add(() async {
+                var repository = componentSpec.retrieveRepository(
+                    appId: appId) as RepositoryBase<ModelBase, EntityBase>;
+                var value = await repository.get(bodyComponent.componentId);
+                if (value != null) {
+                  var componentName = componentSpec.name;
+                  var fullName = pluginName + "-" + componentName;
+                  container.add(ModelDocumentIDsWithInformation(repository, fullName, [bodyComponent.componentId!]));
+
+/*
+                  var fullName = pluginName + "-" + componentName;
+                  container.add(ModelWithInformation(fullName, value));
+*/
+                }
+              });
+            }
+          }
+        }
+      }
+    }
+    return tasks;
+  }
 }

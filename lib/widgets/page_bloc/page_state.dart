@@ -30,6 +30,10 @@ abstract class PageCreateInitialised extends PageCreateState {
   PageCreateInitialised(this.pageModel);
 }
 
+class PageCreateFromPageValidated extends PageCreateState {
+
+}
+
 class PageCreateValidated extends PageCreateInitialised {
   PageCreateValidated(PageModel pageModel) : super(pageModel);
 

@@ -2,10 +2,8 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
-import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
-import 'package:eliud_pkg_create/platform/create_platform.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +15,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'models_json_bloc/models_json_state.dart';
 import 'models_json_destination_widget.dart';
+import 'package:intl/intl.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_bloc.dart';
+import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_event.dart';
 
 typedef Future<
     List<AbstractModelWithInformation>> AbstractModelWithInformationsProvider();
@@ -24,6 +25,12 @@ typedef Future<
 typedef ModelsJsonConstructJsonEventToClipboard ModelsJsonConstructJsonEventToClipboardCreator();
 typedef ModelsJsonConstructJsonEventToMemberMediumModel ModelsJsonConstructJsonEventToMemberMediumModelCreator(
     String baseName);
+
+String getJsonFilename(String documentId, String extension) {
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('EEE d MMM y kk:mm:ss').format(now);
+  return documentId + ' ' + formattedDate + '.' + extension + '.json';
+}
 
 class ModelsJsonWidget extends StatefulWidget {
   final AppModel app;

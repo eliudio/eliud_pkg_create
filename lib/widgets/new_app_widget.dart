@@ -163,6 +163,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                             if (jsonDestination == JsonDestination.MemberMedium)
                               JsonMemberMediumWidget(
                                   app: widget.app,
+                                  ext: 'app.json',
                                   initialValue: memberMediumModel,
                                   jsonMemberMediumCallback: (value) {
                                     setState(() {
