@@ -7,6 +7,7 @@ import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import '../../jsontomodeltojson/jsontomodelhelper.dart';
 import 'from_json_event.dart';
@@ -15,6 +16,8 @@ import 'from_json_state.dart';
 class FromJsonBloc extends Bloc<FromJsonEvent, FromJsonState> {
   final AppModel app;
   final MemberModel member;
+  String? createdDocumentKey;
+  String? createdDocumentId;
 
   FromJsonBloc(
     this.app, this.member
@@ -24,11 +27,11 @@ class FromJsonBloc extends Bloc<FromJsonEvent, FromJsonState> {
     });
 
     on<NewFromJsonWithUrl>((event, emit) async {
-      runTasks(await JsonToModelsHelper.createOtherFromURL(app, member.documentID, event.url), (_) {});
+      runTasks(await JsonToModelsHelper.createOtherFromURL(app, member.documentID, event.url, event.includeMedia, feedback: feedback), event.postCreationAction);
     });
 
     on<NewFromJsonWithModel>((event, emit) async {
-      runTasks(await JsonToModelsHelper.createOtherFromMemberMedium(app, member.documentID, event.memberMediumModel), (_) {});
+      runTasks(await JsonToModelsHelper.createOtherFromMemberMedium(app, member.documentID, event.memberMediumModel, event.includeMedia, feedback: feedback), event.postCreationAction);
     });
 
     on<NewFromJsonWithClipboard>((event, emit) async {
@@ -36,7 +39,7 @@ class FromJsonBloc extends Bloc<FromJsonEvent, FromJsonState> {
       if (json != null) {
         var jsonText = json.text;
         if (jsonText != null) {
-          runTasks(await JsonToModelsHelper.createOtherFromJson(app, member.documentID, jsonText), (_) {});
+          runTasks(await JsonToModelsHelper.createOtherFromJson(app, member.documentID, jsonText, event.includeMedia, feedback: feedback), event.postCreationAction);
         } else {
           throw Exception("Json text is null");
         }
@@ -45,16 +48,30 @@ class FromJsonBloc extends Bloc<FromJsonEvent, FromJsonState> {
       }
     });
 
+    on<NewFromJsonCancelAction>((event, emit) async {
+      emit(FromJsonActionCancelled());
+    });
+
   }
 
-  Future<void> runTasks(List<NewAppTask> tasks, ReportProgress reportProgress) async {
-    var progressManager = ProgressManager(tasks.length, reportProgress);
+  void feedback(String key, String documentId) {
+    createdDocumentKey = key;
+    createdDocumentId = documentId;
+  }
 
-    var currentTask = tasks[0];
-    currentTask().then((value) => tasks[1]);
+  void reportProgress(double progress) {
+    emit(FromJsonProgress(progress));
+  }
+
+  Future<void> runTasks(List<NewAppTask> tasks, PostCreationAction postCreationAction) async {
+    emit(FromJsonProgress(0));
+    createdDocumentKey = null;
+    createdDocumentId = null;
+    var progressManager = ProgressManager(tasks.length, reportProgress);
 
     int i = 0;
     for (var task in tasks) {
+      if (state is FromJsonActionCancelled) break;
       i++;
       try {
         await task();
@@ -66,6 +83,6 @@ class FromJsonBloc extends Bloc<FromJsonEvent, FromJsonState> {
       }
       progressManager.progressedNextStep();
     }
-
+    postCreationAction(createdDocumentKey, createdDocumentId);
   }
 }

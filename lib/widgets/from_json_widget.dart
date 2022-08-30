@@ -1,4 +1,5 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/core/blocs/access/access_event.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -22,6 +23,7 @@ import 'package:eliud_pkg_create/widgets/utils/models_json_destination_widget.da
 import 'package:eliud_pkg_create/widgets/utils/models_json_select_membermedium.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import '../jsontomodeltojson/jsonconst.dart';
 import 'from_json_bloc/from_json_bloc.dart';
 import 'from_json_bloc/from_json_event.dart';
 import 'from_json_bloc/from_json_state.dart';
@@ -86,6 +88,7 @@ class NewFromJsonCreateWidget extends StatefulWidget {
 }
 
 class _NewFromJsonCreateWidgetState extends State<NewFromJsonCreateWidget> {
+  bool _includeMedia = false;
   JsonDestination? jsonDestination;
   MemberMediumModel? memberMediumModel;
   String? url;
@@ -111,32 +114,37 @@ class _NewFromJsonCreateWidgetState extends State<NewFromJsonCreateWidget> {
                     HeaderWidget(
                       app: widget.app,
                       cancelAction: () async {
+                        if (state is FromJsonProgress) {
+                          BlocProvider.of<FromJsonBloc>(context).add(NewFromJsonCancelAction());
+                        }
                         return true;
                       },
                       okAction: () async {
                         if (jsonDestination == JsonDestination.MemberMedium) {
                           if (memberMediumModel != null) {
-                            BlocProvider.of<FromJsonBloc>(context)
-                                .add(NewFromJsonWithModel(
-                              loggedInState,
-                              memberMediumModel!,
-                            ));
+                            BlocProvider.of<FromJsonBloc>(context).add(
+                                NewFromJsonWithModel(loggedInState,
+                                    memberMediumModel!, _includeMedia, (key, documentId) {
+                                      postCreationAction(key, documentId);
+                                    }, ));
                           } else {
                             print("Should select a medium");
                           }
                         } else if (jsonDestination == JsonDestination.URL) {
                           if (memberMediumModel != null) {
-                            BlocProvider.of<FromJsonBloc>(context)
-                                .add(NewFromJsonWithUrl(
-                              loggedInState,
-                              url!,
-                            ));
+                            BlocProvider.of<FromJsonBloc>(context).add(
+                                NewFromJsonWithUrl(
+                                    loggedInState, url!, _includeMedia, (key, documentId) {
+                                  postCreationAction(key, documentId);
+                                }, ));
                           } else {
                             print("Should specify a URL");
                           }
                         } else {
                           BlocProvider.of<FromJsonBloc>(context)
-                              .add(NewFromJsonWithClipboard());
+                              .add(NewFromJsonWithClipboard(_includeMedia, (key, documentId) {
+                            postCreationAction(key, documentId);
+                          }, ));
                         }
                         return false;
                       },
@@ -187,7 +195,31 @@ class _NewFromJsonCreateWidgetState extends State<NewFromJsonCreateWidget> {
                                   ),
                                 )),
                         ]),
+                    topicContainer(widget.app, context,
+                        title: 'Include Media',
+                        collapsible: true,
+                        collapsed: true,
+                        children: [
+                          text(
+                            widget.app,
+                            context,
+                            "Also re-upload the media referenced by this page in the json or reference the same image as the one being created?",
+                            maxLines: 10,
+                          ),
+                          checkboxListTile(widget.app, context, 'Create media',
+                              _includeMedia, (value) {
+                            setState(() {
+                              _includeMedia = value!;
+                            });
+                          }),
+                        ]),
                   ]));
+        } else if (state is FromJsonProgress) {
+          return Container(
+              height: 100,
+              width: widget.widgetWidth,
+              child: progressIndicatorWithValue(widget.app, context,
+                  value: state.progress));
         } else {
           return progressIndicator(widget.app, context);
         }
@@ -198,13 +230,19 @@ class _NewFromJsonCreateWidgetState extends State<NewFromJsonCreateWidget> {
     }
   }
 
-/*  Widget _progress(NewAppCreateCreateInProgress state) {
-    return Container(
-        height: 100,
-        width: widget.widgetWidth,
-        child: progressIndicatorWithValue(widget.app, context,
-            value: state.progress));
-  }*/
+  void postCreationAction(String? key, String? documentId) {
+    Navigator.of(context).pop(); // close this popup first
+    if (documentId != null) {
+      if (key == JsonConsts.pages) {
+        BlocProvider.of<AccessBloc>(context).add(
+            GotoPageEvent(
+              widget.app, documentId,));
+      } if (key == JsonConsts.dialogs) {
+        BlocProvider.of<AccessBloc>(context).add(OpenDialogEvent(documentId));
+      }
+    }
+  }
+
 }
 
 class UpperCaseTextFormatter extends TextInputFormatter {

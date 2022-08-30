@@ -36,8 +36,8 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       {
         var countDown = 3;
         while (countDown >= 0) {
-          var newPages = await pageRepository(appId: appId)!
-              .valuesList(privilegeLevel: countDown);
+          var newPages = await pageRepository(appId: appId)!.valuesList(
+              eliudQuery: getComponentSelectorQuery(countDown, appId));
           pages.addAll(newPages.map((e) => e!).toList());
           countDown--;
         }

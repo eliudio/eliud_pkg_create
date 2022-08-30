@@ -1,18 +1,24 @@
+import 'dart:ui';
+
 import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
+import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../jsontomodeltojson/jsontomodelhelper.dart';
+
+typedef void PostCreationAction(String? key, String? documentId);
+
 abstract class FromJsonEvent extends Equatable {
-  @override
   List<Object?> get props => [];
 }
 
 class FromJsonInitialise extends FromJsonEvent {
-  FromJsonInitialise();
+  FromJsonInitialise(): super();
 
   @override
   bool operator ==(Object other) =>
@@ -20,11 +26,20 @@ class FromJsonInitialise extends FromJsonEvent {
           other is FromJsonInitialise;
 }
 
-class NewFromJsonWithUrl extends FromJsonEvent {
-  final LoggedIn loggedIn;
-  String url; // if null then from memberMediumModel or clipboard
+abstract class FromJsonAction  extends FromJsonEvent {
+  // Also re-upload (with new documentID) the media (PlatformMedium, MemberMedium or PublicMedium) referenced or reference the same image as the one being created?
+  final bool includeMedia;
+  final PostCreationAction postCreationAction;
 
-  NewFromJsonWithUrl(this.loggedIn, this.url);
+  FromJsonAction(this.includeMedia, this.postCreationAction);
+
+}
+
+class NewFromJsonWithUrl extends FromJsonAction {
+  final LoggedIn loggedIn;
+  final String url;
+
+  NewFromJsonWithUrl(this.loggedIn, this.url, bool includeMedia, PostCreationAction postCreationAction): super(includeMedia, postCreationAction, );
 
   @override
   List<Object?> get props => [];
@@ -33,14 +48,16 @@ class NewFromJsonWithUrl extends FromJsonEvent {
   bool operator ==(Object other) =>
       identical(this, other) ||
           other is NewFromJsonWithUrl &&
+              this.includeMedia == other.includeMedia
+              &&
               url == other.url;
 }
 
-class NewFromJsonWithModel extends FromJsonEvent {
+class NewFromJsonWithModel extends FromJsonAction {
   final LoggedIn loggedIn;
   MemberMediumModel memberMediumModel; // if null then from clipboard or url
 
-  NewFromJsonWithModel(this.loggedIn, this.memberMediumModel);
+  NewFromJsonWithModel(this.loggedIn, this.memberMediumModel, bool includeMedia, PostCreationAction postCreationAction): super(includeMedia, postCreationAction);
 
   @override
   List<Object?> get props => [];
@@ -49,11 +66,13 @@ class NewFromJsonWithModel extends FromJsonEvent {
   bool operator ==(Object other) =>
       identical(this, other) ||
           other is NewFromJsonWithModel &&
+              this.includeMedia == other.includeMedia
+              &&
               memberMediumModel == other.memberMediumModel;
 }
 
-class NewFromJsonWithClipboard extends FromJsonEvent {
-  NewFromJsonWithClipboard();
+class NewFromJsonWithClipboard extends FromJsonAction {
+  NewFromJsonWithClipboard(bool includeMedia, PostCreationAction postCreationAction): super(includeMedia, postCreationAction);
 
   @override
   List<Object?> get props => [];
@@ -61,6 +80,14 @@ class NewFromJsonWithClipboard extends FromJsonEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is NewFromJsonWithClipboard;
+          other is NewFromJsonWithClipboard &&
+              this.includeMedia == other.includeMedia;
 }
 
+class NewFromJsonCancelAction extends FromJsonEvent {
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is NewFromJsonCancelAction;
+}
