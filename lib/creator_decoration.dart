@@ -97,7 +97,7 @@ class CreatorDecoration extends deco.Decoration {
         createOriginalWidget: createBodyComponent,
         action: SingleAction(() {
           updateComponent(context, app, model.componentName, model.componentId,
-              (status) {});
+              (status, value) {});
         }),
         ensureHeight: true,
         initialPosition: InitialPosition.LeftTop,

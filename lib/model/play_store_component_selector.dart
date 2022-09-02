@@ -141,7 +141,7 @@ class _SelectPlayStoreWidgetState extends State<SelectPlayStoreWidget> with Tick
                     if (selectedValue == 1) {
                       widget.selected(value.documentID);
                     } else if (selectedValue == 2) {
-                      widget.editorConstructor.updateComponent(widget.app, context, value, (_) {});
+                      widget.editorConstructor.updateComponent(widget.app, context, value, (_, __) {});
                     }
                   }),
               title: value.description != null ? Center(child: text(app, context, value.description!)) : value.documentID != null ? Center(child: text(app, context, value.documentID)) : Container(),
@@ -184,7 +184,7 @@ class _SelectPlayStoreWidgetState extends State<SelectPlayStoreWidget> with Tick
             child: iconButton(widget.app, 
           context,
           onPressed: () {
-            widget.editorConstructor.createNewComponent(widget.app, context, (_) {});
+            widget.editorConstructor.createNewComponent(widget.app, context, (_, __) {});
           },
           icon: Icon(Icons.add),
         ))

@@ -49,7 +49,7 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
         title: 'Divider',
         okAction: () async {
           if (widget.feedback != null) {
-            widget.feedback!(true);
+            widget.feedback!(true, widget.model);
           }
           return true;
         },

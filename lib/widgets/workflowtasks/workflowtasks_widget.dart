@@ -168,7 +168,7 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
           app: widget.app,
           model: newVersion,
           create: workflowTaskModel == null,
-          feedback: (status) {
+          feedback: (status, _) {
             if (status) {
               if (workflowTaskModel != null) {
                 BlocProvider.of<WorkflowTasksCreateBloc>(context).add(

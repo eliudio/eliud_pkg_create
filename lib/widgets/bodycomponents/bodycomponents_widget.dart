@@ -138,7 +138,7 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
 
   void details(BuildContext context, BodyComponentModel bodyComponentModel) {
     updateComponent(context, widget.app, bodyComponentModel.componentName,
-        bodyComponentModel.componentId, (_) {});
+        bodyComponentModel.componentId, (_, __) {});
   }
 
   void ensureCurrentIsVisible() {
