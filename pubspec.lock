@@ -154,7 +154,7 @@ packages:
       name: characters
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   charcode:
     dependency: transitive
     description:
@@ -196,42 +196,42 @@ packages:
       name: cloud_firestore
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.15"
+    version: "3.2.0"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
       name: cloud_firestore_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.5.6"
+    version: "5.7.3"
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.6.15"
+    version: "2.6.18"
   cloud_functions:
     dependency: transitive
     description:
       name: cloud_functions
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.15"
+    version: "3.3.0"
   cloud_functions_platform_interface:
     dependency: transitive
     description:
       name: cloud_functions_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.6"
+    version: "5.1.15"
   cloud_functions_web:
     dependency: transitive
     description:
       name: cloud_functions_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.14"
+    version: "4.2.17"
   code_builder:
     dependency: transitive
     description:
@@ -315,7 +315,7 @@ packages:
       name: device_info_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.2"
+    version: "4.0.0"
   device_info_plus_linux:
     dependency: transitive
     description:
@@ -329,7 +329,7 @@ packages:
       name: device_info_plus_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.2"
+    version: "2.2.3"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -427,7 +427,7 @@ packages:
       name: extension
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0"
+    version: "0.5.0"
   fast_image_resizer:
     dependency: transitive
     description:
@@ -504,21 +504,21 @@ packages:
       name: firebase_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "10.2.16"
+    version: "10.3.0"
   firebase_storage_platform_interface:
     dependency: transitive
     description:
       name: firebase_storage_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.6"
+    version: "4.1.15"
   firebase_storage_web:
     dependency: transitive
     description:
       name: firebase_storage_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.15"
+    version: "3.2.18"
   fixnum:
     dependency: transitive
     description:
@@ -731,7 +731,7 @@ packages:
       name: google_fonts
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "3.0.1"
   google_sign_in:
     dependency: transitive
     description:
@@ -927,14 +927,14 @@ packages:
       name: material_color_utilities
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.4"
+    version: "0.1.5"
   meta:
     dependency: transitive
     description:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.0"
+    version: "1.8.0"
   mime:
     dependency: transitive
     description:
@@ -1043,10 +1043,10 @@ packages:
   pdfx:
     dependency: transitive
     description:
-      path: "../../packages.flutter/packages/pdfx"
-      relative: true
-    source: path
-    version: "2.0.1+2"
+      name: pdfx
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
   pedantic:
     dependency: transitive
     description:
@@ -1074,7 +1074,7 @@ packages:
       name: photo_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.0"
+    version: "0.14.0"
   pinch_zoom:
     dependency: transitive
     description:
@@ -1172,7 +1172,7 @@ packages:
       name: sign_in_with_apple
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0"
+    version: "4.1.0"
   sign_in_with_apple_platform_interface:
     dependency: transitive
     description:
@@ -1205,7 +1205,7 @@ packages:
       name: split_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.1"
   sqflite:
     dependency: transitive
     description:
@@ -1254,7 +1254,7 @@ packages:
       name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.0+3"
   term_glyph:
     dependency: transitive
     description:
@@ -1359,7 +1359,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.5"
+    version: "3.0.6"
   vector_math:
     dependency: transitive
     description:
@@ -1415,7 +1415,7 @@ packages:
       name: video_thumbnail
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0"
+    version: "0.5.2"
   visibility_detector:
     dependency: transitive
     description:
@@ -1529,5 +1529,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.17.0 <3.0.0"
+  dart: ">=2.18.0-271.7.beta <3.0.0"
   flutter: ">=3.1.0-0"
