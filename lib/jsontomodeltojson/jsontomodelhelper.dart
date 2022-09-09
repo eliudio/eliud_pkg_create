@@ -448,7 +448,7 @@ class JsonToModelsHelper {
             platformMedium.ext,
             platformMedium.mediumType ?? 0,
             theNewItem,
-            platformMedium.relatedMediumId);
+            platformMedium.relatedMediumId, newDocumentIds: newDocumentIds);
       }
     } catch (e) {
       print("Error whilst creating public medium " + e.toString());
@@ -516,6 +516,7 @@ class JsonToModelsHelper {
     }
   }
 
+  static String noNameId = "nonameno-name-nona-meno-namenonameno";
 
   static Future<T> upload<T>(
       RepositoryBase repository,
@@ -524,7 +525,22 @@ class JsonToModelsHelper {
       String? ext,
       int mediumType,
       dynamic theItem,
-      String? relatedMediumId) async {
+      String? relatedMediumId, { Map<String, String>? newDocumentIds }) async {
+
+    if (base == null) base = noNameId;
+
+    if (newDocumentIds != null) {
+      var baseId = base.substring(0, 36);
+      if (baseId == noNameId) {
+        base = newRandomKey();
+      } else {
+        var newBaseID = newDocumentIds[baseId];
+        if (newBaseID != null) {
+          base = newBaseID + base.substring(16);
+        }
+      }
+    }
+
     var baseName = (base ?? 'noname') + "." + (ext ?? '');
     var thumbNailName = (base ?? 'noname') + "-thumb." + (ext ?? '');
     var extractItem = theItem['extract'];

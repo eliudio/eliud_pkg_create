@@ -269,7 +269,7 @@ class CreatorDecoration extends deco.Decoration {
                   openPage(context, app, true, newPageDefaults(app.documentID),
                       'Create page');
                 }),
-                ActionWithLabel('Create page from existing page', () {
+                ActionWithLabel('Create page from previously stored page', () {
                   var member = AccessBloc.member(context);
                   if (member != null) {
                     newFromJson(

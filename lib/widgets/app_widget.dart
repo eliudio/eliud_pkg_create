@@ -1,5 +1,6 @@
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
+import 'package:eliud_core/core/blocs/access/access_event.dart';
 import 'package:intl/intl.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/registry.dart';
@@ -244,6 +245,13 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           value: 6,
                                           label: 'Set as homepage for owner',
                                         ),
+                                        popupMenuDivider(widget.app, context),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 7,
+                                          label: 'Show page',
+                                        ),
                                       ],
                                   onSelected: (value) {
                                     switch (value) {
@@ -283,6 +291,14 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                       case 6:
                                         setState(() => state.appModel.homePages!
                                             .homePageOwner = item.documentID);
+                                        break;
+                                      case 7:
+                                        Navigator.of(context).pop();
+                                        var accessBloc = BlocProvider.of<AccessBloc>(context);
+                                        accessBloc.add(GotoPageEvent(
+                                          state.appModel,
+                                          item.documentID,
+                                        ));
                                         break;
                                     }
                                   }),
@@ -339,8 +355,14 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                               value: 0,
                                               label: 'Details',
                                             ),
+                                            popupMenuItem(
+                                              widget.app,
+                                              context,
+                                              value: 1,
+                                              label: 'Open dialog',
+                                            ),
                                           ],
-                                      onSelected: (value) {
+                                      onSelected: (value) async {
                                         if (value == 0) {
                                           openDialog(
                                             context,
@@ -349,6 +371,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                             item,
                                             "Update dialog",
                                           );
+                                        }
+                                        if (value == 1) {
+                                          await Registry.registry()!
+                                              .openDialog(context, app: widget.app, id: item.documentID);
                                         }
                                       }),
                               subtitle: text(
