@@ -89,6 +89,7 @@ class JsonToModelsHelper {
       var rightDrawerDocumentId = drawerID(appId, DrawerType.Right);
       var homeMenuId = homeMenuID(appId);
       var appBarId = appBarID(appId);
+      List<ComponentSpec> createdComponents = [];
       for (var entry in map.entries) {
         tasks.add(() async {
           var key = entry.key;
@@ -203,7 +204,11 @@ class JsonToModelsHelper {
                 var retrieveRepo = Registry.registry()!
                     .getRetrieveRepository(pluginName, componentId);
                 if (retrieveRepo != null) {
-                  await restoreFromMap(values, retrieveRepo(appId: appId), appId);
+                  var documentIds = await restoreFromMap(values, retrieveRepo(appId: appId), appId);
+                  createdComponents.addAll(documentIds.map((documentId) => ComponentSpec(
+                      pluginName,
+                      componentId,
+                      documentId)).toList());
                 } else {
                   print("Can't find repo for: " + key);
                 }
@@ -215,7 +220,9 @@ class JsonToModelsHelper {
             }
           }
         });
+
       }
+      revalidateComponentModels(app, tasks, createdComponents);
     }
 
     return tasks;
@@ -352,25 +359,30 @@ class JsonToModelsHelper {
         }
       }
 
-      // now run all revalidateModel to make sure the documents are consistent, e.g. update html links
-      tasks.add(() async {
-        for (var createdComponent in createdComponents) {
-          var componentSpecs = await Registry.registry()!.getComponentSpecs(
-              createdComponent.componentId);
-          if (componentSpecs == null) {
-            print("Exception during retrieval of component " +
-                createdComponent.componentId);
-          } else {
-            var repository = componentSpecs.retrieveRepository(appId: app.documentID);
-            var model = await repository.get(createdComponent.documentId);
-            var newModel = componentSpecs.editor.revalidateModel(app, model);
-            await repository.update(model);
-          }
-        }
-      });
+      revalidateComponentModels(app, tasks, createdComponents);
     }
 
     return tasks;
+  }
+
+  static void revalidateComponentModels(AppModel app, List<NewAppTask> tasks, List<ComponentSpec> createdComponents) {
+    // now run all revalidateModel to make sure the documents are consistent, e.g. update html links
+    tasks.add(() async {
+      for (var createdComponent in createdComponents) {
+        var componentSpecs = await Registry.registry()!.getComponentSpecs(
+            createdComponent.componentId);
+        if (componentSpecs == null) {
+          print("Exception during retrieval of component " +
+              createdComponent.componentId);
+        } else {
+          var repository = componentSpecs.retrieveRepository(appId: app.documentID);
+          var model = await repository.get(createdComponent.documentId);
+          var newModel = await componentSpecs.editor.revalidateModel(app, model);
+          await repository.update(newModel);
+        }
+      }
+    });
+
   }
 
   static Future<PageEntity> createPageEntity( dynamic page, String appId, String homeMenuId, String leftDrawerDocumentId, String rightDrawerDocumentId, String appBarId, {Feedback? feedback,}) async {
