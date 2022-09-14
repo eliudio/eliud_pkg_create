@@ -73,9 +73,11 @@ class PageCreateWidget extends StatefulWidget {
     bool create,
     double widgetWidth,
   ) {
+    var accessBloc = BlocProvider.of<AccessBloc>(context);
     return BlocProvider<PageCreateBloc>(
       create: (context) => PageCreateBloc(
-        app.documentID,
+        app,
+        accessBloc,
       )..add(PageCreateEventValidateEvent(pageModel)),
       child: PageCreateWidget._(
         app: app,
@@ -220,10 +222,11 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
             ModelsJsonWidget.getIt(
                 context,
                 widget.app,
-                    () => getModelsJsonConstructJsonEventToClipboard(widget.app.documentID, state),
-                    (baseName) =>
-                    getModelsJsonConstructJsonEventToMemberMediumModel(widget.app.documentID,
-                        state, member, baseName),
+                () => getModelsJsonConstructJsonEventToClipboard(
+                    widget.app.documentID, state),
+                (baseName) =>
+                    getModelsJsonConstructJsonEventToMemberMediumModel(
+                        widget.app.documentID, state, member, baseName),
                 getFilename(state)),
         ]);
       } else {
@@ -232,30 +235,36 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
     });
   }
 
-  String getFilename(PageCreateValidated state) => getJsonFilename(state.pageModel.documentID, 'page');
+  String getFilename(PageCreateValidated state) =>
+      getJsonFilename(state.pageModel.documentID, 'page');
 
-  ModelsJsonConstructJsonEventToClipboard getModelsJsonConstructJsonEventToClipboard(String appId,
-      PageCreateInitialised pageCreateInitialised) {
+  ModelsJsonConstructJsonEventToClipboard
+      getModelsJsonConstructJsonEventToClipboard(
+          String appId, PageCreateInitialised pageCreateInitialised) {
     List<AbstractModelWithInformation> data = [];
     return ModelsJsonConstructJsonEventToClipboard(
-            () => getTasks(appId, pageCreateInitialised, data), data);
+        () => getTasks(appId, pageCreateInitialised, data), data);
   }
 
-  ModelsJsonConstructJsonEventToMemberMediumModel getModelsJsonConstructJsonEventToMemberMediumModel(String appId,
-      PageCreateInitialised pageCreateInitialised,
-      MemberModel member,
-      String baseName) {
+  ModelsJsonConstructJsonEventToMemberMediumModel
+      getModelsJsonConstructJsonEventToMemberMediumModel(
+          String appId,
+          PageCreateInitialised pageCreateInitialised,
+          MemberModel member,
+          String baseName) {
     List<AbstractModelWithInformation> data = [];
     return ModelsJsonConstructJsonEventToMemberMediumModel(
-            () => getTasks(appId, pageCreateInitialised, data), data, member, baseName);
+        () => getTasks(appId, pageCreateInitialised, data),
+        data,
+        member,
+        baseName);
   }
 
-  Future<List<ModelsJsonTask>> getTasks(String appId,
+  Future<List<ModelsJsonTask>> getTasks(
+      String appId,
       PageCreateInitialised pageCreateInitialised,
       List<AbstractModelWithInformation> data) async {
-    return ModelsToJsonHelper.getTasksForPage(appId,
-        pageCreateInitialised.pageModel,
-        data);
+    return ModelsToJsonHelper.getTasksForPage(
+        appId, pageCreateInitialised.pageModel, data);
   }
-
 }

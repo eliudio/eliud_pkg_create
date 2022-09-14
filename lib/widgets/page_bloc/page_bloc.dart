@@ -1,21 +1,23 @@
+import 'package:eliud_core/core/blocs/access/access_event.dart';
+import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_pkg_create/widgets/page_bloc/page_event.dart';
+import 'package:eliud_pkg_create/widgets/page_bloc/page_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'page_event.dart';
-import 'page_state.dart';
 
 class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
-  final String appId;
+  final AppModel app;
+  final AccessBloc accessBloc;
 
-  PageCreateBloc(
-    this.appId,
-  ) : super(PageCreateUninitialised()) {
-
-
+  PageCreateBloc(this.app, this.accessBloc) : super(PageCreateUninitialised()) {
     on<PageCreateEventValidateEvent>((event, emit) async {
+      var appId = app.documentID;
       // convention is that the ID of the appBar, drawers and home menu are the same ID as that of the app
       var _homeMenuId = homeMenuID(appId);
       if (event.pageModel.homeMenu == null) {
@@ -120,6 +122,10 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
       if (page == null) {
         await pageRepository(appId: theState.pageModel.appId)!
             .add(theState.pageModel);
+        accessBloc.add(GotoPageEvent(
+          app,
+          theState.pageModel.documentID,
+        ));
       } else {
         await pageRepository(appId: theState.pageModel.appId)!
             .update(theState.pageModel);
