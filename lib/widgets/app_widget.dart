@@ -86,8 +86,6 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
     super.initState();
   }
 
-  String comparable(String? title) => title == null ? '?' : title.toLowerCase();
-
   @override
   Widget build(BuildContext context) {
     var member = AccessBloc.member(context);
@@ -95,8 +93,6 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
     return BlocBuilder<AppCreateBloc, AppCreateState>(
         builder: (context, state) {
       if (state is AppCreateValidated) {
-        state.pages.sort((a, b) => (comparable(a.title) + a.documentID).compareTo((comparable(b.title) + b.documentID)));
-        state.dialogs.sort((a, b) => (comparable(a.title) + a.documentID).compareTo((comparable(b.title) + b.documentID)));
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
           HeaderWidget(
             app: widget.app,
@@ -187,13 +183,13 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         child: ListView(
                             children: state.pages.map((item) {
                           return getListTile(context, widget.app,
-                              onTap: () => openPage(
+                              /* onTap: () => openPage(
                                     context,
                                     widget.app,
                                     false,
                                     item,
                                     "Update page",
-                                  ),
+                                  ),*/
                               trailing: popupMenuButton<int>(
                                   widget.app, context,
                                   child: Icon(Icons.more_vert),
@@ -202,7 +198,13 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           widget.app,
                                           context,
                                           value: 0,
-                                          label: 'Details',
+                                          label: 'Update',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 8,
+                                          label: 'Delete',
                                         ),
                                         popupMenuDivider(widget.app, context),
                                         popupMenuItem(
@@ -264,6 +266,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           "Update page",
                                         );
                                         break;
+                                      case 8:
+                                        BlocProvider.of<AppCreateBloc>(context)
+                                            .add(AppCreateDeletePage(item));
+                                        break;
                                       case 1:
                                         setState(() => state.appModel.homePages!
                                             .homePagePublic = item.documentID);
@@ -294,7 +300,9 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                         break;
                                       case 7:
                                         Navigator.of(context).pop();
-                                        var accessBloc = BlocProvider.of<AccessBloc>(context);
+                                        var accessBloc =
+                                            BlocProvider.of<AccessBloc>(
+                                                context);
                                         accessBloc.add(GotoPageEvent(
                                           state.appModel,
                                           item.documentID,
@@ -302,14 +310,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                         break;
                                     }
                                   }),
-                              subtitle: text(
-                                  widget.app,
-                                  context,
-                                  item.documentID),
-                              title: text(
-                                  widget.app,
-                                  context,
-                                  item.title ?? '?'));
+                              subtitle:
+                                  text(widget.app, context, item.documentID),
+                              title:
+                                  text(widget.app, context, item.title ?? '?'));
                         }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
@@ -338,53 +342,63 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         child: ListView(
                             children: state.dialogs.map((item) {
                           return getListTile(context, widget.app,
-                              onTap: () => openDialog(
+                              /*onTap: () => openDialog(
                                     context,
                                     widget.app,
                                     false,
                                     item,
                                     "Update dialog",
-                                  ),
-                              trailing:
-                                  popupMenuButton<int>(widget.app, context,
-                                      child: Icon(Icons.more_vert),
-                                      itemBuilder: (context) => [
-                                            popupMenuItem(
-                                              widget.app,
-                                              context,
-                                              value: 0,
-                                              label: 'Details',
-                                            ),
-                                            popupMenuItem(
-                                              widget.app,
-                                              context,
-                                              value: 1,
-                                              label: 'Open dialog',
-                                            ),
-                                          ],
-                                      onSelected: (value) async {
-                                        if (value == 0) {
-                                          openDialog(
+                                  ),*/
+                              trailing: popupMenuButton<int>(
+                                  widget.app, context,
+                                  child: Icon(Icons.more_vert),
+                                  itemBuilder: (context) => [
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 0,
+                                          label: 'Update',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 2,
+                                          label: 'Delete',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 1,
+                                          label: 'Open dialog',
+                                        ),
+                                      ],
+                                  onSelected: (value) async {
+                                    switch (value) {
+                                      case 0:
+                                        openDialog(
+                                          context,
+                                          widget.app,
+                                          false,
+                                          item,
+                                          "Update dialog",
+                                        );
+                                        break;
+                                      case 2:
+                                        BlocProvider.of<AppCreateBloc>(context)
+                                            .add(AppCreateDeleteDialog(item));
+                                        break;
+                                      case 1:
+                                        await Registry.registry()!.openDialog(
                                             context,
-                                            widget.app,
-                                            false,
-                                            item,
-                                            "Update dialog",
-                                          );
-                                        }
-                                        if (value == 1) {
-                                          await Registry.registry()!
-                                              .openDialog(context, app: widget.app, id: item.documentID);
-                                        }
-                                      }),
-                              subtitle: text(
-                                  widget.app,
-                                  context,
-                                  item.documentID),
-                              title: text(
-                                  widget.app,
-                                  context,
-                                  item.title ?? '?'));
+                                            app: widget.app,
+                                            id: item.documentID);
+                                        break;
+                                    }
+                                  }),
+                              subtitle:
+                                  text(widget.app, context, item.documentID),
+                              title:
+                                  text(widget.app, context, item.title ?? '?'));
                         }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
@@ -395,7 +409,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               widget.app,
                               true,
                               newDialogDefaults(widget.app.documentID),
-                              'Create page');
+                              'Create dialog');
                         })
                   ], shrinkWrap: true, physics: ScrollPhysics()),
                 ),
@@ -600,7 +614,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
     });
   }
 
-  String getFilename(AppCreateValidated state) => getJsonFilename(state.appModel.documentID, 'app');
+  String getFilename(AppCreateValidated state) =>
+      getJsonFilename(state.appModel.documentID, 'app');
 
   Future<List<ModelsJsonTask>> getTasks(
       AppCreateInitialised appCreateInitialised,
@@ -666,7 +681,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                   app.homeURL = value;
                 },
                 decoration: const InputDecoration(
-                  hintText: "e.g. https://www.minkey.io. This is usual as information, but actually used by some component, e.g. when presenting HTML: when HTML includes a link, this link will be evaluate and if it's a link within the app / website, it'll open that page, rather than open a browser",
+                  hintText:
+                      "e.g. https://www.minkey.io. This is usual as information, but actually used by some component, e.g. when presenting HTML: when HTML includes a link, this link will be evaluate and if it's a link within the app / website, it'll open that page, rather than open a browser",
                   labelText: 'Home URL',
                 ),
               )),

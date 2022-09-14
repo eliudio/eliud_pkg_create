@@ -41,3 +41,33 @@ class AppCreateEventApplyChanges extends AppCreateEvent {
               save == other.save;
 }
 
+class AppCreateDeletePage extends AppCreateEvent {
+  final PageModel deleteThis;
+
+  AppCreateDeletePage(this.deleteThis);
+
+  @override
+  List<Object?> get props => [deleteThis];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is AppCreateDeletePage &&
+              deleteThis == other.deleteThis;
+}
+
+class AppCreateDeleteDialog extends AppCreateEvent {
+  final DialogModel deleteThis;
+
+  AppCreateDeleteDialog(this.deleteThis);
+
+  @override
+  List<Object?> get props => [deleteThis];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is AppCreateDeleteDialog &&
+              deleteThis == other.deleteThis;
+}
+

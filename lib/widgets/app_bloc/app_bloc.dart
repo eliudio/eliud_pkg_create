@@ -26,33 +26,49 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
     ]);
   }
 
+  String comparable(String? title) => title == null ? '?' : title.toLowerCase();
+
+  Future<List<PageModel>> _pages() async {
+    var pages = <PageModel>[];
+    {
+      var countDown = 3;
+      while (countDown >= 0) {
+        var newPages = await pageRepository(appId: appId)!.valuesList(
+            eliudQuery: getComponentSelectorQuery(countDown, appId));
+        pages.addAll(newPages.map((e) => e!).toList());
+        countDown--;
+      }
+    }
+    pages.sort((a, b) => (comparable(a.title) + a.documentID)
+        .compareTo((comparable(b.title) + b.documentID)));
+    return pages;
+
+  }
+
+  Future<List<DialogModel>> _dialogs() async {
+    var dialogs = <DialogModel>[];
+    {
+      var countDown = 3;
+      while (countDown >= 0) {
+        var newDialogs = await dialogRepository(appId: appId)!
+            .valuesList(privilegeLevel: countDown);
+        dialogs.addAll(newDialogs.map((d) => d!).toList());
+        countDown--;
+      }
+    }
+    dialogs.sort((a, b) => (comparable(a.title) + a.documentID)
+        .compareTo((comparable(b.title) + b.documentID)));
+    return dialogs;
+  }
+
   AppCreateBloc(
     this.appId,
     AppModel initialiseWithApp,
   )   : appModel = deepCopy(appId, initialiseWithApp),
         super(AppCreateUninitialised()) {
     on<AppCreateEventValidateEvent>((event, emit) async {
-      var pages = <PageModel>[];
-      {
-        var countDown = 3;
-        while (countDown >= 0) {
-          var newPages = await pageRepository(appId: appId)!.valuesList(
-              eliudQuery: getComponentSelectorQuery(countDown, appId));
-          pages.addAll(newPages.map((e) => e!).toList());
-          countDown--;
-        }
-      }
-      var dialogs = <DialogModel>[];
-      {
-        var countDown = 3;
-        while (countDown >= 0) {
-          var newDialogs = await dialogRepository(appId: appId)!
-              .valuesList(privilegeLevel: countDown);
-          dialogs.addAll(newDialogs.map((d) => d!).toList());
-          countDown--;
-        }
-      }
-
+      var pages = await _pages();
+      var dialogs = await _dialogs();
       var theHomeMenu = await homeMenu(appId, store: true);
       var theAppBar = await appBar(appId);
       var leftDrawer = await getDrawer(appId, DrawerType.Left, store: true);
@@ -60,6 +76,40 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
 
       emit(AppCreateValidated(deepCopy(appId, event.appModel), pages, dialogs,
           theHomeMenu, theAppBar, leftDrawer, rightDrawer));
+    });
+
+    on<AppCreateDeletePage>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        var page = event.deleteThis;
+        await pageRepository(appId: appId)!.delete(page);
+        var pages = await _pages();
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            pages,
+            appCreateInitialised.dialogs,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
+    });
+
+    on<AppCreateDeleteDialog>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        var dialog = event.deleteThis;
+        await dialogRepository(appId: appId)!.delete(dialog);
+        var dialogs = await _dialogs();
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            appCreateInitialised.pages,
+            dialogs,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
     });
 
     on<AppCreateEventApplyChanges>((event, emit) async {
