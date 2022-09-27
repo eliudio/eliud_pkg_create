@@ -130,6 +130,10 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
         } else {
           await appRepository(appId: appId)!.update(theState.appModel);
         }
+
+        if (appModel.policies != null) {
+          appPolicyRepository(appId: appId)!.update(appModel.policies!);
+        }
       }
     });
   }

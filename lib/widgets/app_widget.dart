@@ -1,6 +1,7 @@
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/core/blocs/access/access_event.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/registry.dart';
@@ -106,7 +107,6 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
             },
             title: 'App',
           ),
-          divider(widget.app, context),
           _general(context, state.appModel, widget.create),
           LogoWidget(
               isCollapsable: true,
@@ -171,250 +171,6 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         state.appModel.homePages!.homePageOwner ?? '')),
               ]),
           topicContainer(widget.app, context,
-              title: 'Pages',
-              collapsible: true,
-              collapsed: true,
-              children: [
-                Container(
-                  child: ListView(children: [
-                    Container(
-                        height: 200, //heightUnit() * 1,
-                        width: widget.widgetWidth,
-                        child: ListView(
-                            children: state.pages.map((item) {
-                          return getListTile(context, widget.app,
-                              /* onTap: () => openPage(
-                                    context,
-                                    widget.app,
-                                    false,
-                                    item,
-                                    "Update page",
-                                  ),*/
-                              trailing: popupMenuButton<int>(
-                                  widget.app, context,
-                                  child: Icon(Icons.more_vert),
-                                  itemBuilder: (context) => [
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 0,
-                                          label: 'Update',
-                                        ),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 8,
-                                          label: 'Delete',
-                                        ),
-                                        popupMenuDivider(widget.app, context),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 1,
-                                          label: 'Set as public homepage',
-                                        ),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 2,
-                                          label:
-                                              'Set as homepage for subscribed member',
-                                        ),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 3,
-                                          label:
-                                              'Set as homepage for suscribed member, level 1',
-                                        ),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 4,
-                                          label:
-                                              'Set as homepage for suscribed member, level 2',
-                                        ),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 5,
-                                          label:
-                                              'Set as homepage for blocked member',
-                                        ),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 6,
-                                          label: 'Set as homepage for owner',
-                                        ),
-                                        popupMenuDivider(widget.app, context),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 7,
-                                          label: 'Show page',
-                                        ),
-                                      ],
-                                  onSelected: (value) {
-                                    switch (value) {
-                                      case 0:
-                                        openPage(
-                                          context,
-                                          widget.app,
-                                          false,
-                                          item,
-                                          "Update page",
-                                        );
-                                        break;
-                                      case 8:
-                                        BlocProvider.of<AppCreateBloc>(context)
-                                            .add(AppCreateDeletePage(item));
-                                        break;
-                                      case 1:
-                                        setState(() => state.appModel.homePages!
-                                            .homePagePublic = item.documentID);
-                                        break;
-                                      case 2:
-                                        setState(() => state.appModel.homePages!
-                                                .homePageSubscribedMember =
-                                            item.documentID);
-                                        break;
-                                      case 3:
-                                        setState(() => state.appModel.homePages!
-                                                .homePageLevel1Member =
-                                            item.documentID);
-                                        break;
-                                      case 4:
-                                        setState(() => state.appModel.homePages!
-                                                .homePageLevel2Member =
-                                            item.documentID);
-                                        break;
-                                      case 5:
-                                        setState(() => state.appModel.homePages!
-                                                .homePageBlockedMember =
-                                            item.documentID);
-                                        break;
-                                      case 6:
-                                        setState(() => state.appModel.homePages!
-                                            .homePageOwner = item.documentID);
-                                        break;
-                                      case 7:
-                                        Navigator.of(context).pop();
-                                        var accessBloc =
-                                            BlocProvider.of<AccessBloc>(
-                                                context);
-                                        accessBloc.add(GotoPageEvent(
-                                          state.appModel,
-                                          item.documentID,
-                                        ));
-                                        break;
-                                    }
-                                  }),
-                              subtitle:
-                                  text(widget.app, context, item.documentID),
-                              title:
-                                  text(widget.app, context, item.title ?? '?'));
-                        }).toList())),
-                    divider(widget.app, context),
-                    GestureDetector(
-                        child: Icon(Icons.add),
-                        onTap: () {
-                          openPage(
-                              context,
-                              widget.app,
-                              true,
-                              newPageDefaults(widget.app.documentID),
-                              'Create page');
-                        })
-                  ], shrinkWrap: true, physics: ScrollPhysics()),
-                ),
-              ]),
-          topicContainer(widget.app, context,
-              title: 'Dialogs',
-              collapsible: true,
-              collapsed: true,
-              children: [
-                Container(
-                  child: ListView(children: [
-                    Container(
-                        height: 200, //heightUnit() * 1,
-                        width: widget.widgetWidth,
-                        child: ListView(
-                            children: state.dialogs.map((item) {
-                          return getListTile(context, widget.app,
-                              /*onTap: () => openDialog(
-                                    context,
-                                    widget.app,
-                                    false,
-                                    item,
-                                    "Update dialog",
-                                  ),*/
-                              trailing: popupMenuButton<int>(
-                                  widget.app, context,
-                                  child: Icon(Icons.more_vert),
-                                  itemBuilder: (context) => [
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 0,
-                                          label: 'Update',
-                                        ),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 2,
-                                          label: 'Delete',
-                                        ),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 1,
-                                          label: 'Open dialog',
-                                        ),
-                                      ],
-                                  onSelected: (value) async {
-                                    switch (value) {
-                                      case 0:
-                                        openDialog(
-                                          context,
-                                          widget.app,
-                                          false,
-                                          item,
-                                          "Update dialog",
-                                        );
-                                        break;
-                                      case 2:
-                                        BlocProvider.of<AppCreateBloc>(context)
-                                            .add(AppCreateDeleteDialog(item));
-                                        break;
-                                      case 1:
-                                        await Registry.registry()!.openDialog(
-                                            context,
-                                            app: widget.app,
-                                            id: item.documentID);
-                                        break;
-                                    }
-                                  }),
-                              subtitle:
-                                  text(widget.app, context, item.documentID),
-                              title:
-                                  text(widget.app, context, item.title ?? '?'));
-                        }).toList())),
-                    divider(widget.app, context),
-                    GestureDetector(
-                        child: Icon(Icons.add),
-                        onTap: () {
-                          openDialog(
-                              context,
-                              widget.app,
-                              true,
-                              newDialogDefaults(widget.app.documentID),
-                              'Create dialog');
-                        })
-                  ], shrinkWrap: true, physics: ScrollPhysics()),
-                ),
-              ]),
-          topicContainer(widget.app, context,
               title: 'Policies',
               collapsible: true,
               collapsed: true,
@@ -428,7 +184,6 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                       valueChanged: (value) {
                         state.appModel.policies!.comments = value;
                       },
-                      maxLines: 3,
                       decoration: const InputDecoration(
                         hintText: 'Comments',
                         labelText: 'Comments',
@@ -504,18 +259,34 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                   allowedExtensions: ['pdf'],
                                   allowMultiple: false);
                               if ((_result != null) && (_result.count > 0)) {
-                                var path = _result.files[0].path;
-                                if (path != null) {
-                                  var documentId = newRandomKey();
-                                  await PublicMediumHelper(
-                                    state.appModel,
-                                    state.appModel.ownerID,
-                                  ).createThumbnailUploadPdfFile(
-                                      documentId, path, documentId,
-                                      feedbackFunction: (pdf) =>
-                                          _pdfFeedbackFunction(
-                                              state.appModel, pdf),
-                                      feedbackProgress: _policyUploading);
+                                var documentId = newRandomKey();
+                                if (kIsWeb) {
+                                  var data = _result.files[0].bytes;
+                                  var baseName = _result.files[0].name + (_result.files[0].extension ?? '');
+                                  if (data != null) {
+                                    await PublicMediumHelper(
+                                      state.appModel,
+                                      state.appModel.ownerID,
+                                    ).createThumbnailUploadPdfData(
+                                        documentId, data, baseName, documentId,
+                                        feedbackFunction: (pdf) =>
+                                            _pdfFeedbackFunction(
+                                                state.appModel, pdf),
+                                        feedbackProgress: _policyUploading);
+                                  }
+                                } else {
+                                  var path = _result.files[0].path;
+                                  if (path != null) {
+                                    await PublicMediumHelper(
+                                      state.appModel,
+                                      state.appModel.ownerID,
+                                    ).createThumbnailUploadPdfFile(
+                                        documentId, path, documentId,
+                                        feedbackFunction: (pdf) =>
+                                            _pdfFeedbackFunction(
+                                                state.appModel, pdf),
+                                        feedbackProgress: _policyUploading);
+                                  }
                                 }
                               }
                             })
@@ -602,11 +373,260 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
             ModelsJsonWidget.getIt(
                 context,
                 widget.app,
-                () => getModelsJsonConstructJsonEventToClipboard(state),
-                (baseName) =>
+                    () => getModelsJsonConstructJsonEventToClipboard(state),
+                    (baseName) =>
                     getModelsJsonConstructJsonEventToMemberMediumModel(
                         state, member, baseName),
                 getFilename(state)),
+          Container(height: 20),
+          HeaderWidget(
+            app: widget.app,
+            title: 'Referenced data',
+          ),
+          topicContainer(widget.app, context,
+              title: 'Pages',
+              collapsible: true,
+              collapsed: true,
+              children: [
+                Container(
+                  child: ListView(children: [
+                    Container(
+                        height: 200, //heightUnit() * 1,
+                        width: widget.widgetWidth,
+                        child: ListView(
+                            children: state.pages.map((item) {
+                              return getListTile(context, widget.app,
+                                  /* onTap: () => openPage(
+                                    context,
+                                    widget.app,
+                                    false,
+                                    item,
+                                    "Update page",
+                                  ),*/
+                                  trailing: popupMenuButton<int>(
+                                      widget.app, context,
+                                      child: Icon(Icons.more_vert),
+                                      itemBuilder: (context) => [
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 0,
+                                          label: 'Update',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 8,
+                                          label: 'Delete',
+                                        ),
+                                        popupMenuDivider(widget.app, context),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 1,
+                                          label: 'Set as public homepage',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 2,
+                                          label:
+                                          'Set as homepage for subscribed member',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 3,
+                                          label:
+                                          'Set as homepage for suscribed member, level 1',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 4,
+                                          label:
+                                          'Set as homepage for suscribed member, level 2',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 5,
+                                          label:
+                                          'Set as homepage for blocked member',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 6,
+                                          label: 'Set as homepage for owner',
+                                        ),
+                                        popupMenuDivider(widget.app, context),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 7,
+                                          label: 'Show page',
+                                        ),
+                                      ],
+                                      onSelected: (value) {
+                                        switch (value) {
+                                          case 0:
+                                            openPage(
+                                              context,
+                                              widget.app,
+                                              false,
+                                              item,
+                                              "Update page",
+                                            );
+                                            break;
+                                          case 8:
+                                            BlocProvider.of<AppCreateBloc>(context)
+                                                .add(AppCreateDeletePage(item));
+                                            break;
+                                          case 1:
+                                            setState(() => state.appModel.homePages!
+                                                .homePagePublic = item.documentID);
+                                            break;
+                                          case 2:
+                                            setState(() => state.appModel.homePages!
+                                                .homePageSubscribedMember =
+                                                item.documentID);
+                                            break;
+                                          case 3:
+                                            setState(() => state.appModel.homePages!
+                                                .homePageLevel1Member =
+                                                item.documentID);
+                                            break;
+                                          case 4:
+                                            setState(() => state.appModel.homePages!
+                                                .homePageLevel2Member =
+                                                item.documentID);
+                                            break;
+                                          case 5:
+                                            setState(() => state.appModel.homePages!
+                                                .homePageBlockedMember =
+                                                item.documentID);
+                                            break;
+                                          case 6:
+                                            setState(() => state.appModel.homePages!
+                                                .homePageOwner = item.documentID);
+                                            break;
+                                          case 7:
+                                            Navigator.of(context).pop();
+                                            var accessBloc =
+                                            BlocProvider.of<AccessBloc>(
+                                                context);
+                                            accessBloc.add(GotoPageEvent(
+                                              state.appModel,
+                                              item.documentID,
+                                            ));
+                                            break;
+                                        }
+                                      }),
+                                  subtitle:
+                                  text(widget.app, context, item.documentID),
+                                  title:
+                                  text(widget.app, context, item.title ?? '?'));
+                            }).toList())),
+                    divider(widget.app, context),
+                    GestureDetector(
+                        child: Icon(Icons.add),
+                        onTap: () {
+                          openPage(
+                              context,
+                              widget.app,
+                              true,
+                              newPageDefaults(widget.app.documentID),
+                              'Create page');
+                        })
+                  ], shrinkWrap: true, physics: ScrollPhysics()),
+                ),
+              ]),
+          topicContainer(widget.app, context,
+              title: 'Dialogs',
+              collapsible: true,
+              collapsed: true,
+              children: [
+                Container(
+                  child: ListView(children: [
+                    Container(
+                        height: 200, //heightUnit() * 1,
+                        width: widget.widgetWidth,
+                        child: ListView(
+                            children: state.dialogs.map((item) {
+                              return getListTile(context, widget.app,
+                                  /*onTap: () => openDialog(
+                                    context,
+                                    widget.app,
+                                    false,
+                                    item,
+                                    "Update dialog",
+                                  ),*/
+                                  trailing: popupMenuButton<int>(
+                                      widget.app, context,
+                                      child: Icon(Icons.more_vert),
+                                      itemBuilder: (context) => [
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 0,
+                                          label: 'Update',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 2,
+                                          label: 'Delete',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 1,
+                                          label: 'Open dialog',
+                                        ),
+                                      ],
+                                      onSelected: (value) async {
+                                        switch (value) {
+                                          case 0:
+                                            openDialog(
+                                              context,
+                                              widget.app,
+                                              false,
+                                              item,
+                                              "Update dialog",
+                                            );
+                                            break;
+                                          case 2:
+                                            BlocProvider.of<AppCreateBloc>(context)
+                                                .add(AppCreateDeleteDialog(item));
+                                            break;
+                                          case 1:
+                                            await Registry.registry()!.openDialog(
+                                                context,
+                                                app: widget.app,
+                                                id: item.documentID);
+                                            break;
+                                        }
+                                      }),
+                                  subtitle:
+                                  text(widget.app, context, item.documentID),
+                                  title:
+                                  text(widget.app, context, item.title ?? '?'));
+                            }).toList())),
+                    divider(widget.app, context),
+                    GestureDetector(
+                        child: Icon(Icons.add),
+                        onTap: () {
+                          openDialog(
+                              context,
+                              widget.app,
+                              true,
+                              newDialogDefaults(widget.app.documentID),
+                              'Create dialog');
+                        })
+                  ], shrinkWrap: true, physics: ScrollPhysics()),
+                ),
+              ]),
         ]);
       } else {
         return progressIndicator(widget.app, context);
