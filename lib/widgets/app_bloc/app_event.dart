@@ -43,6 +43,9 @@ class AppCreateEventApplyChanges extends AppCreateEvent {
               save == other.save;
 }
 
+class AppCreateEventClose extends AppCreateEvent {
+}
+
 class AppCreateDeletePage extends AppCreateEvent {
   final PageModel deleteThis;
 
@@ -101,5 +104,23 @@ class AppCreateAddPolicy extends AppCreateEvent {
       identical(this, other) ||
           other is AppCreateAddPolicy &&
               addThis == other.addThis;
+}
+
+class PagesUpdated extends AppCreateEvent {
+  final List<PageModel> pages;
+
+  PagesUpdated(this.pages);
+}
+
+class DialogsUpdated extends AppCreateEvent {
+  final List<DialogModel> dialogs;
+
+  DialogsUpdated(this.dialogs);
+}
+
+class PoliciesUpdated extends AppCreateEvent {
+  final List<AppPolicyModel> policies;
+
+  PoliciesUpdated(this.policies);
 }
 

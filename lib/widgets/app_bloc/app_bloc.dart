@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/core/components/page_constructors/eliud_appbar.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
@@ -20,6 +22,9 @@ import 'app_state.dart';
 class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
   final AppModel appModel;
   final String appId;
+  final Map<int, StreamSubscription> _pageSubscription = {};
+  final Map<int, StreamSubscription> _dialogSubscription = {};
+  final Map<int, StreamSubscription> _policySubscription = {};
 
   static EliudQuery getQuery() {
     return EliudQuery(theConditions: [
@@ -43,6 +48,48 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
     pages.sort((a, b) => (comparable(a.title) + a.documentID)
         .compareTo((comparable(b.title) + b.documentID)));
     return pages;
+  }
+
+  void _listen() {
+    var countDown = 3;
+    while (countDown >= 0) {
+      _pageSubscription[countDown]?.cancel();
+      _pageSubscription[countDown] =
+          pageRepository(appId: appId)!.listen((value) async {
+            var pages = await _pages();
+            if (state is AppCreateInitialised) {
+              var theState = state as AppCreateInitialised;
+              add(PagesUpdated(pages));
+            }
+          }, privilegeLevel: countDown);
+
+      _dialogSubscription[countDown]?.cancel();
+      _dialogSubscription[countDown] =
+          dialogRepository(appId: appId)!.listen((value) async {
+            var dialogs = await _dialogs();
+            add(DialogsUpdated(dialogs));
+          }, privilegeLevel: countDown);
+
+      _policySubscription[countDown]?.cancel();
+      _policySubscription[countDown] =
+          appPolicyRepository(appId: appId)!.listen((value) async {
+            var policies = await _policies();
+            add(PoliciesUpdated(policies));
+          }, privilegeLevel: countDown );
+      countDown--;
+    }
+  }
+
+  void closeAll() {
+    for (var ps in _pageSubscription.entries) {
+      ps.value.cancel();
+    }
+    for (var ds in _dialogSubscription.entries) {
+      ds.value.cancel();
+    }
+    for (var pos in _policySubscription.entries) {
+      pos.value.cancel();
+    }
   }
 
   Future<List<DialogModel>> _dialogs() async {
@@ -85,7 +132,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       var theAppBar = await appBar(appId);
       var leftDrawer = await getDrawer(appId, DrawerType.Left, store: true);
       var rightDrawer = await getDrawer(appId, DrawerType.Right, store: true);
-
+      _listen();
       emit(AppCreateValidated(deepCopy(appId, event.appModel), pages, dialogs,
           policies, theHomeMenu, theAppBar, leftDrawer, rightDrawer));
     });
@@ -190,7 +237,58 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
           await appRepository(appId: appId)!.update(theState.appModel);
         }
       }
+      closeAll();
     });
+
+    on<AppCreateEventClose>((event, emit) async {
+      closeAll();
+    });
+
+    on<PagesUpdated>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            event.pages,
+            appCreateInitialised.dialogs,
+            appCreateInitialised.policies,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
+    });
+
+    on<DialogsUpdated>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            appCreateInitialised.pages,
+            event.dialogs,
+            appCreateInitialised.policies,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
+    });
+
+    on<PoliciesUpdated>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            appCreateInitialised.pages,
+            appCreateInitialised.dialogs,
+            event.policies,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
+    });
+
   }
 
   static AppModel deepCopy(String appID, AppModel from) {

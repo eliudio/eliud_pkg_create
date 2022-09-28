@@ -43,7 +43,7 @@ void openPage(BuildContext context, AppModel app, bool create, PageModel model,
       app,
       model,
       create,
-      fullScreenWidth(context) * (fraction ?? 1),
+      fullScreenWidth(context) * (fraction ?? .9),
       //fullScreenHeight(context) - 100,
     ),
   );

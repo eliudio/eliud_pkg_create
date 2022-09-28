@@ -98,6 +98,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
           HeaderWidget(
             app: widget.app,
             cancelAction: () async {
+              BlocProvider.of<AppCreateBloc>(context)
+                  .add(AppCreateEventClose());
               return true;
             },
             okAction: () async {

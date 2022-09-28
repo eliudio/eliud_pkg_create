@@ -49,7 +49,7 @@ void openDrawer(BuildContext context, AppModel app, DrawerModel model,
           ? DrawerType.Left
           : DrawerType.Right,
       model,
-      fullScreenWidth(context) * fraction,
+      fullScreenWidth(context) * (fraction ?? .9),
       fullScreenHeight(context) - 100,
     ),
   );
