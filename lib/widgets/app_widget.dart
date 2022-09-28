@@ -1,6 +1,7 @@
 import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/core/blocs/access/access_event.dart';
+import 'package:eliud_core/tools/widgets/app_policy_dashboard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
@@ -11,7 +12,6 @@ import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_even
 import 'package:eliud_pkg_create/widgets/utils/models_json_widget.dart';
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/model/app_policy_item_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
@@ -170,129 +170,6 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                     trailing: text(widget.app, context,
                         state.appModel.homePages!.homePageOwner ?? '')),
               ]),
-          topicContainer(widget.app, context,
-              title: 'Policies',
-              collapsible: true,
-              collapsed: true,
-              children: [
-                getListTile(context, widget.app,
-                    leading: Icon(Icons.description),
-                    title: dialogField(
-                      widget.app,
-                      context,
-                      initialValue: state.appModel.policies!.comments,
-                      valueChanged: (value) {
-                        state.appModel.policies!.comments = value;
-                      },
-                      decoration: const InputDecoration(
-                        hintText: 'Comments',
-                        labelText: 'Comments',
-                      ),
-                    )),
-                Container(
-                  child: ListView(children: [
-                    Container(
-                        height: 200, //heightUnit() * 1,
-                        width: widget.widgetWidth,
-                        child: ListView(
-                            children:
-                                state.appModel.policies!.policies!.map((item) {
-                          return getListTile(context, widget.app,
-                              trailing: popupMenuButton<int>(
-                                  widget.app, context,
-                                  child: Icon(Icons.more_vert),
-                                  itemBuilder: (context) => [
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 0,
-                                          label: 'Delete',
-                                        ),
-                                        popupMenuItem(
-                                          widget.app,
-                                          context,
-                                          value: 1,
-                                          label: 'Rename',
-                                        ),
-                                      ],
-                                  onSelected: (value) {
-                                    if (value == 0) {
-                                      setState(() {
-                                        state.appModel.policies!.policies!
-                                            .remove(item);
-                                      });
-                                    } else if (value == 1) {
-                                      openEntryDialog(
-                                          widget.app,
-                                          context,
-                                          widget.app.documentID +
-                                              '/_createdivider',
-                                          title: 'Provide new name for policy',
-                                          hintText: 'Policy name',
-                                          initialValue: item.name ?? '',
-                                          ackButtonLabel: 'Rename',
-                                          nackButtonLabel: 'Cancel',
-                                          onPressed: (newName) {
-                                        if (newName != null) {
-                                          setState(() {
-                                            item.name = newName;
-                                          });
-                                        }
-                                      });
-                                    }
-                                  }),
-                              title: text(widget.app, context,
-                                  item != null ? item.name! : '?'));
-                        }).toList())),
-                    divider(widget.app, context),
-                    _progressPolicy != null
-                        ? Container(
-                            height: 50,
-                            child: progressIndicatorWithValue(
-                                widget.app, context,
-                                value: _progressPolicy!))
-                        : GestureDetector(
-                            child: Icon(Icons.add),
-                            onTap: () async {
-                              var _result = await FilePicker.platform.pickFiles(
-                                  type: FileType.custom,
-                                  allowedExtensions: ['pdf'],
-                                  allowMultiple: false);
-                              if ((_result != null) && (_result.count > 0)) {
-                                var documentId = newRandomKey();
-                                if (kIsWeb) {
-                                  var data = _result.files[0].bytes;
-                                  var baseName = _result.files[0].name + (_result.files[0].extension ?? '');
-                                  if (data != null) {
-                                    await PublicMediumHelper(
-                                      state.appModel,
-                                      state.appModel.ownerID,
-                                    ).createThumbnailUploadPdfData(
-                                        documentId, data, baseName, documentId,
-                                        feedbackFunction: (pdf) =>
-                                            _pdfFeedbackFunction(
-                                                state.appModel, pdf),
-                                        feedbackProgress: _policyUploading);
-                                  }
-                                } else {
-                                  var path = _result.files[0].path;
-                                  if (path != null) {
-                                    await PublicMediumHelper(
-                                      state.appModel,
-                                      state.appModel.ownerID,
-                                    ).createThumbnailUploadPdfFile(
-                                        documentId, path, documentId,
-                                        feedbackFunction: (pdf) =>
-                                            _pdfFeedbackFunction(
-                                                state.appModel, pdf),
-                                        feedbackProgress: _policyUploading);
-                                  }
-                                }
-                              }
-                            })
-                  ], shrinkWrap: true, physics: ScrollPhysics()),
-                ),
-              ]),
 /*
           topicContainer(context,
                 title: 'Page Transition Animation',
@@ -383,6 +260,99 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
             app: widget.app,
             title: 'Referenced data',
           ),
+          topicContainer(widget.app, context,
+              title: 'Policies',
+              collapsible: true,
+              collapsed: true,
+              children: [
+                Container(
+                  child: ListView(children: [
+                    Container(
+                        height: 200, //heightUnit() * 1,
+                        width: widget.widgetWidth,
+                        child: ListView(
+                            children:
+                            state.policies.map((item) {
+                              return getListTile(context, widget.app,
+                                  trailing: popupMenuButton<int>(
+                                      widget.app, context,
+                                      child: Icon(Icons.more_vert),
+                                      itemBuilder: (context) => [
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 0,
+                                          label: 'Delete',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 1,
+                                          label: 'Update',
+                                        ),
+                                      ],
+                                      onSelected: (value) {
+                                        if (value == 0) {
+                                          setState(() {
+                                            BlocProvider.of<AppCreateBloc>(context)
+                                                .add(AppCreateDeletePolicy(item));
+                                          });
+                                        } else if (value == 1) {
+                                          AppPolicyDashboard.updateAppPolicy(widget.app, context, item);
+                                        }
+                                      }),
+                                  title: text(widget.app, context,
+                                      item != null ? item.name! : '?'));
+                            }).toList())),
+                    divider(widget.app, context),
+                    _progressPolicy != null
+                        ? Container(
+                        height: 50,
+                        child: progressIndicatorWithValue(
+                            widget.app, context,
+                            value: _progressPolicy!))
+                        : GestureDetector(
+                        child: Icon(Icons.add),
+                        onTap: () async {
+                          var _result = await FilePicker.platform.pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['pdf'],
+                              allowMultiple: false);
+                          if ((_result != null) && (_result.count > 0)) {
+                            var documentId = newRandomKey();
+                            if (kIsWeb) {
+                              var data = _result.files[0].bytes;
+                              var baseName = _result.files[0].name + (_result.files[0].extension ?? '');
+                              if (data != null) {
+                                await PublicMediumHelper(
+                                  state.appModel,
+                                  state.appModel.ownerID,
+                                ).createThumbnailUploadPdfData(
+                                    documentId, data, baseName, documentId,
+                                    feedbackFunction: (pdf) =>
+                                        _pdfFeedbackFunction(
+                                            state.appModel, pdf),
+                                    feedbackProgress: _policyUploading);
+                              }
+                            } else {
+                              var path = _result.files[0].path;
+                              if (path != null) {
+                                await PublicMediumHelper(
+                                  state.appModel,
+                                  state.appModel.ownerID,
+                                ).createThumbnailUploadPdfFile(
+                                    documentId, path, documentId,
+                                    feedbackFunction: (pdf) =>
+                                        _pdfFeedbackFunction(
+                                            state.appModel, pdf),
+                                    feedbackProgress: _policyUploading);
+                              }
+                            }
+                          }
+                        })
+                  ], shrinkWrap: true, physics: ScrollPhysics()),
+                ),
+              ]),
           topicContainer(widget.app, context,
               title: 'Pages',
               collapsible: true,
@@ -771,10 +741,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
       AppModel appModel, PublicMediumModel? publicMediumModel) {
     setState(() {
       _progressPolicy = null;
-      appModel.policies!.policies!.add(AppPolicyItemModel(
-          documentID: newRandomKey(),
-          name: publicMediumModel!.base,
-          policy: publicMediumModel));
+      if (publicMediumModel != null) {
+        BlocProvider.of<AppCreateBloc>(context)
+            .add(AppCreateAddPolicy(publicMediumModel));
+      }
     });
   }
 

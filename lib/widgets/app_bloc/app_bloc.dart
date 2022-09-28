@@ -8,6 +8,7 @@ import 'package:eliud_core/model/app_policy_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_core/tools/query/query_tools.dart';
@@ -42,7 +43,6 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
     pages.sort((a, b) => (comparable(a.title) + a.documentID)
         .compareTo((comparable(b.title) + b.documentID)));
     return pages;
-
   }
 
   Future<List<DialogModel>> _dialogs() async {
@@ -61,6 +61,17 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
     return dialogs;
   }
 
+  Future<List<AppPolicyModel>> _policies() async {
+    var appPolicyModels = await appPolicyRepository(appId: appId)!.valuesList();
+    List<AppPolicyModel> newAppPolicyModels = [];
+    for (var appPolicy in appPolicyModels) {
+      if (appPolicy != null) {
+        newAppPolicyModels.add(appPolicy);
+      }
+    }
+    return newAppPolicyModels;
+  }
+
   AppCreateBloc(
     this.appId,
     AppModel initialiseWithApp,
@@ -69,13 +80,14 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
     on<AppCreateEventValidateEvent>((event, emit) async {
       var pages = await _pages();
       var dialogs = await _dialogs();
+      var policies = await _policies();
       var theHomeMenu = await homeMenu(appId, store: true);
       var theAppBar = await appBar(appId);
       var leftDrawer = await getDrawer(appId, DrawerType.Left, store: true);
       var rightDrawer = await getDrawer(appId, DrawerType.Right, store: true);
 
       emit(AppCreateValidated(deepCopy(appId, event.appModel), pages, dialogs,
-          theHomeMenu, theAppBar, leftDrawer, rightDrawer));
+          policies, theHomeMenu, theAppBar, leftDrawer, rightDrawer));
     });
 
     on<AppCreateDeletePage>((event, emit) async {
@@ -88,6 +100,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.appModel,
             pages,
             appCreateInitialised.dialogs,
+            appCreateInitialised.policies,
             appCreateInitialised.homeMenuModel,
             appCreateInitialised.appBarModel,
             appCreateInitialised.leftDrawerModel,
@@ -105,6 +118,53 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.appModel,
             appCreateInitialised.pages,
             dialogs,
+            appCreateInitialised.policies,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
+    });
+
+    on<AppCreateDeletePolicy>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        var policy = event.deleteThis;
+        await appPolicyRepository(appId: appId)!.delete(policy);
+        var policies = await _policies();
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            appCreateInitialised.pages,
+            appCreateInitialised.dialogs,
+            policies,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
+    });
+
+    on<AppCreateAddPolicy>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        var policyMedium = event.addThis;
+        var appPolicyModel = AppPolicyModel(
+          documentID: newRandomKey(),
+          appId: appId,
+          name: 'new policy',
+          policy: policyMedium,
+          conditions: StorageConditionsModel(
+            privilegeLevelRequired:
+                PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
+          ),
+        );
+        await appPolicyRepository(appId: appId)!.add(appPolicyModel);
+        var policies = await _policies();
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            appCreateInitialised.pages,
+            appCreateInitialised.dialogs,
+            policies,
             appCreateInitialised.homeMenuModel,
             appCreateInitialised.appBarModel,
             appCreateInitialised.leftDrawerModel,
@@ -117,7 +177,6 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       // check other blocks for implementation
       appModel.email = theState.appModel.email;
       appModel.description = theState.appModel.description;
-      appModel.policies = theState.appModel.policies;
       appModel.title = theState.appModel.title;
       appModel.logo = theState.appModel.logo;
       appModel.homePages = theState.appModel.homePages;
@@ -130,26 +189,14 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
         } else {
           await appRepository(appId: appId)!.update(theState.appModel);
         }
-
-        if (appModel.policies != null) {
-          appPolicyRepository(appId: appId)!.update(appModel.policies!);
-        }
       }
     });
   }
 
   static AppModel deepCopy(String appID, AppModel from) {
     var homePages = from.homePages ?? AppHomePageReferencesModel();
-    var policies = from.policies ??
-        AppPolicyModel(documentID: newRandomKey(), appId: appID);
-    policies.policies = policies.policies == null
-        ? []
-        : policies.policies!.map((v) => v).toList();
     var copyOfAppModel = from.copyWith(
-        documentID: appID,
-        homePages: homePages,
-        policies: policies,
-        title: from.title);
+        documentID: appID, homePages: homePages, title: from.title);
     return copyOfAppModel;
   }
 }

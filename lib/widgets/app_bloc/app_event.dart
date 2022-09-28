@@ -1,9 +1,11 @@
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/model/app_policy_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AppCreateEvent extends Equatable {
@@ -69,5 +71,35 @@ class AppCreateDeleteDialog extends AppCreateEvent {
       identical(this, other) ||
           other is AppCreateDeleteDialog &&
               deleteThis == other.deleteThis;
+}
+
+class AppCreateDeletePolicy extends AppCreateEvent {
+  final AppPolicyModel deleteThis;
+
+  AppCreateDeletePolicy(this.deleteThis);
+
+  @override
+  List<Object?> get props => [deleteThis];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is AppCreateDeletePolicy &&
+              deleteThis == other.deleteThis;
+}
+
+class AppCreateAddPolicy extends AppCreateEvent {
+  final PublicMediumModel addThis;
+
+  AppCreateAddPolicy(this.addThis);
+
+  @override
+  List<Object?> get props => [addThis];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is AppCreateAddPolicy &&
+              addThis == other.addThis;
 }
 
