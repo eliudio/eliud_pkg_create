@@ -1,9 +1,9 @@
-import 'package:eliud_core/core/base/model_base.dart';
-import 'package:eliud_core/core/base/repository_base.dart';
 import 'package:eliud_core/core/blocs/access/access_event.dart';
+import 'package:eliud_core/model/platform_medium_model.dart';
+import 'package:eliud_core/model/storage_conditions_model.dart';
+import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_core/tools/widgets/app_policy_dashboard.dart';
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/model/member_model.dart';
@@ -12,18 +12,14 @@ import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_even
 import 'package:eliud_pkg_create/widgets/utils/models_json_widget.dart';
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
-import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/random.dart';
-import 'package:eliud_core/tools/screen_size.dart';
-import 'package:eliud_core/tools/storage/public_medium_helper.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
@@ -35,7 +31,6 @@ import 'app_bloc/app_event.dart';
 import 'app_bloc/app_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'appbar_widget.dart';
-import 'bodycomponents/bodycomponents__bloc/bodycomponents_create_state.dart';
 import 'bottom_nav_bar_widget.dart';
 import 'dialog_widget.dart';
 import 'drawer_widget.dart';
@@ -80,7 +75,6 @@ class AppCreateWidget extends StatefulWidget {
 }
 
 class _AppCreateWidgetState extends State<AppCreateWidget> {
-  double? _progress;
   double? _progressPolicy;
 
   void initState() {
@@ -326,9 +320,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               var data = _result.files[0].bytes;
                               var baseName = _result.files[0].name + (_result.files[0].extension ?? '');
                               if (data != null) {
-                                await PublicMediumHelper(
+                                await PlatformMediumHelper(
                                   state.appModel,
                                   state.appModel.ownerID,
+                                  PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
                                 ).createThumbnailUploadPdfData(
                                     documentId, data, baseName, documentId,
                                     feedbackFunction: (pdf) =>
@@ -339,9 +334,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                             } else {
                               var path = _result.files[0].path;
                               if (path != null) {
-                                await PublicMediumHelper(
+                                await PlatformMediumHelper(
                                   state.appModel,
                                   state.appModel.ownerID,
+                                  PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
                                 ).createThumbnailUploadPdfFile(
                                     documentId, path, documentId,
                                     feedbackFunction: (pdf) =>
@@ -740,7 +736,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
   }
 
   void _pdfFeedbackFunction(
-      AppModel appModel, PublicMediumModel? publicMediumModel) {
+      AppModel appModel, PlatformMediumModel? publicMediumModel) {
     setState(() {
       _progressPolicy = null;
       if (publicMediumModel != null) {

@@ -5,6 +5,7 @@ import 'package:eliud_core/model/dialog_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -92,7 +93,7 @@ class AppCreateDeletePolicy extends AppCreateEvent {
 }
 
 class AppCreateAddPolicy extends AppCreateEvent {
-  final PublicMediumModel addThis;
+  final PlatformMediumModel addThis;
 
   AppCreateAddPolicy(this.addThis);
 
