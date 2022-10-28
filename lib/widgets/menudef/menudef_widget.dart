@@ -486,7 +486,7 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
   @override
   Widget build(BuildContext context) {
     var newPrivilegeItems = <Widget>[];
-    int i = 0;
+    var i = 0;
     for (var privilegeItem in _privilegeItems) {
       newPrivilegeItems.add(text(widget.app, context, privilegeItem));
       i++;

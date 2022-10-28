@@ -7,6 +7,7 @@ import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 
@@ -31,6 +32,7 @@ abstract class AppCreateInitialised extends AppCreateState {
   final List<PageModel> pages;
   final List<DialogModel> dialogs;
   final List<AppPolicyModel> policies;
+  final List<WorkflowModel> workflows;
   final HomeMenuModel homeMenuModel;
   final AppBarModel appBarModel;
   final DrawerModel leftDrawerModel;
@@ -40,11 +42,13 @@ abstract class AppCreateInitialised extends AppCreateState {
       this.appModel,
       this.pages,
       this.dialogs,
+      this.workflows,
       this.policies,
       this.homeMenuModel,
       this.appBarModel,
       this.leftDrawerModel,
-      this.rightDrawerModel);
+      this.rightDrawerModel,
+      );
 }
 
 class AppCreateValidated extends AppCreateInitialised {
@@ -52,16 +56,17 @@ class AppCreateValidated extends AppCreateInitialised {
       AppModel appModel,
       List<PageModel> pages,
       List<DialogModel> dialogs,
+      List<WorkflowModel> workflows,
       List<AppPolicyModel> policies,
       HomeMenuModel homeMenuModel,
       AppBarModel appBarModel,
       DrawerModel leftDrawerModel,
       DrawerModel rightDrawerModel)
-      : super(appModel, pages, dialogs, policies, homeMenuModel, appBarModel,
+      : super(appModel, pages, dialogs, workflows, policies, homeMenuModel, appBarModel,
             leftDrawerModel, rightDrawerModel);
 
   @override
-  List<Object?> get props => [appModel, pages, dialogs, policies, homeMenuModel, appBarModel, leftDrawerModel, rightDrawerModel];
+  List<Object?> get props => [appModel, pages, dialogs, policies, workflows, homeMenuModel, appBarModel, leftDrawerModel, rightDrawerModel];
 
   @override
   bool operator ==(Object other) =>
@@ -70,6 +75,7 @@ class AppCreateValidated extends AppCreateInitialised {
           appModel == other.appModel &&
           ListEquality().equals(pages, other.pages) &&
           ListEquality().equals(dialogs, other.dialogs) &&
+          ListEquality().equals(workflows, other.workflows) &&
           ListEquality().equals(policies, other.policies) &&
           homeMenuModel == other.homeMenuModel &&
           appBarModel == other.appBarModel &&
@@ -82,12 +88,13 @@ class AppCreateChangesApplied extends AppCreateInitialised {
       AppModel appModel,
       List<PageModel> pages,
       List<DialogModel> dialogs,
+      List<WorkflowModel> workflows,
       List<AppPolicyModel> policies,
       HomeMenuModel homeMenuModel,
       AppBarModel appBarModel,
       DrawerModel leftDrawerModel,
       DrawerModel rightDrawerModel)
-      : super(appModel, pages, dialogs, policies, homeMenuModel, appBarModel,
+      : super(appModel, pages, dialogs, workflows, policies, homeMenuModel, appBarModel,
             leftDrawerModel, rightDrawerModel);
 
   @override
@@ -101,6 +108,7 @@ class AppCreateChangesApplied extends AppCreateInitialised {
           appModel == other.appModel &&
           ListEquality().equals(pages, other.pages) &&
           ListEquality().equals(dialogs, other.dialogs) &&
+          ListEquality().equals(workflows, other.workflows) &&
           ListEquality().equals(policies, other.policies) &&
           homeMenuModel == other.homeMenuModel &&
           appBarModel == other.appBarModel &&

@@ -3,6 +3,7 @@ import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/storage_conditions_model.dart';
 import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_core/tools/widgets/app_policy_dashboard.dart';
+import 'package:eliud_pkg_create/widgets/workflow_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/registry.dart';
@@ -591,6 +592,84 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               true,
                               newDialogDefaults(widget.app.documentID),
                               'Create dialog');
+                        })
+                  ], shrinkWrap: true, physics: ScrollPhysics()),
+                ),
+              ]),
+          topicContainer(widget.app, context,
+              title: 'Workflows',
+              collapsible: true,
+              collapsed: true,
+              children: [
+                Container(
+                  child: ListView(children: [
+                    Container(
+                        height: 200, //heightUnit() * 1,
+                        width: widget.widgetWidth,
+                        child: ListView(
+                            children: state.workflows.map((item) {
+                              return getListTile(context, widget.app,
+                                  trailing: popupMenuButton<int>(
+                                      widget.app, context,
+                                      child: Icon(Icons.more_vert),
+                                      itemBuilder: (context) => [
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 0,
+                                          label: 'Update',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 2,
+                                          label: 'Delete',
+                                        ),
+                                        popupMenuItem(
+                                          widget.app,
+                                          context,
+                                          value: 1,
+                                          label: 'Open dialog',
+                                        ),
+                                      ],
+                                      onSelected: (value) async {
+                                        switch (value) {
+                                          case 0:
+                                            openWorkflow(
+                                              context,
+                                              widget.app,
+                                              false,
+                                              item,
+                                              "Update workflow",
+                                            );
+                                            break;
+                                          case 2:
+                                            BlocProvider.of<AppCreateBloc>(context)
+                                                .add(AppCreateDeleteWorkflow(item));
+                                            break;
+                                          case 1:
+                                            await Registry.registry()!.openDialog(
+                                                context,
+                                                app: widget.app,
+                                                id: item.documentID);
+                                            break;
+                                        }
+                                      }),
+                                  subtitle:
+                                  text(widget.app, context, item.documentID),
+                                  title:
+                                  text(widget.app, context, item.name ?? '?'));
+                            }).toList())),
+                    divider(widget.app, context),
+                    GestureDetector(
+                        child: Icon(Icons.add),
+                        onTap: () {
+                          openWorkflow(
+                              context,
+                              widget.app,
+                              true,
+                              newWorkflowDefaults(widget.app.documentID),
+                              'Create workflow');
                         })
                   ], shrinkWrap: true, physics: ScrollPhysics()),
                 ),

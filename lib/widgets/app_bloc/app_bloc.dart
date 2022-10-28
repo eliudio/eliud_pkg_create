@@ -16,6 +16,8 @@ import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_core/tools/query/query_tools.dart';
 import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
+import 'package:eliud_pkg_workflow/model/abstract_repository_singleton.dart';
+import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'app_event.dart';
 import 'app_state.dart';
 
@@ -119,6 +121,17 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
     return newAppPolicyModels;
   }
 
+  Future<List<WorkflowModel>> _workflows() async {
+    var workflowModels = await workflowRepository(appId: appId)!.valuesList();
+    List<WorkflowModel> newWorkflowModels = [];
+    for (var workflow in workflowModels) {
+      if (workflow != null) {
+        newWorkflowModels.add(workflow);
+      }
+    }
+    return newWorkflowModels;
+  }
+
   AppCreateBloc(
     this.appId,
     AppModel initialiseWithApp,
@@ -128,12 +141,13 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       var pages = await _pages();
       var dialogs = await _dialogs();
       var policies = await _policies();
+      var workflows = await _workflows();
       var theHomeMenu = await homeMenu(appId, store: true);
       var theAppBar = await appBar(appId);
       var leftDrawer = await getDrawer(appId, DrawerType.Left, store: true);
       var rightDrawer = await getDrawer(appId, DrawerType.Right, store: true);
       _listen();
-      emit(AppCreateValidated(deepCopy(appId, event.appModel), pages, dialogs,
+      emit(AppCreateValidated(deepCopy(appId, event.appModel), pages, dialogs, workflows,
           policies, theHomeMenu, theAppBar, leftDrawer, rightDrawer));
     });
 
@@ -147,6 +161,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.appModel,
             pages,
             appCreateInitialised.dialogs,
+            appCreateInitialised.workflows,
             appCreateInitialised.policies,
             appCreateInitialised.homeMenuModel,
             appCreateInitialised.appBarModel,
@@ -165,6 +180,26 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.appModel,
             appCreateInitialised.pages,
             dialogs,
+            appCreateInitialised.workflows,
+            appCreateInitialised.policies,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
+    });
+
+    on<AppCreateDeleteWorkflow>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        var workflow = event.deleteThis;
+        await workflowRepository(appId: appId)!.delete(workflow);
+        var workflows = await _workflows();
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            appCreateInitialised.pages,
+            appCreateInitialised.dialogs,
+            workflows,
             appCreateInitialised.policies,
             appCreateInitialised.homeMenuModel,
             appCreateInitialised.appBarModel,
@@ -183,6 +218,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.appModel,
             appCreateInitialised.pages,
             appCreateInitialised.dialogs,
+            appCreateInitialised.workflows,
             policies,
             appCreateInitialised.homeMenuModel,
             appCreateInitialised.appBarModel,
@@ -202,7 +238,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
           policy: policyMedium,
           conditions: StorageConditionsModel(
             privilegeLevelRequired:
-                PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
+            PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
           ),
         );
         await appPolicyRepository(appId: appId)!.add(appPolicyModel);
@@ -211,6 +247,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.appModel,
             appCreateInitialised.pages,
             appCreateInitialised.dialogs,
+            appCreateInitialised.workflows,
             policies,
             appCreateInitialised.homeMenuModel,
             appCreateInitialised.appBarModel,
@@ -218,6 +255,37 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.rightDrawerModel));
       }
     });
+
+/*
+    on<AppCreateAddWorkflow>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        var workflow = event.addThis;
+        var appPolicyModel = AppPolicyModel(
+          documentID: newRandomKey(),
+          appId: appId,
+          name: 'new policy',
+          policy: policyMedium,
+          conditions: StorageConditionsModel(
+            privilegeLevelRequired:
+            PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
+          ),
+        );
+        await appPolicyRepository(appId: appId)!.add(appPolicyModel);
+        var policies = await _policies();
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            appCreateInitialised.pages,
+            appCreateInitialised.dialogs,
+            appCreateInitialised.workflows,
+            policies,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
+    });
+*/
 
     on<AppCreateEventApplyChanges>((event, emit) async {
       var theState = state as AppCreateInitialised;
@@ -251,6 +319,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.appModel,
             event.pages,
             appCreateInitialised.dialogs,
+            appCreateInitialised.workflows,
             appCreateInitialised.policies,
             appCreateInitialised.homeMenuModel,
             appCreateInitialised.appBarModel,
@@ -266,6 +335,23 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.appModel,
             appCreateInitialised.pages,
             event.dialogs,
+            appCreateInitialised.workflows,
+            appCreateInitialised.policies,
+            appCreateInitialised.homeMenuModel,
+            appCreateInitialised.appBarModel,
+            appCreateInitialised.leftDrawerModel,
+            appCreateInitialised.rightDrawerModel));
+      }
+    });
+
+    on<WorkflowsUpdated>((event, emit) async {
+      if (state is AppCreateInitialised) {
+        var appCreateInitialised = state as AppCreateInitialised;
+        emit(AppCreateValidated(
+            appCreateInitialised.appModel,
+            appCreateInitialised.pages,
+            appCreateInitialised.dialogs,
+            event.workflows,
             appCreateInitialised.policies,
             appCreateInitialised.homeMenuModel,
             appCreateInitialised.appBarModel,
@@ -281,6 +367,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.appModel,
             appCreateInitialised.pages,
             appCreateInitialised.dialogs,
+            appCreateInitialised.workflows,
             event.policies,
             appCreateInitialised.homeMenuModel,
             appCreateInitialised.appBarModel,

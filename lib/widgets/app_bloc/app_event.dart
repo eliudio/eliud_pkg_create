@@ -7,6 +7,7 @@ import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
+import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AppCreateEvent extends Equatable {
@@ -77,6 +78,21 @@ class AppCreateDeleteDialog extends AppCreateEvent {
               deleteThis == other.deleteThis;
 }
 
+class AppCreateDeleteWorkflow extends AppCreateEvent {
+  final WorkflowModel deleteThis;
+
+  AppCreateDeleteWorkflow(this.deleteThis);
+
+  @override
+  List<Object?> get props => [deleteThis];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is AppCreateDeleteWorkflow &&
+              deleteThis == other.deleteThis;
+}
+
 class AppCreateDeletePolicy extends AppCreateEvent {
   final AppPolicyModel deleteThis;
 
@@ -117,6 +133,12 @@ class DialogsUpdated extends AppCreateEvent {
   final List<DialogModel> dialogs;
 
   DialogsUpdated(this.dialogs);
+}
+
+class WorkflowsUpdated extends AppCreateEvent {
+  final List<WorkflowModel> workflows;
+
+  WorkflowsUpdated(this.workflows);
 }
 
 class PoliciesUpdated extends AppCreateEvent {
