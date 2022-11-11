@@ -12,6 +12,10 @@ import 'model/component_registry.dart';
 import 'model/repository_singleton.dart';
 import 'package:eliud_core/core/registry.dart';
 
+import 'creator_package_stub.dart'
+if (dart.library.io) 'creator_mobile_package.dart'
+if (dart.library.html) 'creator_web_package.dart';
+
 abstract class CreatorPackage extends Package {
   CreatorPackage() : super('eliud_pkg_fundamentals');
 
@@ -35,5 +39,5 @@ abstract class CreatorPackage extends Package {
   @override
   List<MemberCollectionInfo> getMemberCollectionInfo() => AbstractRepositorySingleton.collections;
 
-
+  static CreatorPackage instance() => getCreatorPackage();
 }

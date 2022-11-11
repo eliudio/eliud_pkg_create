@@ -6,6 +6,8 @@ import 'package:eliud_pkg_create/platform/web_create_platform.dart';
 
 import 'creator_package.dart';
 
+CreatorPackage getCreatorPackage() => CreatorWebPackage();
+
 class CreatorWebPackage extends CreatorPackage {
 
   @override
@@ -24,4 +26,5 @@ class CreatorWebPackage extends CreatorPackage {
     super.init();
     AbstractCreatePlatform.platform = WebCreatePlatform();
   }
+
 }

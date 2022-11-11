@@ -10,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 
 import 'creator_package.dart';
 
+CreatorPackage getCreatorPackage() => CreatorMobilePackage();
+
 class CreatorMobilePackage extends CreatorPackage {
 
   @override
@@ -27,4 +29,5 @@ class CreatorMobilePackage extends CreatorPackage {
     super.init();
     AbstractCreatePlatform.platform = MobileCreatePlatform();
   }
+
 }

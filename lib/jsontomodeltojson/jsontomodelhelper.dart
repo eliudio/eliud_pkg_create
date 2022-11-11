@@ -377,8 +377,13 @@ class JsonToModelsHelper {
         } else {
           var repository = componentSpecs.retrieveRepository(appId: app.documentID);
           var model = await repository.get(createdComponent.documentId);
-          var newModel = await componentSpecs.editor.revalidateModel(app, model);
-          await repository.update(newModel);
+          if (model != null) {
+            var newModel = await componentSpecs.editor.revalidateModel(
+                app, model);
+            await repository.update(newModel);
+          } else {
+            print("Couldn't find model with id " + createdComponent.documentId + " for componentSpecs with name " + componentSpecs.name);
+          }
         }
       }
     });
