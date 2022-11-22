@@ -200,6 +200,10 @@ class JsonToModelsHelper {
               try {
                 var pluginName = split[0];
                 var componentId = split[1];
+                if (componentId == "pays") {
+                  int i = 1;
+                }
+                print(componentId + " ");
                 var values = entry.value;
                 var retrieveRepo = Registry.registry()!
                     .getRetrieveRepository(pluginName, componentId);
@@ -376,11 +380,11 @@ class JsonToModelsHelper {
               createdComponent.componentId);
         } else {
           var repository = componentSpecs.retrieveRepository(appId: app.documentID);
-          var model = await repository.get(createdComponent.documentId);
-          if (model != null) {
-            var newModel = await componentSpecs.editor.revalidateModel(
-                app, model);
-            await repository.update(newModel);
+          var entity = await repository.getEntity(createdComponent.documentId);
+          if (entity != null) {
+            var newEntity = await componentSpecs.editor.revalidateEntity(
+                app, entity);
+            await repository.updateEntity(createdComponent.documentId, newEntity);
           } else {
             print("Couldn't find model with id " + createdComponent.documentId + " for componentSpecs with name " + componentSpecs.name);
           }
