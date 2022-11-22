@@ -41,6 +41,7 @@ class ModelWithInformation extends AbstractModelWithInformation {
 
 Future<EntityBase> retrieveAndRecursivelyFindReferences(String appId,
     ModelBase model, List<ModelReference> callerReferencedModels, List<ModelReference> referencedModels) async {
+
   var entity =
       await model.toEntity(appId: appId, );
   List<ModelReference> newReferences = await model.collectReferences(appId: appId);
@@ -78,6 +79,9 @@ class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
   Future<List<dynamic>> toRichMap(
       {required String appId,
       required List<ModelReference> referencedModels}) async {
+    if (label == "eliud_pkg_shop-pays") {
+      int i = 0;
+    }
     List<dynamic> list = [];
     for (var documentID in documentIDs) {
       var model = await repository.get(documentID);
