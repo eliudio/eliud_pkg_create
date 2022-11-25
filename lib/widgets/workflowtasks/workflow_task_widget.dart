@@ -46,7 +46,7 @@ class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
     }
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
       HeaderWidget(app: widget.app,
-        title: 'Divider',
+        title: 'Workflow',
         okAction: () async {
           if (widget.feedback != null) {
             widget.feedback!(true, widget.model);

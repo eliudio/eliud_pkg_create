@@ -79,9 +79,7 @@ class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
   Future<List<dynamic>> toRichMap(
       {required String appId,
       required List<ModelReference> referencedModels}) async {
-    if (label == "eliud_pkg_shop-pays") {
-      int i = 0;
-    }
+    print("toRichMap: " + label);
     List<dynamic> list = [];
     for (var documentID in documentIDs) {
       var model = await repository.get(documentID);
@@ -91,6 +89,7 @@ class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
         var doc = entity.toDocument();
         await entity.enrichedDocument(doc);
         doc['documentID'] = model.documentID;
+        print(doc);
         list.add(doc);
       } else {
         print('Model not found for documentID $documentID');

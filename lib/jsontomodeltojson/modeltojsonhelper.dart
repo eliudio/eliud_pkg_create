@@ -49,9 +49,7 @@ class ModelsToJsonHelper {
             appId: appModel.documentID) as RepositoryBase<ModelBase, EntityBase>;
 
         tasks.add(() async {
-          if (componentSpec.name == "pays") {
-            int i = 0;
-          }
+          print("Dumping " + componentSpec.name);
           var allValues = <ModelBase>[];
           var countDown = 3;
           while (countDown >= 0) {
