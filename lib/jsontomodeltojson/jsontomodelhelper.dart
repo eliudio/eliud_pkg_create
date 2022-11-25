@@ -200,15 +200,15 @@ class JsonToModelsHelper {
               try {
                 var pluginName = split[0];
                 var componentId = split[1];
-                if (componentId == "pays") {
-                  int i = 1;
-                }
-                print(componentId + " ");
+                print("Restoring : " + pluginName + " - " + componentId);
                 var values = entry.value;
                 var retrieveRepo = Registry.registry()!
                     .getRetrieveRepository(pluginName, componentId);
                 if (retrieveRepo != null) {
                   var documentIds = await restoreFromMap(values, retrieveRepo(appId: appId), appId);
+                  for (var doc in documentIds) {
+                    print("Doc : " + doc);
+                  }
                   createdComponents.addAll(documentIds.map((documentId) => ComponentSpec(
                       pluginName,
                       componentId,
