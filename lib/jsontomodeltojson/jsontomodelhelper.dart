@@ -200,11 +200,6 @@ class JsonToModelsHelper {
               try {
                 var pluginName = split[0];
                 var componentId = split[1];
-<<<<<<< HEAD
-
-=======
-                print("Restoring : " + pluginName + " - " + componentId);
->>>>>>> 27678dc534cdf215dae261c4606d3cfcdb4d8e43
                 var values = entry.value;
                 var retrieveRepo = Registry.registry()!
                     .getRetrieveRepository(pluginName, componentId);
