@@ -1,14 +1,10 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
 import 'package:eliud_core/core/blocs/access/state/access_state.dart';
-import 'package:eliud_core/core/registry.dart';
 import 'package:eliud_core/decoration/decoration.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/background_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/public_medium_model.dart';
-import 'package:eliud_core/model/storage_conditions_model.dart';
-import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
@@ -16,13 +12,10 @@ import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
-import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_core/tools/widgets/background_widget.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
-import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:eliud_pkg_create/widgets/utils/styles.dart';
-import 'package:eliud_core/package/access_rights.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'drawer_bloc/drawer_bloc.dart';
@@ -49,7 +42,7 @@ void openDrawer(BuildContext context, AppModel app, DrawerModel model,
           ? DrawerType.Left
           : DrawerType.Right,
       model,
-      fullScreenWidth(context) * (fraction ?? .9),
+      fullScreenWidth(context) * fraction,
       fullScreenHeight(context) - 100,
     ),
   );
