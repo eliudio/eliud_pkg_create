@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'models_json_event.dart';
 import 'models_json_state.dart';
 
+
 abstract class AbstractModelWithInformation {
   final String label;
 
