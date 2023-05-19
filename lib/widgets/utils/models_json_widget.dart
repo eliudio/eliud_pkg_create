@@ -126,7 +126,7 @@ class _ModelsJsonWidgetState extends State<ModelsJsonWidget> {
                       child: button(widget.app, context,
                           label: 'Copy url to clipboard', onPressed: () {
                     Clipboard.setData(
-                        ClipboardData(text: state.memberMediumModel.url));
+                        ClipboardData(text: state.memberMediumModel.url ?? ''));
                   }))
                 ],
               ),

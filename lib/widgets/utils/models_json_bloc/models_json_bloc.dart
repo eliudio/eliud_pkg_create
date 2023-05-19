@@ -197,7 +197,7 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
                 app, event.member.documentID, MemberMediumAccessibleByGroup.Me)
             .uploadTextData(docID, _jsonEncoded, event.baseName);
         try {
-          await Clipboard.setData(ClipboardData(text: memberMedium.url));
+          await Clipboard.setData(ClipboardData(text: memberMedium.url ?? ''));
         } catch (e) {
           print("Can't set clipboard. Exception: " + e.toString());
         }
