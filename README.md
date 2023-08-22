@@ -4,7 +4,7 @@ Eliud create package
 
 ## Dependency diagram
 
-![Dependency diagram](https://github.com/eliudio/eliud_pkg_create/blob/main/depends.jpg)
+![Dependency diagram](https://github.com/eliudio/eliud_pkg_create/raw/main/depends.jpg)
 
 ## eliud.io
 
