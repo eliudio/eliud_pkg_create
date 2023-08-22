@@ -1,64 +1,56 @@
-name: eliud_pkg_create
-description: Eliud package for app creator
-homepage: https://eliud.io
-repository: https://github.com/eliudio/eliud_pkg_create
-
-version: 1.0.2+3
-
+---
+name: "eliud_pkg_create"
+description: "Eliud package for app creator"
+homepage: "https://eliud.io"
+repository: "https://github.com/eliudio/eliud_pkg_create"
+version: "1.0.2+3"
 environment:
   sdk: ">=2.17.0 <4.0.0"
   flutter: ">=3.0.0"
-
 dependencies:
   flutter:
-    sdk: flutter
-
-  bloc: ^8.1.0
-  cloud_firestore: ^4.6.0
-  collection: ^1.17.0
-  equatable: ^2.0.5
-  datetime_picker_formfield: ^2.0.0
-  file_picker: ^5.2.0+1
-  flutter_bloc: ^8.1.2
-  http: ^0.13.5
-  intl: ^0.18.1
-  meta: ^1.8.0
-  path_provider: ^2.0.15
-  split_view: ^3.2.1
-
-  eliud_core: ^1.0.4+1
-  eliud_pkg_medium: ^1.0.1+1
-  eliud_pkg_workflow: ^1.0.1+1
-  eliud_pkg_text: ^1.0.2+1
-  eliud_pkg_etc: ^1.0.1+1
-
+    sdk: "flutter"
+  bloc: "^8.1.0"
+  cloud_firestore: "^4.6.0"
+  collection: "^1.17.0"
+  equatable: "^2.0.5"
+  datetime_picker_formfield: "^2.0.0"
+  file_picker: "^5.2.0+1"
+  flutter_bloc: "^8.1.2"
+  http: "^0.13.5"
+  intl: "^0.18.1"
+  meta: "^1.8.0"
+  path_provider: "^2.0.15"
+  split_view: "^3.2.1"
+  eliud_core: "1.0.4+8"
+  eliud_pkg_medium: "^1.0.1+1"
+  eliud_pkg_workflow: "^1.0.1+1"
+  eliud_pkg_text: "^1.0.2+1"
+  eliud_pkg_etc: "^1.0.1+1"
 dev_dependencies:
-  build_runner: ^2.4.6
-  eliud_generator: 1.0.4+1
-
+  build_runner: "^2.4.6"
+  eliud_generator: "1.0.4+1"
 flutter:
   uses-material-design: true
-
   assets:
-    - packages/eliud_pkg_create/assets/annoyed.png
-    - packages/eliud_pkg_create/assets/angry.png
-    - packages/eliud_pkg_create/assets/embarassed.png
-    - packages/eliud_pkg_create/assets/excited.png
-    - packages/eliud_pkg_create/assets/frustrated.png
-    - packages/eliud_pkg_create/assets/happy.png
-    - packages/eliud_pkg_create/assets/lonely.png
-    - packages/eliud_pkg_create/assets/loved.png
-    - packages/eliud_pkg_create/assets/nervous.png
-    - packages/eliud_pkg_create/assets/neutral.png
-    - packages/eliud_pkg_create/assets/sad.png
-    - packages/eliud_pkg_create/assets/scared.png
-    - packages/eliud_pkg_create/assets/sick.png
-    - packages/eliud_pkg_create/assets/stressed.png
-    - packages/eliud_pkg_create/assets/surprised.png
-    - packages/eliud_pkg_create/assets/tired.png
-    - packages/eliud_pkg_create/assets/rodentia-icons_preferences-desktop-personal.png
-
+  - "packages/eliud_pkg_create/assets/annoyed.png"
+  - "packages/eliud_pkg_create/assets/angry.png"
+  - "packages/eliud_pkg_create/assets/embarassed.png"
+  - "packages/eliud_pkg_create/assets/excited.png"
+  - "packages/eliud_pkg_create/assets/frustrated.png"
+  - "packages/eliud_pkg_create/assets/happy.png"
+  - "packages/eliud_pkg_create/assets/lonely.png"
+  - "packages/eliud_pkg_create/assets/loved.png"
+  - "packages/eliud_pkg_create/assets/nervous.png"
+  - "packages/eliud_pkg_create/assets/neutral.png"
+  - "packages/eliud_pkg_create/assets/sad.png"
+  - "packages/eliud_pkg_create/assets/scared.png"
+  - "packages/eliud_pkg_create/assets/sick.png"
+  - "packages/eliud_pkg_create/assets/stressed.png"
+  - "packages/eliud_pkg_create/assets/surprised.png"
+  - "packages/eliud_pkg_create/assets/tired.png"
+  - "packages/eliud_pkg_create/assets/rodentia-icons_preferences-desktop-personal.png"
 platforms:
-  android:
-  ios:
-  web:
+  android: null
+  ios: null
+  web: null
