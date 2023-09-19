@@ -1,12 +1,7 @@
-
-import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
-import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/core/wizards/tools/documentIdentifier.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
-import 'package:eliud_core/model/access_model.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/package/access_rights.dart';
 import 'package:eliud_core/tools/random.dart';
@@ -21,9 +16,6 @@ import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:flutter/services.dart';
 import '../../../jsontomodeltojson/jsontomodelhelper.dart';
 import '../../../tools/new_app_functions.dart';
-import '../new_app_bloc.dart';
-import '../new_app_event.dart';
-import '../new_app_state.dart';
 import '../../wizard_shared/menus/app_bar_builder.dart';
 import '../../wizard_shared/menus/home_menu_builder.dart';
 import '../../wizard_shared/menus/left_drawer_builder.dart';
@@ -31,10 +23,39 @@ import '../../wizard_shared/menus/right_drawer_builder.dart';
 
 typedef Evaluate = bool Function(ActionSpecification actionSpecification);
 
+abstract class AppBuilderFeedback {
+  void started();
+  void progress(double progress);
+  bool isCancelled();
+  void finished();
+}
+
+
+class ConsoleConsumeAppBuilderProgress extends AppBuilderFeedback {
+
+  @override
+  bool isCancelled() {
+    return false;
+  }
+
+  @override
+  void finished() {
+  }
+
+  @override
+  void progress(double progress) {
+    print(progress);
+  }
+
+  @override
+  void started() {
+    print("Creating app");
+  }
+}
+
 class AppBuilder {
   final String uniqueId = newRandomKey();
   final AppModel app;
-  final LoggedIn loggedIn;
   late MemberModel member;
   late String appId;
   late String memberId;
@@ -43,10 +64,9 @@ class AppBuilder {
 
   AppBuilder(
     this.app,
-    this.loggedIn,
+    this.member,
   ) {
     appId = app.documentID;
-    member = loggedIn.member;
     memberId = member.documentID;
   }
 
@@ -57,8 +77,12 @@ class AppBuilder {
 
   var newlyCreatedApp;
 
-  Future<AppModel> create(
-      NewAppCreateBloc newAppCreateBloc, bool fromExisting, MemberMediumModel? memberMediumModel, String? url) async {
+  /*
+   * if creating an app from an existing app, then specify fromExisting = true and provide
+   * memberMediumModel representing that app or
+   * url to the json
+   */
+  Future<AppModel> create(AppBuilderFeedback appBuilderFeedback, bool fromExisting, {MemberMediumModel? memberMediumModel, String? url}) async {
     List<NewAppTask> tasks = [];
     // create the app
     tasks.add(() async {
@@ -81,7 +105,6 @@ class AppBuilder {
 
     List<NewAppTask> newTasks = [];
     if (fromExisting) {
-      // var testTasks = await createApp(newAppCreateBloc);
       if (url != null) {
         newTasks = await createAppFromUrl(url);
       } else if (memberMediumModel != null) {
@@ -90,12 +113,12 @@ class AppBuilder {
         newTasks = await createAppFromClipboard();
       }
     } else {
-      newTasks = await createApp(newAppCreateBloc);
+      newTasks = await createApp();
     }
     tasks.addAll(newTasks);
 
     var progressManager = ProgressManager(tasks.length,
-        (progress) => newAppCreateBloc.add(NewAppCreateProgressed(progress)));
+        (progress) => appBuilderFeedback.progress(progress));
 
     var currentTask = tasks[0];
     currentTask().then((value) => tasks[1]);
@@ -112,12 +135,12 @@ class AppBuilder {
             e.toString());
       }
       progressManager.progressedNextStep();
-      if (newAppCreateBloc.state is NewAppCreateCreateCancelled)
+      if (appBuilderFeedback.isCancelled())
         throw Exception("Process cancelled");
     }
 
     if (newlyCreatedApp != null) {
-      newAppCreateBloc.add(NewAppSwitchAppEvent());
+      appBuilderFeedback.finished();
       return newlyCreatedApp;
     } else {
       throw Exception("no app created");
@@ -146,7 +169,7 @@ class AppBuilder {
     return JsonToModelsHelper.createAppFromURL(app, memberId, url);
   }
 
-  Future<List<NewAppTask>> createApp(NewAppCreateBloc newAppCreateBloc) async {
+  Future<List<NewAppTask>> createApp() async {
     List<NewAppTask> tasks = [];
 
     PublicMediumModel? logo;

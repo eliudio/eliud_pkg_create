@@ -6,6 +6,32 @@ import 'builders/app_builder.dart';
 import 'new_app_event.dart';
 import 'new_app_state.dart';
 
+class NewAppCreateBlocConsomeAppBuilderProgress extends AppBuilderFeedback {
+  final NewAppCreateBloc newAppCreateBloc;
+
+  NewAppCreateBlocConsomeAppBuilderProgress({required this.newAppCreateBloc});
+
+  @override
+  bool isCancelled() {
+    if (newAppCreateBloc.state is NewAppCreateCreateCancelled) return true;
+    return false;
+  }
+
+  @override
+  void finished() {
+    newAppCreateBloc.add(NewAppSwitchAppEvent());
+  }
+
+  @override
+  void progress(double progress) {
+    newAppCreateBloc.add(NewAppCreateProgressed(progress));
+  }
+
+  @override
+  void started() {
+  }
+}
+
 class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
   NewAppCreateBloc() : super(NewAppCreateUninitialised()) {
     on<NewAppCreateEventInitialise>((event, emit) {
@@ -24,8 +50,8 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
         add(NewAppCreateProgressed(0));
         AppBuilder(
           theState.appToBeCreated,
-          event.loggedIn,
-        ).create(this, event.fromExisting, event.memberMediumModel, event.url);
+          event.loggedIn.member,
+        ).create(NewAppCreateBlocConsomeAppBuilderProgress(newAppCreateBloc: this), event.fromExisting, memberMediumModel: event.memberMediumModel, url: event.url);
       } else {
         emit(NewAppCreateError(theState.appToBeCreated, theState.member,
             'App with ID $appId already exists. Choose a unique identifier'));
