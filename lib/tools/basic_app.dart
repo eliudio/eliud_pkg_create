@@ -7,7 +7,7 @@ import '../widgets/new_app_bloc/builders/app_builder.dart';
 
 class BasicApp {
   // create the app if it doesn't exist
-  static void checkApp(String appId) async {
+  static Future<void> checkApp(String appId) async {
     var app = await appRepository()!.get(appId);
     if (app == null) {
       await AbstractMainRepositorySingleton.singleton.userRepository()!
