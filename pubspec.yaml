@@ -22,7 +22,7 @@ dependencies:
   meta: ^1.8.0
   path_provider: ^2.0.15
   split_view: ^3.2.1
-  eliud_core: ^1.0.6+1
+  eliud_core: ^1.0.7
   eliud_pkg_medium: ^1.0.1+6
   eliud_pkg_workflow: ^1.0.1+6
   eliud_pkg_text: ^1.0.2+6
