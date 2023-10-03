@@ -2,6 +2,8 @@ import 'package:eliud_core/decoration/decoration.dart' as deco;
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
+import 'package:eliud_core/style/frontend/types.dart';
+import 'package:eliud_core/style/style_registry.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -40,8 +42,24 @@ class MultipleActions extends Action {
 
   void doIt(
       BuildContext context, double x, double y, ) async {
+
+    var items = doThis
+        .map((value) => MenuItemAttributes(
+        label: value.label, isActive: true, onTap: () => value.doThis() ))
+        .toList();
+
+    StyleRegistry.registry()
+        .styleWithApp(app)
+        .frontEndStyle()
+        .menuStyle()
+        .openMenu(app, context,
+        position: RelativeRect.fromLTRB(x, y, x, y),
+        menuItems: items,);
+
+/*
     var value = await showMenu(
       context: context,
+      color: Colors.red,
       position: RelativeRect.fromLTRB(x, y, x, y),
       items: doThis
           .map((value) => popupMenuItem<String>(
@@ -55,6 +73,7 @@ class MultipleActions extends Action {
         item.doThis();
       }
     }
+*/
   }
 }
 
