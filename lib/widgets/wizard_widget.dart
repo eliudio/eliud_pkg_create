@@ -240,6 +240,7 @@ class _WizardWidgetState extends State<WizardWidget> {
                     wizard, newAppWizardName, newAppWizardParameters);
               });
             }));
+            childrenChildren.add( SizedBox(width: 20));
           }
         }
       }

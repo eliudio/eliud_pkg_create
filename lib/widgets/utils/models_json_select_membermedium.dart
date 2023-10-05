@@ -6,6 +6,7 @@ import 'package:eliud_core/model/member_medium_list_bloc.dart';
 import 'package:eliud_core/model/member_medium_list_event.dart';
 import 'package:eliud_core/model/member_medium_list_state.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
+import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
@@ -84,7 +85,8 @@ class _JsonMemberMediumWidgetState extends State<JsonMemberMediumWidget> {
                 )));
           });
         }
-        return DropdownButton<MemberMediumModel>(
+        return dropdownButton<MemberMediumModel>(
+          widget.app, context,
           isDense: false,
           isExpanded: true,
           items: items,

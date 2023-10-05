@@ -1,5 +1,6 @@
 import 'package:eliud_core/core/blocs/access/helper/access_helpers.dart';
 import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -70,7 +71,7 @@ class _PackageConditionWidgetState extends State<PackageConditionWidget> {
   Widget build(BuildContext context) {
     return Column(children: [
       Align(alignment: Alignment.centerLeft, child: inputDecorationLabel(widget.app, context, "Select package condition - Display condition (*)")),
-      Align(alignment: Alignment.centerLeft, child: DropdownButton<int>(
+      Align(alignment: Alignment.centerLeft, child: dropdownButton<int>(widget.app, context,
         isDense: false,
         isExpanded: false,
         items: dropdownMenuItems,

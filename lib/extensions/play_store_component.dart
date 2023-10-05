@@ -8,6 +8,7 @@ import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_public_info_list_bloc.dart';
 import 'package:eliud_core/model/member_public_info_list_event.dart';
 import 'package:eliud_core/model/member_public_info_list_state.dart';
+import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
@@ -249,7 +250,8 @@ class MemberPublicInfoDropdownButtonWidgetState
                     widget.app, context, element.name ?? element.documentID)));
           });
         }
-        return DropdownButton<String>(
+        return dropdownButton<String>(
+          widget.app, context,
           isExpanded: true,
           isDense: false,
           items: items,
