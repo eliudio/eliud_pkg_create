@@ -127,15 +127,21 @@ class PlayStoreFirestore implements PlayStoreRepository {
   }
 
   @override
-  StreamSubscription<PlayStoreModel?> listenTo(String documentId, PlayStoreChanged changed) {
+  StreamSubscription<PlayStoreModel?> listenTo(String documentId, PlayStoreChanged changed, {PlayStoreErrorHandler? errorHandler}) {
     var stream = PlayStoreCollection.doc(documentId)
         .snapshots()
         .asyncMap((data) {
       return _populateDocPlus(data);
     });
-    return stream.listen((value) {
+    var theStream = stream.listen((value) {
       changed(value);
     });
+    theStream.onError((theException, theStacktrace) {
+      if (errorHandler != null) {
+        errorHandler(theException, theStacktrace);
+      }
+    });
+    return theStream;
   }
 
   Stream<List<PlayStoreModel?>> values({String? orderBy, bool? descending, Object? startAfter, int? limit, SetLastDoc? setLastDoc, int? privilegeLevel, EliudQuery? eliudQuery }) {

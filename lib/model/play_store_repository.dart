@@ -36,6 +36,7 @@ import 'package:eliud_core/core/base/repository_base.dart';
 
 typedef PlayStoreModelTrigger(List<PlayStoreModel?> list);
 typedef PlayStoreChanged(PlayStoreModel? value);
+typedef PlayStoreErrorHandler(o, e);
 
 abstract class PlayStoreRepository extends RepositoryBase<PlayStoreModel, PlayStoreEntity> {
   Future<PlayStoreEntity> addEntity(String documentID, PlayStoreEntity value);
@@ -52,7 +53,7 @@ abstract class PlayStoreRepository extends RepositoryBase<PlayStoreModel, PlaySt
 
   StreamSubscription<List<PlayStoreModel?>> listen(PlayStoreModelTrigger trigger, {String? orderBy, bool? descending, Object? startAfter, int? limit, int? privilegeLevel, EliudQuery? eliudQuery });
   StreamSubscription<List<PlayStoreModel?>> listenWithDetails(PlayStoreModelTrigger trigger, {String? orderBy, bool? descending, Object? startAfter, int? limit, int? privilegeLevel, EliudQuery? eliudQuery });
-  StreamSubscription<PlayStoreModel?> listenTo(String documentId, PlayStoreChanged changed);
+  StreamSubscription<PlayStoreModel?> listenTo(String documentId, PlayStoreChanged changed, {PlayStoreErrorHandler? errorHandler});
   void flush();
   
   String? timeStampToString(dynamic timeStamp);

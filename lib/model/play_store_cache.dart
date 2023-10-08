@@ -140,13 +140,13 @@ class PlayStoreCache implements PlayStoreRepository {
   }
 
   @override
-  StreamSubscription<PlayStoreModel?> listenTo(String documentId, PlayStoreChanged changed) {
+  StreamSubscription<PlayStoreModel?> listenTo(String documentId, PlayStoreChanged changed, {PlayStoreErrorHandler? errorHandler}) {
     return reference.listenTo(documentId, ((value) {
       if (value != null) {
         fullCache[value.documentID] = value;
       }
       changed(value);
-    }));
+    }), errorHandler: errorHandler);
   }
 
   static Future<PlayStoreModel> refreshRelations(PlayStoreModel model) async {

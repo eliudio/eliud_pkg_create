@@ -413,58 +413,58 @@ packages:
     dependency: "direct main"
     description:
       name: eliud_core
-      sha256: d4519206f17b8778f7e1b0a2cf2ca97f97e27baa083039d3f29b80934d5a812b
+      sha256: "89952d9b8b20188615e6e65c6581804778bf82b8992ff641f69f21c933053e48"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.14"
+    version: "1.0.16+2"
   eliud_generator:
     dependency: "direct dev"
     description:
       name: eliud_generator
-      sha256: "78ab7af510b91918ee8c2b9d1221c3a0b7fafb09ee9fab5394a81c6a2ed5b9c4"
+      sha256: "4618a1a464c3526557ebe808c3c626925d67c413eb094f6855ad5a49c4da5df9"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.6"
+    version: "1.0.7"
   eliud_pkg_etc:
     dependency: "direct main"
     description:
       name: eliud_pkg_etc
-      sha256: "2bdb70f1421fddef05e460b120f3a86b358708f7187eba518716c4d40f6a7083"
+      sha256: "751347028da04c53af1ca4548b5770dd0e00a6a62356c4c3384455b483a8a521"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+12"
+    version: "1.0.1+17"
   eliud_pkg_medium:
     dependency: "direct main"
     description:
       name: eliud_pkg_medium
-      sha256: "2f8c7b76178dc25a2ae0ec5cfe798bff42d968d4416fc7368f20d3ebeff29f1d"
+      sha256: "792db63fe48e91883b6964cde0a25d2d18c9f754da1ae5f544c86e29813c9770"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+12"
+    version: "1.0.1+17"
   eliud_pkg_notifications:
     dependency: transitive
     description:
       name: eliud_pkg_notifications
-      sha256: b54d7539edca52a6d12434272f9347f8428993ad1a8e5b4e658ba68b38039b8e
+      sha256: "8239bbf1cf37a4c934ba421fbf05773c78592cf4ca2226a9dbcc2e8940461f05"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+12"
+    version: "1.0.1+17"
   eliud_pkg_text:
     dependency: "direct main"
     description:
       name: eliud_pkg_text
-      sha256: defbae64e8d0857bc4c2623641986f01b19f0158812d461978c96785f70e74b3
+      sha256: "896ea6b2902dbe32075a3b03f2c97834c817dff91c204dc1289470f35d57e33b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2+12"
+    version: "1.0.7+2"
   eliud_pkg_workflow:
     dependency: "direct main"
     description:
       name: eliud_pkg_workflow
-      sha256: "4a870177a3cc4c3713743c3c1145a2d4c9756e350b6b8dfbfe6d75d3016e9374"
+      sha256: fba140e16ea841023a4269b3d93c6a55440d6753363881b3d1deaebcae3e6f72
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+12"
+    version: "1.0.1+17"
   equatable:
     dependency: "direct main"
     description:
@@ -706,10 +706,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_inappwebview
-      sha256: f73505c792cf083d5566e1a94002311be497d984b5607f25be36d685cf6361cf
+      sha256: d198297060d116b94048301ee6749cd2e7d03c1f2689783f52d210a6b7aba350
       url: "https://pub.dev"
     source: hosted
-    version: "5.7.2+3"
+    version: "5.8.0"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
