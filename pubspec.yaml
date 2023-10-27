@@ -3,7 +3,7 @@ name: eliud_pkg_create
 description: Eliud package for app creator
 homepage: https://eliud.io
 repository: https://github.com/eliudio/eliud_pkg_create
-version: 1.0.11+8
+version: 1.0.12
 environment:
   sdk: '>=2.17.0 <4.0.0'
   flutter: '>=3.0.0'
@@ -22,7 +22,7 @@ dependencies:
   meta: ^1.8.0
   path_provider: ^2.0.15
   split_view: ^3.2.1
-  eliud_core: ^1.0.18+1
+  eliud_core: ^1.0.19
   eliud_pkg_medium: ^1.0.1+19
   eliud_pkg_workflow: ^1.0.1+19
   eliud_pkg_text: ^1.0.7+4

@@ -32,7 +32,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.menuItemModel.action != null) {
+    if ((widget.menuItemModel.action != null) && (widget.menuItemModel.action!.conditions == null)) {
       widget.menuItemModel.action!.conditions = DisplayConditionsModel(
         privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
       );
