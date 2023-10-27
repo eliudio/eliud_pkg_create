@@ -413,10 +413,10 @@ packages:
     dependency: "direct main"
     description:
       name: eliud_core
-      sha256: "0d23e7f0754e65911d017791ea95c6aad4f00a04fc6c9f40f3cef53662cfbc67"
+      sha256: "2a7a792d032b36984f6184419c930e1bc2e4591e7afa7f9197859a47513dafc8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.19"
+    version: "1.0.19+1"
   eliud_generator:
     dependency: "direct dev"
     description:
@@ -429,42 +429,42 @@ packages:
     dependency: "direct main"
     description:
       name: eliud_pkg_etc
-      sha256: "76e7d8b5790dc6267b1ba077b4569b64d3337856f0a734987ed704de32afffe6"
+      sha256: "2cbc8185bd6a57e76896cd9b9f8cf65a543ee69c81a780caf7614d622e9c552e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+19"
+    version: "1.0.1+20"
   eliud_pkg_medium:
     dependency: "direct main"
     description:
       name: eliud_pkg_medium
-      sha256: f98c07a517df43266d74fc9049309e41e4bcb4752f152f147843c851b15a48c7
+      sha256: "03d9cf955b0762a289f83ed4929434e6f82e397eab3c40ce0278fc03407e3ce7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+19"
+    version: "1.0.1+20"
   eliud_pkg_notifications:
     dependency: transitive
     description:
       name: eliud_pkg_notifications
-      sha256: efe0fd0995f641023ca48f7ad3b2568acc416b3283e38f6fc876101edb6673ed
+      sha256: "8a9e48e7e5437a0454a3a3c52855682b9f7b8995aba4644df5faaf3a46eeca0c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+19"
+    version: "1.0.1+20"
   eliud_pkg_text:
     dependency: "direct main"
     description:
       name: eliud_pkg_text
-      sha256: "283c9848aff9f4c66dedc3e4281e84a7190109f039b3ad094aa54ec04f7886cf"
+      sha256: ba4fc84175436db07c8765206d7f09e570a5a7bb87b0cca29c192565aefc4d97
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.7+4"
+    version: "1.0.7+5"
   eliud_pkg_workflow:
     dependency: "direct main"
     description:
       name: eliud_pkg_workflow
-      sha256: "3c4beac48b8de66d9990e99a6a9202c25893da4066bf42c04f6e473a59eeb846"
+      sha256: "636bdaa0c632cf006d37a425a06a7a6e0098a3cb1c20a7d2ae20f2f84c3c7592"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+19"
+    version: "1.0.1+20"
   equatable:
     dependency: "direct main"
     description:
