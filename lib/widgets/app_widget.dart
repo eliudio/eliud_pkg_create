@@ -134,6 +134,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                       initialImage: state.appModel.anonymousProfilePhoto,
                     ),
               ]),
+          _member(context, state.appModel, ),
           topicContainer(widget.app, context,
               title: 'Home pages',
               collapsible: true,
@@ -811,6 +812,36 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
               app.isFeatured = value ?? false;
             });
           }),
+        ]);
+  }
+
+  Widget _member(BuildContext context, AppModel app) {
+    return topicContainer(widget.app, context,
+        title: 'Member dashboard',
+        collapsible: true,
+        collapsed: true,
+        children: [
+          checkboxListTile(
+              widget.app, context, 'Include Shipping Address', app.includeShippingAddress ?? false,
+                  (value1) {
+                setState(() {
+                  app.includeShippingAddress = value1 ?? false;
+                });
+              }),
+          checkboxListTile(
+              widget.app, context, 'Include Invoice Address', app.includeInvoiceAddress ?? false,
+                  (value2) {
+                setState(() {
+                  app.includeInvoiceAddress = value2 ?? false;
+                });
+              }),
+          checkboxListTile(
+              widget.app, context, 'Include Subscriptions', app.includeSubscriptions ?? false,
+                  (value3) {
+                setState(() {
+                  app.includeSubscriptions = value3 ?? false;
+                });
+              }),
         ]);
   }
 

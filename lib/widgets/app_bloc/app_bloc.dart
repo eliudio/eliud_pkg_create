@@ -296,6 +296,12 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       appModel.logo = theState.appModel.logo;
       appModel.homePages = theState.appModel.homePages;
       appModel.appStatus = theState.appModel.appStatus;
+      appModel.autoPrivileged1 = theState.appModel.autoPrivileged1;
+      appModel.isFeatured = theState.appModel.isFeatured;
+      appModel.includeSubscriptions = theState.appModel.includeSubscriptions;
+      appModel.includeInvoiceAddress = theState.appModel.includeInvoiceAddress;
+      appModel.includeShippingAddress = theState.appModel.includeShippingAddress;
+
       if (event.save) {
         var app = await appRepository(appId: appId)!
             .get(theState.appModel.documentID);
