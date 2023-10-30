@@ -195,6 +195,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                 )
               ]),
 */
+          _welcomeEmailDocument( context, state.appModel),
           topicContainer(widget.app, context,
               title: 'Navigation',
               collapsible: true,
@@ -842,6 +843,32 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                   app.includeSubscriptions = value3 ?? false;
                 });
               }),
+        ]);
+  }
+
+  Widget _welcomeEmailDocument(BuildContext context, AppModel app) {
+    return topicContainer(widget.app, context,
+        title: 'Welcome email document',
+        collapsible: true,
+        collapsed: true,
+        children: [
+          SizedBox(
+          height: 200,
+          child:getListTile(context, widget.app,
+              leading: Icon(Icons.email),
+              title: dialogField(
+                widget.app,
+                context,
+                initialValue: app.welcomeMessage,
+                valueChanged: (value) {
+                  app.welcomeMessage = value;
+                },
+                expands: true,
+                decoration: const InputDecoration(
+                  hintText: "Welcome document",
+                  labelText: 'This is the document that will be sent to new joiners. It will be sent as HTML. Ue \${NAME} to be replaced with the name of the person joining',
+                ),
+              ))),
         ]);
   }
 
