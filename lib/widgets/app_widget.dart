@@ -25,7 +25,6 @@ import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import '../jsontomodeltojson/modeltojsonhelper.dart';
 import 'app_bloc/app_bloc.dart';
 import 'app_bloc/app_event.dart';

@@ -14,15 +14,10 @@
 */
 
 import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/package/packages.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:eliud_core/style/style_registry.dart';
-import 'package:eliud_core/core/blocs/access/state/access_state.dart';
-import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/tools/query/query_tools.dart';
@@ -33,8 +28,6 @@ import 'package:eliud_pkg_create/model/play_store_list_bloc.dart';
 import 'package:eliud_pkg_create/model/play_store_list_state.dart';
 import 'package:eliud_pkg_create/model/play_store_list_event.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
-import 'package:eliud_core/style/frontend/has_button.dart';
-import 'package:eliud_core/tools/component/update_component.dart';
 
 
 
@@ -82,7 +75,7 @@ return widgets;
 
   @override
   Widget build(BuildContext context) {
-    var accessState = AccessBloc.getState(context);
+    //var accessState = AccessBloc.getState(context);
     return BlocBuilder<PlayStoreListBloc, PlayStoreListState>(builder: (context, state) {
       if (state is PlayStoreListLoading) {
         return StyleRegistry.registry().styleWithApp(widget.app).adminListStyle().progressIndicator(widget.app, context);

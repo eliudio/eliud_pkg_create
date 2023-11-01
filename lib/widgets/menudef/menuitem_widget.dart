@@ -3,14 +3,10 @@ import 'package:eliud_core/model/display_conditions_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
-import 'package:eliud_core/style/frontend/has_divider.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
-import 'package:eliud_core/style/frontend/has_text_form_field.dart';
-import 'package:eliud_core/style/style_registry.dart';
 import 'package:eliud_core/tools/icon_formfield.dart';
 import 'package:eliud_pkg_create/widgets/condition/display_conditions_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class MenuItemWidget extends StatefulWidget {
   final AppModel app;

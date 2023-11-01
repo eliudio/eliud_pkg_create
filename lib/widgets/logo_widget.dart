@@ -6,11 +6,9 @@ import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
-import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
 import 'package:eliud_core/package/access_rights.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 typedef LogoFeedback(PublicMediumModel? logo);
 

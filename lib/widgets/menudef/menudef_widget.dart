@@ -28,7 +28,6 @@ import 'package:eliud_pkg_workflow/model/workflow_list_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:flutter/widgets.dart';
 
 import '../dialog_widget.dart';
 import '../page_widget.dart';
@@ -382,15 +381,13 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
 
   void ensureCurrentIsVisible() {
     if (currentVisible != null) {
-      if (WidgetsBinding.instance != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          var context = currentVisible!.currentContext;
-          if (context != null) {
-            Scrollable.ensureVisible(context);
-          }
-        });
-      }
-    }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        var context = currentVisible!.currentContext;
+        if (context != null) {
+          Scrollable.ensureVisible(context);
+        }
+      });
+        }
   }
 
   double height() => 250; //(widget.widgetHeight / 2);

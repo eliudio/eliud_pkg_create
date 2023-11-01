@@ -22,7 +22,6 @@ import 'abstract_repository_singleton.dart';
 import '../extensions/play_store_component.dart';
 import '../editors/play_store_component_editor.dart';
 import 'play_store_component_selector.dart';
-import 'package:eliud_pkg_create/model/internal_component.dart';
 
 
 

@@ -15,16 +15,20 @@
 
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 
 import 'package:eliud_pkg_create/model/play_store_repository.dart';
 import 'package:eliud_pkg_create/model/play_store_list_event.dart';
 import 'package:eliud_pkg_create/model/play_store_list_state.dart';
 import 'package:eliud_core/tools/query/query_tools.dart';
 
+import 'play_store_model.dart';
+
+typedef List<PlayStoreModel?> FilterPlayStoreModels(List<PlayStoreModel?> values);
+
 
 
 class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
+  final FilterPlayStoreModels? filter;
   final PlayStoreRepository _playStoreRepository;
   StreamSubscription? _playStoresListSubscription;
   EliudQuery? eliudQuery;
@@ -35,9 +39,8 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
   final bool? detailed;
   final int playStoreLimit;
 
-  PlayStoreListBloc({this.paged, this.orderBy, this.descending, this.detailed, this.eliudQuery, required PlayStoreRepository playStoreRepository, this.playStoreLimit = 5})
-      : assert(playStoreRepository != null),
-        _playStoreRepository = playStoreRepository,
+  PlayStoreListBloc({this.filter, this.paged, this.orderBy, this.descending, this.detailed, this.eliudQuery, required PlayStoreRepository playStoreRepository, this.playStoreLimit = 5})
+      : _playStoreRepository = playStoreRepository,
         super(PlayStoreListLoading()) {
     on <LoadPlayStoreList> ((event, emit) {
       if ((detailed == null) || (!detailed!)) {
@@ -78,11 +81,19 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
     });
   }
 
+  List<PlayStoreModel?> _filter(List<PlayStoreModel?> original) {
+    if (filter != null) {
+      return filter!(original);
+    } else {
+      return original;
+    }
+  }
+
   Future<void> _mapLoadPlayStoreListToState() async {
     int amountNow =  (state is PlayStoreListLoaded) ? (state as PlayStoreListLoaded).values!.length : 0;
     _playStoresListSubscription?.cancel();
     _playStoresListSubscription = _playStoreRepository.listen(
-          (list) => add(PlayStoreListUpdated(value: list, mightHaveMore: amountNow != list.length)),
+          (list) => add(PlayStoreListUpdated(value: _filter(list), mightHaveMore: amountNow != list.length)),
       orderBy: orderBy,
       descending: descending,
       eliudQuery: eliudQuery,
@@ -94,7 +105,7 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
     int amountNow =  (state is PlayStoreListLoaded) ? (state as PlayStoreListLoaded).values!.length : 0;
     _playStoresListSubscription?.cancel();
     _playStoresListSubscription = _playStoreRepository.listenWithDetails(
-            (list) => add(PlayStoreListUpdated(value: list, mightHaveMore: amountNow != list.length)),
+            (list) => add(PlayStoreListUpdated(value: _filter(list), mightHaveMore: amountNow != list.length)),
         orderBy: orderBy,
         descending: descending,
         eliudQuery: eliudQuery,

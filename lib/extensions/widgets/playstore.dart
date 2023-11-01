@@ -14,7 +14,6 @@ import 'package:eliud_pkg_create/model/play_store_model.dart';
 import 'package:eliud_pkg_create/widgets/new_app_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:ui';
 
 class PlayStore extends StatefulWidget {
   final AppModel app;

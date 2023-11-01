@@ -1,8 +1,5 @@
 import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/style/frontend/has_style.dart';
-import 'package:eliud_core/tools/random.dart';
 import 'package:flutter/material.dart';
 
 InputDecoration inputDecoration(AppModel app, BuildContext context, String label) => InputDecoration(

@@ -14,7 +14,6 @@ import 'package:eliud_pkg_create/widgets/workflowtasks/workflow_task_widget.dart
 import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/widgets.dart';
 import 'workflowtasks__bloc/workflowtasks_create_bloc.dart';
 import 'workflowtasks__bloc/workflowtasks_create_event.dart';
 import 'workflowtasks__bloc/workflowtasks_create_state.dart';
@@ -184,14 +183,12 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
 
   void ensureCurrentIsVisible() {
     if (currentVisible != null) {
-      if (WidgetsBinding.instance != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          var context = currentVisible!.currentContext;
-          if (context != null) {
-            Scrollable.ensureVisible(context);
-          }
-        });
-      }
-    }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        var context = currentVisible!.currentContext;
+        if (context != null) {
+          Scrollable.ensureVisible(context);
+        }
+      });
+        }
   }
 }

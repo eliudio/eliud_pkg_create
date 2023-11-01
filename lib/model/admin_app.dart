@@ -16,28 +16,10 @@
 
 import 'package:eliud_core/tools/admin_app_base.dart';
 import '../tools/bespoke_models.dart';
-import 'package:eliud_core/tools/common_tools.dart';
-import 'package:eliud_core/tools/common_tools.dart';
 
-import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/model/page_model.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
-import 'package:eliud_core/model/body_component_model.dart';
-import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
-import 'package:eliud_core/model/home_menu_model.dart';
 
-import 'package:eliud_core/model/repository_export.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-import 'package:eliud_pkg_create/model/abstract_repository_singleton.dart';
-import 'package:eliud_pkg_create/model/repository_export.dart';
 import 'package:eliud_core/model/model_export.dart';
-import '../tools/bespoke_models.dart';
-import 'package:eliud_pkg_create/model/model_export.dart';
-import 'package:eliud_core/model/entity_export.dart';
-import '../tools/bespoke_entities.dart';
-import 'package:eliud_pkg_create/model/entity_export.dart';
 
 class AdminApp extends AdminAppInstallerBase {
   final String appId;

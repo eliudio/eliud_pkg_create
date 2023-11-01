@@ -19,7 +19,6 @@ import 'package:eliud_core/tools/query/query_tools.dart';
 import 'package:eliud_pkg_create/extensions/widgets/playstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:eliud_pkg_create/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_create/model/play_store_component.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';

@@ -1,7 +1,6 @@
 import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'package:eliud_pkg_workflow/model/workflow_notification_model.dart';
 import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';
-import 'package:eliud_pkg_workflow/tools/task/task_model.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';

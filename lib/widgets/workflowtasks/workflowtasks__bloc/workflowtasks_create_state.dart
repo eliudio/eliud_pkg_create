@@ -1,5 +1,4 @@
 import 'package:eliud_core/core/registry.dart';
-import 'package:eliud_core/model/body_component_model.dart';
 import 'package:eliud_core/tools/component/component_spec.dart';
 import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';
 import 'package:equatable/equatable.dart';

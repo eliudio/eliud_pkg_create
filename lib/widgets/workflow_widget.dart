@@ -14,7 +14,6 @@ import 'package:eliud_pkg_create/widgets/workflow_bloc/workflow_state.dart';
 import 'package:eliud_pkg_create/widgets/workflowtasks/workflowtasks_widget.dart';
 import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void openWorkflow(BuildContext context, AppModel app, bool create, WorkflowModel model, String title,

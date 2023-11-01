@@ -1,4 +1,3 @@
-import 'package:eliud_core/core/base/model_base.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/core_package.dart';

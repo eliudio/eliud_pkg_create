@@ -25,9 +25,7 @@ import 'package:eliud_pkg_create/widgets/style_selection_widget.dart';
 import 'package:eliud_pkg_create/widgets/utils/creator_button.dart';
 import 'package:eliud_pkg_create/widgets/utils/my_decorated_widget.dart';
 import 'package:eliud_pkg_create/widgets/wizard_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'tools/constants.dart';
 
 class CreatorDecoration extends deco.Decoration {

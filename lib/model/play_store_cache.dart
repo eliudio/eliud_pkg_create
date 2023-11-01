@@ -19,18 +19,8 @@ import 'package:eliud_core/tools/common_tools.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
 import 'package:eliud_pkg_create/model/play_store_repository.dart';
 
-import 'package:eliud_core/model/repository_export.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-import 'package:eliud_pkg_create/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_create/model/repository_export.dart';
-import 'package:eliud_core/model/cache_export.dart';
-import 'package:eliud_pkg_create/model/cache_export.dart';
-import 'package:eliud_core/model/model_export.dart';
-import '../tools/bespoke_models.dart';
 import 'package:eliud_pkg_create/model/model_export.dart';
-import 'package:eliud_core/model/entity_export.dart';
-import '../tools/bespoke_entities.dart';
 import 'package:eliud_pkg_create/model/entity_export.dart';
 
 class PlayStoreCache implements PlayStoreRepository {

@@ -1,13 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
-import 'package:eliud_core/model/storage_conditions_model.dart';
-import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
-import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import '../../jsontomodeltojson/jsontomodelhelper.dart';
 import 'from_json_event.dart';

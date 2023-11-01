@@ -23,7 +23,6 @@ import 'package:eliud_pkg_workflow/model/workflow_list_state.dart';
 import 'package:eliud_pkg_workflow/tools/action/workflow_action_model.dart';
 import 'package:eliud_core/core/registry.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 Widget openSelectActionWidget({required AppModel app,

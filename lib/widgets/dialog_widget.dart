@@ -1,6 +1,5 @@
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
-import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/style/frontend/has_container.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
 import 'package:eliud_core/style/frontend/has_dialog_field.dart';
@@ -16,7 +15,6 @@ import 'package:eliud_pkg_create/widgets/dialog_bloc/dialog_bloc.dart';
 import 'package:eliud_pkg_create/widgets/dialog_bloc/dialog_event.dart';
 import 'package:eliud_pkg_create/widgets/dialog_bloc/dialog_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'bodycomponents/bodycomponents_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

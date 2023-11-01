@@ -1,6 +1,4 @@
 
-import 'package:eliud_core/core/base/model_base.dart';
-import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_pkg_create/platform/create_platform.dart';
 import 'package:eliud_pkg_create/platform/web_create_platform.dart';
 

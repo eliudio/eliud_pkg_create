@@ -1,12 +1,9 @@
 import 'package:eliud_core/decoration/decoration.dart' as deco;
 import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/style/frontend/has_button.dart';
-import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/style/frontend/types.dart';
 import 'package:eliud_core/style/style_registry.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import '../../tools/constants.dart';
 import 'creator_button.dart';
 

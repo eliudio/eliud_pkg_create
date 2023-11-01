@@ -2,7 +2,6 @@ import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
-import 'package:eliud_core/model/public_medium_model.dart';
 
 class WithMenu {
   final AppModel app;
@@ -32,10 +31,8 @@ class WithMenu {
     if (menuDefModel.menuItems != null) {
       newItems.addAll(menuDefModel.menuItems!);
     }
-    if (items != null) {
-      newItems.addAll(items);
-    }
-    menuDefModel = menuDefModel.copyWith(menuItems: newItems);
+    newItems.addAll(items);
+      menuDefModel = menuDefModel.copyWith(menuItems: newItems);
     await menuDefRepository(appId: app.documentID)!.update(menuDefModel);
   }
 

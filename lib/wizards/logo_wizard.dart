@@ -1,15 +1,7 @@
-import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
 import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/model/background_model.dart';
-import 'package:eliud_core/model/decoration_color_model.dart';
-import 'package:eliud_core/model/member_model.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
-import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
-import 'package:eliud_core/style/_default/tools/colors.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
-import 'package:eliud_core/tools/action/action_model.dart';
 import 'package:eliud_pkg_create/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -40,6 +32,7 @@ class LogoWizard extends NewAppWizardInfoDefaultImpl {
     if (parameters is LogoParameters) {
       if (pageType == 'logo') return parameters.logo;
     }
+    return null;
   }
 
   @override
