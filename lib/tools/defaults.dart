@@ -12,24 +12,23 @@ import 'package:eliud_core/style/frontend/has_drawer.dart';
 import 'package:eliud_core/tools/random.dart';
 
 String drawerID(String appID, DrawerType drawerType) {
-  return appID +
-      '-DRAWER' +
-      (drawerType == DrawerType.Left ? '-LEFT' : '-RIGHT');
+  return '$appID-DRAWER${drawerType == DrawerType.left ? '-LEFT' : '-RIGHT'}';
 }
 
 String homeMenuID(String appID) {
-  return appID + '-HOMEMENU';
+  return '$appID-HOMEMENU';
 }
 
 String appBarID(String appID) {
-  return appID + '-APPBAR';
+  return '$appID-APPBAR';
 }
 
 String appID(String appID) {
   return appID;
 }
 
-MenuDefModel copyOrDefault(String appId, String documentID, MenuDefModel? menuDefModel) {
+MenuDefModel copyOrDefault(
+    String appId, String documentID, MenuDefModel? menuDefModel) {
   if (menuDefModel == null) {
     return newMenuDef(appId, documentID);
   } else {
@@ -51,7 +50,7 @@ Future<HomeMenuModel> homeMenu(String appId, {bool? store}) async {
   }
 }
 
-MenuDefModel newMenuDef(String appId, String id) => new MenuDefModel(
+MenuDefModel newMenuDef(String appId, String id) => MenuDefModel(
       documentID: id,
       appId: appId,
       name: 'no name',
@@ -94,7 +93,7 @@ Future<AppBarModel> newAppBar(String appId, {bool? store}) async {
   var appBarModel = AppBarModel(
       documentID: appBarId,
       appId: appId,
-      header: HeaderSelection.Title,
+      header: HeaderSelection.title,
       iconMenu: menuDefModel);
   if ((store != null) && (store)) {
     await appBarRepository(appId: appId)!.add(appBarModel);
@@ -134,14 +133,14 @@ PageModel newPageDefaults(String appId) => PageModel(
     bodyComponents: [],
     appId: appId,
     conditions: null,
-    layout: PageLayout.ListView);
+    layout: PageLayout.listView);
 
 DialogModel newDialogDefaults(String appId) => DialogModel(
     documentID: newRandomKey(),
     bodyComponents: [],
     appId: appId,
     conditions: null,
-    layout: DialogLayout.ListView);
+    layout: DialogLayout.listView);
 
 WorkflowModel newWorkflowDefaults(String appId) => WorkflowModel(
       documentID: newRandomKey(),
@@ -154,8 +153,8 @@ WorkflowTaskModel newWorkflowTaskDefaults() => WorkflowTaskModel(
     documentID: newRandomKey(),
     seqNumber: 0,
     task: null,
-    confirmMessage: WorkflowNotificationModel(message: '', addressee: WorkflowNotificationAddressee.CurrentMember),
-    rejectMessage: WorkflowNotificationModel(message: '', addressee: WorkflowNotificationAddressee.CurrentMember),
-    responsible: WorkflowTaskResponsible.CurrentMember
-);
-
+    confirmMessage: WorkflowNotificationModel(
+        message: '', addressee: WorkflowNotificationAddressee.currentMember),
+    rejectMessage: WorkflowNotificationModel(
+        message: '', addressee: WorkflowNotificationAddressee.currentMember),
+    responsible: WorkflowTaskResponsible.currentMember);

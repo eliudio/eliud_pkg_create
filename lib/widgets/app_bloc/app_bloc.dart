@@ -38,9 +38,13 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
     {
       var countDown = 3;
       while (countDown >= 0) {
-        var newPages = await pageRepository(appId: appId)!.valuesList(
-            eliudQuery: getComponentSelectorQuery(countDown, appId));
-        pages.addAll(newPages.map((e) => e!).toList());
+        try {
+          var newPages = await pageRepository(appId: appId)!.valuesList(
+              eliudQuery: getComponentSelectorQuery(countDown, appId));
+          pages.addAll(newPages.map((e) => e!).toList());
+        } catch (error) {
+          print(error);
+        }
         countDown--;
       }
     }
@@ -55,26 +59,26 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       _pageSubscription[countDown]?.cancel();
       _pageSubscription[countDown] =
           pageRepository(appId: appId)!.listen((value) async {
-            var pages = await _pages();
-            if (state is AppCreateInitialised) {
-              var theState = state as AppCreateInitialised;
-              add(PagesUpdated(pages));
-            }
-          }, privilegeLevel: countDown);
+        var pages = await _pages();
+        if (state is AppCreateInitialised) {
+          //var theState = state as AppCreateInitialised;
+          add(PagesUpdated(pages));
+        }
+      }, privilegeLevel: countDown);
 
       _dialogSubscription[countDown]?.cancel();
       _dialogSubscription[countDown] =
           dialogRepository(appId: appId)!.listen((value) async {
-            var dialogs = await _dialogs();
-            add(DialogsUpdated(dialogs));
-          }, privilegeLevel: countDown);
+        var dialogs = await _dialogs();
+        add(DialogsUpdated(dialogs));
+      }, privilegeLevel: countDown);
 
       _policySubscription[countDown]?.cancel();
       _policySubscription[countDown] =
           appPolicyRepository(appId: appId)!.listen((value) async {
-            var policies = await _policies();
-            add(PoliciesUpdated(policies));
-          }, privilegeLevel: countDown );
+        var policies = await _policies();
+        add(PoliciesUpdated(policies));
+      }, privilegeLevel: countDown);
       countDown--;
     }
   }
@@ -141,11 +145,19 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       var workflows = await _workflows();
       var theHomeMenu = await homeMenu(appId, store: true);
       var theAppBar = await appBar(appId);
-      var leftDrawer = await getDrawer(appId, DrawerType.Left, store: true);
-      var rightDrawer = await getDrawer(appId, DrawerType.Right, store: true);
+      var leftDrawer = await getDrawer(appId, DrawerType.left, store: true);
+      var rightDrawer = await getDrawer(appId, DrawerType.right, store: true);
       _listen();
-      emit(AppCreateValidated(deepCopy(appId, event.appModel), pages, dialogs, workflows,
-          policies, theHomeMenu, theAppBar, leftDrawer, rightDrawer));
+      emit(AppCreateValidated(
+          deepCopy(appId, event.appModel),
+          pages,
+          dialogs,
+          workflows,
+          policies,
+          theHomeMenu,
+          theAppBar,
+          leftDrawer,
+          rightDrawer));
     });
 
     on<AppCreateDeletePage>((event, emit) async {
@@ -235,7 +247,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
           policy: policyMedium,
           conditions: StorageConditionsModel(
             privilegeLevelRequired:
-            PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
+                PrivilegeLevelRequiredSimple.noPrivilegeRequiredSimple,
           ),
         );
         await appPolicyRepository(appId: appId)!.add(appPolicyModel);
@@ -265,7 +277,7 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
           policy: policyMedium,
           conditions: StorageConditionsModel(
             privilegeLevelRequired:
-            PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
+            PrivilegeLevelRequiredSimple.noPrivilegeRequiredSimple,
           ),
         );
         await appPolicyRepository(appId: appId)!.add(appPolicyModel);
@@ -297,7 +309,8 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
       appModel.isFeatured = theState.appModel.isFeatured;
       appModel.includeSubscriptions = theState.appModel.includeSubscriptions;
       appModel.includeInvoiceAddress = theState.appModel.includeInvoiceAddress;
-      appModel.includeShippingAddress = theState.appModel.includeShippingAddress;
+      appModel.includeShippingAddress =
+          theState.appModel.includeShippingAddress;
       appModel.welcomeMessage = theState.appModel.welcomeMessage;
 
       if (event.save) {
@@ -379,7 +392,6 @@ class AppCreateBloc extends Bloc<AppCreateEvent, AppCreateState> {
             appCreateInitialised.rightDrawerModel));
       }
     });
-
   }
 
   static AppModel deepCopy(String appID, AppModel from) {

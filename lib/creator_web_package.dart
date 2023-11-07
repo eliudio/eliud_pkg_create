@@ -1,4 +1,3 @@
-
 import 'package:eliud_pkg_create/platform/create_platform.dart';
 import 'package:eliud_pkg_create/platform/web_create_platform.dart';
 
@@ -7,17 +6,13 @@ import 'creator_package.dart';
 CreatorPackage getCreatorPackage() => CreatorWebPackage();
 
 class CreatorWebPackage extends CreatorPackage {
+  @override
+  List<Object?> get props => [];
 
   @override
-  List<Object?> get props => [
-  ];
-
-  @override
-  bool operator == (Object other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
-          other is CreatorWebPackage &&
-              runtimeType == other.runtimeType;
-
+      other is CreatorWebPackage && runtimeType == other.runtimeType;
 
   @override
   void init() {
@@ -25,4 +20,6 @@ class CreatorWebPackage extends CreatorPackage {
     AbstractCreatePlatform.platform = WebCreatePlatform();
   }
 
+  @override
+  int get hashCode => 0;
 }

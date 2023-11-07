@@ -19,8 +19,6 @@ import 'package:bloc/bloc.dart';
 
 import 'package:eliud_core/tools/enums.dart';
 
-
-
 import 'package:eliud_pkg_create/model/abstract_repository_singleton.dart';
 import 'package:eliud_pkg_create/model/model_export.dart';
 
@@ -31,73 +29,77 @@ class PlayStoreFormBloc extends Bloc<PlayStoreFormEvent, PlayStoreFormState> {
   final FormAction? formAction;
   final String? appId;
 
-  PlayStoreFormBloc(this.appId, { this.formAction }): super(PlayStoreFormUninitialized()) {
-      on <InitialiseNewPlayStoreFormEvent> ((event, emit) {
-        PlayStoreFormLoaded loaded = PlayStoreFormLoaded(value: PlayStoreModel(
-                                               documentID: "",
-                                 appId: "",
-                                 description: "",
+  PlayStoreFormBloc(this.appId, {this.formAction})
+      : super(PlayStoreFormUninitialized()) {
+    on<InitialiseNewPlayStoreFormEvent>((event, emit) {
+      PlayStoreFormLoaded loaded = PlayStoreFormLoaded(
+          value: PlayStoreModel(
+        documentID: "",
+        appId: "",
+        description: "",
+      ));
+      emit(loaded);
+    });
 
-        ));
-        emit(loaded);
-      });
-
-
-      on <InitialisePlayStoreFormEvent> ((event, emit) async {
-        // Need to re-retrieve the document from the repository so that I get all associated types
-        PlayStoreFormLoaded loaded = PlayStoreFormLoaded(value: await playStoreRepository(appId: appId)!.get(event.value!.documentID));
-        emit(loaded);
-      });
-      on <InitialisePlayStoreFormNoLoadEvent> ((event, emit) async {
-        PlayStoreFormLoaded loaded = PlayStoreFormLoaded(value: event.value);
-        emit(loaded);
-      });
-      PlayStoreModel? newValue = null;
-      on <ChangedPlayStoreDocumentID> ((event, emit) async {
+    on<InitialisePlayStoreFormEvent>((event, emit) async {
+      // Need to re-retrieve the document from the repository so that I get all associated types
+      PlayStoreFormLoaded loaded = PlayStoreFormLoaded(
+          value: await playStoreRepository(appId: appId)!
+              .get(event.value!.documentID));
+      emit(loaded);
+    });
+    on<InitialisePlayStoreFormNoLoadEvent>((event, emit) async {
+      PlayStoreFormLoaded loaded = PlayStoreFormLoaded(value: event.value);
+      emit(loaded);
+    });
+    PlayStoreModel? newValue;
+    on<ChangedPlayStoreDocumentID>((event, emit) async {
       if (state is PlayStoreFormInitialized) {
         final currentState = state as PlayStoreFormInitialized;
         newValue = currentState.value!.copyWith(documentID: event.value);
-        if (formAction == FormAction.AddAction) {
+        if (formAction == FormAction.addAction) {
           emit(await _isDocumentIDValid(event.value, newValue!));
         } else {
           emit(SubmittablePlayStoreForm(value: newValue));
         }
-
       }
-      });
-      on <ChangedPlayStoreDescription> ((event, emit) async {
+    });
+    on<ChangedPlayStoreDescription>((event, emit) async {
       if (state is PlayStoreFormInitialized) {
         final currentState = state as PlayStoreFormInitialized;
         newValue = currentState.value!.copyWith(description: event.value);
         emit(SubmittablePlayStoreForm(value: newValue));
-
       }
-      });
-      on <ChangedPlayStoreBackgroundIcon> ((event, emit) async {
+    });
+    on<ChangedPlayStoreBackgroundIcon>((event, emit) async {
       if (state is PlayStoreFormInitialized) {
         final currentState = state as PlayStoreFormInitialized;
         newValue = currentState.value!.copyWith(backgroundIcon: event.value);
         emit(SubmittablePlayStoreForm(value: newValue));
-
       }
-      });
-      on <ChangedPlayStoreConditions> ((event, emit) async {
+    });
+    on<ChangedPlayStoreConditions>((event, emit) async {
       if (state is PlayStoreFormInitialized) {
         final currentState = state as PlayStoreFormInitialized;
         newValue = currentState.value!.copyWith(conditions: event.value);
         emit(SubmittablePlayStoreForm(value: newValue));
-
       }
-      });
+    });
   }
 
+  DocumentIDPlayStoreFormError error(String message, PlayStoreModel newValue) =>
+      DocumentIDPlayStoreFormError(message: message, value: newValue);
 
-  DocumentIDPlayStoreFormError error(String message, PlayStoreModel newValue) => DocumentIDPlayStoreFormError(message: message, value: newValue);
-
-  Future<PlayStoreFormState> _isDocumentIDValid(String? value, PlayStoreModel newValue) async {
-    if (value == null) return Future.value(error("Provide value for documentID", newValue));
-    if (value.length == 0) return Future.value(error("Provide value for documentID", newValue));
-    Future<PlayStoreModel?> findDocument = playStoreRepository(appId: appId)!.get(value);
+  Future<PlayStoreFormState> _isDocumentIDValid(
+      String? value, PlayStoreModel newValue) async {
+    if (value == null) {
+      return Future.value(error("Provide value for documentID", newValue));
+    }
+    if (value.isEmpty) {
+      return Future.value(error("Provide value for documentID", newValue));
+    }
+    Future<PlayStoreModel?> findDocument =
+        playStoreRepository(appId: appId)!.get(value);
     return await findDocument.then((documentFound) {
       if (documentFound == null) {
         return SubmittablePlayStoreForm(value: newValue);
@@ -106,7 +108,4 @@ class PlayStoreFormBloc extends Bloc<PlayStoreFormEvent, PlayStoreFormState> {
       }
     });
   }
-
-
 }
-

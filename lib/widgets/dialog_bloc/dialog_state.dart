@@ -13,9 +13,11 @@ class DialogCreateUninitialised extends DialogCreateState {
   List<Object?> get props => [];
 
   @override
-  bool operator == (Object other) =>
-      identical(this, other) ||
-          other is DialogCreateUninitialised;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is DialogCreateUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 abstract class DialogCreateInitialised extends DialogCreateState {
@@ -25,7 +27,7 @@ abstract class DialogCreateInitialised extends DialogCreateState {
 }
 
 class DialogCreateValidated extends DialogCreateInitialised {
-  DialogCreateValidated(DialogModel dialogModel) : super(dialogModel);
+  DialogCreateValidated(super.dialogModel);
 
   @override
   List<Object?> get props => [dialogModel];
@@ -33,12 +35,14 @@ class DialogCreateValidated extends DialogCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is DialogCreateValidated &&
-              dialogModel == other.dialogModel;
+      other is DialogCreateValidated && dialogModel == other.dialogModel;
+
+  @override
+  int get hashCode => dialogModel.hashCode;
 }
 
 class DialogCreateChangesApplied extends DialogCreateInitialised {
-  DialogCreateChangesApplied(DialogModel dialogModel) : super(dialogModel);
+  DialogCreateChangesApplied(super.dialogModel);
 
   @override
   List<Object?> get props => [dialogModel];
@@ -46,7 +50,8 @@ class DialogCreateChangesApplied extends DialogCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is DialogCreateChangesApplied &&
-              dialogModel == other.dialogModel;
-}
+      other is DialogCreateChangesApplied && dialogModel == other.dialogModel;
 
+  @override
+  int get hashCode => dialogModel.hashCode;
+}

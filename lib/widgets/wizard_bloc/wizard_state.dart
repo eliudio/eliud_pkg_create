@@ -12,6 +12,9 @@ class NewAppShouldClose extends WizardState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is NewAppShouldClose;
+
+  @override
+  int get hashCode => 0;
 }
 
 class NewAppCreateUninitialised extends WizardState {
@@ -21,6 +24,9 @@ class NewAppCreateUninitialised extends WizardState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is NewAppCreateUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 abstract class WizardInitialised extends WizardState {
@@ -33,65 +39,71 @@ abstract class WizardInitialised extends WizardState {
 
 class WizardAllowEnterDetails extends WizardInitialised {
   WizardAllowEnterDetails(
-    MemberModel member,
-  ) : super(member);
+    super.member,
+  );
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WizardAllowEnterDetails &&
-          member == other.member;
+      other is WizardAllowEnterDetails && member == other.member;
+
+  @override
+  int get hashCode => member.hashCode;
 }
 
 class WizardRunning extends WizardInitialised {
-
-  WizardRunning(MemberModel member, )
-      : super(member);
+  WizardRunning(
+    super.member,
+  );
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WizardRunning &&
-              member == other.member;
+      other is WizardRunning && member == other.member;
+
+  @override
+  int get hashCode => member.hashCode;
 }
 
 class WizardCreateInProgress extends WizardRunning {
   final double progress;
 
-  WizardCreateInProgress(
-      MemberModel member, this.progress)
-      : super(member);
+  WizardCreateInProgress(super.member, this.progress);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WizardCreateInProgress &&
-              member == other.member &&
-              progress == other.progress;
+      other is WizardCreateInProgress &&
+          member == other.member &&
+          progress == other.progress;
+
+  @override
+  int get hashCode => progress.hashCode;
 }
 
 class WizardCreateCancelled extends WizardRunning {
-  WizardCreateCancelled(
-      MemberModel member)
-      : super(member, );
+  WizardCreateCancelled(super.member);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WizardCreateCancelled &&
-              member == other.member;
+      other is WizardCreateCancelled && member == other.member;
+
+  @override
+  int get hashCode => member.hashCode;
 }
 
 class WizardCreated extends WizardRunning {
   final bool success;
-  WizardCreated(
-      MemberModel member, this.success)
-      : super(member, );
+  WizardCreated(super.member, this.success);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WizardCreated &&
-              member == other.member &&
-              success == other.success ;
+      other is WizardCreated &&
+          member == other.member &&
+          success == other.success;
+
+  @override
+  int get hashCode => success.hashCode;
 }

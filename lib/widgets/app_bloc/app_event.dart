@@ -22,8 +22,10 @@ class AppCreateEventValidateEvent extends AppCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppCreateEventValidateEvent &&
-              appModel == other.appModel;
+      other is AppCreateEventValidateEvent && appModel == other.appModel;
+
+  @override
+  int get hashCode => appModel.hashCode;
 }
 
 class AppCreateEventApplyChanges extends AppCreateEvent {
@@ -37,12 +39,13 @@ class AppCreateEventApplyChanges extends AppCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppCreateEventApplyChanges &&
-              save == other.save;
+      other is AppCreateEventApplyChanges && save == other.save;
+
+  @override
+  int get hashCode => save.hashCode;
 }
 
-class AppCreateEventClose extends AppCreateEvent {
-}
+class AppCreateEventClose extends AppCreateEvent {}
 
 class AppCreateDeletePage extends AppCreateEvent {
   final PageModel deleteThis;
@@ -55,8 +58,10 @@ class AppCreateDeletePage extends AppCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppCreateDeletePage &&
-              deleteThis == other.deleteThis;
+      other is AppCreateDeletePage && deleteThis == other.deleteThis;
+
+  @override
+  int get hashCode => deleteThis.hashCode;
 }
 
 class AppCreateDeleteDialog extends AppCreateEvent {
@@ -70,8 +75,10 @@ class AppCreateDeleteDialog extends AppCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppCreateDeleteDialog &&
-              deleteThis == other.deleteThis;
+      other is AppCreateDeleteDialog && deleteThis == other.deleteThis;
+
+  @override
+  int get hashCode => deleteThis.hashCode;
 }
 
 class AppCreateDeleteWorkflow extends AppCreateEvent {
@@ -85,8 +92,10 @@ class AppCreateDeleteWorkflow extends AppCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppCreateDeleteWorkflow &&
-              deleteThis == other.deleteThis;
+      other is AppCreateDeleteWorkflow && deleteThis == other.deleteThis;
+
+  @override
+  int get hashCode => deleteThis.hashCode;
 }
 
 class AppCreateDeletePolicy extends AppCreateEvent {
@@ -100,8 +109,10 @@ class AppCreateDeletePolicy extends AppCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppCreateDeletePolicy &&
-              deleteThis == other.deleteThis;
+      other is AppCreateDeletePolicy && deleteThis == other.deleteThis;
+
+  @override
+  int get hashCode => deleteThis.hashCode;
 }
 
 class AppCreateAddPolicy extends AppCreateEvent {
@@ -115,8 +126,10 @@ class AppCreateAddPolicy extends AppCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppCreateAddPolicy &&
-              addThis == other.addThis;
+      other is AppCreateAddPolicy && addThis == other.addThis;
+
+  @override
+  int get hashCode => addThis.hashCode;
 }
 
 class PagesUpdated extends AppCreateEvent {
@@ -142,4 +155,3 @@ class PoliciesUpdated extends AppCreateEvent {
 
   PoliciesUpdated(this.policies);
 }
-

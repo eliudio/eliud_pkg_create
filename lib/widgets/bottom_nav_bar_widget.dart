@@ -13,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'menudef/menudef_widget.dart';
 
-typedef BlocProvider BlocProviderProvider(Widget child);
+typedef BlocProviderProvider = BlocProvider Function(Widget child);
 
 void openBottomNavBar(
   BuildContext context,
@@ -21,17 +21,20 @@ void openBottomNavBar(
   HomeMenuModel model, {
   double? fraction,
 }) {
-  openFlexibleDialog(app, context,app.documentID + '/_bottomnavbar',
-      includeHeading: false,
-      widthFraction: fraction,
-      child: BottomNavBarCreateWidget.getIt(
-        context,
-        app,
-        model,
-        fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
-        fullScreenHeight(context) - 100,
-      ),
-      );
+  openFlexibleDialog(
+    app,
+    context,
+    '${app.documentID}/_bottomnavbar',
+    includeHeading: false,
+    widthFraction: fraction,
+    child: BottomNavBarCreateWidget.getIt(
+      context,
+      app,
+      model,
+      fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
+      fullScreenHeight(context) - 100,
+    ),
+  );
 }
 
 class BottomNavBarCreateWidget extends StatefulWidget {
@@ -40,22 +43,21 @@ class BottomNavBarCreateWidget extends StatefulWidget {
   final AppModel app;
 
   BottomNavBarCreateWidget._({
-    Key? key,
     required this.app,
     required this.widgetWidth,
     required this.widgetHeight,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
     return _BottomNavBarCreateWidgetState();
   }
 
-  static Widget getIt(BuildContext context, AppModel app, HomeMenuModel homeMenuModel, double widgetWidth, double widgetHeight) {
+  static Widget getIt(BuildContext context, AppModel app,
+      HomeMenuModel homeMenuModel, double widgetWidth, double widgetHeight) {
     return BlocProvider<BottomNavBarCreateBloc>(
-      create: (context) =>
-          BottomNavBarCreateBloc(app.documentID, homeMenuModel)
-            ..add(BottomNavBarCreateEventValidateEvent(homeMenuModel)),
+      create: (context) => BottomNavBarCreateBloc(app.documentID, homeMenuModel)
+        ..add(BottomNavBarCreateEventValidateEvent(homeMenuModel)),
       child: BottomNavBarCreateWidget._(
         app: app,
         widgetWidth: widgetWidth,
@@ -75,7 +77,8 @@ class _BottomNavBarCreateWidgetState extends State<BottomNavBarCreateWidget> {
             thickness: 10,
             child:
                 ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-              HeaderWidget(app: widget.app,
+              HeaderWidget(
+                app: widget.app,
                 cancelAction: () async {
                   return true;
                 },

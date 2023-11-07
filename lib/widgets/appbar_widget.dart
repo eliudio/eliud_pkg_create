@@ -12,25 +12,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'menudef/menudef_widget.dart';
 
-typedef BlocProvider BlocProviderProvider(Widget child);
+typedef BlocProviderProvider = BlocProvider Function(Widget child);
 
 void openAppBar(
   BuildContext context,
   AppModel app,
-  AppBarModel model,{
+  AppBarModel model, {
   double? fraction,
 }) {
-  openFlexibleDialog(app, context, app.documentID + '/_appbar',
-      includeHeading: false,
-      widthFraction: fraction,
-      child: AppBarCreateWidget.getIt(
-        context,
-        app,
-        model,
-        fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
-        fullScreenHeight(context) - 100,
-      ),
-      );
+  openFlexibleDialog(
+    app,
+    context,
+    '${app.documentID}/_appbar',
+    includeHeading: false,
+    widthFraction: fraction,
+    child: AppBarCreateWidget.getIt(
+      context,
+      app,
+      model,
+      fullScreenWidth(context) * ((fraction == null) ? 1 : fraction),
+      fullScreenHeight(context) - 100,
+    ),
+  );
 }
 
 class AppBarCreateWidget extends StatefulWidget {
@@ -40,10 +43,9 @@ class AppBarCreateWidget extends StatefulWidget {
 
   AppBarCreateWidget._({
     required this.app,
-    Key? key,
     required this.widgetWidth,
     required this.widgetHeight,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -53,9 +55,10 @@ class AppBarCreateWidget extends StatefulWidget {
   static Widget getIt(BuildContext context, AppModel app,
       AppBarModel appBarModel, double widgetWidth, double widgetHeight) {
     return BlocProvider<AppBarCreateBloc>(
-      create: (context) =>
-          AppBarCreateBloc(app.documentID, appBarModel, )
-            ..add(AppBarCreateEventValidateEvent(appBarModel)),
+      create: (context) => AppBarCreateBloc(
+        app.documentID,
+        appBarModel,
+      )..add(AppBarCreateEventValidateEvent(appBarModel)),
       child: AppBarCreateWidget._(
         app: app,
         widgetWidth: widgetWidth,
@@ -72,7 +75,8 @@ class _AppBarCreateWidgetState extends State<AppBarCreateWidget> {
         builder: (context, state) {
       if (state is AppBarCreateValidated) {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-          HeaderWidget(app: widget.app,
+          HeaderWidget(
+            app: widget.app,
             cancelAction: () async {
               return true;
             },

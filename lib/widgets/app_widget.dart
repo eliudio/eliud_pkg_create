@@ -38,7 +38,7 @@ import 'package:file_picker/file_picker.dart';
 
 import 'logo_widget.dart';
 
-typedef BlocProvider BlocProviderProvider(Widget child);
+typedef BlocProviderProvider = BlocProvider Function(Widget child);
 
 class AppCreateWidget extends StatefulWidget {
   final bool create;
@@ -47,12 +47,11 @@ class AppCreateWidget extends StatefulWidget {
   final AppModel app;
 
   AppCreateWidget._({
-    Key? key,
     required this.app,
     required this.create,
     required this.widgetWidth,
     required this.widgetHeight,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -77,6 +76,7 @@ class AppCreateWidget extends StatefulWidget {
 class _AppCreateWidgetState extends State<AppCreateWidget> {
   double? _progressPolicy;
 
+  @override
   void initState() {
     super.initState();
   }
@@ -133,7 +133,10 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                       initialImage: state.appModel.anonymousProfilePhoto,
                     ),
               ]),
-          _member(context, state.appModel, ),
+          _member(
+            context,
+            state.appModel,
+          ),
           topicContainer(widget.app, context,
               title: 'Home pages',
               collapsible: true,
@@ -194,7 +197,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                 )
               ]),
 */
-          _welcomeEmailDocument( context, state.appModel),
+          _welcomeEmailDocument(context, state.appModel),
           topicContainer(widget.app, context,
               title: 'Navigation',
               collapsible: true,
@@ -211,7 +214,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               context,
                               widget.app,
                               state.leftDrawerModel,
-                              DecorationDrawerType.Left,
+                              DecorationDrawerType.left,
                               1)),
                       Spacer(),
                       button(widget.app, context,
@@ -228,7 +231,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                               context,
                               widget.app,
                               state.rightDrawerModel,
-                              DecorationDrawerType.Right,
+                              DecorationDrawerType.right,
                               1)),
                       Spacer(),
                       button(widget.app, context,
@@ -248,8 +251,8 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
             ModelsJsonWidget.getIt(
                 context,
                 widget.app,
-                    () => getModelsJsonConstructJsonEventToClipboard(state),
-                    (baseName) =>
+                () => getModelsJsonConstructJsonEventToClipboard(state),
+                (baseName) =>
                     getModelsJsonConstructJsonEventToMemberMediumModel(
                         state, member, baseName),
                 getFilename(state)),
@@ -269,13 +272,12 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         height: 200, //heightUnit() * 1,
                         width: widget.widgetWidth,
                         child: ListView(
-                            children:
-                            state.policies.map((item) {
-                              return getListTile(context, widget.app,
-                                  trailing: popupMenuButton<int>(
-                                      widget.app, context,
-                                      child: Icon(Icons.more_vert),
-                                      itemBuilder: (context) => [
+                            children: state.policies.map((item) {
+                          return getListTile(context, widget.app,
+                              trailing: popupMenuButton<int>(
+                                  widget.app, context,
+                                  child: Icon(Icons.more_vert),
+                                  itemBuilder: (context) => [
                                         popupMenuItem(
                                           widget.app,
                                           context,
@@ -289,67 +291,74 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           label: 'Update',
                                         ),
                                       ],
-                                      onSelected: (value) {
-                                        if (value == 0) {
-                                          setState(() {
-                                            BlocProvider.of<AppCreateBloc>(context)
-                                                .add(AppCreateDeletePolicy(item));
-                                          });
-                                        } else if (value == 1) {
-                                          AppPolicyDashboard.updateAppPolicy(widget.app, context, item);
-                                        }
-                                      }),
-                                  title: text(widget.app, context,
-                                      item != null ? item.name! : '?'));
-                            }).toList())),
+                                  onSelected: (value) {
+                                    if (value == 0) {
+                                      setState(() {
+                                        BlocProvider.of<AppCreateBloc>(context)
+                                            .add(AppCreateDeletePolicy(item));
+                                      });
+                                    } else if (value == 1) {
+                                      AppPolicyDashboard.updateAppPolicy(
+                                          widget.app, context, item);
+                                    }
+                                  }),
+                              title: text(widget.app, context,
+                                  item.name != null ? item.name! : '?'));
+                        }).toList())),
                     divider(widget.app, context),
                     _progressPolicy != null
                         ? Container(
-                        height: 50,
-                        child: progressIndicatorWithValue(
-                            widget.app, context,
-                            value: _progressPolicy!))
+                            height: 50,
+                            child: progressIndicatorWithValue(
+                                widget.app, context,
+                                value: _progressPolicy!))
                         : GestureDetector(
-                        child: Icon(Icons.add),
-                        onTap: () async {
-                          var _result = await FilePicker.platform.pickFiles(
-                              type: FileType.custom,
-                              allowedExtensions: ['pdf'],
-                              allowMultiple: false);
-                          if ((_result != null) && (_result.count > 0)) {
-                            var documentId = newRandomKey();
-                            if (kIsWeb) {
-                              var data = _result.files[0].bytes;
-                              var baseName = _result.files[0].name + (_result.files[0].extension ?? '');
-                              if (data != null) {
-                                await PlatformMediumHelper(
-                                  state.appModel,
-                                  state.appModel.ownerID,
-                                  PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
-                                ).createThumbnailUploadPdfData(
-                                    documentId, data, baseName, documentId,
-                                    feedbackFunction: (pdf) =>
-                                        _pdfFeedbackFunction(
-                                            state.appModel, pdf),
-                                    feedbackProgress: _policyUploading);
+                            child: Icon(Icons.add),
+                            onTap: () async {
+                              var result = await FilePicker.platform.pickFiles(
+                                  type: FileType.custom,
+                                  allowedExtensions: ['pdf'],
+                                  allowMultiple: false);
+                              if ((result != null) && (result.count > 0)) {
+                                var documentId = newRandomKey();
+                                if (kIsWeb) {
+                                  var data = result.files[0].bytes;
+                                  var baseName = result.files[0].name +
+                                      (result.files[0].extension ?? '');
+                                  if (data != null) {
+                                    await PlatformMediumHelper(
+                                            state.appModel,
+                                            state.appModel.ownerID,
+                                            PrivilegeLevelRequiredSimple
+                                                .noPrivilegeRequiredSimple)
+                                        .createThumbnailUploadPdfData(
+                                            documentId,
+                                            data,
+                                            baseName,
+                                            documentId,
+                                            feedbackFunction: (pdf) =>
+                                                _pdfFeedbackFunction(
+                                                    state.appModel, pdf),
+                                            feedbackProgress: _policyUploading);
+                                  }
+                                } else {
+                                  var path = result.files[0].path;
+                                  if (path != null) {
+                                    await PlatformMediumHelper(
+                                            state.appModel,
+                                            state.appModel.ownerID,
+                                            PrivilegeLevelRequiredSimple
+                                                .noPrivilegeRequiredSimple)
+                                        .createThumbnailUploadPdfFile(
+                                            documentId, path, documentId,
+                                            feedbackFunction: (pdf) =>
+                                                _pdfFeedbackFunction(
+                                                    state.appModel, pdf),
+                                            feedbackProgress: _policyUploading);
+                                  }
+                                }
                               }
-                            } else {
-                              var path = _result.files[0].path;
-                              if (path != null) {
-                                await PlatformMediumHelper(
-                                  state.appModel,
-                                  state.appModel.ownerID,
-                                  PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple
-                                ).createThumbnailUploadPdfFile(
-                                    documentId, path, documentId,
-                                    feedbackFunction: (pdf) =>
-                                        _pdfFeedbackFunction(
-                                            state.appModel, pdf),
-                                    feedbackProgress: _policyUploading);
-                              }
-                            }
-                          }
-                        })
+                            })
                   ], shrinkWrap: true, physics: ScrollPhysics()),
                 ),
               ]),
@@ -365,18 +374,18 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         width: widget.widgetWidth,
                         child: ListView(
                             children: state.pages.map((item) {
-                              return getListTile(context, widget.app,
-                                  /* onTap: () => openPage(
+                          return getListTile(context, widget.app,
+                              /* onTap: () => openPage(
                                     context,
                                     widget.app,
                                     false,
                                     item,
                                     "Update page",
                                   ),*/
-                                  trailing: popupMenuButton<int>(
-                                      widget.app, context,
-                                      child: Icon(Icons.more_vert),
-                                      itemBuilder: (context) => [
+                              trailing: popupMenuButton<int>(
+                                  widget.app, context,
+                                  child: Icon(Icons.more_vert),
+                                  itemBuilder: (context) => [
                                         popupMenuItem(
                                           widget.app,
                                           context,
@@ -401,28 +410,28 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           context,
                                           value: 2,
                                           label:
-                                          'Set as homepage for subscribed member',
+                                              'Set as homepage for subscribed member',
                                         ),
                                         popupMenuItem(
                                           widget.app,
                                           context,
                                           value: 3,
                                           label:
-                                          'Set as homepage for suscribed member, level 1',
+                                              'Set as homepage for subscribed member, level 1',
                                         ),
                                         popupMenuItem(
                                           widget.app,
                                           context,
                                           value: 4,
                                           label:
-                                          'Set as homepage for suscribed member, level 2',
+                                              'Set as homepage for subscribed member, level 2',
                                         ),
                                         popupMenuItem(
                                           widget.app,
                                           context,
                                           value: 5,
                                           label:
-                                          'Set as homepage for blocked member',
+                                              'Set as homepage for blocked member',
                                         ),
                                         popupMenuItem(
                                           widget.app,
@@ -438,66 +447,66 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           label: 'Show page',
                                         ),
                                       ],
-                                      onSelected: (value) {
-                                        switch (value) {
-                                          case 0:
-                                            openPage(
-                                              context,
-                                              widget.app,
-                                              false,
-                                              item,
-                                              "Update page",
-                                            );
-                                            break;
-                                          case 8:
-                                            BlocProvider.of<AppCreateBloc>(context)
-                                                .add(AppCreateDeletePage(item));
-                                            break;
-                                          case 1:
-                                            setState(() => state.appModel.homePages!
-                                                .homePagePublic = item.documentID);
-                                            break;
-                                          case 2:
-                                            setState(() => state.appModel.homePages!
+                                  onSelected: (value) {
+                                    switch (value) {
+                                      case 0:
+                                        openPage(
+                                          context,
+                                          widget.app,
+                                          false,
+                                          item,
+                                          "Update page",
+                                        );
+                                        break;
+                                      case 8:
+                                        BlocProvider.of<AppCreateBloc>(context)
+                                            .add(AppCreateDeletePage(item));
+                                        break;
+                                      case 1:
+                                        setState(() => state.appModel.homePages!
+                                            .homePagePublic = item.documentID);
+                                        break;
+                                      case 2:
+                                        setState(() => state.appModel.homePages!
                                                 .homePageSubscribedMember =
-                                                item.documentID);
-                                            break;
-                                          case 3:
-                                            setState(() => state.appModel.homePages!
+                                            item.documentID);
+                                        break;
+                                      case 3:
+                                        setState(() => state.appModel.homePages!
                                                 .homePageLevel1Member =
-                                                item.documentID);
-                                            break;
-                                          case 4:
-                                            setState(() => state.appModel.homePages!
+                                            item.documentID);
+                                        break;
+                                      case 4:
+                                        setState(() => state.appModel.homePages!
                                                 .homePageLevel2Member =
-                                                item.documentID);
-                                            break;
-                                          case 5:
-                                            setState(() => state.appModel.homePages!
+                                            item.documentID);
+                                        break;
+                                      case 5:
+                                        setState(() => state.appModel.homePages!
                                                 .homePageBlockedMember =
-                                                item.documentID);
-                                            break;
-                                          case 6:
-                                            setState(() => state.appModel.homePages!
-                                                .homePageOwner = item.documentID);
-                                            break;
-                                          case 7:
-                                            Navigator.of(context).pop();
-                                            var accessBloc =
+                                            item.documentID);
+                                        break;
+                                      case 6:
+                                        setState(() => state.appModel.homePages!
+                                            .homePageOwner = item.documentID);
+                                        break;
+                                      case 7:
+                                        Navigator.of(context).pop();
+                                        var accessBloc =
                                             BlocProvider.of<AccessBloc>(
                                                 context);
-                                            accessBloc.add(GotoPageEvent(
-                                              state.appModel,
-                                              item.documentID,
-                                            ));
-                                            break;
-                                        }
-                                      }),
-                                  subtitle:
+                                        accessBloc.add(GotoPageEvent(
+                                          state.appModel,
+                                          item.documentID,
+                                        ));
+                                        break;
+                                    }
+                                  }),
+                              subtitle:
                                   text(widget.app, context, item.documentID),
-                                  title:
+                              title:
                                   text(widget.app, context, item.title ?? '?'));
-                            }).toList())),
+                        }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
                         child: Icon(Icons.add),
@@ -524,18 +533,18 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         width: widget.widgetWidth,
                         child: ListView(
                             children: state.dialogs.map((item) {
-                              return getListTile(context, widget.app,
-                                  /*onTap: () => openDialog(
+                          return getListTile(context, widget.app,
+                              /*onTap: () => openDialog(
                                     context,
                                     widget.app,
                                     false,
                                     item,
                                     "Update dialog",
                                   ),*/
-                                  trailing: popupMenuButton<int>(
-                                      widget.app, context,
-                                      child: Icon(Icons.more_vert),
-                                      itemBuilder: (context) => [
+                              trailing: popupMenuButton<int>(
+                                  widget.app, context,
+                                  child: Icon(Icons.more_vert),
+                                  itemBuilder: (context) => [
                                         popupMenuItem(
                                           widget.app,
                                           context,
@@ -555,34 +564,34 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           label: 'Open dialog',
                                         ),
                                       ],
-                                      onSelected: (value) async {
-                                        switch (value) {
-                                          case 0:
-                                            openDialog(
-                                              context,
-                                              widget.app,
-                                              false,
-                                              item,
-                                              "Update dialog",
-                                            );
-                                            break;
-                                          case 2:
-                                            BlocProvider.of<AppCreateBloc>(context)
-                                                .add(AppCreateDeleteDialog(item));
-                                            break;
-                                          case 1:
-                                            await Registry.registry()!.openDialog(
-                                                context,
-                                                app: widget.app,
-                                                id: item.documentID);
-                                            break;
-                                        }
-                                      }),
-                                  subtitle:
+                                  onSelected: (value) async {
+                                    switch (value) {
+                                      case 0:
+                                        openDialog(
+                                          context,
+                                          widget.app,
+                                          false,
+                                          item,
+                                          "Update dialog",
+                                        );
+                                        break;
+                                      case 2:
+                                        BlocProvider.of<AppCreateBloc>(context)
+                                            .add(AppCreateDeleteDialog(item));
+                                        break;
+                                      case 1:
+                                        await Registry.registry()!.openDialog(
+                                            context,
+                                            app: widget.app,
+                                            id: item.documentID);
+                                        break;
+                                    }
+                                  }),
+                              subtitle:
                                   text(widget.app, context, item.documentID),
-                                  title:
+                              title:
                                   text(widget.app, context, item.title ?? '?'));
-                            }).toList())),
+                        }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
                         child: Icon(Icons.add),
@@ -609,11 +618,11 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                         width: widget.widgetWidth,
                         child: ListView(
                             children: state.workflows.map((item) {
-                              return getListTile(context, widget.app,
-                                  trailing: popupMenuButton<int>(
-                                      widget.app, context,
-                                      child: Icon(Icons.more_vert),
-                                      itemBuilder: (context) => [
+                          return getListTile(context, widget.app,
+                              trailing: popupMenuButton<int>(
+                                  widget.app, context,
+                                  child: Icon(Icons.more_vert),
+                                  itemBuilder: (context) => [
                                         popupMenuItem(
                                           widget.app,
                                           context,
@@ -633,34 +642,34 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                           label: 'Open dialog',
                                         ),
                                       ],
-                                      onSelected: (value) async {
-                                        switch (value) {
-                                          case 0:
-                                            openWorkflow(
-                                              context,
-                                              widget.app,
-                                              false,
-                                              item,
-                                              "Update workflow",
-                                            );
-                                            break;
-                                          case 2:
-                                            BlocProvider.of<AppCreateBloc>(context)
-                                                .add(AppCreateDeleteWorkflow(item));
-                                            break;
-                                          case 1:
-                                            await Registry.registry()!.openDialog(
-                                                context,
-                                                app: widget.app,
-                                                id: item.documentID);
-                                            break;
-                                        }
-                                      }),
-                                  subtitle:
+                                  onSelected: (value) async {
+                                    switch (value) {
+                                      case 0:
+                                        openWorkflow(
+                                          context,
+                                          widget.app,
+                                          false,
+                                          item,
+                                          "Update workflow",
+                                        );
+                                        break;
+                                      case 2:
+                                        BlocProvider.of<AppCreateBloc>(context)
+                                            .add(AppCreateDeleteWorkflow(item));
+                                        break;
+                                      case 1:
+                                        await Registry.registry()!.openDialog(
+                                            context,
+                                            app: widget.app,
+                                            id: item.documentID);
+                                        break;
+                                    }
+                                  }),
+                              subtitle:
                                   text(widget.app, context, item.documentID),
-                                  title:
+                              title:
                                   text(widget.app, context, item.name ?? '?'));
-                            }).toList())),
+                        }).toList())),
                     divider(widget.app, context),
                     GestureDetector(
                         child: Icon(Icons.add),
@@ -821,27 +830,24 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
         collapsible: true,
         collapsed: true,
         children: [
-          checkboxListTile(
-              widget.app, context, 'Include Shipping Address', app.includeShippingAddress ?? false,
-                  (value1) {
-                setState(() {
-                  app.includeShippingAddress = value1 ?? false;
-                });
-              }),
-          checkboxListTile(
-              widget.app, context, 'Include Invoice Address', app.includeInvoiceAddress ?? false,
-                  (value2) {
-                setState(() {
-                  app.includeInvoiceAddress = value2 ?? false;
-                });
-              }),
-          checkboxListTile(
-              widget.app, context, 'Include Subscriptions', app.includeSubscriptions ?? false,
-                  (value3) {
-                setState(() {
-                  app.includeSubscriptions = value3 ?? false;
-                });
-              }),
+          checkboxListTile(widget.app, context, 'Include Shipping Address',
+              app.includeShippingAddress ?? false, (value1) {
+            setState(() {
+              app.includeShippingAddress = value1 ?? false;
+            });
+          }),
+          checkboxListTile(widget.app, context, 'Include Invoice Address',
+              app.includeInvoiceAddress ?? false, (value2) {
+            setState(() {
+              app.includeInvoiceAddress = value2 ?? false;
+            });
+          }),
+          checkboxListTile(widget.app, context, 'Include Subscriptions',
+              app.includeSubscriptions ?? false, (value3) {
+            setState(() {
+              app.includeSubscriptions = value3 ?? false;
+            });
+          }),
         ]);
   }
 
@@ -852,22 +858,23 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
         collapsed: true,
         children: [
           SizedBox(
-          height: 200,
-          child:getListTile(context, widget.app,
-              leading: Icon(Icons.email),
-              title: dialogField(
-                widget.app,
-                context,
-                initialValue: app.welcomeMessage,
-                valueChanged: (value) {
-                  app.welcomeMessage = value;
-                },
-                expands: true,
-                decoration: const InputDecoration(
-                  hintText: "Welcome document",
-                  labelText: 'This is the document that will be sent to new joiners. It will be sent as HTML. Ue \${NAME} to be replaced with the name of the person joining',
-                ),
-              ))),
+              height: 200,
+              child: getListTile(context, widget.app,
+                  leading: Icon(Icons.email),
+                  title: dialogField(
+                    widget.app,
+                    context,
+                    initialValue: app.welcomeMessage,
+                    valueChanged: (value) {
+                      app.welcomeMessage = value;
+                    },
+                    expands: true,
+                    decoration: const InputDecoration(
+                      hintText: "Welcome document",
+                      labelText:
+                          'This is the document that will be sent to new joiners. It will be sent as HTML. Ue \${NAME} to be replaced with the name of the person joining',
+                    ),
+                  ))),
         ]);
   }
 

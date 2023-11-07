@@ -3,7 +3,7 @@ import 'package:eliud_core/style/frontend/has_button.dart';
 import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:flutter/material.dart';
 
-typedef Feedback(int value);
+typedef Feedback = Function(int value);
 
 class ComboboxWidget extends StatefulWidget {
   final AppModel app;
@@ -14,14 +14,14 @@ class ComboboxWidget extends StatefulWidget {
   final String title;
 
   ComboboxWidget({
-    Key? key,
+    super.key,
     required this.app,
     required this.initialValue,
     required this.feedback,
     required this.options,
     this.descriptions,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -62,20 +62,26 @@ class _ComboboxWidgetState extends State<ComboboxWidget> {
       children: [
         Align(
             alignment: Alignment.centerLeft,
-            child: inputDecorationLabel(widget.app, context, widget.title, maxLines: 5)),
-        Align(alignment: Alignment.centerLeft, child: dropdownButton<int>(widget.app, context,
-          isDense: false,
-          isExpanded: false,
-          items: dropdownMenuItems,
-          value: selected,
-          hint: text(widget.app, context, widget.title),
-          onChanged: (value) => _onChange(value),
-        ) ),
+            child: inputDecorationLabel(widget.app, context, widget.title,
+                maxLines: 5)),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: dropdownButton<int>(
+              widget.app,
+              context,
+              isDense: false,
+              isExpanded: false,
+              items: dropdownMenuItems,
+              value: selected,
+              hint: text(widget.app, context, widget.title),
+              onChanged: (value) => _onChange(value),
+            )),
         if (widget.descriptions != null) Container(width: 30),
         if (widget.descriptions != null)
           Align(
               alignment: Alignment.centerLeft,
-              child: text(widget.app, context, widget.descriptions![selected], maxLines: 5))
+              child: text(widget.app, context, widget.descriptions![selected],
+                  maxLines: 5))
       ],
     );
   }

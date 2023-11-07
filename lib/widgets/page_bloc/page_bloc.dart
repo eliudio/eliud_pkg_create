@@ -19,54 +19,54 @@ class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {
     on<PageCreateEventValidateEvent>((event, emit) async {
       var appId = app.documentID;
       // convention is that the ID of the appBar, drawers and home menu are the same ID as that of the app
-      var _homeMenuId = homeMenuID(appId);
+      var homeMenuId = homeMenuID(appId);
       if (event.pageModel.homeMenu == null) {
         // if no home menu specified, then get one and assign
         event.pageModel.homeMenu = await homeMenu(appId);
       } else {
         // if home menu is specified, make sure the ID is in line with the convention (of the ID)
-        if (event.pageModel.homeMenu!.documentID != _homeMenuId) {
+        if (event.pageModel.homeMenu!.documentID != homeMenuId) {
           event.pageModel.homeMenu =
-              event.pageModel.homeMenu!.copyWith(documentID: _homeMenuId);
+              event.pageModel.homeMenu!.copyWith(documentID: homeMenuId);
         }
       }
 
-      var _appBarId = appBarID(appId);
+      var appBarId = appBarID(appId);
       if (event.pageModel.appBar == null) {
         event.pageModel.appBar = await appBar(appId);
       } else {
         // if appBar is specified, make sure the ID is in line with the convention (of the ID)
-        if (event.pageModel.appBar!.documentID != _appBarId) {
+        if (event.pageModel.appBar!.documentID != appBarId) {
           event.pageModel.appBar =
-              event.pageModel.appBar!.copyWith(documentID: _appBarId);
+              event.pageModel.appBar!.copyWith(documentID: appBarId);
         }
       }
 
-      var _leftDrawerId = drawerID(appId, DrawerType.Left);
+      var leftDrawerId = drawerID(appId, DrawerType.left);
       if (event.pageModel.drawer == null) {
-        event.pageModel.drawer = await getDrawer(appId, DrawerType.Left);
+        event.pageModel.drawer = await getDrawer(appId, DrawerType.left);
       } else {
         // if left drawer is specified, make sure the ID is in line with the convention (of the ID)
-        if (event.pageModel.drawer!.documentID != _leftDrawerId) {
+        if (event.pageModel.drawer!.documentID != leftDrawerId) {
           event.pageModel.drawer =
-              event.pageModel.drawer!.copyWith(documentID: _leftDrawerId);
+              event.pageModel.drawer!.copyWith(documentID: leftDrawerId);
         }
       }
 
-      var _rightDrawerId = drawerID(appId, DrawerType.Right);
+      var rightDrawerId = drawerID(appId, DrawerType.right);
       if (event.pageModel.endDrawer == null) {
-        event.pageModel.endDrawer = await getDrawer(appId, DrawerType.Right);
+        event.pageModel.endDrawer = await getDrawer(appId, DrawerType.right);
       } else {
         // if right drawer is specified, make sure the ID is in line with the convention (of the ID)
-        if (event.pageModel.endDrawer!.documentID != _rightDrawerId) {
+        if (event.pageModel.endDrawer!.documentID != rightDrawerId) {
           event.pageModel.endDrawer =
-              event.pageModel.endDrawer!.copyWith(documentID: _rightDrawerId);
+              event.pageModel.endDrawer!.copyWith(documentID: rightDrawerId);
         }
       }
 
       event.pageModel.conditions ??= StorageConditionsModel(
         privilegeLevelRequired:
-            PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple,
+            PrivilegeLevelRequiredSimple.noPrivilegeRequiredSimple,
       );
       // the updates happen on a (deep) copy
       emit(PageCreateValidated(deepCopy(event.pageModel)));

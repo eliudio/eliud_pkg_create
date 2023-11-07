@@ -24,9 +24,8 @@ class WorkflowTasksCreateWidget extends StatefulWidget {
 
   WorkflowTasksCreateWidget._({
     required this.app,
-    Key? key,
     required this.widgetWidth,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -87,9 +86,10 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
                                 child: Column(
                                     children:
                                         state.workflowTaskModels.map((item) {
-                                  var theKey;
-                                  if (item == state.currentlySelected)
+                                  GlobalKey<State<StatefulWidget>>? theKey;
+                                  if (item == state.currentlySelected) {
                                     theKey = currentVisible;
+                                  }
                                   count++;
                                   return getListTile(context, widget.app,
                                       key: theKey,
@@ -104,12 +104,12 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
                                                     WorkflowTasksCreateBloc>(
                                                 context)
                                             .add(WorkflowTasksMoveItem(
-                                                item, MoveItemDirection.Up)),
+                                                item, MoveItemDirection.up)),
                                         actionDown: () => BlocProvider.of<
                                                     WorkflowTasksCreateBloc>(
                                                 context)
                                             .add(WorkflowTasksMoveItem(
-                                                item, MoveItemDirection.Down)),
+                                                item, MoveItemDirection.down)),
                                         actionDetails: () =>
                                             details(context, item),
                                         actionDelete: () => BlocProvider.of<
@@ -122,9 +122,7 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
                                       title: text(
                                           widget.app,
                                           context,
-                                          ((item.task == null) &&
-                                                  (item.task!.description !=
-                                                      null))
+                                          (item.task == null)
                                               ? '?'
                                               : item.task!.description));
                                 }).toList()))),
@@ -150,7 +148,7 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
 
   void details(BuildContext context,
       WorkflowTaskModel? workflowTaskModel /*, EditorFeedback feedback*/) {
-    var newVersion;
+    WorkflowTaskModel newVersion;
     if (workflowTaskModel == null) {
       newVersion = newWorkflowTaskDefaults();
     } else {
@@ -159,7 +157,7 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
     openComplexDialog(
       widget.app,
       context,
-      widget.app.documentID + '/_createtask',
+      '${widget.app.documentID}/_createtask',
       title: 'Create divider',
       includeHeading: false,
       widthFraction: .9,
@@ -189,6 +187,6 @@ class _WorkflowTasksCreateWidgetState extends State<WorkflowTasksCreateWidget>
           Scrollable.ensureVisible(context);
         }
       });
-        }
+    }
   }
 }

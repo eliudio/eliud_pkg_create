@@ -22,7 +22,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'new_app_bloc/new_app_bloc.dart';
 import 'new_app_bloc/new_app_state.dart';
 
-typedef BlocProvider BlocProviderProvider(Widget child);
+typedef BlocProviderProvider = BlocProvider Function(Widget child);
 
 void newApp(
   BuildContext context,
@@ -33,9 +33,9 @@ void newApp(
   openFlexibleDialog(
     app,
     context,
-    app.documentID + '/_newapp',
+    '${app.documentID}/_newapp',
     includeHeading: false,
-    widthFraction: fraction == null ? .5 : fraction,
+    widthFraction: fraction ?? .5,
     child: Container(
         width: 10,
         child: NewAppCreateWidget.getIt(
@@ -54,11 +54,10 @@ class NewAppCreateWidget extends StatefulWidget {
   final double widgetHeight;
 
   NewAppCreateWidget._({
-    Key? key,
     required this.app,
     required this.widgetWidth,
     required this.widgetHeight,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -85,8 +84,9 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
   MemberMediumModel? memberMediumModel;
   String? url;
 
+  @override
   void initState() {
-    jsonDestination = JsonDestination.MemberMedium;
+    jsonDestination = JsonDestination.memberMedium;
     super.initState();
   }
 
@@ -96,15 +96,16 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
     if (loggedInState is LoggedIn) {
       return BlocBuilder<NewAppCreateBloc, NewAppCreateState>(
           builder: (context, state) {
-            if (state is SwitchApp) {
-              BlocProvider.of<AccessBloc>(context).add(SwitchAppWithIDEvent(
-                  appId: state.appToBeCreated.documentID, goHome: true));
-            } else if (state is NewAppCreateInitialised) {
-              return Container(
-                  width: widget.widgetWidth,
-                  child:
-                  ListView(
-                      shrinkWrap: true, physics: ScrollPhysics(), children: [
+        if (state is SwitchApp) {
+          BlocProvider.of<AccessBloc>(context).add(SwitchAppWithIDEvent(
+              appId: state.appToBeCreated.documentID, goHome: true));
+        } else if (state is NewAppCreateInitialised) {
+          return Container(
+              width: widget.widgetWidth,
+              child: ListView(
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  children: [
                     HeaderWidget(
                       app: widget.app,
                       cancelAction: () async {
@@ -117,20 +118,21 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                         }
                       },
                       okAction: ((state is NewAppCreateAllowEnterDetails) ||
-                          (state is NewAppCreateError))
+                              (state is NewAppCreateError))
                           ? () async {
-                        BlocProvider.of<NewAppCreateBloc>(context).add(
-                            NewAppCreateConfirm(
-                                _fromExisting,
-                                loggedInState,
-                                jsonDestination == JsonDestination.MemberMedium
-                                    ? memberMediumModel
-                                    : null,
-                                jsonDestination == JsonDestination.URL
-                                    ? url
-                                    : null));
-                        return false;
-                      }
+                              BlocProvider.of<NewAppCreateBloc>(context).add(
+                                  NewAppCreateConfirm(
+                                      _fromExisting,
+                                      loggedInState,
+                                      jsonDestination ==
+                                              JsonDestination.memberMedium
+                                          ? memberMediumModel
+                                          : null,
+                                      jsonDestination == JsonDestination.url
+                                          ? url
+                                          : null));
+                              return false;
+                            }
                           : null,
                       title: 'Create new App',
                     ),
@@ -141,7 +143,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                         (state is NewAppCreateError))
                       enterDetails(state),
                     if (((state is NewAppCreateAllowEnterDetails) ||
-                        (state is NewAppCreateError)) &&
+                            (state is NewAppCreateError)) &&
                         (_fromExisting))
                       topicContainer(widget.app, context,
                           title: 'Source',
@@ -150,15 +152,15 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           children: [
                             JsonDestinationWidget(
                               app: widget.app,
-                              jsonDestination:
-                              jsonDestination ?? JsonDestination.MemberMedium,
+                              jsonDestination: jsonDestination ??
+                                  JsonDestination.memberMedium,
                               jsonDestinationCallback: (JsonDestination val) {
                                 setState(() {
                                   jsonDestination = val;
                                 });
                               },
                             ),
-                            if (jsonDestination == JsonDestination.MemberMedium)
+                            if (jsonDestination == JsonDestination.memberMedium)
                               JsonMemberMediumWidget(
                                   app: widget.app,
                                   ext: 'app.json',
@@ -168,7 +170,7 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                                       memberMediumModel = value;
                                     });
                                   }),
-                            if (jsonDestination == JsonDestination.URL)
+                            if (jsonDestination == JsonDestination.url)
                               getListTile(context, widget.app,
                                   leading: Icon(Icons.description),
                                   title: dialogField(
@@ -189,11 +191,12 @@ class _NewAppCreateWidgetState extends State<NewAppCreateWidget> {
                           ]),
                     if (state is NewAppCreateCreateInProgress) _progress(state),
                   ]));
-            }
-            return progressIndicator(widget.app, context);
-          });
+        }
+        return progressIndicator(widget.app, context);
+      });
     } else {
-      return text(widget.app, context, 'You need to be logged in to create a new app');
+      return text(
+          widget.app, context, 'You need to be logged in to create a new app');
     }
   }
 

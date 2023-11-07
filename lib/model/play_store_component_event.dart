@@ -24,13 +24,11 @@ abstract class PlayStoreComponentEvent extends Equatable {
 class FetchPlayStoreComponent extends PlayStoreComponentEvent {
   final String? id;
 
-  FetchPlayStoreComponent({ this.id });
+  FetchPlayStoreComponent({this.id});
 }
 
 class PlayStoreComponentUpdated extends PlayStoreComponentEvent {
   final PlayStoreModel value;
 
-  PlayStoreComponentUpdated({ required this.value });
+  PlayStoreComponentUpdated({required this.value});
 }
-
-

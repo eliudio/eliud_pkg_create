@@ -13,9 +13,11 @@ class PageCreateUninitialised extends PageCreateState {
   List<Object?> get props => [];
 
   @override
-  bool operator == (Object other) =>
-      identical(this, other) ||
-          other is PageCreateUninitialised;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is PageCreateUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 abstract class PageCreateInitialised extends PageCreateState {
@@ -24,12 +26,10 @@ abstract class PageCreateInitialised extends PageCreateState {
   PageCreateInitialised(this.pageModel);
 }
 
-class PageCreateFromPageValidated extends PageCreateState {
-
-}
+class PageCreateFromPageValidated extends PageCreateState {}
 
 class PageCreateValidated extends PageCreateInitialised {
-  PageCreateValidated(PageModel pageModel) : super(pageModel);
+  PageCreateValidated(super.pageModel);
 
   @override
   List<Object?> get props => [pageModel];
@@ -37,12 +37,14 @@ class PageCreateValidated extends PageCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is PageCreateValidated &&
-              pageModel == other.pageModel;
+      other is PageCreateValidated && pageModel == other.pageModel;
+
+  @override
+  int get hashCode => pageModel.hashCode;
 }
 
 class PageCreateChangesApplied extends PageCreateInitialised {
-  PageCreateChangesApplied(PageModel pageModel) : super(pageModel);
+  PageCreateChangesApplied(super.pageModel);
 
   @override
   List<Object?> get props => [pageModel];
@@ -50,7 +52,8 @@ class PageCreateChangesApplied extends PageCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is PageCreateChangesApplied &&
-              pageModel == other.pageModel;
-}
+      other is PageCreateChangesApplied && pageModel == other.pageModel;
 
+  @override
+  int get hashCode => pageModel.hashCode;
+}

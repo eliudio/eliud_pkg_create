@@ -27,7 +27,7 @@ class PlayStoreComponentUninitialized extends PlayStoreComponentState {}
 
 class PlayStoreComponentError extends PlayStoreComponentState {
   final String? message;
-  PlayStoreComponentError({ this.message });
+  PlayStoreComponentError({this.message});
 }
 
 class PlayStoreComponentPermissionDenied extends PlayStoreComponentState {
@@ -37,10 +37,10 @@ class PlayStoreComponentPermissionDenied extends PlayStoreComponentState {
 class PlayStoreComponentLoaded extends PlayStoreComponentState {
   final PlayStoreModel value;
 
-  const PlayStoreComponentLoaded({ required this.value });
+  const PlayStoreComponentLoaded({required this.value});
 
-  PlayStoreComponentLoaded copyWith({ PlayStoreModel? copyThis }) {
-    return PlayStoreComponentLoaded(value: copyThis ?? this.value);
+  PlayStoreComponentLoaded copyWith({PlayStoreModel? copyThis}) {
+    return PlayStoreComponentLoaded(value: copyThis ?? value);
   }
 
   @override
@@ -49,4 +49,3 @@ class PlayStoreComponentLoaded extends PlayStoreComponentState {
   @override
   String toString() => 'PlayStoreComponentLoaded { value: $value }';
 }
-

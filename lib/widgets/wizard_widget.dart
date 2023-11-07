@@ -19,7 +19,7 @@ import 'package:split_view/split_view.dart';
 import 'wizard_bloc/wizard_event.dart';
 import 'wizard_bloc/wizard_state.dart';
 
-typedef BlocProvider BlocProviderProvider(Widget child);
+typedef BlocProviderProvider = BlocProvider Function(Widget child);
 
 void newWizard(
   BuildContext context,
@@ -30,9 +30,9 @@ void newWizard(
   openFlexibleDialog(
     app,
     context,
-    app.documentID + '/_wizard',
+    '${app.documentID}/_wizard',
     includeHeading: true,
-    widthFraction: fraction == null ? .5 : fraction,
+    widthFraction: fraction ?? .5,
     title: 'Run Wizard',
     buttons: [
       dialogButton(app, context, label: 'Close', onPressed: () {
@@ -61,11 +61,10 @@ class WizardWidget extends StatefulWidget {
   final double widgetHeight;
 
   WizardWidget._({
-    Key? key,
     required this.app,
     required this.widgetWidth,
     required this.widgetHeight,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -102,7 +101,7 @@ class _WizardWidgetState extends State<WizardWidget> {
   String? styleFamily;
   String? styleName;
   SplitViewController? _splitViewController;
-  CurrentActiveWizardData? currentActiveWizardData = null;
+  CurrentActiveWizardData? currentActiveWizardData;
 
   final Map<String, NewAppWizardParameters> newAppWizardParameterss = {};
 
@@ -153,7 +152,7 @@ class _WizardWidgetState extends State<WizardWidget> {
                                   shrinkWrap: true,
                                   physics: ScrollPhysics(),
                                   children: [
-                                    if (!(state is WizardCreateInProgress))
+                                    if (state is! WizardCreateInProgress)
                                       _currentActiveWizard(),
                                     if (state is WizardCreated) _finished(state)
                                   ]))
@@ -237,7 +236,7 @@ class _WizardWidgetState extends State<WizardWidget> {
                     wizard, newAppWizardName, newAppWizardParameters);
               });
             }));
-            childrenChildren.add( SizedBox(width: 20));
+            childrenChildren.add(SizedBox(width: 20));
           }
         }
       }
@@ -258,12 +257,12 @@ class ActionSpecificationWidget extends StatefulWidget {
   final ActionSpecification actionSpecification;
 
   ActionSpecificationWidget({
-    Key? key,
+    super.key,
     required this.app,
     required this.label,
     required this.enabled,
     required this.actionSpecification,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {

@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'models_json_event.dart';
 import 'models_json_state.dart';
 
-
 abstract class AbstractModelWithInformation {
   final String label;
 
@@ -25,8 +24,9 @@ abstract class AbstractModelWithInformation {
 class ModelWithInformation extends AbstractModelWithInformation {
   final ModelBase model;
 
-  ModelWithInformation(String label, this.model) : super(label);
+  ModelWithInformation(super.label, this.model);
 
+  @override
   Future<Map<String, dynamic>> toRichMap(
       {required String appId,
       required List<ModelReference> referencedModels}) async {
@@ -40,12 +40,16 @@ class ModelWithInformation extends AbstractModelWithInformation {
   }
 }
 
-Future<EntityBase> retrieveAndRecursivelyFindReferences(String appId,
-    ModelBase model, List<ModelReference> callerReferencedModels, List<ModelReference> referencedModels) async {
-
-  var entity =
-      await model.toEntity(appId: appId, );
-  List<ModelReference> newReferences = await model.collectReferences(appId: appId);
+Future<EntityBase> retrieveAndRecursivelyFindReferences(
+    String appId,
+    ModelBase model,
+    List<ModelReference> callerReferencedModels,
+    List<ModelReference> referencedModels) async {
+  var entity = model.toEntity(
+    appId: appId,
+  );
+  List<ModelReference> newReferences =
+      await model.collectReferences(appId: appId);
   List<ModelReference> newReferences2 = [];
 
   List<ModelReference> newCallerReferencedModels = [];
@@ -77,10 +81,11 @@ class ModelDocumentIDsWithInformation extends AbstractModelWithInformation {
       this.repository, String label, this.documentIDs)
       : super(label);
 
+  @override
   Future<List<dynamic>> toRichMap(
       {required String appId,
       required List<ModelReference> referencedModels}) async {
-    print("toRichMap: " + label);
+    print("toRichMap: $label");
     List<dynamic> list = [];
     for (var documentID in documentIDs) {
       var model = await repository.get(documentID);
@@ -125,10 +130,7 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
         try {
           await task();
         } catch (e) {
-          print('Exception running task ' +
-              i.toString() +
-              ', error: ' +
-              e.toString());
+          print('Exception running task $i, error: $e');
         }
         progressManager.progressedNextStep();
       }
@@ -142,6 +144,18 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
         event.progress,
         event.dataContainer,
       ));
+    });
+
+    on<ModelsAndJsonAvailableInClipboardEvent>((event, emit) async {
+      emit(ModelsAndJsonAvailableInClipboard());
+    });
+
+    on<ModelsAndJsonErrorEvent>((event, emit) async {
+      emit(ModelsAndJsonError(event.message));
+    });
+
+    on<ModelsAndJsonAvailableAsMemberMediumEvent>((event, emit) async {
+      emit(ModelsAndJsonAvailableAsMemberMedium(event.memberMediumModel));
     });
   }
 
@@ -160,21 +174,20 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
     });
 
     tasks.add(() async {
-      Set<String> referencedModels2 = Set<String>();
+      Set<String> referencedModels2 = <String>{};
 
       referencedModels
           .retainWhere((element) => referencedModels2.add(element.key()));
 
       for (var referencedModel in referencedModels) {
         var fullName =
-            referencedModel.packageName + "-" + referencedModel.componentName;
+            "${referencedModel.packageName}-${referencedModel.componentName}";
         var map = theMap[fullName];
         if (map == null) {
           theMap[fullName] = [];
         }
         var entity = referencedModel.referenced
-            .toEntity(
-            appId: appId /*, referencesCollector: referencedModels*/);
+            .toEntity(appId: appId /*, referencesCollector: referencedModels*/);
         var doc = entity.toDocument();
         doc['documentID'] = referencedModel.referenced.documentID;
         await entity.enrichedDocument(doc);
@@ -183,26 +196,26 @@ class ModelsJsonBloc extends Bloc<ModelsJsonEvent, ModelsJsonState> {
     });
 
     tasks.add(() async {
-      var _jsonEncoded = jsonEncode(theMap);
+      var jsonEncoded = jsonEncode(theMap);
       if (event is ModelsJsonConstructJsonEventToClipboard) {
         try {
-          await Clipboard.setData(ClipboardData(text: _jsonEncoded));
-          emit(ModelsAndJsonAvailableInClipboard());
+          await Clipboard.setData(ClipboardData(text: jsonEncoded));
+          add(ModelsAndJsonAvailableInClipboardEvent());
         } catch (e) {
-          emit(ModelsAndJsonError(
+          add(ModelsAndJsonErrorEvent(
               "Couldn't copy the json to clipboard. It's likely too large"));
         }
       } else if (event is ModelsJsonConstructJsonEventToMemberMediumModel) {
         String docID = newRandomKey();
         var memberMedium = await MemberMediumHelper(
-                app, event.member.documentID, MemberMediumAccessibleByGroup.Me)
-            .uploadTextData(docID, _jsonEncoded, event.baseName);
+                app, event.member.documentID, MemberMediumAccessibleByGroup.me)
+            .uploadTextData(docID, jsonEncoded, event.baseName);
         try {
           await Clipboard.setData(ClipboardData(text: memberMedium.url ?? ''));
         } catch (e) {
-          print("Can't set clipboard. Exception: " + e.toString());
+          print("Can't set clipboard. Exception: $e");
         }
-        emit(ModelsAndJsonAvailableAsMemberMedium(memberMedium));
+        add(ModelsAndJsonAvailableAsMemberMediumEvent(memberMedium));
       }
     });
   }

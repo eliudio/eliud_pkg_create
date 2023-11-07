@@ -21,7 +21,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
     this.menu,
   ) : super(MenuDefCreateUninitialised()) {
     on<MenuDefCreateInitialiseEvent>((event, emit) {
-      var appId = app.documentID;
+      //var appId = app.documentID;
       emit(MenuDefCreateInitialised(
         menuDefModel: event.menuDefModel,
       ));
@@ -39,7 +39,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
             text: 'Sign in',
             description: 'Sign in',
             action: InternalAction(app,
-                internalActionEnum: InternalActionEnum.Login)),
+                internalActionEnum: InternalActionEnum.login)),
       ));
       apply();
     });
@@ -51,7 +51,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
             text: 'Sign out',
             description: 'Sign out',
             action: InternalAction(app,
-                internalActionEnum: InternalActionEnum.Logout)),
+                internalActionEnum: InternalActionEnum.logout)),
       ));
       apply();
     });
@@ -66,7 +66,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
                 fontFamily: Icons.settings.fontFamily),
             description: 'Go home',
             action: InternalAction(app,
-                internalActionEnum: InternalActionEnum.GoHome)),
+                internalActionEnum: InternalActionEnum.goHome)),
       ));
       apply();
     });
@@ -78,7 +78,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
             text: 'Other apps',
             description: 'Other apps',
             action: InternalAction(app,
-                internalActionEnum: InternalActionEnum.OtherApps)),
+                internalActionEnum: InternalActionEnum.otherApps)),
       ));
       apply();
     });
@@ -129,11 +129,11 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
       MenuDefCreateInitialised theState = state as MenuDefCreateInitialised;
       List<MenuItemModel> menuItems = List.of(theState.menuDefModel.menuItems!);
       int positionToMove = menuItems.indexOf(event.menuItemModel);
-      if (event.moveMenuItemDirection == MoveMenuItemDirection.Up) {
+      if (event.moveMenuItemDirection == MoveMenuItemDirection.up) {
         if (positionToMove > 0) {
           menuItems.swap(positionToMove - 1, positionToMove);
         }
-      } else if (event.moveMenuItemDirection == MoveMenuItemDirection.Down) {
+      } else if (event.moveMenuItemDirection == MoveMenuItemDirection.down) {
         if (positionToMove < menuItems.length - 1) {
           menuItems.swap(positionToMove + 1, positionToMove);
         }
@@ -175,6 +175,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
     return _newStateWithItems(menuItems, currentlySelected: newItem);
   }
 
+/*
   MenuDefCreateInitialised _newStateDeleteItemFromIndex(int index) {
     var theState = state as MenuDefCreateInitialised;
     List<MenuItemModel> menuItems = List.of(theState.menuDefModel.menuItems!);
@@ -182,6 +183,7 @@ class MenuDefCreateBloc extends Bloc<MenuDefCreateEvent, MenuDefCreateState> {
     return _newStateWithItems(menuItems);
   }
 
+*/
   MenuDefCreateInitialised _newStateDeleteItem(MenuItemModel menuItemModel) {
     var theState = state as MenuDefCreateInitialised;
     List<MenuItemModel> menuItems = List.of(theState.menuDefModel.menuItems!);

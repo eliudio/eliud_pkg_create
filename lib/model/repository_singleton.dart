@@ -20,13 +20,15 @@ import '../model/play_store_firestore.dart';
 import '../model/play_store_repository.dart';
 import '../model/play_store_cache.dart';
 
-
 class RepositorySingleton extends AbstractRepositorySingleton {
-    var _playStoreRepository = HashMap<String, PlayStoreRepository>();
+  final _playStoreRepository = HashMap<String, PlayStoreRepository>();
 
-    PlayStoreRepository? playStoreRepository(String? appId) {
-      if ((appId != null) && (_playStoreRepository[appId] == null)) _playStoreRepository[appId] = PlayStoreCache(PlayStoreFirestore(() => appRepository()!.getSubCollection(appId, 'playstore'), appId));
-      return _playStoreRepository[appId];
+  @override
+  PlayStoreRepository? playStoreRepository(String? appId) {
+    if ((appId != null) && (_playStoreRepository[appId] == null)) {
+      _playStoreRepository[appId] = PlayStoreCache(PlayStoreFirestore(
+          () => appRepository()!.getSubCollection(appId, 'playstore'), appId));
     }
-
+    return _playStoreRepository[appId];
+  }
 }

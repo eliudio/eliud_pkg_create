@@ -1,38 +1,43 @@
-
 import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:equatable/equatable.dart';
 
-
-typedef void PostCreationAction(String? key, String? documentId);
+typedef PostCreationAction = void Function(String? key, String? documentId);
 
 abstract class FromJsonEvent extends Equatable {
+  @override
   List<Object?> get props => [];
 }
 
 class FromJsonInitialise extends FromJsonEvent {
-  FromJsonInitialise(): super();
+  FromJsonInitialise() : super();
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is FromJsonInitialise;
+      identical(this, other) || other is FromJsonInitialise;
+
+  @override
+  int get hashCode => 0;
 }
 
-abstract class FromJsonAction  extends FromJsonEvent {
+abstract class FromJsonAction extends FromJsonEvent {
   // Also re-upload (with new documentID) the media (PlatformMedium, MemberMedium or PublicMedium) referenced or reference the same image as the one being created?
   final bool includeMedia;
   final PostCreationAction postCreationAction;
 
   FromJsonAction(this.includeMedia, this.postCreationAction);
-
 }
 
 class NewFromJsonWithUrl extends FromJsonAction {
   final LoggedIn loggedIn;
   final String url;
 
-  NewFromJsonWithUrl(this.loggedIn, this.url, bool includeMedia, PostCreationAction postCreationAction): super(includeMedia, postCreationAction, );
+  NewFromJsonWithUrl(this.loggedIn, this.url, bool includeMedia,
+      PostCreationAction postCreationAction)
+      : super(
+          includeMedia,
+          postCreationAction,
+        );
 
   @override
   List<Object?> get props => [];
@@ -40,17 +45,22 @@ class NewFromJsonWithUrl extends FromJsonAction {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is NewFromJsonWithUrl &&
-              this.includeMedia == other.includeMedia
-              &&
-              url == other.url;
+      other is NewFromJsonWithUrl &&
+          includeMedia == other.includeMedia &&
+          url == other.url;
+
+  @override
+  int get hashCode => includeMedia.hashCode ^ url.hashCode;
 }
 
 class NewFromJsonWithModel extends FromJsonAction {
   final LoggedIn loggedIn;
-  MemberMediumModel memberMediumModel; // if null then from clipboard or url
+  final MemberMediumModel
+      memberMediumModel; // if null then from clipboard or url
 
-  NewFromJsonWithModel(this.loggedIn, this.memberMediumModel, bool includeMedia, PostCreationAction postCreationAction): super(includeMedia, postCreationAction);
+  NewFromJsonWithModel(this.loggedIn, this.memberMediumModel, bool includeMedia,
+      PostCreationAction postCreationAction)
+      : super(includeMedia, postCreationAction);
 
   @override
   List<Object?> get props => [];
@@ -58,14 +68,17 @@ class NewFromJsonWithModel extends FromJsonAction {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is NewFromJsonWithModel &&
-              this.includeMedia == other.includeMedia
-              &&
-              memberMediumModel == other.memberMediumModel;
+      other is NewFromJsonWithModel &&
+          includeMedia == other.includeMedia &&
+          memberMediumModel == other.memberMediumModel;
+
+  @override
+  int get hashCode =>
+      includeMedia.hashCode ^ loggedIn.hashCode ^ memberMediumModel.hashCode;
 }
 
 class NewFromJsonWithClipboard extends FromJsonAction {
-  NewFromJsonWithClipboard(bool includeMedia, PostCreationAction postCreationAction): super(includeMedia, postCreationAction);
+  NewFromJsonWithClipboard(super.includeMedia, super.postCreationAction);
 
   @override
   List<Object?> get props => [];
@@ -73,14 +86,32 @@ class NewFromJsonWithClipboard extends FromJsonAction {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is NewFromJsonWithClipboard &&
-              this.includeMedia == other.includeMedia;
+      other is NewFromJsonWithClipboard && includeMedia == other.includeMedia;
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => includeMedia.hashCode;
 }
 
 class NewFromJsonCancelAction extends FromJsonEvent {
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is NewFromJsonCancelAction;
+
+  @override
+  int get hashCode => 0;
+}
+
+class FromJsonProgressEvent extends FromJsonEvent {
+  final double progress;
+
+  FromJsonProgressEvent(this.progress);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is NewFromJsonCancelAction;
+      other is FromJsonProgressEvent && other.progress == progress;
+
+  @override
+  int get hashCode => progress.hashCode;
 }

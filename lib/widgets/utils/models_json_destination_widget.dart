@@ -3,29 +3,25 @@ import 'package:eliud_core/style/frontend/has_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-enum JsonDestination { Clipboard, MemberMedium, URL}
+enum JsonDestination { clipboard, memberMedium, url }
 
 JsonDestination toJsonDestination(int? index) {
-  if (index == 0) return JsonDestination.Clipboard;
-  if (index == 1) return JsonDestination.MemberMedium;
-  return JsonDestination.URL;
+  if (index == 0) return JsonDestination.clipboard;
+  if (index == 1) return JsonDestination.memberMedium;
+  return JsonDestination.url;
 }
 
-
-
-typedef JsonDestinationCallback = Function(
-    JsonDestination jsonDestination);
+typedef JsonDestinationCallback = Function(JsonDestination jsonDestination);
 
 class JsonDestinationWidget extends StatefulWidget {
-  JsonDestinationCallback jsonDestinationCallback;
+  final JsonDestinationCallback jsonDestinationCallback;
   final JsonDestination jsonDestination;
   final AppModel app;
   JsonDestinationWidget(
-      {Key? key,
-        required this.app,
-        required this.jsonDestinationCallback,
-        required this.jsonDestination})
-      : super(key: key);
+      {super.key,
+      required this.app,
+      required this.jsonDestinationCallback,
+      required this.jsonDestination});
 
   @override
   State<StatefulWidget> createState() {
@@ -36,6 +32,7 @@ class JsonDestinationWidget extends StatefulWidget {
 class _JsonDestinationWidgetState extends State<JsonDestinationWidget> {
   int? _heightTypeSelectedRadioTile;
 
+  @override
   void initState() {
     super.initState();
     _heightTypeSelectedRadioTile = widget.jsonDestination.index;
@@ -43,12 +40,14 @@ class _JsonDestinationWidgetState extends State<JsonDestinationWidget> {
 
   String heighttTypeLandscapeStringValue(JsonDestination? jsonDestination) {
     switch (jsonDestination) {
-      case JsonDestination.Clipboard:
+      case JsonDestination.clipboard:
         return 'Clipboard';
-      case JsonDestination.MemberMedium:
+      case JsonDestination.memberMedium:
         return 'Member Medium';
-      case JsonDestination.URL:
+      case JsonDestination.url:
         return 'URL';
+      case null:
+        break;
     }
     return '?';
   }
@@ -71,15 +70,15 @@ class _JsonDestinationWidgetState extends State<JsonDestinationWidget> {
             _heightTypeSelectedRadioTile,
             stringValue,
             null,
-                (dynamic val) => setSelection(val)));
+            (dynamic val) => setSelection(val)));
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView(children: [
-      getPrivilegeOption(JsonDestination.MemberMedium),
-      getPrivilegeOption(JsonDestination.URL),
-      getPrivilegeOption(JsonDestination.Clipboard)
+      getPrivilegeOption(JsonDestination.memberMedium),
+      getPrivilegeOption(JsonDestination.url),
+      getPrivilegeOption(JsonDestination.clipboard)
     ], shrinkWrap: true, physics: ScrollPhysics());
   }
 }

@@ -14,17 +14,18 @@ import 'models_json_bloc/models_json_state.dart';
 import 'models_json_destination_widget.dart';
 import 'package:intl/intl.dart';
 
-typedef Future<
-    List<AbstractModelWithInformation>> AbstractModelWithInformationsProvider();
+typedef AbstractModelWithInformationsProvider
+    = Future<List<AbstractModelWithInformation>> Function();
 
-typedef ModelsJsonConstructJsonEventToClipboard ModelsJsonConstructJsonEventToClipboardCreator();
-typedef ModelsJsonConstructJsonEventToMemberMediumModel ModelsJsonConstructJsonEventToMemberMediumModelCreator(
-    String baseName);
+typedef ModelsJsonConstructJsonEventToClipboardCreator
+    = ModelsJsonConstructJsonEventToClipboard Function();
+typedef ModelsJsonConstructJsonEventToMemberMediumModelCreator
+    = ModelsJsonConstructJsonEventToMemberMediumModel Function(String baseName);
 
 String getJsonFilename(String documentId, String extension) {
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('EEE d MMM y kk:mm:ss').format(now);
-  return documentId + ' ' + formattedDate + '.' + extension + '.json';
+  return '$documentId $formattedDate.$extension.json';
 }
 
 class ModelsJsonWidget extends StatefulWidget {
@@ -36,12 +37,11 @@ class ModelsJsonWidget extends StatefulWidget {
   final String initialBaseName;
 
   ModelsJsonWidget._({
-    Key? key,
     required this.app,
     required this.modelsJsonConstructJsonEventToClipboardCreator,
     required this.modelsJsonConstructJsonEventToMemberMediumModelCreator,
     required this.initialBaseName,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -78,8 +78,9 @@ class _ModelsJsonWidgetState extends State<ModelsJsonWidget> {
   late List<DropdownMenuItem<int>> dropdownMenuItems;
   Widget? location;
 
+  @override
   void initState() {
-    jsonDestination = JsonDestination.MemberMedium;
+    jsonDestination = JsonDestination.memberMedium;
     baseName = widget.initialBaseName;
     super.initState();
   }
@@ -94,7 +95,7 @@ class _ModelsJsonWidgetState extends State<ModelsJsonWidget> {
           collapsed: true,
           children: [
             if (state is ModelsAndJsonError)
-              text(widget.app, context, 'Error: ' + state.error),
+              text(widget.app, context, 'Error: ${state.error}'),
             if (state is ModelsAndJsonAvailableInClipboard)
               text(widget.app, context,
                   'Json representation available in clipboard'),
@@ -106,17 +107,14 @@ class _ModelsJsonWidgetState extends State<ModelsJsonWidget> {
                 collapsible: true,
                 collapsed: true,
                 children: [
-                  text(
-                      widget.app,
-                      context,
-                      'Medium document : ' +
-                          state.memberMediumModel.documentID),
                   text(widget.app, context,
-                      'Basename : ' + (state.memberMediumModel.base ?? '?')),
+                      'Medium document : ${state.memberMediumModel.documentID}'),
                   text(widget.app, context,
-                      'Extension : ' + (state.memberMediumModel.ext ?? '?')),
+                      'Basename : ${state.memberMediumModel.base ?? '?'}'),
                   text(widget.app, context,
-                      'Url : ' + (state.memberMediumModel.url ?? '?')),
+                      'Extension : ${state.memberMediumModel.ext ?? '?'}'),
+                  text(widget.app, context,
+                      'Url : ${state.memberMediumModel.url ?? '?'}'),
                   Center(
                       child: button(widget.app, context,
                           label: 'Copy url to clipboard', onPressed: () {
@@ -137,7 +135,7 @@ class _ModelsJsonWidgetState extends State<ModelsJsonWidget> {
                     JsonDestinationWidget(
                       app: widget.app,
                       jsonDestination:
-                          jsonDestination ?? JsonDestination.MemberMedium,
+                          jsonDestination ?? JsonDestination.memberMedium,
                       jsonDestinationCallback: (JsonDestination val) {
                         setState(() {
                           jsonDestination = val;
@@ -149,7 +147,7 @@ class _ModelsJsonWidgetState extends State<ModelsJsonWidget> {
                     (state is ModelsAndJsonError) ||
                     (state is ModelsAndJsonAvailableInClipboard) ||
                     (state is ModelsAndJsonAvailableAsMemberMedium)) &&
-                (jsonDestination == JsonDestination.MemberMedium))
+                (jsonDestination == JsonDestination.memberMedium))
               topicContainer(widget.app, context,
                   title: 'Name',
                   collapsible: true,
@@ -175,7 +173,7 @@ class _ModelsJsonWidgetState extends State<ModelsJsonWidget> {
                     (state is ModelsAndJsonError) ||
                     (state is ModelsAndJsonAvailableInClipboard) ||
                     (state is ModelsAndJsonAvailableAsMemberMedium)) &&
-                (jsonDestination == JsonDestination.Clipboard))
+                (jsonDestination == JsonDestination.clipboard))
               Center(
                   child: button(widget.app, context, label: 'Generate',
                       onPressed: () {
@@ -186,7 +184,7 @@ class _ModelsJsonWidgetState extends State<ModelsJsonWidget> {
                     (state is ModelsAndJsonError) ||
                     (state is ModelsAndJsonAvailableInClipboard) ||
                     (state is ModelsAndJsonAvailableAsMemberMedium)) &&
-                (jsonDestination == JsonDestination.MemberMedium))
+                (jsonDestination == JsonDestination.memberMedium))
               Center(
                   child: button(widget.app, context, label: 'Generate',
                       onPressed: () {

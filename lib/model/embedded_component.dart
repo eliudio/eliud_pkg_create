@@ -13,14 +13,4 @@
 
 */
 
-
-
-
-
-
-
-class EmbeddedComponentFactory {
-
-
-}
-
+class EmbeddedComponentFactory {}

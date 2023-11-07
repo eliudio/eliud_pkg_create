@@ -13,9 +13,11 @@ class BottomNavBarCreateUninitialised extends BottomNavBarCreateState {
   List<Object?> get props => [];
 
   @override
-  bool operator == (Object other) =>
-      identical(this, other) ||
-          other is BottomNavBarCreateUninitialised;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is BottomNavBarCreateUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 abstract class BottomNavBarCreateInitialised extends BottomNavBarCreateState {
@@ -25,7 +27,7 @@ abstract class BottomNavBarCreateInitialised extends BottomNavBarCreateState {
 }
 
 class BottomNavBarCreateValidated extends BottomNavBarCreateInitialised {
-  BottomNavBarCreateValidated(HomeMenuModel homeMenuModel) : super(homeMenuModel);
+  BottomNavBarCreateValidated(super.homeMenuModel);
 
   @override
   List<Object?> get props => [homeMenuModel];
@@ -33,12 +35,15 @@ class BottomNavBarCreateValidated extends BottomNavBarCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is BottomNavBarCreateValidated &&
-              homeMenuModel == other.homeMenuModel;
+      other is BottomNavBarCreateValidated &&
+          homeMenuModel == other.homeMenuModel;
+
+  @override
+  int get hashCode => homeMenuModel.hashCode;
 }
 
 class BottomNavBarCreateChangesApplied extends BottomNavBarCreateInitialised {
-  BottomNavBarCreateChangesApplied(HomeMenuModel homeMenuModel) : super(homeMenuModel);
+  BottomNavBarCreateChangesApplied(super.homeMenuModel);
 
   @override
   List<Object?> get props => [homeMenuModel];
@@ -46,7 +51,9 @@ class BottomNavBarCreateChangesApplied extends BottomNavBarCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is BottomNavBarCreateChangesApplied &&
-              homeMenuModel == other.homeMenuModel;
-}
+      other is BottomNavBarCreateChangesApplied &&
+          homeMenuModel == other.homeMenuModel;
 
+  @override
+  int get hashCode => homeMenuModel.hashCode;
+}

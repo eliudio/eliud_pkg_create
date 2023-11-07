@@ -20,7 +20,8 @@ import 'package:eliud_pkg_create/model/play_store_component_event.dart';
 import 'package:eliud_pkg_create/model/play_store_component_state.dart';
 import 'package:eliud_pkg_create/model/play_store_repository.dart';
 
-class PlayStoreComponentBloc extends Bloc<PlayStoreComponentEvent, PlayStoreComponentState> {
+class PlayStoreComponentBloc
+    extends Bloc<PlayStoreComponentEvent, PlayStoreComponentState> {
   final PlayStoreRepository? playStoreRepository;
   StreamSubscription? _playStoreSubscription;
 
@@ -33,11 +34,12 @@ class PlayStoreComponentBloc extends Bloc<PlayStoreComponentEvent, PlayStoreComp
     });
   }
 
-  PlayStoreComponentBloc({ this.playStoreRepository }): super(PlayStoreComponentUninitialized()) {
-    on <FetchPlayStoreComponent> ((event, emit) {
+  PlayStoreComponentBloc({this.playStoreRepository})
+      : super(PlayStoreComponentUninitialized()) {
+    on<FetchPlayStoreComponent>((event, emit) {
       _mapLoadPlayStoreComponentUpdateToState(event.id!);
     });
-    on <PlayStoreComponentUpdated> ((event, emit) {
+    on<PlayStoreComponentUpdated>((event, emit) {
       emit(PlayStoreComponentLoaded(value: event.value));
     });
   }
@@ -47,6 +49,4 @@ class PlayStoreComponentBloc extends Bloc<PlayStoreComponentEvent, PlayStoreComp
     _playStoreSubscription?.cancel();
     return super.close();
   }
-
 }
-

@@ -12,15 +12,14 @@ class MenuItemWidget extends StatefulWidget {
   final AppModel app;
   final MenuItemModel menuItemModel;
 
-  const MenuItemWidget({Key? key, required this.app, required this.menuItemModel})
-      : super(key: key);
+  const MenuItemWidget(
+      {super.key, required this.app, required this.menuItemModel});
 
   @override
   State<StatefulWidget> createState() => _MenuItemWidgetState();
 }
 
 class _MenuItemWidgetState extends State<MenuItemWidget> {
-
   @override
   void initState() {
     super.initState();
@@ -28,9 +27,10 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if ((widget.menuItemModel.action != null) && (widget.menuItemModel.action!.conditions == null)) {
+    if ((widget.menuItemModel.action != null) &&
+        (widget.menuItemModel.action!.conditions == null)) {
       widget.menuItemModel.action!.conditions = DisplayConditionsModel(
-        privilegeLevelRequired: PrivilegeLevelRequired.NoPrivilegeRequired,
+        privilegeLevelRequired: PrivilegeLevelRequired.noPrivilegeRequired,
       );
     }
 
@@ -40,25 +40,20 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
           collapsible: true,
           collapsed: true,
           children: [
-            dialogField(
-                widget.app,
-                context,
-                initialValue: widget.menuItemModel.text,
-                valueChanged: (value) {
-                  widget.menuItemModel.text = value;
-                },
+            dialogField(widget.app, context,
+                initialValue: widget.menuItemModel.text, valueChanged: (value) {
+              widget.menuItemModel.text = value;
+            },
                 maxLines: 1,
                 decoration: const InputDecoration(
                   hintText: 'Text',
                   labelText: 'Text',
                 )),
-            dialogField(
-                widget.app,
-                context,
+            dialogField(widget.app, context,
                 initialValue: widget.menuItemModel.description,
                 valueChanged: (value) {
-                  widget.menuItemModel.description = value;
-                },
+              widget.menuItemModel.description = value;
+            },
                 maxLines: 1,
                 decoration: const InputDecoration(
                   hintText: 'Description',
@@ -69,7 +64,9 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
           title: 'Icon',
           collapsible: true,
           collapsed: true,
-          children: [IconField(widget.app, widget.menuItemModel.icon, _onIconChanged)]),
+          children: [
+            IconField(widget.app, widget.menuItemModel.icon, _onIconChanged)
+          ]),
       if (widget.menuItemModel.action != null)
         topicContainer(widget.app, context,
             title: 'Action',
@@ -79,13 +76,15 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
               _actionDescription(context),
             ]),
       if (widget.menuItemModel.action != null)
-        DisplayConditionsWidget(app: widget.app,
-            value: widget.menuItemModel.action!.conditions!),
+        DisplayConditionsWidget(
+            app: widget.app, value: widget.menuItemModel.action!.conditions!),
     ]);
   }
 
   Widget _actionDescription(BuildContext context) {
-    if (widget.menuItemModel.action == null) return text(widget.app, context, 'No action');
+    if (widget.menuItemModel.action == null) {
+      return text(widget.app, context, 'No action');
+    }
     return text(widget.app, context, widget.menuItemModel.action!.describe());
   }
 

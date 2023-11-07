@@ -42,8 +42,7 @@ class MenuDefCreateWidget extends StatefulWidget {
 
   MenuDefCreateWidget._({
     required this.app,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -121,9 +120,10 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                 child: Column(
                                     children: state.menuDefModel.menuItems!
                                         .map((item) {
-                                  var theKey;
-                                  if (item == state.currentlySelected)
+                                  GlobalKey<State<StatefulWidget>>? theKey;
+                                  if (item == state.currentlySelected) {
                                     theKey = currentVisible;
+                                  }
                                   count++;
                                   return ListTile(
                                       key: theKey,
@@ -145,11 +145,11 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                             BlocProvider.of<MenuDefCreateBloc>(
                                                     context)
                                                 .add(MenuDefMoveMenuItem(item,
-                                                    MoveMenuItemDirection.Up)),
+                                                    MoveMenuItemDirection.up)),
                                         actionDown: () => BlocProvider.of<
                                                 MenuDefCreateBloc>(context)
                                             .add(MenuDefMoveMenuItem(item,
-                                                MoveMenuItemDirection.Down)),
+                                                MoveMenuItemDirection.down)),
                                         actionDetails: () =>
                                             details(appId, item),
                                         actionDelete: () => BlocProvider.of<
@@ -249,8 +249,9 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
                                                       title: text(
                                                           app,
                                                           context,
-                                                          workflow
-                                                              .name ?? workflow.documentID));
+                                                          workflow.name ??
+                                                              workflow
+                                                                  .documentID));
                                                 })),
                                         divider(app, context),
                                         GestureDetector(
@@ -334,17 +335,18 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
 
   PopupMenuButton<int> availableMenuItemPopup(
       MenuDefCreateEvent eventWhenAdded, VoidCallback updateAction) {
-    return popupMenuButton<int>(
-        widget.app, context,
+    return popupMenuButton<int>(widget.app, context,
         child: const Icon(Icons.more_vert),
         itemBuilder: (context) => [
               popupMenuItem(
-                widget.app, context,
+                widget.app,
+                context,
                 value: 1,
                 label: 'Add to menu',
               ),
               popupMenuItem(
-                widget.app, context,
+                widget.app,
+                context,
                 value: 2,
                 label: 'Update',
               ),
@@ -360,7 +362,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
 
   void details(String appId, MenuItemModel menuItemModel) {
     var toUpdate = menuItemModel.copyWith();
-    openFlexibleDialog(widget.app, context, appId + '/_error',
+    openFlexibleDialog(widget.app, context, '$appId/_error',
         title: 'Update Menu Item',
         widthFraction: .5,
         child: MenuItemWidget(app: widget.app, menuItemModel: toUpdate),
@@ -376,8 +378,8 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
         ]);
   }
 
-  Widget getTitle(String _title) =>
-      Center(child: h3(widget.app, context, _title));
+  Widget getTitle(String title) =>
+      Center(child: h3(widget.app, context, title));
 
   void ensureCurrentIsVisible() {
     if (currentVisible != null) {
@@ -387,7 +389,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
           Scrollable.ensureVisible(context);
         }
       });
-        }
+    }
   }
 
   double height() => 250; //(widget.widgetHeight / 2);
@@ -417,7 +419,7 @@ class _MenuDefCreateWidgetState extends State<MenuDefCreateWidget>
   }
 }
 
-typedef AvailableMenuItemPopupProvider(model);
+typedef AvailableMenuItemPopupProvider = Function(dynamic model);
 
 class PagesOrDialogsWidget extends StatefulWidget {
   final AppModel app;
@@ -427,14 +429,13 @@ class PagesOrDialogsWidget extends StatefulWidget {
 
   PagesOrDialogsWidget(
       {required this.app,
-      Key? key,
+      super.key,
       required this.pages,
       required this.availableMenuItemPopup,
-      required this.height})
-      : super(key: key);
+      required this.height});
 
   @override
-  _PagesOrDialogsWidgetState createState() {
+  State<PagesOrDialogsWidget> createState() {
     return _PagesOrDialogsWidgetState();
   }
 }
@@ -450,9 +451,9 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
 
   @override
   void initState() {
-    var _privilegeASize = _privilegeItems.length;
+    var privilegeASize = _privilegeItems.length;
     _privilegeTabController =
-        TabController(vsync: this, length: _privilegeASize);
+        TabController(vsync: this, length: privilegeASize);
     _privilegeTabController!.addListener(_handlePrivilegeTabSelection);
     _privilegeTabController!.index = _initialPrivilege;
 
@@ -483,10 +484,10 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
   @override
   Widget build(BuildContext context) {
     var newPrivilegeItems = <Widget>[];
-    var i = 0;
+    //var i = 0;
     for (var privilegeItem in _privilegeItems) {
       newPrivilegeItems.add(text(widget.app, context, privilegeItem));
-      i++;
+      //i++;
     }
     if (widget.pages) {
       return Container(
@@ -510,8 +511,12 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
                           return ListTile(
                               trailing: widget.availableMenuItemPopup(page),
                               //Icon(Icons.add),
-                              title:
-                                  text(widget.app, context, page!.description ?? page.title ?? page.documentID));
+                              title: text(
+                                  widget.app,
+                                  context,
+                                  page!.description ??
+                                      page.title ??
+                                      page.documentID));
                         })),
                 divider(widget.app, context),
                 GestureDetector(
@@ -555,7 +560,11 @@ class _PagesOrDialogsWidgetState extends State<PagesOrDialogsWidget>
                               ),
                               //Icon(Icons.add),
                               title: text(
-                                  widget.app, context, dialog!.description ?? dialog.title ?? dialog.documentID));
+                                  widget.app,
+                                  context,
+                                  dialog!.description ??
+                                      dialog.title ??
+                                      dialog.documentID));
                         })),
                 divider(widget.app, context),
                 GestureDetector(

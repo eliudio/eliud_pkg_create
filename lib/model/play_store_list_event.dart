@@ -30,10 +30,10 @@ class NewPage extends PlayStoreListEvent {}
 class AddPlayStoreList extends PlayStoreListEvent {
   final PlayStoreModel? value;
 
-  const AddPlayStoreList({ this.value });
+  const AddPlayStoreList({this.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() => 'AddPlayStoreList{ value: $value }';
@@ -42,10 +42,10 @@ class AddPlayStoreList extends PlayStoreListEvent {
 class UpdatePlayStoreList extends PlayStoreListEvent {
   final PlayStoreModel? value;
 
-  const UpdatePlayStoreList({ this.value });
+  const UpdatePlayStoreList({this.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() => 'UpdatePlayStoreList{ value: $value }';
@@ -54,10 +54,10 @@ class UpdatePlayStoreList extends PlayStoreListEvent {
 class DeletePlayStoreList extends PlayStoreListEvent {
   final PlayStoreModel? value;
 
-  const DeletePlayStoreList({ this.value });
+  const DeletePlayStoreList({this.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() => 'DeletePlayStoreList{ value: $value }';
@@ -67,24 +67,24 @@ class PlayStoreListUpdated extends PlayStoreListEvent {
   final List<PlayStoreModel?>? value;
   final bool? mightHaveMore;
 
-  const PlayStoreListUpdated({ this.value, this.mightHaveMore });
+  const PlayStoreListUpdated({this.value, this.mightHaveMore});
 
   @override
-  List<Object?> get props => [ value, mightHaveMore ];
+  List<Object?> get props => [value, mightHaveMore];
 
   @override
-  String toString() => 'PlayStoreListUpdated{ value: $value, mightHaveMore: $mightHaveMore }';
+  String toString() =>
+      'PlayStoreListUpdated{ value: $value, mightHaveMore: $mightHaveMore }';
 }
 
 class PlayStoreChangeQuery extends PlayStoreListEvent {
   final EliudQuery? newQuery;
 
-  const PlayStoreChangeQuery({ required this.newQuery });
+  const PlayStoreChangeQuery({required this.newQuery});
 
   @override
-  List<Object?> get props => [ newQuery ];
+  List<Object?> get props => [newQuery];
 
   @override
   String toString() => 'PlayStoreChangeQuery{ value: $newQuery }';
 }
-

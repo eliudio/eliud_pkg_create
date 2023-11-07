@@ -13,45 +13,105 @@
 
 */
 
-
-
 import 'package:eliud_pkg_create/model/model_export.dart';
 import 'package:eliud_pkg_create/model/entity_export.dart';
-
 
 import 'dart:async';
 import 'package:eliud_core/tools/query/query_tools.dart';
 import 'package:eliud_core/tools/common_tools.dart';
 import 'package:eliud_core/core/base/repository_base.dart';
 
-typedef PlayStoreModelTrigger(List<PlayStoreModel?> list);
-typedef PlayStoreChanged(PlayStoreModel? value);
-typedef PlayStoreErrorHandler(o, e);
+typedef PlayStoreModelTrigger = Function(List<PlayStoreModel?> list);
+typedef PlayStoreChanged = Function(PlayStoreModel? value);
+typedef PlayStoreErrorHandler = Function(dynamic o, dynamic e);
 
-abstract class PlayStoreRepository extends RepositoryBase<PlayStoreModel, PlayStoreEntity> {
+abstract class PlayStoreRepository
+    extends RepositoryBase<PlayStoreModel, PlayStoreEntity> {
+  @override
   Future<PlayStoreEntity> addEntity(String documentID, PlayStoreEntity value);
-  Future<PlayStoreEntity> updateEntity(String documentID, PlayStoreEntity value);
+  @override
+  Future<PlayStoreEntity> updateEntity(
+      String documentID, PlayStoreEntity value);
+  @override
   Future<PlayStoreModel> add(PlayStoreModel value);
+  @override
   Future<void> delete(PlayStoreModel value);
-  Future<PlayStoreModel?> get(String? id, { Function(Exception)? onError });
+  @override
+  Future<PlayStoreModel?> get(String? id, {Function(Exception)? onError});
+  @override
   Future<PlayStoreModel> update(PlayStoreModel value);
 
-  Stream<List<PlayStoreModel?>> values({String? orderBy, bool? descending, Object? startAfter, int? limit, SetLastDoc? setLastDoc, int? privilegeLevel, EliudQuery? eliudQuery });
-  Stream<List<PlayStoreModel?>> valuesWithDetails({String? orderBy, bool? descending, Object? startAfter, int? limit, SetLastDoc? setLastDoc, int? privilegeLevel, EliudQuery? eliudQuery });
-  Future<List<PlayStoreModel?>> valuesList({String? orderBy, bool? descending, Object? startAfter, int? limit, SetLastDoc? setLastDoc, int? privilegeLevel, EliudQuery? eliudQuery });
-  Future<List<PlayStoreModel?>> valuesListWithDetails({String? orderBy, bool? descending, Object? startAfter, int? limit, SetLastDoc? setLastDoc, int? privilegeLevel, EliudQuery? eliudQuery });
+  @override
+  Stream<List<PlayStoreModel?>> values(
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      SetLastDoc? setLastDoc,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery});
+  @override
+  Stream<List<PlayStoreModel?>> valuesWithDetails(
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      SetLastDoc? setLastDoc,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery});
+  @override
+  Future<List<PlayStoreModel?>> valuesList(
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      SetLastDoc? setLastDoc,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery});
+  @override
+  Future<List<PlayStoreModel?>> valuesListWithDetails(
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      SetLastDoc? setLastDoc,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery});
 
-  StreamSubscription<List<PlayStoreModel?>> listen(PlayStoreModelTrigger trigger, {String? orderBy, bool? descending, Object? startAfter, int? limit, int? privilegeLevel, EliudQuery? eliudQuery });
-  StreamSubscription<List<PlayStoreModel?>> listenWithDetails(PlayStoreModelTrigger trigger, {String? orderBy, bool? descending, Object? startAfter, int? limit, int? privilegeLevel, EliudQuery? eliudQuery });
-  StreamSubscription<PlayStoreModel?> listenTo(String documentId, PlayStoreChanged changed, {PlayStoreErrorHandler? errorHandler});
+  @override
+  StreamSubscription<List<PlayStoreModel?>> listen(
+      PlayStoreModelTrigger trigger,
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery});
+  @override
+  StreamSubscription<List<PlayStoreModel?>> listenWithDetails(
+      PlayStoreModelTrigger trigger,
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery});
+  @override
+  StreamSubscription<PlayStoreModel?> listenTo(
+      String documentId, PlayStoreChanged changed,
+      {PlayStoreErrorHandler? errorHandler});
+  @override
   void flush();
-  
+
+  @override
   String? timeStampToString(dynamic timeStamp);
 
+  @override
   dynamic getSubCollection(String documentId, String name);
-  Future<PlayStoreModel?> changeValue(String documentId, String fieldName, num changeByThisValue);
+  @override
+  Future<PlayStoreModel?> changeValue(
+      String documentId, String fieldName, num changeByThisValue);
 
+  @override
   Future<void> deleteAll();
 }
-
-

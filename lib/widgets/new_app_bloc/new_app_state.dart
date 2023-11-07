@@ -13,6 +13,9 @@ class NewAppShouldClose extends NewAppCreateState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is NewAppShouldClose;
+
+  @override
+  int get hashCode => 0;
 }
 
 class NewAppCreateUninitialised extends NewAppCreateState {
@@ -22,6 +25,9 @@ class NewAppCreateUninitialised extends NewAppCreateState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is NewAppCreateUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 abstract class NewAppCreateInitialised extends NewAppCreateState {
@@ -36,73 +42,86 @@ abstract class NewAppCreateInitialised extends NewAppCreateState {
 
 class NewAppCreateAllowEnterDetails extends NewAppCreateInitialised {
   NewAppCreateAllowEnterDetails(
-      AppModel appToBeCreated,
-      MemberModel member,
-      ) : super(appToBeCreated, member);
+    super.appToBeCreated,
+    super.member,
+  );
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is NewAppCreateAllowEnterDetails &&
-              appToBeCreated == other.appToBeCreated &&
-              member == other.member;
+      other is NewAppCreateAllowEnterDetails &&
+          appToBeCreated == other.appToBeCreated &&
+          member == other.member;
+
+  @override
+  int get hashCode => appToBeCreated.hashCode ^ member.hashCode;
 }
 
 class NewAppCreateError extends NewAppCreateInitialised {
   final String error;
 
   NewAppCreateError(
-      AppModel appToBeCreated,
-      MemberModel member,
-      this.error,
-      ) : super(appToBeCreated, member);
+    super.appToBeCreated,
+    super.member,
+    this.error,
+  );
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is NewAppCreateError &&
-              appToBeCreated == other.appToBeCreated &&
-              member == other.member &&
-              error == other.error;
+      other is NewAppCreateError &&
+          appToBeCreated == other.appToBeCreated &&
+          member == other.member &&
+          error == other.error;
+
+  @override
+  int get hashCode =>
+      appToBeCreated.hashCode ^ member.hashCode ^ error.hashCode;
 }
 
 class NewAppCreateCreateInProgress extends NewAppCreateInitialised {
   final double progress;
 
   NewAppCreateCreateInProgress(
-      AppModel appToBeCreated, MemberModel member, this.progress)
-      : super(appToBeCreated, member);
+      super.appToBeCreated, super.member, this.progress);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is NewAppCreateCreateInProgress &&
-              appToBeCreated == other.appToBeCreated &&
-              member == other.member &&
-              progress == other.progress;
+      other is NewAppCreateCreateInProgress &&
+          appToBeCreated == other.appToBeCreated &&
+          member == other.member &&
+          progress == other.progress;
+
+  @override
+  int get hashCode =>
+      appToBeCreated.hashCode ^ member.hashCode ^ progress.hashCode;
 }
 
 class NewAppCreateCreateCancelled extends NewAppCreateInitialised {
-  NewAppCreateCreateCancelled(
-      AppModel appToBeCreated, MemberModel member)
-      : super(appToBeCreated, member);
+  NewAppCreateCreateCancelled(super.appToBeCreated, super.member);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is NewAppCreateCreateCancelled &&
-              appToBeCreated == other.appToBeCreated &&
-              member == other.member;
+      other is NewAppCreateCreateCancelled &&
+          appToBeCreated == other.appToBeCreated &&
+          member == other.member;
+
+  @override
+  int get hashCode => appToBeCreated.hashCode ^ member.hashCode;
 }
 
 class SwitchApp extends NewAppCreateInitialised {
-  SwitchApp(AppModel appToBeCreated, MemberModel member)
-      : super(appToBeCreated, member);
+  SwitchApp(super.appToBeCreated, super.member);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is SwitchApp &&
-              appToBeCreated == other.appToBeCreated &&
-              member == other.member;
+      other is SwitchApp &&
+          appToBeCreated == other.appToBeCreated &&
+          member == other.member;
+
+  @override
+  int get hashCode => appToBeCreated.hashCode ^ member.hashCode;
 }

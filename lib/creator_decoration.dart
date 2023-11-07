@@ -9,7 +9,6 @@ import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_core/style/frontend/has_dialog.dart';
-import 'package:eliud_core/style/frontend/has_text.dart';
 import 'package:eliud_core/tools/component/update_component.dart';
 import 'package:eliud_core/tools/screen_size.dart';
 import 'package:eliud_pkg_create/widgets/app_widget.dart';
@@ -30,32 +29,36 @@ import 'tools/constants.dart';
 
 class CreatorDecoration extends deco.Decoration {
   static double fraction = 1;
-  ValueNotifier<bool> _isCreationMode = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _isCreationMode = ValueNotifier<bool>(false);
 
   static bool disableSimulatePrivilege = true;
 
   @override
-  CreateWidget createDecoratedAppBar(AppModel app, BuildContext context,
-      Key? appBarKey, CreateWidget createOriginalAppBar, AppBarModel model) {
+  CreateWidget createDecoratedAppBar(
+      AppModel app,
+      BuildContext context,
+      Key? originalAppBarKey,
+      CreateWidget createOriginalAppBar,
+      AppBarModel model) {
     if (!AccessBloc.isOwner(context, app)) return createOriginalAppBar;
     var currentAccess = AccessBloc.getState(context);
 
     return (() {
       return MyDecoratedWidget(
         isCreationMode: _isCreationMode,
-        originalWidgetKey: appBarKey,
+        originalWidgetKey: originalAppBarKey,
         createOriginalWidget: disableSimulatePrivilege
             ? createOriginalAppBar
             : () {
                 return MyDecoratedWidget(
                   isCreationMode: _isCreationMode,
-                  originalWidgetKey: appBarKey,
+                  originalWidgetKey: originalAppBarKey,
                   createOriginalWidget: createOriginalAppBar,
                   action: SingleAction(() {
                     openFlexibleDialog(
                       app,
                       context,
-                      app.documentID + '/_appbar',
+                      '${app.documentID}/_appbar',
                       includeHeading: false,
                       widthFraction: .9,
                       child: PrivilegeWidget(
@@ -65,7 +68,7 @@ class CreatorDecoration extends deco.Decoration {
                     );
                   }),
                   ensureHeight: false,
-                  initialPosition: InitialPosition.LeftBottom,
+                  initialPosition: InitialPosition.leftBottom,
                   label: 'privilege',
                 );
               },
@@ -73,7 +76,7 @@ class CreatorDecoration extends deco.Decoration {
           openAppBar(context, app, model, fraction: fraction);
         }),
         ensureHeight: false,
-        initialPosition: InitialPosition.CenterCenter,
+        initialPosition: InitialPosition.centerCenter,
         label: 'appbar',
       );
     });
@@ -84,22 +87,22 @@ class CreatorDecoration extends deco.Decoration {
       AppModel app,
       BuildContext context,
       Key? originalBodyComponentKey,
-      CreateWidget createBodyComponent,
+      CreateWidget bodyComponent,
       BodyComponentModel model) {
-    if (!AccessBloc.isOwner(context, app)) return createBodyComponent;
+    if (!AccessBloc.isOwner(context, app)) return bodyComponent;
 
     return (() {
       return MyDecoratedWidget(
         isCreationMode: _isCreationMode,
         originalWidgetKey: originalBodyComponentKey,
-        createOriginalWidget: createBodyComponent,
+        createOriginalWidget: bodyComponent,
         action: SingleAction(() {
           updateComponent(context, app, model.componentName, model.componentId,
               (status, value) {});
         }),
         ensureHeight: true,
-        initialPosition: InitialPosition.LeftTop,
-        label: model.componentName! + ' [' + model.componentId! + ']',
+        initialPosition: InitialPosition.leftTop,
+        label: '${model.componentName!} [${model.componentId!}]',
       );
     });
   }
@@ -122,7 +125,7 @@ class CreatorDecoration extends deco.Decoration {
           openBottomNavBar(context, app, model, fraction: fraction);
         }),
         ensureHeight: false,
-        initialPosition: InitialPosition.CenterTop,
+        initialPosition: InitialPosition.centerTop,
         label: 'bottom nav',
       );
     });
@@ -147,7 +150,7 @@ class CreatorDecoration extends deco.Decoration {
           openDrawer(context, app, model, decorationDrawerType, fraction);
         }),
         ensureHeight: false,
-        initialPosition: InitialPosition.CenterCenter,
+        initialPosition: InitialPosition.centerCenter,
         label: 'drawer1',
       );
     });
@@ -166,7 +169,7 @@ class CreatorDecoration extends deco.Decoration {
             _isCreationMode.value = !_isCreationMode.value;
           }),
           ensureHeight: false,
-          initialPosition: InitialPosition.CenterBottom,
+          initialPosition: InitialPosition.centerBottom,
           isCreationMode: ValueNotifier<bool>(true),
           originalWidgetKey: originalPageKey,
           createOriginalWidget: () {
@@ -180,7 +183,7 @@ class CreatorDecoration extends deco.Decoration {
                   isCreationMode: _isCreationMode,
                   icon: Icon(
                     Icons.star,
-                    color: Constants.ICON_COLOR,
+                    color: Constants.iconColor,
                     size: 15,
                   ),
                   originalWidgetKey: originalPageKey,
@@ -190,37 +193,33 @@ class CreatorDecoration extends deco.Decoration {
                       isCreationMode: _isCreationMode,
                       originalWidgetKey: originalPageKey,
                       createOriginalWidget: () {
-                        if (app != null) {
-                          return MyDecoratedWidget(
-                            isCreationMode: _isCreationMode,
-                            originalWidgetKey: originalPageKey,
-                            createOriginalWidget: createOriginalPage,
-                            icon: Icon(
-                              Icons.palette_outlined,
-                              color: Constants.ICON_COLOR,
-                              size: CreatorButton.BUTTON_HEIGHT * .7,
-                            ),
-                            action: SingleAction(() {
-                              openComplexDialog(
-                                  app, context, app.documentID + '/_style',
-                                  widthFraction: .5,
-                                  includeHeading: false,
-                                  child: StyleSelectionWidget.getIt(
-                                      context, app, true, false, false),
-                                  title: 'Style');
-                            }),
-                            ensureHeight: false,
-                            initialPosition: InitialPosition.RightBottom,
-                          );
-                        } else {
-                          return text(app, context, 'No app');
-                        }
+                        return MyDecoratedWidget(
+                          isCreationMode: _isCreationMode,
+                          originalWidgetKey: originalPageKey,
+                          createOriginalWidget: createOriginalPage,
+                          icon: Icon(
+                            Icons.palette_outlined,
+                            color: Constants.iconColor,
+                            size: CreatorButton.buttonClient * .7,
+                          ),
+                          action: SingleAction(() {
+                            openComplexDialog(
+                                app, context, '${app.documentID}/_style',
+                                widthFraction: .5,
+                                includeHeading: false,
+                                child: StyleSelectionWidget.getIt(
+                                    context, app, true, false, false),
+                                title: 'Style');
+                          }),
+                          ensureHeight: false,
+                          initialPosition: InitialPosition.rightBottom,
+                        );
                       },
                       action: SingleAction(() {
                         openFlexibleDialog(
                           app,
                           context,
-                          app.documentID + '/_appcreate',
+                          '${app.documentID}/_appcreate',
                           includeHeading: false,
                           widthFraction: fraction,
                           child: AppCreateWidget.getIt(
@@ -233,7 +232,7 @@ class CreatorDecoration extends deco.Decoration {
                         );
                       }),
                       ensureHeight: false,
-                      initialPosition: InitialPosition.LeftAlmostBottom,
+                      initialPosition: InitialPosition.leftAlmostBottom,
                       label: 'app',
                     );
                   },
@@ -249,7 +248,7 @@ class CreatorDecoration extends deco.Decoration {
                     }
                   }),
                   ensureHeight: false,
-                  initialPosition: InitialPosition.LeftBottom,
+                  initialPosition: InitialPosition.leftBottom,
 //                  label: 'wizard',
                 );
               },
@@ -281,7 +280,7 @@ class CreatorDecoration extends deco.Decoration {
                 }),
               ]),
               ensureHeight: false,
-              initialPosition: InitialPosition.LeftCenter,
+              initialPosition: InitialPosition.leftCenter,
               label: 'page',
             );
           });
@@ -301,7 +300,7 @@ class CreatorDecoration extends deco.Decoration {
         }),
 //        label: 'creator',
         ensureHeight: false,
-        initialPosition: InitialPosition.RightAlmostBottom,
+        initialPosition: InitialPosition.rightAlmostBottom,
         isCreationMode: ValueNotifier<bool>(true),
         originalWidgetKey: originalPageKey,
         createOriginalWidget: () {
@@ -315,37 +314,33 @@ class CreatorDecoration extends deco.Decoration {
                 isCreationMode: _isCreationMode,
                 originalWidgetKey: originalPageKey,
                 createOriginalWidget: () {
-                  if (app != null) {
-                    return MyDecoratedWidget(
-                      isCreationMode: _isCreationMode,
-                      originalWidgetKey: originalPageKey,
-                      createOriginalWidget: createOriginalPage,
-                      icon: Icon(
-                        Icons.palette_outlined,
-                        color: Constants.ICON_COLOR,
-                        size: CreatorButton.BUTTON_HEIGHT * .7,
-                      ),
-                      action: SingleAction(() {
-                        openComplexDialog(
-                            app, context, app.documentID + '/_style',
-                            widthFraction: .5,
-                            includeHeading: false,
-                            child: StyleSelectionWidget.getIt(
-                                context, app, true, false, false),
-                            title: 'Style');
-                      }),
-                      ensureHeight: false,
-                      initialPosition: InitialPosition.RightBottom,
-                    );
-                  } else {
-                    return text(app, context, 'No app');
-                  }
+                  return MyDecoratedWidget(
+                    isCreationMode: _isCreationMode,
+                    originalWidgetKey: originalPageKey,
+                    createOriginalWidget: createOriginalPage,
+                    icon: Icon(
+                      Icons.palette_outlined,
+                      color: Constants.iconColor,
+                      size: CreatorButton.buttonClient * .7,
+                    ),
+                    action: SingleAction(() {
+                      openComplexDialog(
+                          app, context, '${app.documentID}/_style',
+                          widthFraction: .5,
+                          includeHeading: false,
+                          child: StyleSelectionWidget.getIt(
+                              context, app, true, false, false),
+                          title: 'Style');
+                    }),
+                    ensureHeight: false,
+                    initialPosition: InitialPosition.rightBottom,
+                  );
                 },
                 action: SingleAction(() {
                   openFlexibleDialog(
                     app,
                     context,
-                    app.documentID + '/_appcreate',
+                    '${app.documentID}/_appcreate',
                     includeHeading: false,
                     widthFraction: fraction,
                     child: AppCreateWidget.getIt(
@@ -358,7 +353,7 @@ class CreatorDecoration extends deco.Decoration {
                   );
                 }),
                 ensureHeight: false,
-                initialPosition: InitialPosition.LeftBottom,
+                initialPosition: InitialPosition.leftBottom,
                 label: 'app',
               );
             },
@@ -374,7 +369,7 @@ class CreatorDecoration extends deco.Decoration {
               }
             }),
             ensureHeight: false,
-            initialPosition: InitialPosition.LeftAlmostBottom,
+            initialPosition: InitialPosition.leftAlmostBottom,
             label: 'wizard',
           );
         },
@@ -422,7 +417,7 @@ class CreatorDecoration extends deco.Decoration {
           }),
         ]),
         ensureHeight: false,
-        initialPosition: InitialPosition.LeftCenter,
+        initialPosition: InitialPosition.leftCenter,
         label: 'dialog',
       );
     });

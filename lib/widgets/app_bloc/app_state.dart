@@ -23,6 +23,9 @@ class AppCreateUninitialised extends AppCreateState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is AppCreateUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 abstract class AppCreateInitialised extends AppCreateState {
@@ -37,34 +40,42 @@ abstract class AppCreateInitialised extends AppCreateState {
   final DrawerModel rightDrawerModel;
 
   AppCreateInitialised(
-      this.appModel,
-      this.pages,
-      this.dialogs,
-      this.workflows,
-      this.policies,
-      this.homeMenuModel,
-      this.appBarModel,
-      this.leftDrawerModel,
-      this.rightDrawerModel,
-      );
+    this.appModel,
+    this.pages,
+    this.dialogs,
+    this.workflows,
+    this.policies,
+    this.homeMenuModel,
+    this.appBarModel,
+    this.leftDrawerModel,
+    this.rightDrawerModel,
+  );
 }
 
 class AppCreateValidated extends AppCreateInitialised {
   AppCreateValidated(
-      AppModel appModel,
-      List<PageModel> pages,
-      List<DialogModel> dialogs,
-      List<WorkflowModel> workflows,
-      List<AppPolicyModel> policies,
-      HomeMenuModel homeMenuModel,
-      AppBarModel appBarModel,
-      DrawerModel leftDrawerModel,
-      DrawerModel rightDrawerModel)
-      : super(appModel, pages, dialogs, workflows, policies, homeMenuModel, appBarModel,
-            leftDrawerModel, rightDrawerModel);
+      super.appModel,
+      super.pages,
+      super.dialogs,
+      super.workflows,
+      super.policies,
+      super.homeMenuModel,
+      super.appBarModel,
+      super.leftDrawerModel,
+      super.rightDrawerModel);
 
   @override
-  List<Object?> get props => [appModel, pages, dialogs, policies, workflows, homeMenuModel, appBarModel, leftDrawerModel, rightDrawerModel];
+  List<Object?> get props => [
+        appModel,
+        pages,
+        dialogs,
+        policies,
+        workflows,
+        homeMenuModel,
+        appBarModel,
+        leftDrawerModel,
+        rightDrawerModel
+      ];
 
   @override
   bool operator ==(Object other) =>
@@ -79,21 +90,31 @@ class AppCreateValidated extends AppCreateInitialised {
           appBarModel == other.appBarModel &&
           leftDrawerModel == other.leftDrawerModel &&
           rightDrawerModel == other.rightDrawerModel;
+
+  @override
+  int get hashCode =>
+      appModel.hashCode ^
+      pages.hashCode ^
+      dialogs.hashCode ^
+      workflows.hashCode ^
+      policies.hashCode ^
+      homeMenuModel.hashCode ^
+      appBarModel.hashCode ^
+      leftDrawerModel.hashCode ^
+      rightDrawerModel.hashCode;
 }
 
 class AppCreateChangesApplied extends AppCreateInitialised {
   AppCreateChangesApplied(
-      AppModel appModel,
-      List<PageModel> pages,
-      List<DialogModel> dialogs,
-      List<WorkflowModel> workflows,
-      List<AppPolicyModel> policies,
-      HomeMenuModel homeMenuModel,
-      AppBarModel appBarModel,
-      DrawerModel leftDrawerModel,
-      DrawerModel rightDrawerModel)
-      : super(appModel, pages, dialogs, workflows, policies, homeMenuModel, appBarModel,
-            leftDrawerModel, rightDrawerModel);
+      super.appModel,
+      super.pages,
+      super.dialogs,
+      super.workflows,
+      super.policies,
+      super.homeMenuModel,
+      super.appBarModel,
+      super.leftDrawerModel,
+      super.rightDrawerModel);
 
   @override
   List<Object?> get props => [appModel];
@@ -112,4 +133,16 @@ class AppCreateChangesApplied extends AppCreateInitialised {
           appBarModel == other.appBarModel &&
           leftDrawerModel == other.leftDrawerModel &&
           rightDrawerModel == other.rightDrawerModel;
+
+  @override
+  int get hashCode =>
+      appModel.hashCode ^
+      pages.hashCode ^
+      dialogs.hashCode ^
+      workflows.hashCode ^
+      policies.hashCode ^
+      homeMenuModel.hashCode ^
+      appBarModel.hashCode ^
+      leftDrawerModel.hashCode ^
+      rightDrawerModel.hashCode;
 }

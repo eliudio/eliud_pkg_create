@@ -17,9 +17,12 @@ class PageCreateEventValidateEvent extends PageCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is PageCreateEventValidateEvent &&
-              pageModel == other.pageModel;
+      other is PageCreateEventValidateEvent && pageModel == other.pageModel;
+
+  @override
+  int get hashCode => pageModel.hashCode;
 }
+
 class PageCreateEventApplyChanges extends PageCreateEvent {
   final bool save;
 
@@ -31,6 +34,8 @@ class PageCreateEventApplyChanges extends PageCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is PageCreateEventApplyChanges &&
-              save == other.save;
+      other is PageCreateEventApplyChanges && save == other.save;
+
+  @override
+  int get hashCode => save.hashCode;
 }

@@ -8,15 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MobileCreatePlatform extends AbstractCreatePlatform {
+  @override
   Widget openJsonAsLink(BuildContext context, AppModel app, String jsonString) {
     return FutureBuilder<String>(
-    future: getFile(jsonString),
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        return text(app, context, snapshot.data!);
-      }
-      return progressIndicator(app, context);
-    });
+        future: getFile(jsonString),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return text(app, context, snapshot.data!);
+          }
+          return progressIndicator(app, context);
+        });
   }
 
   Future<String> getFile(String jsonString) async {

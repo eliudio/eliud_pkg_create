@@ -28,8 +28,7 @@ class NewAppCreateBlocConsomeAppBuilderProgress extends AppBuilderFeedback {
   }
 
   @override
-  void started() {
-  }
+  void started() {}
 }
 
 class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
@@ -37,7 +36,7 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
     on<NewAppCreateEventInitialise>((event, emit) {
       var appToBeCreated = AppModel(
           documentID: event.initialAppIdToBeCreated,
-          appStatus: AppStatus.Offline,
+          appStatus: AppStatus.offline,
           ownerID: event.member.documentID);
       emit(NewAppCreateAllowEnterDetails(appToBeCreated, event.member));
     });
@@ -51,7 +50,11 @@ class NewAppCreateBloc extends Bloc<NewAppCreateEvent, NewAppCreateState> {
         AppBuilder(
           theState.appToBeCreated,
           event.loggedIn.member,
-        ).create(NewAppCreateBlocConsomeAppBuilderProgress(newAppCreateBloc: this), event.fromExisting, memberMediumModel: event.memberMediumModel, url: event.url);
+        ).create(
+            NewAppCreateBlocConsomeAppBuilderProgress(newAppCreateBloc: this),
+            event.fromExisting,
+            memberMediumModel: event.memberMediumModel,
+            url: event.url);
       } else {
         emit(NewAppCreateError(theState.appToBeCreated, theState.member,
             'App with ID $appId already exists. Choose a unique identifier'));

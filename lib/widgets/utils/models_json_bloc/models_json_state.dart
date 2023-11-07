@@ -1,4 +1,3 @@
-
 import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
@@ -19,6 +18,9 @@ class ModelsJsonUninitialised extends ModelsJsonState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is ModelsJsonUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 /*
 
@@ -36,13 +38,16 @@ class ModelsJsonInitialised extends ModelsJsonState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is ModelsJsonInitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
-class ModelsJsonProgressed extends ModelsJsonState /*with HasDataContainer */{
-  List<AbstractModelWithInformation> dataContainer;
+class ModelsJsonProgressed extends ModelsJsonState /*with HasDataContainer */ {
+  final List<AbstractModelWithInformation> dataContainer;
   final double progress;
 
-  ModelsJsonProgressed(this.progress, this.dataContainer) : super( );
+  ModelsJsonProgressed(this.progress, this.dataContainer) : super();
 
   @override
   List<Object?> get props => [];
@@ -50,8 +55,12 @@ class ModelsJsonProgressed extends ModelsJsonState /*with HasDataContainer */{
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is ModelsJsonProgressed && progress == other.progress &&
-              ListEquality().equals(dataContainer, other.dataContainer) ;
+      other is ModelsJsonProgressed &&
+          progress == other.progress &&
+          ListEquality().equals(dataContainer, other.dataContainer);
+
+  @override
+  int get hashCode => dataContainer.hashCode ^ progress.hashCode;
 
 /*
   @override
@@ -61,7 +70,7 @@ class ModelsJsonProgressed extends ModelsJsonState /*with HasDataContainer */{
 
 /*
 abstract class ModelsAndJsonAvailable extends ModelsJsonState */
-/*with HasDataContainer*//*
+/*with HasDataContainer*/ /*
  {
   final List<AbstractModelWithInformation> dataContainer;
 
@@ -80,14 +89,12 @@ abstract class ModelsAndJsonAvailable extends ModelsJsonState */
 /*
   @override
   List<AbstractModelWithInformation> getDataContainer() => dataContainer;
-*//*
+*/ /*
 
 }
 */
 
-class ModelsAndJsonAvailableInClipboard extends ModelsJsonState {
-
-}
+class ModelsAndJsonAvailableInClipboard extends ModelsJsonState {}
 
 class ModelsAndJsonError extends ModelsJsonState {
   final String error;
@@ -100,8 +107,10 @@ class ModelsAndJsonError extends ModelsJsonState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is ModelsAndJsonError &&
-              error == other.error;
+      other is ModelsAndJsonError && error == other.error;
+
+  @override
+  int get hashCode => error.hashCode;
 }
 
 class ModelsAndJsonAvailableAsMemberMedium extends ModelsJsonState {
@@ -115,6 +124,9 @@ class ModelsAndJsonAvailableAsMemberMedium extends ModelsJsonState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is ModelsAndJsonAvailableAsMemberMedium &&
+      other is ModelsAndJsonAvailableAsMemberMedium &&
           memberMediumModel == other.memberMediumModel;
+
+  @override
+  int get hashCode => memberMediumModel.hashCode;
 }

@@ -23,7 +23,7 @@ import 'from_json_bloc/from_json_bloc.dart';
 import 'from_json_bloc/from_json_event.dart';
 import 'from_json_bloc/from_json_state.dart';
 
-typedef BlocProvider BlocProviderProvider(Widget child);
+typedef BlocProviderProvider = BlocProvider Function(Widget child);
 
 void newFromJson(
   BuildContext context,
@@ -34,9 +34,9 @@ void newFromJson(
   openFlexibleDialog(
     app,
     context,
-    app.documentID + '/_fromjson',
+    '${app.documentID}/_fromjson',
     includeHeading: false,
-    widthFraction: fraction == null ? .5 : fraction,
+    widthFraction: fraction ?? .5,
     child: Container(
         width: 10,
         child: NewFromJsonCreateWidget.getIt(
@@ -55,11 +55,10 @@ class NewFromJsonCreateWidget extends StatefulWidget {
   final double widgetHeight;
 
   NewFromJsonCreateWidget._({
-    Key? key,
     required this.app,
     required this.widgetWidth,
     required this.widgetHeight,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -88,8 +87,9 @@ class _NewFromJsonCreateWidgetState extends State<NewFromJsonCreateWidget> {
   MemberMediumModel? memberMediumModel;
   String? url;
 
+  @override
   void initState() {
-    jsonDestination = JsonDestination.MemberMedium;
+    jsonDestination = JsonDestination.memberMedium;
     super.initState();
   }
 
@@ -110,36 +110,48 @@ class _NewFromJsonCreateWidgetState extends State<NewFromJsonCreateWidget> {
                       app: widget.app,
                       cancelAction: () async {
                         if (state is FromJsonProgress) {
-                          BlocProvider.of<FromJsonBloc>(context).add(NewFromJsonCancelAction());
+                          BlocProvider.of<FromJsonBloc>(context)
+                              .add(NewFromJsonCancelAction());
                         }
                         return true;
                       },
                       okAction: () async {
-                        if (jsonDestination == JsonDestination.MemberMedium) {
+                        if (jsonDestination == JsonDestination.memberMedium) {
                           if (memberMediumModel != null) {
-                            BlocProvider.of<FromJsonBloc>(context).add(
-                                NewFromJsonWithModel(loggedInState,
-                                    memberMediumModel!, _includeMedia, (key, documentId) {
-                                      postCreationAction(key, documentId);
-                                    }, ));
+                            BlocProvider.of<FromJsonBloc>(context)
+                                .add(NewFromJsonWithModel(
+                              loggedInState,
+                              memberMediumModel!,
+                              _includeMedia,
+                              (key, documentId) {
+                                postCreationAction(key, documentId);
+                              },
+                            ));
                           } else {
                             print("Should select a medium");
                           }
-                        } else if (jsonDestination == JsonDestination.URL) {
+                        } else if (jsonDestination == JsonDestination.url) {
                           if (memberMediumModel != null) {
-                            BlocProvider.of<FromJsonBloc>(context).add(
-                                NewFromJsonWithUrl(
-                                    loggedInState, url!, _includeMedia, (key, documentId) {
-                                  postCreationAction(key, documentId);
-                                }, ));
+                            BlocProvider.of<FromJsonBloc>(context)
+                                .add(NewFromJsonWithUrl(
+                              loggedInState,
+                              url!,
+                              _includeMedia,
+                              (key, documentId) {
+                                postCreationAction(key, documentId);
+                              },
+                            ));
                           } else {
                             print("Should specify a URL");
                           }
                         } else {
                           BlocProvider.of<FromJsonBloc>(context)
-                              .add(NewFromJsonWithClipboard(_includeMedia, (key, documentId) {
-                            postCreationAction(key, documentId);
-                          }, ));
+                              .add(NewFromJsonWithClipboard(
+                            _includeMedia,
+                            (key, documentId) {
+                              postCreationAction(key, documentId);
+                            },
+                          ));
                         }
                         return false;
                       },
@@ -154,14 +166,14 @@ class _NewFromJsonCreateWidgetState extends State<NewFromJsonCreateWidget> {
                           JsonDestinationWidget(
                             app: widget.app,
                             jsonDestination:
-                                jsonDestination ?? JsonDestination.MemberMedium,
+                                jsonDestination ?? JsonDestination.memberMedium,
                             jsonDestinationCallback: (JsonDestination val) {
                               setState(() {
                                 jsonDestination = val;
                               });
                             },
                           ),
-                          if (jsonDestination == JsonDestination.MemberMedium)
+                          if (jsonDestination == JsonDestination.memberMedium)
                             JsonMemberMediumWidget(
                                 app: widget.app,
                                 ext: 'page.json',
@@ -171,7 +183,7 @@ class _NewFromJsonCreateWidgetState extends State<NewFromJsonCreateWidget> {
                                     memberMediumModel = value;
                                   });
                                 }),
-                          if (jsonDestination == JsonDestination.URL)
+                          if (jsonDestination == JsonDestination.url)
                             getListTile(context, widget.app,
                                 leading: Icon(Icons.description),
                                 title: dialogField(
@@ -229,15 +241,16 @@ class _NewFromJsonCreateWidgetState extends State<NewFromJsonCreateWidget> {
     Navigator.of(context).pop(); // close this popup first
     if (documentId != null) {
       if (key == JsonConsts.pages) {
-        BlocProvider.of<AccessBloc>(context).add(
-            GotoPageEvent(
-              widget.app, documentId,));
-      } if (key == JsonConsts.dialogs) {
+        BlocProvider.of<AccessBloc>(context).add(GotoPageEvent(
+          widget.app,
+          documentId,
+        ));
+      }
+      if (key == JsonConsts.dialogs) {
         BlocProvider.of<AccessBloc>(context).add(OpenDialogEvent(documentId));
       }
     }
   }
-
 }
 
 class UpperCaseTextFormatter extends TextInputFormatter {

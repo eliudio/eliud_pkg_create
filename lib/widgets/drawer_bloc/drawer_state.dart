@@ -13,9 +13,11 @@ class DrawerCreateUninitialised extends DrawerCreateState {
   List<Object?> get props => [];
 
   @override
-  bool operator == (Object other) =>
-      identical(this, other) ||
-          other is DrawerCreateUninitialised;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is DrawerCreateUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 abstract class DrawerCreateInitialised extends DrawerCreateState {
@@ -25,7 +27,7 @@ abstract class DrawerCreateInitialised extends DrawerCreateState {
 }
 
 class DrawerCreateValidated extends DrawerCreateInitialised {
-  DrawerCreateValidated(DrawerModel drawerModel) : super(drawerModel);
+  DrawerCreateValidated(super.drawerModel);
 
   @override
   List<Object?> get props => [drawerModel];
@@ -33,12 +35,14 @@ class DrawerCreateValidated extends DrawerCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is DrawerCreateValidated &&
-              drawerModel == other.drawerModel;
+      other is DrawerCreateValidated && drawerModel == other.drawerModel;
+
+  @override
+  int get hashCode => drawerModel.hashCode;
 }
 
 class DrawerCreateChangesApplied extends DrawerCreateInitialised {
-  DrawerCreateChangesApplied(DrawerModel drawerModel) : super(drawerModel);
+  DrawerCreateChangesApplied(super.drawerModel);
 
   @override
   List<Object?> get props => [drawerModel];
@@ -46,7 +50,8 @@ class DrawerCreateChangesApplied extends DrawerCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is DrawerCreateChangesApplied &&
-              drawerModel == other.drawerModel;
-}
+      other is DrawerCreateChangesApplied && drawerModel == other.drawerModel;
 
+  @override
+  int get hashCode => drawerModel.hashCode;
+}

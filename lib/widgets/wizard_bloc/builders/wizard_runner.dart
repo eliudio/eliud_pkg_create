@@ -1,7 +1,7 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
-import 'package:eliud_core/core/wizards/tools/documentIdentifier.dart';
+import 'package:eliud_core/core/wizards/tools/document_identifier.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
@@ -11,7 +11,6 @@ import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'package:eliud_core/model/app_home_page_references_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 import 'package:eliud_core/tools/random.dart';
 import '../../wizard_shared/menus/app_bar_builder.dart';
 import '../../wizard_shared/menus/home_menu_builder.dart';
@@ -42,7 +41,8 @@ class WizardRunner {
    *
    */
   String? getPageID(String pageType) {
-    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+    for (var wizard
+        in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
       var newAppWizardName = wizard.newAppWizardName;
       var parameters = newAppWizardParameters[newAppWizardName];
       if (parameters != null) {
@@ -53,17 +53,22 @@ class WizardRunner {
     return null;
   }
 
-
   /*
    * See comments NewAppWizardInfo::getImage
    *
    */
-  PublicMediumModel? getPublicMediumModel(AppModel app, String publicMediumModelType) {
-    for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+  PublicMediumModel? getPublicMediumModel(
+      AppModel app, String publicMediumModelType) {
+    for (var wizard
+        in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
       var newAppWizardName = wizard.newAppWizardName;
       var parameters = newAppWizardParameters[newAppWizardName];
       if (parameters != null) {
-        var image = wizard.getPublicMediumModel(uniqueId, parameters, publicMediumModelType,);
+        var image = wizard.getPublicMediumModel(
+          uniqueId,
+          parameters,
+          publicMediumModelType,
+        );
         if (image != null) return image;
       }
     }
@@ -78,14 +83,15 @@ class WizardRunner {
     required this.styleFamily,
     required this.styleName,
     required this.accessBloc,
-      }) {
+  }) {
     appId = app.documentID;
     memberId = member.documentID;
   }
 
-  var newlyCreatedApp;
-
-  Future<AppModel> create(AccessBloc accessBloc, WizardBloc wizardBloc, ) async {
+  Future<void> create(
+    AccessBloc accessBloc,
+    WizardBloc wizardBloc,
+  ) async {
     List<NewAppTask> tasks = [];
 
     // check if no errors, e.g. identifier should not exist
@@ -103,32 +109,35 @@ class WizardRunner {
 
     tasks.add(() async {
       print("leftDrawer");
-      leftDrawerBuilder = await LeftDrawerBuilder(app,
-        logo: logo, );
+      leftDrawerBuilder = LeftDrawerBuilder(
+        app,
+        logo: logo,
+      );
       leftDrawer = await leftDrawerBuilder.getOrCreate();
     });
 
     tasks.add(() async {
       print("rightDrawer");
-      rightDrawerBuilder = RightDrawerBuilder(app,
+      rightDrawerBuilder = RightDrawerBuilder(
+        app,
       );
       rightDrawer = await rightDrawerBuilder.getOrCreate();
     });
 
     tasks.add(() async {
       print("HomeMenu");
-      theHomeMenuBuilder = HomeMenuBuilder(app,
+      theHomeMenuBuilder = HomeMenuBuilder(
+        app,
       );
-      theHomeMenu = await theHomeMenuBuilder
-          .getOrCreate();
+      theHomeMenu = await theHomeMenuBuilder.getOrCreate();
     });
 
     tasks.add(() async {
       print("AppBar");
-      theAppBarBuilder = AppBarBuilder(app,
+      theAppBarBuilder = AppBarBuilder(
+        app,
       );
-      theAppBar = await theAppBarBuilder
-          .getOrCreate();
+      theAppBar = await theAppBarBuilder.getOrCreate();
     });
 
     // add the tasks for the extra wizards
@@ -141,17 +150,30 @@ class WizardRunner {
       var newAppWizardName = wizard.newAppWizardName;
       var parameters = newAppWizardParameters[newAppWizardName];
       if (parameters != null) {
-        var leftDrawerMenuItemsExtra = wizard.getMenuItemsFor(uniqueId, app, parameters, MenuType.leftDrawerMenu);
-        var rightDrawerMenuItemsExtra = wizard.getMenuItemsFor(uniqueId, app, parameters, MenuType.rightDrawerMenu);
-        var homeMenuMenuItemsExtra = wizard.getMenuItemsFor(uniqueId, app, parameters, MenuType.bottomNavBarMenu);
-        var appBarMenuItemsExtra = wizard.getMenuItemsFor(uniqueId, app, parameters, MenuType.appBarMenu);
+        var leftDrawerMenuItemsExtra = wizard.getMenuItemsFor(
+            uniqueId, app, parameters, MenuType.leftDrawerMenu);
+        var rightDrawerMenuItemsExtra = wizard.getMenuItemsFor(
+            uniqueId, app, parameters, MenuType.rightDrawerMenu);
+        var homeMenuMenuItemsExtra = wizard.getMenuItemsFor(
+            uniqueId, app, parameters, MenuType.bottomNavBarMenu);
+        var appBarMenuItemsExtra = wizard.getMenuItemsFor(
+            uniqueId, app, parameters, MenuType.appBarMenu);
 
-        if (leftDrawerMenuItemsExtra != null) leftDrawerMenuItems.addAll(leftDrawerMenuItemsExtra);
-        if (rightDrawerMenuItemsExtra != null) rightDrawerMenuItems.addAll(rightDrawerMenuItemsExtra);
-        if (homeMenuMenuItemsExtra != null) homeMenuMenuItems.addAll(homeMenuMenuItemsExtra);
-        if (appBarMenuItemsExtra != null) appBarMenuItems.addAll(appBarMenuItemsExtra);
+        if (leftDrawerMenuItemsExtra != null) {
+          leftDrawerMenuItems.addAll(leftDrawerMenuItemsExtra);
+        }
+        if (rightDrawerMenuItemsExtra != null) {
+          rightDrawerMenuItems.addAll(rightDrawerMenuItemsExtra);
+        }
+        if (homeMenuMenuItemsExtra != null) {
+          homeMenuMenuItems.addAll(homeMenuMenuItemsExtra);
+        }
+        if (appBarMenuItemsExtra != null) {
+          appBarMenuItems.addAll(appBarMenuItemsExtra);
+        }
 
-        var extraTasks = wizard.getCreateTasks(uniqueId,
+        var extraTasks = wizard.getCreateTasks(
+          uniqueId,
           app,
           parameters,
           member,
@@ -170,33 +192,48 @@ class WizardRunner {
     var newApp = app.copyWith();
     if (blockedPageId != null) {
       if (newApp.homePages != null) {
-        newApp = newApp.copyWith(homePages: newApp.homePages!.copyWith(
-            homePageBlockedMember: constructDocumentId(uniqueId: uniqueId, documentId: blockedPageId)));
+        newApp = newApp.copyWith(
+            homePages: newApp.homePages!.copyWith(
+                homePageBlockedMember: constructDocumentId(
+                    uniqueId: uniqueId, documentId: blockedPageId)));
       } else {
-        newApp = newApp.copyWith(homePages: AppHomePageReferencesModel(
-            homePageBlockedMember: constructDocumentId(uniqueId: uniqueId, documentId: blockedPageId)));
+        newApp = newApp.copyWith(
+            homePages: AppHomePageReferencesModel(
+                homePageBlockedMember: constructDocumentId(
+                    uniqueId: uniqueId, documentId: blockedPageId)));
       }
     }
 
     var homePageId = getPageID('homePageId');
     if (homePageId != null) {
       if (newApp.homePages != null) {
-        newApp = newApp.copyWith(homePages: newApp.homePages!.copyWith(
-          homePagePublic: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
-          homePageSubscribedMember: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
-          homePageLevel1Member: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
-          homePageLevel2Member: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
-          homePageOwner: constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
+        newApp = newApp.copyWith(
+            homePages: newApp.homePages!.copyWith(
+          homePagePublic:
+              constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
+          homePageSubscribedMember:
+              constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
+          homePageLevel1Member:
+              constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
+          homePageLevel2Member:
+              constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
+          homePageOwner:
+              constructDocumentId(uniqueId: uniqueId, documentId: homePageId),
         ));
       } else {
-        newApp = newApp.copyWith(homePages: AppHomePageReferencesModel(
-            homePageBlockedMember: blockedPageId == null ? null : constructDocumentId(uniqueId: uniqueId, documentId: blockedPageId)));
+        newApp = newApp.copyWith(
+            homePages: AppHomePageReferencesModel(
+                homePageBlockedMember: blockedPageId == null
+                    ? null
+                    : constructDocumentId(
+                        uniqueId: uniqueId, documentId: blockedPageId)));
       }
     }
 
     tasks.add(() async {
       print("App");
-      for (var wizard in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
+      for (var wizard
+          in NewAppWizardRegistry.registry().registeredNewAppWizardInfos) {
         var newAppWizardName = wizard.newAppWizardName;
         var parameters = newAppWizardParameters[newAppWizardName];
         if (parameters != null) {
@@ -231,12 +268,12 @@ class WizardRunner {
       if (logo != null) {
         newApp = newApp.copyWith(logo: logo);
       }
-      newlyCreatedApp = await appRepository()!.update(newApp);
+      //newlyCreatedApp = await appRepository()!.update(newApp);
     });
 
     // Now run all tasks
-    var progressManager = ProgressManager(tasks.length,
-        (progress) => wizardBloc.add(WizardProgressed(progress)));
+    var progressManager = ProgressManager(
+        tasks.length, (progress) => wizardBloc.add(WizardProgressed(progress)));
 
     int i = 0;
     for (var task in tasks) {
@@ -244,17 +281,13 @@ class WizardRunner {
       try {
         await task();
       } catch (e) {
-        print('Exception running task ' +
-            i.toString() +
-            ', error: ' +
-            e.toString());
+        print('Exception running task $i, error: $e');
       }
       progressManager.progressedNextStep();
-      if (wizardBloc.state is WizardCancelled)
+      if (wizardBloc.state is WizardCancelled) {
         throw Exception("Process cancelled");
+      }
     }
-
-    return newlyCreatedApp;
   }
 
   List<MenuItemModel> getMenuItemsFor(MenuType type) {
@@ -282,7 +315,8 @@ class WizardRunner {
       var newAppWizardName = wizard.newAppWizardName;
       var newAppWizardParam = newAppWizardParameters[newAppWizardName];
       if (newAppWizardParam != null) {
-        var menuItems = wizard.getMenuItemsFor(uniqueId, app, newAppWizardParam, type);
+        var menuItems =
+            wizard.getMenuItemsFor(uniqueId, app, newAppWizardParam, type);
         if (menuItems != null) {
           newMenuItems.addAll(menuItems);
         }

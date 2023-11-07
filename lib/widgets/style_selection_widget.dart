@@ -14,8 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StyleSelectionWidget extends StatefulWidget {
-  static double SIZE_SMALL = 15;
-  static double SIZE_BIG = 18;
+  static double sizeSmall = 15;
+  static double sizeBig = 18;
 
   final AppModel app;
   final bool withHeader;
@@ -26,7 +26,8 @@ class StyleSelectionWidget extends StatefulWidget {
   StyleSelectionWidget._(
       this.app, this.withHeader, this.collapsed, this.partOfCreationOfApp);
 
-  _StyleSelectionWidgetState createState() => _StyleSelectionWidgetState();
+  @override
+  State<StyleSelectionWidget> createState() => _StyleSelectionWidgetState();
 
   static Widget getIt(BuildContext context, AppModel app, bool withHeader,
       bool collapsed, bool partOfCreationOfApp,
@@ -69,7 +70,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                   ),
                   onTap: () {
                     openEntryDialog(widget.app, context,
-                        widget.app.documentID + '/_newstyle',
+                        '${widget.app.documentID}/_newstyle',
                         title: 'Provide name for the new style',
                         hintText: 'Style name',
                         ackButtonLabel: 'New',
@@ -89,10 +90,10 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
             iconColor: Colors.black,
             collapsedIconColor: Colors.black,
             title: isCurrent
-                ? highLight1(widget.app, context,
-                    '${childDocuments[position].familyName()}')
-                : text(widget.app, context,
-                    '${childDocuments[position].familyName()}'),
+                ? highLight1(
+                    widget.app, context, childDocuments[position].familyName())
+                : text(
+                    widget.app, context, childDocuments[position].familyName()),
             onExpansionChanged: (value) {
               setState(() {});
             },
@@ -115,16 +116,15 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
           leading: Icon(Icons.arrow_right_alt),
           title: popupMenuButton<int>(widget.app, context,
               child: isCurrent
-                  ? highLight1(widget.app, context, '${style.styleName}')
-                  : text(widget.app, context, '${style.styleName}'),
+                  ? highLight1(widget.app, context, style.styleName)
+                  : text(widget.app, context, style.styleName),
               itemBuilder: (context) => [
                     popupMenuItem(
                       widget.app,
                       context,
                       enabled: false,
-                      label: style.styleFamily.familyName +
-                          ' - ' +
-                          style.styleName,
+                      label:
+                          '${style.styleFamily.familyName} - ${style.styleName}',
                     ),
                     popupMenuDivider(widget.app, context),
                     popupMenuItem(widget.app, context,
@@ -137,10 +137,8 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                       popupMenuItem(widget.app, context,
                           value: 3, label: "Copy style"),
                     if (style.allowedUpdates.canDelete)
-                      popupMenuItem(
-                          widget.app, context,
-                          value: 4,
-                          label: "Delete style"),
+                      popupMenuItem(widget.app, context,
+                          value: 4, label: "Delete style"),
                   ],
               onSelected: (value) {
                 if (value == 1) {
@@ -150,7 +148,7 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                   style.update(widget.app, context);
                 } else if (value == 3) {
                   openEntryDialog(widget.app, context,
-                      widget.app.documentID + '/_stylename',
+                      '${widget.app.documentID}/_stylename',
                       title: 'Provide new name for copy of style',
                       hintText: 'Style name',
                       ackButtonLabel: 'Copy',
@@ -165,19 +163,18 @@ class _StyleSelectionWidgetState extends State<StyleSelectionWidget> {
                     openMessageDialog(
                       widget.app,
                       context,
-                      widget.app.documentID + '/_error',
+                      '${widget.app.documentID}/_error',
                       title: 'Error',
                       message:
                           'This is the current style of the app, unable to delete',
                     );
                   } else {
-                    openAckNackDialog(widget.app, context,
-                        widget.app.documentID + '/_delete',
+                    openAckNackDialog(
+                        widget.app, context, '${widget.app.documentID}/_delete',
                         title: 'Confirm',
-                        message: 'Confirm deleting style ' +
-                            style.styleFamily.familyName +
-                            '.' +
-                            style.styleName, onSelection: (value) async {
+                        message:
+                            'Confirm deleting style ${style.styleFamily.familyName}.${style.styleName}',
+                        onSelection: (value) async {
                       if (value == 0) {
                         BlocProvider.of<StyleSelectionBloc>(context)
                             .add(DeleteStyleEvent(style: style));

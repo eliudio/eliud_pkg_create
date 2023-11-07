@@ -23,6 +23,9 @@ class MenuDefCreateInitialiseEvent extends MenuDefCreateEvent {
       identical(this, other) ||
       other is MenuDefCreateInitialiseEvent &&
           menuDefModel == other.menuDefModel;
+
+  @override
+  int get hashCode => menuDefModel.hashCode;
 }
 
 class MenuDefCreateAddMenuItemForPage extends MenuDefCreateEvent {
@@ -36,7 +39,10 @@ class MenuDefCreateAddMenuItemForPage extends MenuDefCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is MenuDefCreateAddMenuItemForPage && pageModel == other.pageModel;
+      other is MenuDefCreateAddMenuItemForPage && pageModel == other.pageModel;
+
+  @override
+  int get hashCode => pageModel.hashCode;
 }
 
 class MenuDefCreateAddMenuItemForDialog extends MenuDefCreateEvent {
@@ -50,7 +56,11 @@ class MenuDefCreateAddMenuItemForDialog extends MenuDefCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is MenuDefCreateAddMenuItemForDialog && dialogModel == other.dialogModel;
+      other is MenuDefCreateAddMenuItemForDialog &&
+          dialogModel == other.dialogModel;
+
+  @override
+  int get hashCode => dialogModel.hashCode;
 }
 
 class MenuDefCreateAddMenuItemForWorkflow extends MenuDefCreateEvent {
@@ -64,7 +74,11 @@ class MenuDefCreateAddMenuItemForWorkflow extends MenuDefCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is MenuDefCreateAddMenuItemForWorkflow && workflowModel == other.workflowModel;
+      other is MenuDefCreateAddMenuItemForWorkflow &&
+          workflowModel == other.workflowModel;
+
+  @override
+  int get hashCode => workflowModel.hashCode;
 }
 
 class MenuDefCreateAddLogin extends MenuDefCreateEvent {
@@ -73,6 +87,9 @@ class MenuDefCreateAddLogin extends MenuDefCreateEvent {
 
   @override
   bool operator ==(Object other) => identical(this, other);
+
+  @override
+  int get hashCode => 0;
 }
 
 class MenuDefCreateAddLogout extends MenuDefCreateEvent {
@@ -81,6 +98,9 @@ class MenuDefCreateAddLogout extends MenuDefCreateEvent {
 
   @override
   bool operator ==(Object other) => identical(this, other);
+
+  @override
+  int get hashCode => 0;
 }
 
 class MenuDefCreateAddOtherApps extends MenuDefCreateEvent {
@@ -89,6 +109,9 @@ class MenuDefCreateAddOtherApps extends MenuDefCreateEvent {
 
   @override
   bool operator ==(Object other) => identical(this, other);
+
+  @override
+  int get hashCode => 0;
 }
 
 class MenuDefCreateAddGoHome extends MenuDefCreateEvent {
@@ -97,6 +120,9 @@ class MenuDefCreateAddGoHome extends MenuDefCreateEvent {
 
   @override
   bool operator ==(Object other) => identical(this, other);
+
+  @override
+  int get hashCode => 0;
 }
 
 class MenuDefCreateDeleteMenuItemFromIndex extends MenuDefCreateEvent {
@@ -110,6 +136,9 @@ class MenuDefCreateDeleteMenuItemFromIndex extends MenuDefCreateEvent {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is MenuDefCreateDeleteMenuItemFromIndex && index == other.index;
+
+  @override
+  int get hashCode => index.hashCode;
 }
 
 class MenuDefCreateDeleteMenuItem extends MenuDefCreateEvent {
@@ -124,9 +153,12 @@ class MenuDefCreateDeleteMenuItem extends MenuDefCreateEvent {
       identical(this, other) ||
       other is MenuDefCreateDeleteMenuItem &&
           menuItemModel == other.menuItemModel;
+
+  @override
+  int get hashCode => menuItemModel.hashCode;
 }
 
-enum MoveMenuItemDirection { Up, Down }
+enum MoveMenuItemDirection { up, down }
 
 class MenuDefMoveMenuItem extends MenuDefCreateEvent {
   final MenuItemModel menuItemModel;
@@ -139,9 +171,12 @@ class MenuDefMoveMenuItem extends MenuDefCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is MenuDefMoveMenuItem &&
-              moveMenuItemDirection == other.moveMenuItemDirection &&
-              menuItemModel == other.menuItemModel;
+      other is MenuDefMoveMenuItem &&
+          moveMenuItemDirection == other.moveMenuItemDirection &&
+          menuItemModel == other.menuItemModel;
+
+  @override
+  int get hashCode => menuItemModel.hashCode ^ moveMenuItemDirection.hashCode;
 }
 
 class MenuDefUpdateMenuItem extends MenuDefCreateEvent {
@@ -154,10 +189,13 @@ class MenuDefUpdateMenuItem extends MenuDefCreateEvent {
   List<Object?> get props => [beforeMenuItemModel, afterMenuItemModel];
 
   @override
-  bool operator ==(Object other) => identical(this, other)||
+  bool operator ==(Object other) =>
+      identical(this, other) ||
       other is MenuDefUpdateMenuItem &&
           beforeMenuItemModel == other.beforeMenuItemModel &&
           afterMenuItemModel == other.afterMenuItemModel;
+
+  @override
+  int get hashCode =>
+      beforeMenuItemModel.hashCode ^ afterMenuItemModel.hashCode;
 }
-
-

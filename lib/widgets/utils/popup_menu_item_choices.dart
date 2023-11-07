@@ -12,8 +12,15 @@ class PopupMenuItemChoices extends StatefulWidget {
   final VoidCallback actionDelete;
 
   PopupMenuItemChoices({
-    Key? key, required this.app, required this.isFirst, required this.isLast, required this.actionUp, required this.actionDown, required this.actionDetails, required this.actionDelete,
-  }) : super(key: key);
+    super.key,
+    required this.app,
+    required this.isFirst,
+    required this.isLast,
+    required this.actionUp,
+    required this.actionDown,
+    required this.actionDetails,
+    required this.actionDelete,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -26,37 +33,19 @@ class _PopupMenuItemChoicesState extends State<PopupMenuItemChoices> {
   Widget build(BuildContext context) {
     var menuItems = [
       if (widget.isFirst)
-        popupMenuItem(
-          widget.app, context,
-          value: 1,
-          label: 'Move up'
-        ),
+        popupMenuItem(widget.app, context, value: 1, label: 'Move up'),
       if (widget.isLast)
-        popupMenuItem(
-          widget.app, context,
-          value: 2,
-          label: 'Move down'
-        ),
-      popupMenuItem(
-        widget.app, context,
-        value: 3,
-        label: 'Details'
-      ),
-      popupMenuItem(
-        widget.app, context,
-        value: 4,
-        label: 'Delete'
-      ),
+        popupMenuItem(widget.app, context, value: 2, label: 'Move down'),
+      popupMenuItem(widget.app, context, value: 3, label: 'Details'),
+      popupMenuItem(widget.app, context, value: 4, label: 'Delete'),
     ];
-    return popupMenuButton<int>(
-        widget.app, context,
+    return popupMenuButton<int>(widget.app, context,
         child: Icon(Icons.more_vert),
         itemBuilder: (context) => menuItems,
         onSelected: (value) {
           if (value == 1) {
             widget.actionUp();
-          } else
-          if (value == 2) {
+          } else if (value == 2) {
             widget.actionDown();
           } else if (value == 3) {
             widget.actionDetails();

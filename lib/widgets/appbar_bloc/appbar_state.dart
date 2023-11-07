@@ -13,9 +13,11 @@ class AppBarCreateUninitialised extends AppBarCreateState {
   List<Object?> get props => [];
 
   @override
-  bool operator == (Object other) =>
-      identical(this, other) ||
-          other is AppBarCreateUninitialised;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is AppBarCreateUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 abstract class AppBarCreateInitialised extends AppBarCreateState {
@@ -25,7 +27,7 @@ abstract class AppBarCreateInitialised extends AppBarCreateState {
 }
 
 class AppBarCreateValidated extends AppBarCreateInitialised {
-  AppBarCreateValidated(AppBarModel appBarModel) : super(appBarModel);
+  AppBarCreateValidated(super.appBarModel);
 
   @override
   List<Object?> get props => [appBarModel];
@@ -33,12 +35,14 @@ class AppBarCreateValidated extends AppBarCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppBarCreateValidated &&
-              appBarModel == other.appBarModel;
+      other is AppBarCreateValidated && appBarModel == other.appBarModel;
+
+  @override
+  int get hashCode => appBarModel.hashCode;
 }
 
 class AppBarCreateChangesApplied extends AppBarCreateInitialised {
-  AppBarCreateChangesApplied(AppBarModel appBarModel) : super(appBarModel);
+  AppBarCreateChangesApplied(super.appBarModel);
 
   @override
   List<Object?> get props => [appBarModel];
@@ -46,7 +50,8 @@ class AppBarCreateChangesApplied extends AppBarCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppBarCreateChangesApplied &&
-              appBarModel == other.appBarModel;
-}
+      other is AppBarCreateChangesApplied && appBarModel == other.appBarModel;
 
+  @override
+  int get hashCode => appBarModel.hashCode;
+}

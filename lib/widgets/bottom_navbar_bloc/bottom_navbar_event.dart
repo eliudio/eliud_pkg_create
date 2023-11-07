@@ -17,8 +17,11 @@ class BottomNavBarCreateEventValidateEvent extends BottomNavBarCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is BottomNavBarCreateEventValidateEvent &&
-              homeMenuModel == other.homeMenuModel;
+      other is BottomNavBarCreateEventValidateEvent &&
+          homeMenuModel == other.homeMenuModel;
+
+  @override
+  int get hashCode => homeMenuModel.hashCode;
 }
 
 class BottomNavBarCreateEventApplyChanges extends BottomNavBarCreateEvent {
@@ -32,7 +35,8 @@ class BottomNavBarCreateEventApplyChanges extends BottomNavBarCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is BottomNavBarCreateEventApplyChanges &&
-              save == other.save;
-}
+      other is BottomNavBarCreateEventApplyChanges && save == other.save;
 
+  @override
+  int get hashCode => save.hashCode;
+}

@@ -42,10 +42,10 @@ class PlayStoreBase extends AbstractPlayStoreComponent {
   final String id;
 
   PlayStoreBase({
-    required AppModel app,
+    required super.app,
     required this.id,
-    Key? key,
-  }) : super(key: key, app: app, playStoreId: id);
+    super.key,
+  }) : super(playStoreId: id);
 
   @override
   Widget yourWidget(BuildContext context, PlayStoreModel? value) {
@@ -63,14 +63,14 @@ class PlayStoreBase extends AbstractPlayStoreComponent {
 class MemberAppsWidget extends StatefulWidget {
   final AppModel app;
   final PlayStoreModel playStoreModel;
-  static String ALL = 'all';
-  static String MY_APPS = 'my apps';
+  static String all = 'all';
+  static String myApps = 'my apps';
 
   MemberAppsWidget({
     required this.app,
     required this.playStoreModel,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -82,7 +82,7 @@ class _MemberAppsWidgetState extends State<MemberAppsWidget> {
   String? selectedMember;
   late bool incName;
   double? width = 300;
-  final _buttonKey = GlobalKey();
+  //final _buttonKey = GlobalKey();
 
   @override
   void initState() {
@@ -118,29 +118,30 @@ class _MemberAppsWidgetState extends State<MemberAppsWidget> {
             builder: (context, accessState) {
           if (accessState is AccessDetermined) {
             var currentMember = accessState.getMember();
-            var currentMemberId =
-                currentMember == null ? null : currentMember.documentID;
+            var currentMemberId = currentMember?.documentID;
             return ListView(
                 shrinkWrap: true,
                 physics: ScrollPhysics(),
                 children: [
                   Column(children: [
                     BlocProvider<MemberPublicInfoListBloc>(
-                        child: getListTile(context, widget.app,
-                            title: MemberPublicInfoDropdownButtonWidget(
-                                  app: widget.app,
-                                  value: selectedMember,
-                                  currentMemberId: currentMemberId,
-                                  trigger: (String? value) {
-                                    setState(() {
-                                      selectedMember = value;
-                                      BlocProvider.of<AppListBloc>(context).add(
-                                          AppChangeQuery(
-                                              newQuery: getQuery(
-                                                  value, currentMemberId)));
-                                    });
-                                  }),
-                            ),
+                        child: getListTile(
+                          context,
+                          widget.app,
+                          title: MemberPublicInfoDropdownButtonWidget(
+                              app: widget.app,
+                              value: selectedMember,
+                              currentMemberId: currentMemberId,
+                              trigger: (String? value) {
+                                setState(() {
+                                  selectedMember = value;
+                                  BlocProvider.of<AppListBloc>(context).add(
+                                      AppChangeQuery(
+                                          newQuery: getQuery(
+                                              value, currentMemberId)));
+                                });
+                              }),
+                        ),
                         create: (context) => MemberPublicInfoListBloc(
                               memberPublicInfoRepository:
                                   memberPublicInfoRepository()!,
@@ -168,9 +169,9 @@ class _MemberAppsWidgetState extends State<MemberAppsWidget> {
   }
 
   EliudQuery getQuery(String? selectedMember, String? currentMemberId) {
-    if ((selectedMember == MemberAppsWidget.ALL) || (selectedMember == null)) {
+    if ((selectedMember == MemberAppsWidget.all) || (selectedMember == null)) {
       return defaultQuery();
-    } else if ((selectedMember == MemberAppsWidget.MY_APPS) ||
+    } else if ((selectedMember == MemberAppsWidget.myApps) ||
         (selectedMember == currentMemberId)) {
       return EliudQuery(theConditions: [
         EliudQueryCondition('ownerID', isEqualTo: currentMemberId),
@@ -184,13 +185,13 @@ class _MemberAppsWidgetState extends State<MemberAppsWidget> {
   }
 }
 
-typedef MemberPublicInfoChanged(
+typedef MemberPublicInfoChanged = Function(
   String? value,
 );
 
 class MemberPublicInfoDropdownButtonWidget extends StatefulWidget {
   final AppModel app;
-  String? value;
+  final String? value;
   final MemberPublicInfoChanged trigger;
   final String? currentMemberId;
 
@@ -199,8 +200,7 @@ class MemberPublicInfoDropdownButtonWidget extends StatefulWidget {
       this.value,
       required this.trigger,
       required this.currentMemberId,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -234,23 +234,24 @@ class MemberPublicInfoDropdownButtonWidgetState
         return progressIndicator(widget.app, context);
       } else if (state is MemberPublicInfoListLoaded) {
         final items = <DropdownMenuItem<String>>[];
-        items.add(new DropdownMenuItem<String>(
+        items.add(DropdownMenuItem<String>(
             value: 'all', child: text(widget.app, context, 'all')));
         if (widget.currentMemberId != null) {
-          items.add(new DropdownMenuItem<String>(
+          items.add(DropdownMenuItem<String>(
               value: 'my apps', child: text(widget.app, context, 'my apps')));
         }
         if ((state.values != null) && (state.values!.isNotEmpty)) {
           items.add(DropdownMenuItemSeparator());
-          state.values!.forEach((element) {
-            items.add(new DropdownMenuItem<String>(
+          for (var element in state.values!) {
+            items.add(DropdownMenuItem<String>(
                 value: element!.documentID,
                 child: text(
                     widget.app, context, element.name ?? element.documentID)));
-          });
+          }
         }
         return dropdownButton<String>(
-          widget.app, context,
+          widget.app,
+          context,
           isExpanded: true,
           isDense: false,
           items: items,

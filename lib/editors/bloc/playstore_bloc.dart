@@ -25,6 +25,8 @@ class PlayStoreBloc extends EditorBaseBloc<PlayStoreModel, PlayStoreEntity> {
   @override
   PlayStoreModel setDefaultValues(
       PlayStoreModel t, StorageConditionsModel conditions) {
-    return t.copyWith(conditions: t.conditions ?? conditions, backgroundIcon: t.backgroundIcon ?? BackgroundModel());
+    return t.copyWith(
+        conditions: t.conditions ?? conditions,
+        backgroundIcon: t.backgroundIcon ?? BackgroundModel());
   }
 }

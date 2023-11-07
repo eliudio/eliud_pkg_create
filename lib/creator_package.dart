@@ -18,16 +18,21 @@ import 'model/repository_singleton.dart';
 import 'package:eliud_core/core/registry.dart';
 
 import 'creator_package_stub.dart'
-if (dart.library.io) 'creator_mobile_package.dart'
-if (dart.library.html) 'creator_web_package.dart';
+    if (dart.library.io) 'creator_mobile_package.dart'
+    if (dart.library.html) 'creator_web_package.dart';
 
 abstract class CreatorPackage extends Package {
   CreatorPackage() : super('eliud_pkg_create');
 
   @override
-  Future<List<PackageConditionDetails>>? getAndSubscribe(AccessBloc accessBloc,
-      AppModel app, MemberModel? member, bool isOwner, bool? isBlocked,
-      PrivilegeLevel? privilegeLevel) => null;
+  Future<List<PackageConditionDetails>>? getAndSubscribe(
+          AccessBloc accessBloc,
+          AppModel app,
+          MemberModel? member,
+          bool isOwner,
+          bool? isBlocked,
+          PrivilegeLevel? privilegeLevel) =>
+      null;
 
   @override
   List<String>? retrieveAllPackageConditions() => null;
@@ -38,8 +43,8 @@ abstract class CreatorPackage extends Package {
 
     NewAppWizardRegistry.registry().register(LogoWizard());
 
-    Registry.registry()!.registerOpenSelectActionWidgetFnct(
-        openSelectActionWidget);
+    Registry.registry()!
+        .registerOpenSelectActionWidgetFnct(openSelectActionWidget);
 
     AbstractRepositorySingleton.singleton = RepositorySingleton();
   }
@@ -50,10 +55,10 @@ abstract class CreatorPackage extends Package {
 
   static CreatorPackage instance() => getCreatorPackage();
 
-
   /*
    * Register depending packages
    */
+  @override
   void registerDependencies(Eliud eliud) {
     eliud.registerPackage(CorePackage.instance());
     eliud.registerPackage(MediumPackage.instance());

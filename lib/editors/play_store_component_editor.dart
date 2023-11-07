@@ -43,7 +43,7 @@ class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
           description: 'New playstore',
           conditions: StorageConditionsModel(
               privilegeLevelRequired:
-                  PrivilegeLevelRequiredSimple.NoPrivilegeRequiredSimple),
+                  PrivilegeLevelRequiredSimple.noPrivilegeRequiredSimple),
         ),
         feedback);
   }
@@ -55,7 +55,7 @@ class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
     if (playStore != null) {
       _openIt(app, context, false, playStore, feedback);
     } else {
-      openErrorDialog(app, context, app.documentID + '/_error',
+      openErrorDialog(app, context, '${app.documentID}/_error',
           title: 'Error',
           errorMessage: 'Cannot find notification dashboard with id $id');
     }
@@ -66,7 +66,7 @@ class PlayStoreComponentEditorConstructor extends ComponentEditorConstructor {
     openComplexDialog(
       app,
       context,
-      app.documentID + '/notificationdashboard',
+      '${app.documentID}/notificationdashboard',
       title: create
           ? 'Create Notification Dashboard'
           : 'Update Notification Dashboard',
@@ -88,9 +88,9 @@ class PlayStoreComponentEditor extends StatefulWidget {
   final AppModel app;
 
   const PlayStoreComponentEditor({
-    Key? key,
+    super.key,
     required this.app,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _PlayStoreComponentEditorState();

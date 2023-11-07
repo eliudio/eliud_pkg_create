@@ -17,8 +17,11 @@ class DialogCreateEventValidateEvent extends DialogCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is DialogCreateEventValidateEvent &&
-              dialogModel == other.dialogModel;
+      other is DialogCreateEventValidateEvent &&
+          dialogModel == other.dialogModel;
+
+  @override
+  int get hashCode => dialogModel.hashCode;
 }
 
 class DialogCreateEventApplyChanges extends DialogCreateEvent {
@@ -32,6 +35,8 @@ class DialogCreateEventApplyChanges extends DialogCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is DialogCreateEventApplyChanges &&
-              save == other.save;
+      other is DialogCreateEventApplyChanges && save == other.save;
+
+  @override
+  int get hashCode => save.hashCode;
 }

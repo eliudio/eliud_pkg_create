@@ -41,9 +41,9 @@ class PlayStoreFormInitialized extends PlayStoreFormState {
   final PlayStoreModel? value;
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
-  const PlayStoreFormInitialized({ this.value });
+  const PlayStoreFormInitialized({this.value});
 }
 
 // Menu has been initialised and hence a menu is available
@@ -51,9 +51,9 @@ abstract class PlayStoreFormError extends PlayStoreFormInitialized {
   final String? message;
 
   @override
-  List<Object?> get props => [ message, value ];
+  List<Object?> get props => [message, value];
 
-  const PlayStoreFormError({this.message, PlayStoreModel? value }) : super(value: value);
+  const PlayStoreFormError({this.message, super.value});
 
   @override
   String toString() {
@@ -63,11 +63,12 @@ abstract class PlayStoreFormError extends PlayStoreFormInitialized {
     }''';
   }
 }
-class DocumentIDPlayStoreFormError extends PlayStoreFormError { 
-  const DocumentIDPlayStoreFormError({ String? message, PlayStoreModel? value }): super(message: message, value: value);
+
+class DocumentIDPlayStoreFormError extends PlayStoreFormError {
+  const DocumentIDPlayStoreFormError({super.message, super.value});
 
   @override
-  List<Object?> get props => [ message, value ];
+  List<Object?> get props => [message, value];
 
   @override
   String toString() {
@@ -78,12 +79,11 @@ class DocumentIDPlayStoreFormError extends PlayStoreFormError {
   }
 }
 
-
-class AppIdPlayStoreFormError extends PlayStoreFormError { 
-  const AppIdPlayStoreFormError({ String? message, PlayStoreModel? value }): super(message: message, value: value);
+class AppIdPlayStoreFormError extends PlayStoreFormError {
+  const AppIdPlayStoreFormError({super.message, super.value});
 
   @override
-  List<Object?> get props => [ message, value ];
+  List<Object?> get props => [message, value];
 
   @override
   String toString() {
@@ -94,12 +94,11 @@ class AppIdPlayStoreFormError extends PlayStoreFormError {
   }
 }
 
-
-class DescriptionPlayStoreFormError extends PlayStoreFormError { 
-  const DescriptionPlayStoreFormError({ String? message, PlayStoreModel? value }): super(message: message, value: value);
+class DescriptionPlayStoreFormError extends PlayStoreFormError {
+  const DescriptionPlayStoreFormError({super.message, super.value});
 
   @override
-  List<Object?> get props => [ message, value ];
+  List<Object?> get props => [message, value];
 
   @override
   String toString() {
@@ -110,12 +109,11 @@ class DescriptionPlayStoreFormError extends PlayStoreFormError {
   }
 }
 
-
-class BackgroundIconPlayStoreFormError extends PlayStoreFormError { 
-  const BackgroundIconPlayStoreFormError({ String? message, PlayStoreModel? value }): super(message: message, value: value);
+class BackgroundIconPlayStoreFormError extends PlayStoreFormError {
+  const BackgroundIconPlayStoreFormError({super.message, super.value});
 
   @override
-  List<Object?> get props => [ message, value ];
+  List<Object?> get props => [message, value];
 
   @override
   String toString() {
@@ -126,12 +124,11 @@ class BackgroundIconPlayStoreFormError extends PlayStoreFormError {
   }
 }
 
-
-class ConditionsPlayStoreFormError extends PlayStoreFormError { 
-  const ConditionsPlayStoreFormError({ String? message, PlayStoreModel? value }): super(message: message, value: value);
+class ConditionsPlayStoreFormError extends PlayStoreFormError {
+  const ConditionsPlayStoreFormError({super.message, super.value});
 
   @override
-  List<Object?> get props => [ message, value ];
+  List<Object?> get props => [message, value];
 
   @override
   String toString() {
@@ -142,12 +139,11 @@ class ConditionsPlayStoreFormError extends PlayStoreFormError {
   }
 }
 
-
-class PlayStoreFormLoaded extends PlayStoreFormInitialized { 
-  const PlayStoreFormLoaded({ PlayStoreModel? value }): super(value: value);
+class PlayStoreFormLoaded extends PlayStoreFormInitialized {
+  const PlayStoreFormLoaded({super.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() {
@@ -157,12 +153,11 @@ class PlayStoreFormLoaded extends PlayStoreFormInitialized {
   }
 }
 
-
-class SubmittablePlayStoreForm extends PlayStoreFormInitialized { 
-  const SubmittablePlayStoreForm({ PlayStoreModel? value }): super(value: value);
+class SubmittablePlayStoreForm extends PlayStoreFormInitialized {
+  const SubmittablePlayStoreForm({super.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() {
@@ -171,5 +166,3 @@ class SubmittablePlayStoreForm extends PlayStoreFormInitialized {
     }''';
   }
 }
-
-

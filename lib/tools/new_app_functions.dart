@@ -8,8 +8,7 @@ import 'package:eliud_core/model/access_model.dart';
 import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 
-Future<AppModel> claimOwnerShipApplication(
-    String appId, String ownerID) async {
+Future<AppModel> claimOwnerShipApplication(String appId, String ownerID) async {
   // first delete the app
   AppModel? oldApp = await appRepository()!.get(appId);
   if (oldApp != null) {
@@ -30,6 +29,6 @@ Future<AccessModel> claimAccess(String appId, String ownerID) async {
   return await accessRepository(appId: appId)!.add(AccessModel(
       documentID: ownerID,
       appId: appId,
-      privilegeLevel: PrivilegeLevel.OwnerPrivilege,
+      privilegeLevel: PrivilegeLevel.ownerPrivilege,
       points: 0));
 }

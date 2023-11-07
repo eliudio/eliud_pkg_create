@@ -1,5 +1,4 @@
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/rgb_model.dart';
 import 'package:eliud_core/style/frontend/has_drawer.dart';
@@ -8,11 +7,16 @@ import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'with_menu.dart';
 
 class RightDrawerBuilder extends WithMenu {
-  RightDrawerBuilder(AppModel app, ):
-        super(app, name: 'Left drawer', identifier: drawerID(app.documentID, DrawerType.Right), );
+  RightDrawerBuilder(
+    super.app,
+  ) : super(
+          name: 'Left drawer',
+          identifier: drawerID(app.documentID, DrawerType.right),
+        );
 
   Future<DrawerModel> getOrCreate() async {
-    var drawerModel = await drawerRepository(appId: app.documentID)!.get(identifier);
+    var drawerModel =
+        await drawerRepository(appId: app.documentID)!.get(identifier);
     if (drawerModel == null) {
       drawerModel = DrawerModel(
           documentID: identifier,

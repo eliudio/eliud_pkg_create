@@ -18,19 +18,16 @@ class WorkflowTasksCreateInitialised extends WorkflowTasksCreateState {
   final WorkflowTaskModel? currentlySelected;
 
   WorkflowTasksCreateInitialised(
-      {required this.workflowTaskModels,
-      this.currentlySelected});
+      {required this.workflowTaskModels, this.currentlySelected});
 
   @override
-  List<Object?> get props =>
-      [workflowTaskModels, currentlySelected];
+  List<Object?> get props => [workflowTaskModels, currentlySelected];
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is WorkflowTasksCreateInitialised &&
-          ListEquality()
-              .equals(workflowTaskModels, other.workflowTaskModels) &&
+          ListEquality().equals(workflowTaskModels, other.workflowTaskModels) &&
           currentlySelected == other.currentlySelected;
 
   WorkflowTasksCreateInitialised copyWith(
@@ -39,12 +36,19 @@ class WorkflowTasksCreateInitialised extends WorkflowTasksCreateState {
       WorkflowTaskModel? currentlySelected}) {
     return WorkflowTasksCreateInitialised(
         workflowTaskModels: workflowTaskModels ?? this.workflowTaskModels,
-        currentlySelected: currentlySelected ?? null);
+        currentlySelected: currentlySelected);
   }
+
+  @override
+  int get hashCode => workflowTaskModels.hashCode ^ currentlySelected.hashCode;
 }
 
 List<PluginWithComponents> retrievePluginsWithComponents() =>
-    Registry.registry()!.componentSpecMap().entries.map((entry) => PluginWithComponents(entry.key, entry.value)).toList();
+    Registry.registry()!
+        .componentSpecMap()
+        .entries
+        .map((entry) => PluginWithComponents(entry.key, entry.value))
+        .toList();
 
 class PluginWithComponents {
   final String name;

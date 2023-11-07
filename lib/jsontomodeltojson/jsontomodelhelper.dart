@@ -28,7 +28,7 @@ import '../tools/defaults.dart';
 import 'jsonconst.dart';
 import 'package:http/http.dart' as http;
 
-typedef void Feedback(String key, String documentId);
+typedef Feedback = void Function(String key, String documentId);
 
 class ComponentSpec {
   final String pluginName;
@@ -40,53 +40,87 @@ class ComponentSpec {
 
 class JsonToModelsHelper {
   static Future<List<NewAppTask>> createAppFromURL(
-      AppModel app, String memberId, String url, {Feedback? feedback,}) async {
+    AppModel app,
+    String memberId,
+    String url, {
+    Feedback? feedback,
+  }) async {
     var theUrl = Uri.parse(url);
     return _createAppFromURI(app, memberId, theUrl, feedback: feedback);
   }
 
-  static Future<List<NewAppTask>> createAppFromMemberMedium(AppModel app,
-      String memberId, MemberMediumModel memberMediumModel, {Feedback? feedback,}) async {
+  static Future<List<NewAppTask>> createAppFromMemberMedium(
+    AppModel app,
+    String memberId,
+    MemberMediumModel memberMediumModel, {
+    Feedback? feedback,
+  }) async {
     var theUrl = Uri.parse(memberMediumModel.url!);
     return _createAppFromURI(app, memberId, theUrl, feedback: feedback);
   }
 
   static Future<List<NewAppTask>> _createAppFromURI(
-      AppModel app, String memberId, Uri uri, {Feedback? feedback,}) async {
+    AppModel app,
+    String memberId,
+    Uri uri, {
+    Feedback? feedback,
+  }) async {
     final response = await http.get(uri);
     var json = String.fromCharCodes(response.bodyBytes);
     return createAppFromJson(app, memberId, json, feedback: feedback);
   }
 
   static Future<List<NewAppTask>> createOtherFromURL(
-      AppModel app, String memberId, String url, bool includeMedia, {Feedback? feedback,}) async {
+    AppModel app,
+    String memberId,
+    String url,
+    bool includeMedia, {
+    Feedback? feedback,
+  }) async {
     var theUrl = Uri.parse(url);
-    return _createOtherFromURI(app, memberId, theUrl, includeMedia, feedback: feedback);
+    return _createOtherFromURI(app, memberId, theUrl, includeMedia,
+        feedback: feedback);
   }
 
-  static Future<List<NewAppTask>> createOtherFromMemberMedium(AppModel app,
-      String memberId, MemberMediumModel memberMediumModel, bool includeMedia, {Feedback? feedback,}) async {
+  static Future<List<NewAppTask>> createOtherFromMemberMedium(
+    AppModel app,
+    String memberId,
+    MemberMediumModel memberMediumModel,
+    bool includeMedia, {
+    Feedback? feedback,
+  }) async {
     var theUrl = Uri.parse(memberMediumModel.url!);
-    return _createOtherFromURI(app, memberId, theUrl, includeMedia, feedback: feedback);
+    return _createOtherFromURI(app, memberId, theUrl, includeMedia,
+        feedback: feedback);
   }
 
   static Future<List<NewAppTask>> _createOtherFromURI(
-      AppModel app, String memberId, Uri uri, bool includeMedia, {Feedback? feedback,}) async {
+    AppModel app,
+    String memberId,
+    Uri uri,
+    bool includeMedia, {
+    Feedback? feedback,
+  }) async {
     final response = await http.get(uri);
     var json = String.fromCharCodes(response.bodyBytes);
-    return createOtherFromJson(app, memberId, json, includeMedia, feedback: feedback);
+    return createOtherFromJson(app, memberId, json, includeMedia,
+        feedback: feedback);
   }
 
   static Future<List<NewAppTask>> createAppFromJson(
-      AppModel app, String memberId, String jsonText, {Feedback? feedback,}) async {
+    AppModel app,
+    String memberId,
+    String jsonText, {
+    Feedback? feedback,
+  }) async {
     var appId = app.documentID;
     List<NewAppTask> tasks = [];
 
     Map<String, dynamic>? map = jsonDecode(jsonText);
     if (map != null) {
       var oldAppId = map['app']['documentID'];
-      var leftDrawerDocumentId = drawerID(appId, DrawerType.Left);
-      var rightDrawerDocumentId = drawerID(appId, DrawerType.Right);
+      var leftDrawerDocumentId = drawerID(appId, DrawerType.left);
+      var rightDrawerDocumentId = drawerID(appId, DrawerType.right);
       var homeMenuId = homeMenuID(appId);
       var appBarId = appBarID(appId);
       List<ComponentSpec> createdComponents = [];
@@ -100,11 +134,12 @@ class JsonToModelsHelper {
             if (appEntity != null) {
               await appRepository()!.updateEntity(appId, appEntity);
             }
-          } else if (key == DrawerModel.packageName + "-" + DrawerModel.id) {
+          } else if (key == "${DrawerModel.packageName}-${DrawerModel.id}") {
             var values = entry.value;
             for (var theItem in values) {
-              var documentID;
-              if (theItem['documentID'] == drawerID(oldAppId, DrawerType.Left)) {
+              String documentID;
+              if (theItem['documentID'] ==
+                  drawerID(oldAppId, DrawerType.left)) {
                 documentID = leftDrawerDocumentId;
               } else {
                 documentID = rightDrawerDocumentId;
@@ -112,38 +147,44 @@ class JsonToModelsHelper {
               theItem['appId'] = appId;
               var entity = drawerRepository(appId: appId)!.fromMap(theItem);
               if (entity != null) {
-                await drawerRepository(appId: appId)!.addEntity(documentID, entity);
+                await drawerRepository(appId: appId)!
+                    .addEntity(documentID, entity);
               } else {
-                print("Error getting entity for " + theItem);
+                print("Error getting entity for $theItem");
               }
             }
-          } else if (key == AppBarModel.packageName + "-" + AppBarModel.id) {
+          } else if (key == "${AppBarModel.packageName}-${AppBarModel.id}") {
             var values = entry.value;
             for (var theItem in values) {
               theItem['appId'] = appId;
               var entity = appBarRepository(appId: appId)!.fromMap(theItem);
               if (entity != null) {
-                await appBarRepository(appId: appId)!.addEntity(appBarId, entity);
+                await appBarRepository(appId: appId)!
+                    .addEntity(appBarId, entity);
               } else {
-                print("Error getting entity for " + theItem);
+                print("Error getting entity for $theItem");
               }
             }
-          } else if (key == HomeMenuModel.packageName + "-" + HomeMenuModel.id) {
+          } else if (key ==
+              "${HomeMenuModel.packageName}-${HomeMenuModel.id}") {
             var values = entry.value;
             for (var theItem in values) {
               theItem['appId'] = appId;
               var entity = homeMenuRepository(appId: appId)!.fromMap(theItem);
               if (entity != null) {
-                await homeMenuRepository(appId: appId)!.addEntity(homeMenuId, entity);
+                await homeMenuRepository(appId: appId)!
+                    .addEntity(homeMenuId, entity);
               } else {
-                print("Error getting entity for " + theItem);
+                print("Error getting entity for $theItem");
               }
             }
           } else if (key == JsonConsts.pages) {
             List<dynamic>? pages = entry.value;
             if (pages != null) {
               for (var page in pages) {
-                await createPageEntity(page, appId, homeMenuId, leftDrawerDocumentId, rightDrawerDocumentId, appBarId, feedback: feedback);
+                await createPageEntity(page, appId, homeMenuId,
+                    leftDrawerDocumentId, rightDrawerDocumentId, appBarId,
+                    feedback: feedback);
               }
             }
           } else if (key == JsonConsts.dialogs) {
@@ -153,22 +194,23 @@ class JsonToModelsHelper {
                 await createDialogEntity(dialog, appId, feedback: feedback);
               }
             }
-          } else if (key == MenuDefModel.packageName + "-" + MenuDefModel.id) {
+          } else if (key == "${MenuDefModel.packageName}-${MenuDefModel.id}") {
             var theItems = entry.value;
             if (theItems != null) {
-              await restoreFromMap(theItems, menuDefRepository(appId: appId)!, appId,
+              await restoreFromMap(
+                  theItems, menuDefRepository(appId: appId)!, appId,
                   postProcessing: (menuDef) {
-                    var menuItems = menuDef['menuItems'];
-                    for (var menuItem in menuItems) {
-                      var action = menuItem['action'];
-                      if (action != null) {
-                        action['appID'] = appId;
-                      }
-                    }
-                  });
+                var menuItems = menuDef['menuItems'];
+                for (var menuItem in menuItems) {
+                  var action = menuItem['action'];
+                  if (action != null) {
+                    action['appID'] = appId;
+                  }
+                }
+              });
             }
           } else if (key ==
-              PlatformMediumModel.packageName + "-" + PlatformMediumModel.id) {
+              "${PlatformMediumModel.packageName}-${PlatformMediumModel.id}") {
             var theItems = entry.value;
             if (theItems != null) {
               var repository = platformMediumRepository(appId: appId)!;
@@ -177,7 +219,7 @@ class JsonToModelsHelper {
               }
             }
           } else if (key ==
-              MemberMediumModel.packageName + "-" + MemberMediumModel.id) {
+              "${MemberMediumModel.packageName}-${MemberMediumModel.id}") {
             var theItems = entry.value;
             if (theItems != null) {
               var repository = memberMediumRepository(appId: appId)!;
@@ -186,7 +228,7 @@ class JsonToModelsHelper {
               }
             }
           } else if (key ==
-              PublicMediumModel.packageName + "-" + PublicMediumModel.id) {
+              "${PublicMediumModel.packageName}-${PublicMediumModel.id}") {
             var theItems = entry.value;
             if (theItems != null) {
               var repository = publicMediumRepository(appId: appId)!;
@@ -204,26 +246,26 @@ class JsonToModelsHelper {
                 var retrieveRepo = Registry.registry()!
                     .getRetrieveRepository(pluginName, componentId);
                 if (retrieveRepo != null) {
-                  var documentIds = await restoreFromMap(values, retrieveRepo(appId: appId), appId);
+                  var documentIds = await restoreFromMap(
+                      values, retrieveRepo(appId: appId), appId);
                   for (var doc in documentIds) {
-                    print("Doc : " + doc);
+                    print("Doc : $doc");
                   }
-                  createdComponents.addAll(documentIds.map((documentId) => ComponentSpec(
-                      pluginName,
-                      componentId,
-                      documentId)).toList());
+                  createdComponents.addAll(documentIds
+                      .map((documentId) =>
+                          ComponentSpec(pluginName, componentId, documentId))
+                      .toList());
                 } else {
-                  print("Can't find repo for: " + key);
+                  print("Can't find repo for: $key");
                 }
               } catch (e) {
-                print("Error processing " + key);
+                print("Error processing $key");
               }
             } else {
-              print("Dont know how to handle this entry with key: " + key);
+              print("Don't know how to handle this entry with key: $key");
             }
           }
         });
-
       }
       revalidateComponentModels(app, tasks, createdComponents);
     }
@@ -232,14 +274,19 @@ class JsonToModelsHelper {
   }
 
   static Future<List<NewAppTask>> createOtherFromJson(
-      AppModel app, String memberId, String jsonText, bool includeMedia, {Feedback? feedback,}) async {
+    AppModel app,
+    String memberId,
+    String jsonText,
+    bool includeMedia, {
+    Feedback? feedback,
+  }) async {
     var appId = app.documentID;
     List<NewAppTask> tasks = [];
 
     Map<String, dynamic>? map = jsonDecode(jsonText);
     if (map != null) {
-      var leftDrawerDocumentId = drawerID(appId, DrawerType.Left);
-      var rightDrawerDocumentId = drawerID(appId, DrawerType.Right);
+      var leftDrawerDocumentId = drawerID(appId, DrawerType.left);
+      var rightDrawerDocumentId = drawerID(appId, DrawerType.right);
       var homeMenuId = homeMenuID(appId);
       var appBarId = appBarID(appId);
 
@@ -261,7 +308,9 @@ class JsonToModelsHelper {
                   bodyComponent['componentId'] = newComponentId;
                   newDocumentIds[oldComponentId] = newComponentId;
                 }
-                await createPageEntity(page, appId, homeMenuId, leftDrawerDocumentId, rightDrawerDocumentId, appBarId, feedback: feedback);
+                await createPageEntity(page, appId, homeMenuId,
+                    leftDrawerDocumentId, rightDrawerDocumentId, appBarId,
+                    feedback: feedback);
               }
             }
           } else if (key == JsonConsts.dialogs) {
@@ -281,44 +330,49 @@ class JsonToModelsHelper {
       for (var entry in map.entries) {
         tasks.add(() async {
           var key = entry.key;
-          if (key == JsonConsts.app) {} else
-          if (key == DrawerModel.packageName + "-" + DrawerModel.id) {} else
-          if (key == AppBarModel.packageName + "-" + AppBarModel.id) {} else
-          if (key == HomeMenuModel.packageName + "-" + HomeMenuModel.id) {} else
-          if (key == MenuDefModel.packageName + "-" + MenuDefModel.id) {} else
-          if (key == JsonConsts.pages) {} else
-          if (key == JsonConsts.dialogs) {} else if (key ==
-              PlatformMediumModel.packageName + "-" +
-                  PlatformMediumModel.id) {} else if (key ==
-              MemberMediumModel.packageName + "-" +
-                  MemberMediumModel.id) {} else if (key ==
-              PublicMediumModel.packageName + "-" +
-                  PublicMediumModel.id) {} else {
+          if (key == JsonConsts.app) {
+          } else if (key == "${DrawerModel.packageName}-${DrawerModel.id}") {
+          } else if (key == "${AppBarModel.packageName}-${AppBarModel.id}") {
+          } else if (key ==
+              "${HomeMenuModel.packageName}-${HomeMenuModel.id}") {
+          } else if (key == "${MenuDefModel.packageName}-${MenuDefModel.id}") {
+          } else if (key == JsonConsts.pages) {
+          } else if (key == JsonConsts.dialogs) {
+          } else if (key ==
+              "${PlatformMediumModel.packageName}-${PlatformMediumModel.id}") {
+          } else if (key ==
+              "${MemberMediumModel.packageName}-${MemberMediumModel.id}") {
+          } else if (key ==
+              "${PublicMediumModel.packageName}-${PublicMediumModel.id}") {
+          } else {
             var split = key.split('-');
             if (split.length == 2) {
               try {
                 var pluginName = split[0];
                 var componentId = split[1];
                 var values = entry.value;
-                print("restoring: " + pluginName + " " + componentId);
+                print("restoring: $pluginName $componentId");
                 var retrieveRepo = Registry.registry()!
                     .getRetrieveRepository(pluginName, componentId);
                 if (retrieveRepo != null) {
                   var documentIds = await restoreFromMap(
-                      values, retrieveRepo(appId: appId), appId,
-                      newDocumentIds: newDocumentIds, );
-                  createdComponents.addAll(documentIds.map((documentId) => ComponentSpec(
-                      pluginName,
-                      componentId,
-                      documentId)).toList());
+                    values,
+                    retrieveRepo(appId: appId),
+                    appId,
+                    newDocumentIds: newDocumentIds,
+                  );
+                  createdComponents.addAll(documentIds
+                      .map((documentId) =>
+                          ComponentSpec(pluginName, componentId, documentId))
+                      .toList());
                 } else {
-                  print("Can't find repo for: " + key);
+                  print("Can't find repo for: $key");
                 }
               } catch (e) {
-                print("Error processing " + key);
+                print("Error processing $key");
               }
             } else {
-              print("Don't know how to handle this entry with key: " + key);
+              print("Don't know how to handle this entry with key: $key");
             }
           }
         });
@@ -330,32 +384,33 @@ class JsonToModelsHelper {
           tasks.add(() async {
             var key = entry.key;
             if (key ==
-                PlatformMediumModel.packageName + "-" +
-                    PlatformMediumModel.id) {
+                "${PlatformMediumModel.packageName}-${PlatformMediumModel.id}") {
               var theItems = entry.value;
               if (theItems != null) {
                 var repository = platformMediumRepository(appId: appId)!;
                 for (var theItem in theItems) {
-                  await createPlatformMedium(
-                      theItem, app, memberId, repository, newDocumentIds: newDocumentIds);
+                  await createPlatformMedium(theItem, app, memberId, repository,
+                      newDocumentIds: newDocumentIds);
                 }
               }
             } else if (key ==
-                MemberMediumModel.packageName + "-" + MemberMediumModel.id) {
+                "${MemberMediumModel.packageName}-${MemberMediumModel.id}") {
               var theItems = entry.value;
               if (theItems != null) {
                 var repository = memberMediumRepository(appId: appId)!;
                 for (var theItem in theItems) {
-                  await createMemberMedium(theItem, app, memberId, repository, newDocumentIds: newDocumentIds);
+                  await createMemberMedium(theItem, app, memberId, repository,
+                      newDocumentIds: newDocumentIds);
                 }
               }
             } else if (key ==
-                PublicMediumModel.packageName + "-" + PublicMediumModel.id) {
+                "${PublicMediumModel.packageName}-${PublicMediumModel.id}") {
               var theItems = entry.value;
               if (theItems != null) {
                 var repository = publicMediumRepository(appId: appId)!;
                 for (var theItem in theItems) {
-                  await createPublicMedium(theItem, app, memberId, repository, newDocumentIds: newDocumentIds);
+                  await createPublicMedium(theItem, app, memberId, repository,
+                      newDocumentIds: newDocumentIds);
                 }
               }
             }
@@ -369,32 +424,43 @@ class JsonToModelsHelper {
     return tasks;
   }
 
-  static void revalidateComponentModels(AppModel app, List<NewAppTask> tasks, List<ComponentSpec> createdComponents) {
+  static void revalidateComponentModels(AppModel app, List<NewAppTask> tasks,
+      List<ComponentSpec> createdComponents) {
     // now run all revalidateModel to make sure the documents are consistent, e.g. update html links
     tasks.add(() async {
       for (var createdComponent in createdComponents) {
-        var componentSpecs = await Registry.registry()!.getComponentSpecs(
-            createdComponent.componentId);
+        var componentSpecs = Registry.registry()!
+            .getComponentSpecs(createdComponent.componentId);
         if (componentSpecs == null) {
-          print("Exception during retrieval of component " +
-              createdComponent.componentId);
+          print(
+              "Exception during retrieval of component ${createdComponent.componentId}");
         } else {
-          var repository = componentSpecs.retrieveRepository(appId: app.documentID);
+          var repository =
+              componentSpecs.retrieveRepository(appId: app.documentID);
           var entity = await repository.getEntity(createdComponent.documentId);
           if (entity != null) {
-            var newEntity = await componentSpecs.editor.revalidateEntity(
-                app, entity);
-            await repository.updateEntity(createdComponent.documentId, newEntity);
+            var newEntity =
+                await componentSpecs.editor.revalidateEntity(app, entity);
+            await repository.updateEntity(
+                createdComponent.documentId, newEntity);
           } else {
-            print("Couldn't find model with id " + createdComponent.documentId + " for componentSpecs with name " + componentSpecs.name);
+            print(
+                "Couldn't find model with id ${createdComponent.documentId} for componentSpecs with name ${componentSpecs.name}");
           }
         }
       }
     });
-
   }
 
-  static Future<PageEntity> createPageEntity( dynamic page, String appId, String homeMenuId, String leftDrawerDocumentId, String rightDrawerDocumentId, String appBarId, {Feedback? feedback,}) async {
+  static Future<PageEntity> createPageEntity(
+    dynamic page,
+    String appId,
+    String homeMenuId,
+    String leftDrawerDocumentId,
+    String rightDrawerDocumentId,
+    String appBarId, {
+    Feedback? feedback,
+  }) async {
     var documentID = page['documentID'];
     page['appId'] = appId;
     page['homeMenuId'] = homeMenuId;
@@ -403,8 +469,8 @@ class JsonToModelsHelper {
     page['appBarId'] = appBarId;
     var pageEntity = PageEntity.fromMap(page);
     if (pageEntity != null) {
-      var newPageEntity = await pageRepository(appId: appId)!
-          .addEntity(documentID, pageEntity);
+      var newPageEntity =
+          await pageRepository(appId: appId)!.addEntity(documentID, pageEntity);
       if (feedback != null) {
         feedback(JsonConsts.pages, documentID);
       }
@@ -414,7 +480,11 @@ class JsonToModelsHelper {
     }
   }
 
-  static Future<DialogEntity> createDialogEntity(dynamic dialog, String appId, {Feedback? feedback,}) async {
+  static Future<DialogEntity> createDialogEntity(
+    dynamic dialog,
+    String appId, {
+    Feedback? feedback,
+  }) async {
     var documentID = dialog['documentID'];
     dialog['appId'] = appId;
     var dialogEntity = DialogEntity.fromMap(dialog);
@@ -430,7 +500,8 @@ class JsonToModelsHelper {
     }
   }
 
-  static String renameDoc(dynamic theItem, Map<String, String>? newDocumentIds ) {
+  static String renameDoc(
+      dynamic theItem, Map<String, String>? newDocumentIds) {
     var documentID = theItem['documentID'];
     // potentially rename the document
     if (newDocumentIds != null) {
@@ -443,7 +514,9 @@ class JsonToModelsHelper {
     return documentID;
   }
 
-  static Future<void> createPlatformMedium(Map theNewItem, AppModel app, String memberId, RepositoryBase repository, { Map<String, String>? newDocumentIds }) async {
+  static Future<void> createPlatformMedium(
+      Map theNewItem, AppModel app, String memberId, RepositoryBase repository,
+      {Map<String, String>? newDocumentIds}) async {
     var oldDocumentId = theNewItem["documentID"];
     renameDoc(theNewItem, newDocumentIds);
     var newDocumentId = theNewItem["documentID"];
@@ -454,10 +527,9 @@ class JsonToModelsHelper {
             app,
             memberId,
             platformMedium.conditions == null
-                ? PrivilegeLevelRequiredSimple
-                .NoPrivilegeRequiredSimple
-                : toPrivilegeLevelRequiredSimple(platformMedium
-                .conditions!.privilegeLevelRequired!));
+                ? PrivilegeLevelRequiredSimple.noPrivilegeRequiredSimple
+                : toPrivilegeLevelRequiredSimple(
+                    platformMedium.conditions!.privilegeLevelRequired!));
         var base = platformMedium.base;
         if (base == oldDocumentId) {
           base = newDocumentId;
@@ -469,24 +541,26 @@ class JsonToModelsHelper {
             platformMedium.ext,
             platformMedium.mediumType ?? 0,
             theNewItem,
-            platformMedium.relatedMediumId, newDocumentIds: newDocumentIds);
+            platformMedium.relatedMediumId,
+            newDocumentIds: newDocumentIds);
       }
     } catch (e) {
-      print("Error whilst creating public medium " + e.toString());
+      print("Error whilst creating public medium $e");
     }
   }
 
-  static Future<void> createMemberMedium(Map theNewItem, AppModel app, String memberId, RepositoryBase repository, { Map<String, String>? newDocumentIds }) async {
+  static Future<void> createMemberMedium(
+      Map theNewItem, AppModel app, String memberId, RepositoryBase repository,
+      {Map<String, String>? newDocumentIds}) async {
     var oldDocumentId = theNewItem["documentID"];
     renameDoc(theNewItem, newDocumentIds);
     var newDocumentId = theNewItem["documentID"];
     try {
       var memberMedium = repository.fromMap(theNewItem);
       if (memberMedium != null) {
-        var memberMediumAccessibleByGroup =
-        toMemberMediumAccessibleByGroup(
+        var memberMediumAccessibleByGroup = toMemberMediumAccessibleByGroup(
             memberMedium.accessibleByGroup ??
-                MemberMediumAccessibleByGroup.Me.index);
+                MemberMediumAccessibleByGroup.me.index);
         var helper = MemberMediumHelper(
             app, memberId, memberMediumAccessibleByGroup,
             accessibleByMembers: memberMedium.accessibleByMembers);
@@ -504,11 +578,13 @@ class JsonToModelsHelper {
             memberMedium.relatedMediumId);
       }
     } catch (e) {
-      print("Error whilst creating public medium " + e.toString());
+      print("Error whilst creating public medium $e");
     }
   }
 
-  static Future<void> createPublicMedium(Map theNewItem, AppModel app, String memberId, RepositoryBase repository, { Map<String, String>? newDocumentIds }) async {
+  static Future<void> createPublicMedium(
+      Map theNewItem, AppModel app, String memberId, RepositoryBase repository,
+      {Map<String, String>? newDocumentIds}) async {
     var oldDocumentId = theNewItem["documentID"];
     renameDoc(theNewItem, newDocumentIds);
     var newDocumentId = theNewItem["documentID"];
@@ -533,7 +609,7 @@ class JsonToModelsHelper {
             publicMedium.relatedMediumId);
       }
     } catch (e) {
-      print("Error whilst creating public medium " + e.toString());
+      print("Error whilst creating public medium $e");
     }
   }
 
@@ -546,9 +622,9 @@ class JsonToModelsHelper {
       String? ext,
       int mediumType,
       dynamic theItem,
-      String? relatedMediumId, { Map<String, String>? newDocumentIds }) async {
-
-    if (base == null) base = noNameId;
+      String? relatedMediumId,
+      {Map<String, String>? newDocumentIds}) async {
+    base ??= noNameId;
 
     if (newDocumentIds != null) {
       var baseId = base.substring(0, 36);
@@ -562,8 +638,8 @@ class JsonToModelsHelper {
       }
     }
 
-    var baseName = (base ?? 'noname') + "." + (ext ?? '');
-    var thumbNailName = (base ?? 'noname') + "-thumb." + (ext ?? '');
+    var baseName = "$base.${ext ?? ''}";
+    var thumbNailName = "$base-thumb.${ext ?? ''}";
     var extractItem = theItem['extract'];
     if (mediumType == 0) {
       var extract = Uint8List.fromList(extractItem.cast<int>());
@@ -594,7 +670,8 @@ class JsonToModelsHelper {
         baseName,
       );
     }
-    throw Exception("Exception during upload of base $base, ext $ext: mediumType $mediumType not supported");
+    throw Exception(
+        "Exception during upload of base $base, ext $ext: mediumType $mediumType not supported");
   }
 
   static Future<List<String>> restoreFromMap(
@@ -612,7 +689,8 @@ class JsonToModelsHelper {
           postProcessing(theNewItem);
         }
 
-        EntityBase entity = repository.fromMap(theNewItem, newDocumentIds: newDocumentIds);
+        EntityBase entity =
+            repository.fromMap(theNewItem, newDocumentIds: newDocumentIds);
         var newEntity = entity.switchAppId(newAppId: appId);
         await repository.addEntity(documentID, newEntity);
         documentIds.add(documentID);

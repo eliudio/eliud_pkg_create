@@ -17,8 +17,11 @@ class WorkflowCreateEventValidateEvent extends WorkflowCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WorkflowCreateEventValidateEvent &&
-              workflowModel == other.workflowModel;
+      other is WorkflowCreateEventValidateEvent &&
+          workflowModel == other.workflowModel;
+
+  @override
+  int get hashCode => workflowModel.hashCode;
 }
 
 class WorkflowCreateEventApplyChanges extends WorkflowCreateEvent {
@@ -32,6 +35,8 @@ class WorkflowCreateEventApplyChanges extends WorkflowCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WorkflowCreateEventApplyChanges &&
-              save == other.save;
+      other is WorkflowCreateEventApplyChanges && save == other.save;
+
+  @override
+  int get hashCode => save.hashCode;
 }

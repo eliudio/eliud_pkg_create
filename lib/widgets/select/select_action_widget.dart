@@ -25,12 +25,18 @@ import 'package:eliud_core/core/registry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-Widget openSelectActionWidget({required AppModel app,
-  required ActionModel? action,
-  required ActionSelected actionSelected,
-  required int containerPrivilege,
-  required String label}) {
-  return SelectActionWidget(app: app, action: action, actionSelected: actionSelected, containerPrivilege: containerPrivilege, label: label);
+Widget openSelectActionWidget(
+    {required AppModel app,
+    required ActionModel? action,
+    required ActionSelected actionSelected,
+    required int containerPrivilege,
+    required String label}) {
+  return SelectActionWidget(
+      app: app,
+      action: action,
+      actionSelected: actionSelected,
+      containerPrivilege: containerPrivilege,
+      label: label);
 }
 
 class SelectActionWidget extends StatefulWidget {
@@ -41,13 +47,12 @@ class SelectActionWidget extends StatefulWidget {
   final String label;
 
   const SelectActionWidget(
-      {Key? key,
+      {super.key,
       required this.app,
       required this.action,
       required this.actionSelected,
       required this.containerPrivilege,
-      required this.label})
-      : super(key: key);
+      required this.label});
 
   @override
   State<StatefulWidget> createState() => _SelectActionWidgetState();
@@ -69,8 +74,8 @@ class _SelectActionWidgetState extends State<SelectActionWidget> {
         Row(children: [
           Spacer(),
           button(widget.app, context, label: 'Select', onPressed: () {
-            SelectActionDialog.openIt(
-                context, widget.app, widget.actionSelected, widget.containerPrivilege);
+            SelectActionDialog.openIt(context, widget.app,
+                widget.actionSelected, widget.containerPrivilege);
           }),
           Spacer(),
           button(widget.app, context, label: 'Clear', onPressed: () {
@@ -92,24 +97,23 @@ class SelectActionDialog extends StatefulWidget {
     required this.app,
     required this.actionSelected,
     required this.containerPrivilege,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
     return _SelectActionDialogState();
   }
 
-  static void openIt(
-    BuildContext context,
-    AppModel app,
-    ActionSelected actionSelected,
-    int containerPrivilege
-  ) {
-    openFlexibleDialog(app, context, app.documentID + '/_selectaction',
+  static void openIt(BuildContext context, AppModel app,
+      ActionSelected actionSelected, int containerPrivilege) {
+    openFlexibleDialog(app, context, '${app.documentID}/_selectaction',
         includeHeading: false,
         widthFraction: .8,
-        child: SelectActionDialog._(app: app, actionSelected: actionSelected, containerPrivilege: containerPrivilege,));
+        child: SelectActionDialog._(
+          app: app,
+          actionSelected: actionSelected,
+          containerPrivilege: containerPrivilege,
+        ));
   }
 }
 
@@ -137,9 +141,11 @@ class _SelectActionDialogState extends State<SelectActionDialog> {
             )..add(LoadWorkflowList()),
           ),
         ],
-        child: SelectActionPrivilege(app: app, actionSelected: widget.actionSelected, containerPrivilege: widget.containerPrivilege));
+        child: SelectActionPrivilege(
+            app: app,
+            actionSelected: widget.actionSelected,
+            containerPrivilege: widget.containerPrivilege));
   }
-
 }
 
 class SelectActionPrivilege extends StatefulWidget {
@@ -151,11 +157,11 @@ class SelectActionPrivilege extends StatefulWidget {
     required this.app,
     required this.actionSelected,
     required this.containerPrivilege,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _SelectActionPrivilegeState createState() {
+  State<SelectActionPrivilege> createState() {
     return _SelectActionPrivilegeState();
   }
 }
@@ -169,9 +175,9 @@ class _SelectActionPrivilegeState extends State<SelectActionPrivilege>
 
   @override
   void initState() {
-    var _privilegeASize = _privilegeItems.length;
+    var privilegeASize = _privilegeItems.length;
     _privilegeTabController =
-        TabController(vsync: this, length: _privilegeASize);
+        TabController(vsync: this, length: privilegeASize);
     _privilegeTabController!.addListener(_handlePrivilegeTabSelection);
     _privilegeTabController!.index = _initialPrivilege;
 
@@ -182,10 +188,12 @@ class _SelectActionPrivilegeState extends State<SelectActionPrivilege>
     if ((_privilegeTabController != null) &&
         (_privilegeTabController!.indexIsChanging)) {
       _currentPrivilege = _privilegeTabController!.index;
-      BlocProvider.of<PageListBloc>(context).add(
-          PageChangeQuery(newQuery: getComponentSelectorQuery(_currentPrivilege, widget.app.documentID)));
-      BlocProvider.of<DialogListBloc>(context).add(
-          DialogChangeQuery(newQuery: getComponentSelectorQuery(_currentPrivilege, widget.app.documentID)));
+      BlocProvider.of<PageListBloc>(context).add(PageChangeQuery(
+          newQuery: getComponentSelectorQuery(
+              _currentPrivilege, widget.app.documentID)));
+      BlocProvider.of<DialogListBloc>(context).add(DialogChangeQuery(
+          newQuery: getComponentSelectorQuery(
+              _currentPrivilege, widget.app.documentID)));
 /*
       BlocProvider.of<WorkflowListBloc>(context).add(
           WorkflowChangeQuery(newQuery: getComponentSelectorQuery(_currentPrivilege, widget.app.documentID)));
@@ -206,7 +214,13 @@ class _SelectActionPrivilegeState extends State<SelectActionPrivilege>
     var newPrivilegeItems = <Widget>[];
     int i = 0;
     for (var privilegeItem in _privilegeItems) {
-      newPrivilegeItems.add(Wrap(children: [(i <= widget.containerPrivilege) ? Icon(Icons.check) : Icon(Icons.close), Container(width: 2), text(widget.app, context, privilegeItem)]));
+      newPrivilegeItems.add(Wrap(children: [
+        (i <= widget.containerPrivilege)
+            ? Icon(Icons.check)
+            : Icon(Icons.close),
+        Container(width: 2),
+        text(widget.app, context, privilegeItem)
+      ]));
       i++;
     }
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
@@ -221,7 +235,8 @@ class _SelectActionPrivilegeState extends State<SelectActionPrivilege>
       Column(children: [
         tabBar2(widget.app, context,
             items: newPrivilegeItems, tabController: _privilegeTabController!),
-        SelectActionPageOrDialog(app: widget.app, actionSelected: widget.actionSelected),
+        SelectActionPageOrDialog(
+            app: widget.app, actionSelected: widget.actionSelected),
       ])
     ]);
   }
@@ -236,14 +251,13 @@ class SelectActionPageOrDialog extends StatefulWidget {
   SelectActionPageOrDialog({
     required this.app,
     required this.actionSelected,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _SelectActionPageOrDialogState createState() {
+  State<SelectActionPageOrDialog> createState() {
     return _SelectActionPageOrDialogState();
   }
-
 }
 
 class _SelectActionPageOrDialogState extends State<SelectActionPageOrDialog>
@@ -281,104 +295,102 @@ class _SelectActionPageOrDialogState extends State<SelectActionPageOrDialog>
   Widget build(BuildContext context) {
     var app = widget.app;
     return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-        tabBar(app, context, items: items, tabController: _tabController!),
-        if (_tabController!.index == 0)
-          Container(
-              height: height(),
-              child: BlocBuilder<PageListBloc, PageListState>(
-                  builder: (context, state) {
-                    if ((state is PageListLoaded) && (state.values != null)) {
-                      var pages = state.values!;
-                      return ListView(children: [
-                        Container(
-                            height: 200,
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const ScrollPhysics(),
-                                itemCount: pages.length,
-                                itemBuilder: (context, position) {
-                                  var page = pages[position];
-                                  return GestureDetector(
-                                      child: ListTile(
-                                          title: text(
-                                              app, context, page!.documentID)),
-                                      onTap: () {
-                                        widget.actionSelected(GotoPage(app,
-                                            pageID: page.documentID));
-                                        Navigator.pop(context);
-                                      });
-                                })),
-                      ], shrinkWrap: true, physics: const ScrollPhysics());
-                    } else {
-                      return progressIndicator(app, context);
-                    }
-                  })),
+      tabBar(app, context, items: items, tabController: _tabController!),
+      if (_tabController!.index == 0)
+        Container(
+            height: height(),
+            child: BlocBuilder<PageListBloc, PageListState>(
+                builder: (context, state) {
+              if ((state is PageListLoaded) && (state.values != null)) {
+                var pages = state.values!;
+                return ListView(children: [
+                  Container(
+                      height: 200,
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemCount: pages.length,
+                          itemBuilder: (context, position) {
+                            var page = pages[position];
+                            return GestureDetector(
+                                child: ListTile(
+                                    title:
+                                        text(app, context, page!.documentID)),
+                                onTap: () {
+                                  widget.actionSelected(
+                                      GotoPage(app, pageID: page.documentID));
+                                  Navigator.pop(context);
+                                });
+                          })),
+                ], shrinkWrap: true, physics: const ScrollPhysics());
+              } else {
+                return progressIndicator(app, context);
+              }
+            })),
       if (_tabController!.index == 1)
         Container(
             height: height(),
             child: BlocBuilder<DialogListBloc, DialogListState>(
                 builder: (context, state) {
-                  if ((state is DialogListLoaded) && (state.values != null)) {
-                    var dialogs = state.values!;
-                    return ListView(children: [
-                      Container(
-                          height: 200,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const ScrollPhysics(),
-                              itemCount: dialogs.length,
-                              itemBuilder: (context, position) {
-                                var dialog = dialogs[position];
-                                return GestureDetector(
-                                    child: ListTile(
-                                        title: text(app, context,
-                                            dialog!.documentID)),
-                                    onTap: () {
-                                      widget.actionSelected(OpenDialog(app,
-                                          dialogID: dialog.documentID));
-                                      Navigator.pop(context);
-                                    });
-                              })),
-                    ], shrinkWrap: true, physics: const ScrollPhysics());
-                  } else {
-                    return progressIndicator(app, context);
-                  }
-                })),
+              if ((state is DialogListLoaded) && (state.values != null)) {
+                var dialogs = state.values!;
+                return ListView(children: [
+                  Container(
+                      height: 200,
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemCount: dialogs.length,
+                          itemBuilder: (context, position) {
+                            var dialog = dialogs[position];
+                            return GestureDetector(
+                                child: ListTile(
+                                    title:
+                                        text(app, context, dialog!.documentID)),
+                                onTap: () {
+                                  widget.actionSelected(OpenDialog(app,
+                                      dialogID: dialog.documentID));
+                                  Navigator.pop(context);
+                                });
+                          })),
+                ], shrinkWrap: true, physics: const ScrollPhysics());
+              } else {
+                return progressIndicator(app, context);
+              }
+            })),
       if (_tabController!.index == 2)
         Container(
             height: height(),
             child: BlocBuilder<WorkflowListBloc, WorkflowListState>(
                 builder: (context, state) {
-                  if ((state is WorkflowListLoaded) && (state.values != null)) {
-                    var workflows = state.values!;
-                    return ListView(children: [
-                      Container(
-                          height: 200,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const ScrollPhysics(),
-                              itemCount: workflows.length,
-                              itemBuilder: (context, position) {
-                                var workflow = workflows[position];
-                                return GestureDetector(
-                                    child: ListTile(
-                                        title: text(app, context,
-                                            workflow!.documentID)),
-                                    onTap: () {
-                                      widget.actionSelected(WorkflowActionModel(app,
-                                           workflow: workflow));
-                                      Navigator.pop(context);
-                                    });
-                              })),
-                    ], shrinkWrap: true, physics: const ScrollPhysics());
-                  } else {
-                    return progressIndicator(app, context);
-                  }
-                })),
-      ]);
+              if ((state is WorkflowListLoaded) && (state.values != null)) {
+                var workflows = state.values!;
+                return ListView(children: [
+                  Container(
+                      height: 200,
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemCount: workflows.length,
+                          itemBuilder: (context, position) {
+                            var workflow = workflows[position];
+                            return GestureDetector(
+                                child: ListTile(
+                                    title: text(
+                                        app, context, workflow!.documentID)),
+                                onTap: () {
+                                  widget.actionSelected(WorkflowActionModel(app,
+                                      workflow: workflow));
+                                  Navigator.pop(context);
+                                });
+                          })),
+                ], shrinkWrap: true, physics: const ScrollPhysics());
+              } else {
+                return progressIndicator(app, context);
+              }
+            })),
+    ]);
   }
 
   double height() => 250; //(widget.widgetHeight / 2);
 }
-
-

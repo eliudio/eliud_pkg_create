@@ -17,7 +17,7 @@ class WorkflowTasksCreateBloc
     this.workflowTasksModel,
   ) : super(WorkflowTasksCreateUninitialised()) {
     on<WorkflowTasksCreateInitialiseEvent>((event, emit) {
-      var appId = app.documentID;
+      //var appId = app.documentID;
       emit(WorkflowTasksCreateInitialised(
           workflowTaskModels: event.workflowTasksModel));
     });
@@ -30,20 +30,20 @@ class WorkflowTasksCreateBloc
     on<WorkflowTasksMoveItem>((event, emit) {
       WorkflowTasksCreateInitialised theState =
           state as WorkflowTasksCreateInitialised;
-      List<WorkflowTaskModel> _workflowTaskModels =
+      List<WorkflowTaskModel> workflowTaskModels =
           List.of(theState.workflowTaskModels);
-      int positionToMove = _workflowTaskModels.indexOf(event.workflowTaskModel);
-      if (event.moveItemDirection == MoveItemDirection.Up) {
+      int positionToMove = workflowTaskModels.indexOf(event.workflowTaskModel);
+      if (event.moveItemDirection == MoveItemDirection.up) {
         if (positionToMove > 0) {
-          _workflowTaskModels.swap(positionToMove - 1, positionToMove);
+          workflowTaskModels.swap(positionToMove - 1, positionToMove);
         }
-      } else if (event.moveItemDirection == MoveItemDirection.Down) {
-        if (positionToMove < _workflowTaskModels.length - 1) {
-          _workflowTaskModels.swap(positionToMove + 1, positionToMove);
+      } else if (event.moveItemDirection == MoveItemDirection.down) {
+        if (positionToMove < workflowTaskModels.length - 1) {
+          workflowTaskModels.swap(positionToMove + 1, positionToMove);
         }
       }
-      _renumber(_workflowTaskModels);
-      emit(_newStateWithItems(_workflowTaskModels,
+      _renumber(workflowTaskModels);
+      emit(_newStateWithItems(workflowTaskModels,
           currentlySelected: event.workflowTaskModel));
       apply();
     });
@@ -51,13 +51,13 @@ class WorkflowTasksCreateBloc
     on<WorkflowTasksUpdateItem>((event, emit) {
       WorkflowTasksCreateInitialised theState =
           state as WorkflowTasksCreateInitialised;
-      List<WorkflowTaskModel> _workflowTaskModels =
+      List<WorkflowTaskModel> workflowTaskModels =
           List.of(theState.workflowTaskModels);
       int positionToReplace =
-          _workflowTaskModels.indexOf(event.beforeWorkflowTaskModel);
-      _workflowTaskModels.replace(
+          workflowTaskModels.indexOf(event.beforeWorkflowTaskModel);
+      workflowTaskModels.replace(
           positionToReplace, event.afterWorkflowTaskModel);
-      emit(_newStateWithItems(_workflowTaskModels,
+      emit(_newStateWithItems(workflowTaskModels,
           currentlySelected: event.afterWorkflowTaskModel));
       apply();
     });
@@ -65,20 +65,20 @@ class WorkflowTasksCreateBloc
     on<WorkflowTasksCreateAddWorkflowTask>((event, emit) {
       WorkflowTasksCreateInitialised theState =
           state as WorkflowTasksCreateInitialised;
-      List<WorkflowTaskModel> _workflowTaskModels =
+      List<WorkflowTaskModel> workflowTaskModels =
           List.of(theState.workflowTaskModels);
-      _workflowTaskModels.add(event.workflowTaskModel);
-      _renumber(_workflowTaskModels);
-      emit(_newStateWithItems(_workflowTaskModels,
+      workflowTaskModels.add(event.workflowTaskModel);
+      _renumber(workflowTaskModels);
+      emit(_newStateWithItems(workflowTaskModels,
           currentlySelected: event.workflowTaskModel));
       apply();
     });
   }
 
-  void _renumber(List<WorkflowTaskModel> _workflowTaskModels) {
+  void _renumber(List<WorkflowTaskModel> workflowTaskModels) {
     int i = 1;
-    for (var _workflowTaskModel in _workflowTaskModels) {
-      _workflowTaskModel.seqNumber = i;
+    for (var theWorkflowTaskModel in workflowTaskModels) {
+      theWorkflowTaskModel.seqNumber = i;
       i++;
     }
   }
@@ -101,6 +101,7 @@ class WorkflowTasksCreateBloc
     return newState;
   }
 
+/*
   WorkflowTasksCreateInitialised _newStateWithNewItem(
       WorkflowTaskModel newItem) {
     var theState = state as WorkflowTasksCreateInitialised;
@@ -117,6 +118,7 @@ class WorkflowTasksCreateBloc
     return _newStateWithItems(newWorkflowTaskModels);
   }
 
+*/
   WorkflowTasksCreateInitialised _newStateDeleteItem(
       WorkflowTaskModel bodyItemModel) {
     var theState = state as WorkflowTasksCreateInitialised;

@@ -16,23 +16,25 @@ class MenuDefCreateInitialised extends MenuDefCreateState {
   final MenuItemModel? currentlySelected;
 
   const MenuDefCreateInitialised(
-      {required this.menuDefModel,
-      this.currentlySelected});
+      {required this.menuDefModel, this.currentlySelected});
 
   @override
-  List<Object?> get props => [menuDefModel, ];
+  List<Object?> get props => [
+        menuDefModel,
+      ];
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MenuDefCreateInitialised &&
-          menuDefModel == other.menuDefModel;
+      other is MenuDefCreateInitialised && menuDefModel == other.menuDefModel;
 
   MenuDefCreateInitialised copyWith(
-      {MenuDefModel? menuDefModel,
-      MenuItemModel? currentlySelected}) {
+      {MenuDefModel? menuDefModel, MenuItemModel? currentlySelected}) {
     return MenuDefCreateInitialised(
         menuDefModel: menuDefModel ?? this.menuDefModel,
         currentlySelected: currentlySelected);
   }
+
+  @override
+  int get hashCode => menuDefModel.hashCode ^ currentlySelected.hashCode;
 }

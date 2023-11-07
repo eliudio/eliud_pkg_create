@@ -18,7 +18,7 @@ class StyleSelectionBloc
   String? styleName;
   final AppModel app;
   final FeedbackSelection? feedbackSelection;
-  Map<String, StreamSubscription?> _styleFamilySubscription = {};
+  final Map<String, StreamSubscription?> _styleFamilySubscription = {};
 
   void listenToStyleFamily(String appId, StyleFamily styleFamily) {
     // todo: listen to the app, if the style changes, then re-listen to the style
@@ -49,7 +49,7 @@ class StyleSelectionBloc
         return StyleFamilyState(styleFamily, []);
       }).toList();
       if (styleFamily != null) {
-        var style;
+        Style? style;
         if (event.styleName != null) {
           style = styleFamily.getStyle(app, event.styleName!);
         } else {
@@ -109,8 +109,8 @@ class StyleSelectionBloc
       Style style, StyleSelectionInitialized state) {
     app.styleFamily = style.styleFamily.familyName;
     app.styleName = style.styleName;
-    if (this.feedbackSelection != null) {
-      this.feedbackSelection!(app.styleFamily, app.styleName);
+    if (feedbackSelection != null) {
+      feedbackSelection!(app.styleFamily, app.styleName);
     }
     return StyleSelectionInitializedWithSelection(
       families: state.families,

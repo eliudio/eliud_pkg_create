@@ -11,9 +11,9 @@ class WebCreatePlatform extends AbstractCreatePlatform {
   Widget openJsonAsLink(BuildContext context, AppModel app, String jsonString) {
     var blob = html.Blob([jsonString], 'text/plain', 'native');
     return button(app, context, label: "Open file", onPressed: () {
-        final url = html.Url.createObjectUrlFromBlob(blob);
-        html.window.open(url, "_blank");
-        html.Url.revokeObjectUrl(url);
-      });
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      html.window.open(url, "_blank");
+      html.Url.revokeObjectUrl(url);
+    });
   }
 }

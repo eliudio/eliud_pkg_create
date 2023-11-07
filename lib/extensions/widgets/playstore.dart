@@ -1,7 +1,7 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
 import 'package:eliud_core/core/blocs/access/state/access_state.dart';
-import 'package:eliud_core/core/navigate/router.dart' as EliudRouter;
+import 'package:eliud_core/core/navigate/router.dart' as er;
 import 'package:eliud_core/core/widgets/alert_widget.dart';
 import 'package:eliud_core/model/app_list_bloc.dart';
 import 'package:eliud_core/model/app_list_state.dart';
@@ -20,8 +20,7 @@ class PlayStore extends StatefulWidget {
   final PlayStoreModel playStoreModel;
   final bool incName;
 
-  const PlayStore(this.app, this.playStoreModel, this.incName, {Key? key})
-      : super(key: key);
+  const PlayStore(this.app, this.playStoreModel, this.incName, {super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -54,22 +53,28 @@ class PlayStoreState extends State<PlayStore> {
                     newApp(context, member, app);
                   },
                   child: Container(
-                      clipBehavior:BoxDecorationHelper.determineClipBehaviour(app, member, widget.playStoreModel.backgroundIcon),
-                      margin: BoxDecorationHelper.determineMargin(app, member, widget.playStoreModel.backgroundIcon),
-                      padding: BoxDecorationHelper.determinePadding(app, member, widget.playStoreModel.backgroundIcon),
-                      decoration: BoxDecorationHelper.boxDecoration(app, member,
-                              widget.playStoreModel.backgroundIcon),
+                      clipBehavior: BoxDecorationHelper.determineClipBehaviour(
+                          app, member, widget.playStoreModel.backgroundIcon),
+                      margin: BoxDecorationHelper.determineMargin(
+                          app, member, widget.playStoreModel.backgroundIcon),
+                      padding: BoxDecorationHelper.determinePadding(
+                          app, member, widget.playStoreModel.backgroundIcon),
+                      decoration: BoxDecorationHelper.boxDecoration(
+                          app, member, widget.playStoreModel.backgroundIcon),
                       child: const Icon(Icons.add))));
             }
             for (var model in state.values!) {
               if (model != null) {
                 var logo = (widget.incName)
                     ? Container(
-                        clipBehavior:BoxDecorationHelper.determineClipBehaviour(app, member, widget.playStoreModel.backgroundIcon),
-                        margin: BoxDecorationHelper.determineMargin(app, member, widget.playStoreModel.backgroundIcon),
-                        padding: BoxDecorationHelper.determinePadding(app, member, widget.playStoreModel.backgroundIcon),
-                        decoration: BoxDecorationHelper.boxDecoration(app, member,
-                                widget.playStoreModel.backgroundIcon),
+                        clipBehavior: BoxDecorationHelper.determineClipBehaviour(
+                            app, member, widget.playStoreModel.backgroundIcon),
+                        margin: BoxDecorationHelper.determineMargin(
+                            app, member, widget.playStoreModel.backgroundIcon),
+                        padding: BoxDecorationHelper.determinePadding(
+                            app, member, widget.playStoreModel.backgroundIcon),
+                        decoration: BoxDecorationHelper.boxDecoration(
+                            app, member, widget.playStoreModel.backgroundIcon),
                         child: ListView(
                             shrinkWrap: true,
                             physics: ScrollPhysics(),
@@ -83,31 +88,31 @@ class PlayStoreState extends State<PlayStore> {
                               Container(
                                   height: 41,
                                   child: Center(
-                                      child: smallText(
-                                          widget.app,
-                                          context,
-                                          model.title ??
-                                              model.documentID))),
+                                      child: smallText(widget.app, context,
+                                          model.title ?? model.documentID))),
                             ]))
                     : Container(
-                        clipBehavior: BoxDecorationHelper.determineClipBehaviour(app, member, widget.playStoreModel.backgroundIcon),
-                        margin: BoxDecorationHelper.determineMargin(app, member, widget.playStoreModel.backgroundIcon),
-                        padding: BoxDecorationHelper.determinePadding(app, member, widget.playStoreModel.backgroundIcon),
-                        decoration: BoxDecorationHelper.boxDecoration(app, member,
-                                widget.playStoreModel.backgroundIcon),
+                        clipBehavior: BoxDecorationHelper.determineClipBehaviour(
+                            app, member, widget.playStoreModel.backgroundIcon),
+                        margin: BoxDecorationHelper.determineMargin(
+                            app, member, widget.playStoreModel.backgroundIcon),
+                        padding: BoxDecorationHelper.determinePadding(
+                            app, member, widget.playStoreModel.backgroundIcon),
+                        decoration: BoxDecorationHelper.boxDecoration(
+                            app, member, widget.playStoreModel.backgroundIcon),
                         child:
                             ((model.logo != null) && (model.logo!.url != null))
                                 ? Image.network(model.logo!.url!)
                                 : const Icon(Icons.help));
                 Widget component;
                 if ((model.documentID != currentAppId) &&
-                    ((model.appStatus == AppStatus.Live) ||
+                    ((model.appStatus == AppStatus.live) ||
                         ((member != null) &&
                             (model.ownerID == member.documentID)))) {
                   component = GestureDetector(
                       onTap: () async {
-                        EliudRouter.Router.navigateTo(context,
-                            SwitchApp(app, toAppID: model.documentID));
+                        er.Router.navigateTo(
+                            context, SwitchApp(app, toAppID: model.documentID));
                       },
                       child: logo);
                   components.add(component);

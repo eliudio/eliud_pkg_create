@@ -31,7 +31,7 @@ void openDialog(
   openFlexibleDialog(
     app,
     context,
-    app.documentID + '/_dialog',
+    '${app.documentID}/_dialog',
     includeHeading: false,
     widthFraction: fraction,
     child: DialogCreateWidget.getIt(
@@ -51,11 +51,10 @@ class DialogCreateWidget extends StatefulWidget {
   final AppModel app;
 
   DialogCreateWidget._({
-    Key? key,
     required this.app,
     required this.create,
     required this.widgetWidth,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -107,7 +106,7 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
             },
             title: widget.create
                 ? 'Create new dialog'
-                : 'Change dialog ' + state.dialogModel.documentID,
+                : 'Change dialog ${state.dialogModel.documentID}',
           ),
           divider(widget.app, context),
           topicContainer(widget.app, context,
@@ -177,9 +176,10 @@ class _DialogCreateWidgetState extends State<DialogCreateWidget> {
                       state.dialogModel.layout = dialogLayout;
                     });
                   },
-                  dialogLayout: state.dialogModel.layout ?? DialogLayout.ListView,
+                  dialogLayout:
+                      state.dialogModel.layout ?? DialogLayout.listView,
                 ),
-                if (state.dialogModel.layout == DialogLayout.GridView)
+                if (state.dialogModel.layout == DialogLayout.gridView)
                   selectGridViewWidget(
                       context,
                       widget.app,

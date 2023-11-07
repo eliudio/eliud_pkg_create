@@ -43,8 +43,14 @@ class BodyComponentsCreateInitialised extends BodyComponentsCreateState {
     return BodyComponentsCreateInitialised(
         bodyComponentModels: bodyComponentModels ?? this.bodyComponentModels,
         pluginWithComponents: pluginWithComponents ?? this.pluginWithComponents,
-        currentlySelected: currentlySelected ?? null);
+        currentlySelected: currentlySelected);
   }
+
+  @override
+  int get hashCode =>
+      bodyComponentModels.hashCode ^
+      pluginWithComponents.hashCode ^
+      currentlySelected.hashCode;
 }
 
 List<PluginWithComponents> retrievePluginsWithComponents() =>
@@ -56,7 +62,7 @@ List<PluginWithComponents> retrievePluginsWithComponents() =>
 
 Future<RepositoryBase?> getRepository(
     String appId, String searchPluginName, String searchComponentName) async {
-  var pluginsWithComponents = await retrievePluginsWithComponents();
+  var pluginsWithComponents = retrievePluginsWithComponents();
   for (var pluginsWithComponent in pluginsWithComponents) {
     var pluginName = pluginsWithComponent.name;
     for (var componentSpec in pluginsWithComponent.componentSpec) {

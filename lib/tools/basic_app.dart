@@ -11,7 +11,8 @@ class BasicApp {
     appId = appId.toUpperCase();
     var app = await appRepository()!.get(appId);
     if (app == null) {
-      await AbstractMainRepositorySingleton.singleton.userRepository()!
+      await AbstractMainRepositorySingleton.singleton
+          .userRepository()!
           .signOut();
       await AbstractMainRepositorySingleton.singleton
           .userRepository()!
@@ -26,9 +27,8 @@ class BasicApp {
 
       MemberModel member = await AccessBloc.firebaseToMemberModel(usr);
       await AppBuilder(
-          AppModel(documentID: appId, ownerID: member.documentID),
-          member
-      ).create(ConsoleConsumeAppBuilderProgress(), false);
+              AppModel(documentID: appId, ownerID: member.documentID), member)
+          .create(ConsoleConsumeAppBuilderProgress(), false);
     }
   }
 }

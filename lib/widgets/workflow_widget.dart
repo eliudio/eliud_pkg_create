@@ -16,21 +16,25 @@ import 'package:eliud_pkg_workflow/model/workflow_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void openWorkflow(BuildContext context, AppModel app, bool create, WorkflowModel model, String title,
+void openWorkflow(BuildContext context, AppModel app, bool create,
+    WorkflowModel model, String title,
     {VoidCallback? callOnAction, double? fraction}) {
-  openFlexibleDialog(app,context, app.documentID + '/_workflow',
-      includeHeading: false,
-      widthFraction: fraction,
-      child: WorkflowCreateWidget.getIt(
-        context,
-        app,
-        callOnAction,
-        model,
-        create,
-        fullScreenWidth(context) * (fraction ?? 1),
-        //fullScreenHeight(context) - 100,
-      ),
-      );
+  openFlexibleDialog(
+    app,
+    context,
+    '${app.documentID}/_workflow',
+    includeHeading: false,
+    widthFraction: fraction,
+    child: WorkflowCreateWidget.getIt(
+      context,
+      app,
+      callOnAction,
+      model,
+      create,
+      fullScreenWidth(context) * (fraction ?? 1),
+      //fullScreenHeight(context) - 100,
+    ),
+  );
 }
 
 class WorkflowCreateWidget extends StatefulWidget {
@@ -39,11 +43,10 @@ class WorkflowCreateWidget extends StatefulWidget {
   final AppModel app;
 
   WorkflowCreateWidget._({
-    Key? key,
     required this.app,
     required this.create,
     required this.widgetWidth,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -54,13 +57,13 @@ class WorkflowCreateWidget extends StatefulWidget {
     BuildContext context,
     AppModel app,
     VoidCallback? callOnAction,
-      WorkflowModel appBarModel,
+    WorkflowModel appBarModel,
     bool create,
     double widgetWidth,
   ) {
     return BlocProvider<WorkflowCreateBloc>(
       create: (context) =>
-      WorkflowCreateBloc(app.documentID, appBarModel, callOnAction)
+          WorkflowCreateBloc(app.documentID, appBarModel, callOnAction)
             ..add(WorkflowCreateEventValidateEvent(appBarModel)),
       child: WorkflowCreateWidget._(
         app: app,
@@ -78,7 +81,8 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
         builder: (context, state) {
       if (state is WorkflowCreateValidated) {
         return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
-          HeaderWidget(app: widget.app,
+          HeaderWidget(
+            app: widget.app,
             cancelAction: () async {
               return true;
             },
@@ -89,45 +93,47 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
             },
             title: widget.create
                 ? 'Create new Workflow'
-                : 'Change Workflow ' + state.workflowModel.documentID,
+                : 'Change Workflow ${state.workflowModel.documentID}',
           ),
-          divider(widget.app,context),
-            topicContainer(widget.app,context,
-                title: 'General',
-                collapsible: true,
-                collapsed: true,
-                children: [
-                  getListTile(context,widget.app,
-                      leading: Icon(Icons.vpn_key),
-                      title: widget.create
-                          ? dialogField(widget.app,
-                              context,
-                              initialValue: state.workflowModel.documentID,
-                              valueChanged: (value) {
-                                state.workflowModel.documentID = value;
-                              },
-                              decoration: const InputDecoration(
-                                hintText: 'Identifier',
-                                labelText: 'Identifier',
-                              ),
-                            )
-                          : text(widget.app,context, state.workflowModel.documentID)),
-                  getListTile(context, widget.app,
-                      leading: Icon(Icons.description),
-                      title: dialogField(
-                        widget.app,
-                        context,
-                        initialValue: state.workflowModel.name,
-                        valueChanged: (value) {
-                          state.workflowModel.name = value;
-                        },
-                        maxLines: 1,
-                        decoration: const InputDecoration(
-                          hintText: 'Name',
-                          labelText: 'Name',
-                        ),
-                      )),
-                ]),
+          divider(widget.app, context),
+          topicContainer(widget.app, context,
+              title: 'General',
+              collapsible: true,
+              collapsed: true,
+              children: [
+                getListTile(context, widget.app,
+                    leading: Icon(Icons.vpn_key),
+                    title: widget.create
+                        ? dialogField(
+                            widget.app,
+                            context,
+                            initialValue: state.workflowModel.documentID,
+                            valueChanged: (value) {
+                              state.workflowModel.documentID = value;
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Identifier',
+                              labelText: 'Identifier',
+                            ),
+                          )
+                        : text(widget.app, context,
+                            state.workflowModel.documentID)),
+                getListTile(context, widget.app,
+                    leading: Icon(Icons.description),
+                    title: dialogField(
+                      widget.app,
+                      context,
+                      initialValue: state.workflowModel.name,
+                      valueChanged: (value) {
+                        state.workflowModel.name = value;
+                      },
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                        hintText: 'Name',
+                        labelText: 'Name',
+                      ),
+                    )),
+              ]),
           WorkflowTasksCreateWidget.getIt(
             context,
             widget.app,
@@ -136,7 +142,7 @@ class _WorkflowCreateWidgetState extends State<WorkflowCreateWidget> {
           ),
         ]);
       } else {
-        return progressIndicator(widget.app,context);
+        return progressIndicator(widget.app, context);
       }
     });
   }

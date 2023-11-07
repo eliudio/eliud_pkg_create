@@ -14,12 +14,18 @@ class FromJsonUninitialised extends FromJsonState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is FromJsonUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 class FromJsonInitialised extends FromJsonState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is FromJsonInitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 class FromJsonProgress extends FromJsonState {
@@ -30,13 +36,17 @@ class FromJsonProgress extends FromJsonState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is FromJsonProgress && other.progress == this.progress;
+      other is FromJsonProgress && other.progress == progress;
+
+  @override
+  int get hashCode => progress.hashCode;
 }
 
 class FromJsonActionCancelled extends FromJsonState {
-
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is FromJsonState;
+      identical(this, other) || other is FromJsonState;
+
+  @override
+  int get hashCode => 0;
 }

@@ -1,5 +1,4 @@
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_model.dart';
 import 'package:eliud_core/model/background_model.dart';
 import 'package:eliud_core/model/decoration_color_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';
@@ -12,17 +11,17 @@ import 'with_menu.dart';
 class LeftDrawerBuilder extends WithMenu {
   final PublicMediumModel? logo;
   LeftDrawerBuilder(
-    AppModel app, {
+    super.app, {
     this.logo,
-  }) : super(app,
+  }) : super(
             name: 'Left drawer',
-            identifier: drawerID(app.documentID, DrawerType.Left));
+            identifier: drawerID(app.documentID, DrawerType.left));
 
   Future<DrawerModel> getOrCreate() async {
     var drawerModel =
         await drawerRepository(appId: app.documentID)!.get(identifier);
     if (drawerModel == null) {
-      var headerBackgroundOverride;
+      BackgroundModel? headerBackgroundOverride;
       if (logo != null) {
         headerBackgroundOverride = _drawerHeaderBGOverride(logo);
       }

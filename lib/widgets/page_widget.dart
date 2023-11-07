@@ -32,7 +32,7 @@ void openPage(BuildContext context, AppModel app, bool create, PageModel model,
   openFlexibleDialog(
     app,
     context,
-    app.documentID + '/_page',
+    '${app.documentID}/_page',
     includeHeading: false,
     widthFraction: fraction,
     child: PageCreateWidget.getIt(
@@ -52,11 +52,10 @@ class PageCreateWidget extends StatefulWidget {
   final AppModel app;
 
   PageCreateWidget._({
-    Key? key,
     required this.app,
     required this.create,
     required this.widgetWidth,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -111,7 +110,7 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
             },
             title: widget.create
                 ? 'Create new page'
-                : 'Change page ' + state.pageModel.documentID,
+                : 'Change page ${state.pageModel.documentID}',
           ),
           divider(widget.app, context),
           topicContainer(widget.app, context,
@@ -181,9 +180,9 @@ class _PageCreateWidgetState extends State<PageCreateWidget> {
                       state.pageModel.layout = pageLayout;
                     });
                   },
-                  pageLayout: state.pageModel.layout ?? PageLayout.ListView,
+                  pageLayout: state.pageModel.layout ?? PageLayout.listView,
                 ),
-                if (state.pageModel.layout == PageLayout.GridView)
+                if (state.pageModel.layout == PageLayout.gridView)
                   selectGridViewWidget(
                       context,
                       widget.app,

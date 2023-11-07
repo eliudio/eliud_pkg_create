@@ -1,6 +1,8 @@
 import 'package:eliud_core/core/wizards/registry/action_specification.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
-import 'package:eliud_core/core/wizards/tools/documentIdentifier.dart';
+import 'package:eliud_core/core/wizards/tools/document_identifier.dart';
+import 'package:eliud_core/model/app_bar_model.dart';
+import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/member_medium_model.dart';
 import 'package:eliud_core/package/access_rights.dart';
@@ -30,17 +32,14 @@ abstract class AppBuilderFeedback {
   void finished();
 }
 
-
 class ConsoleConsumeAppBuilderProgress extends AppBuilderFeedback {
-
   @override
   bool isCancelled() {
     return false;
   }
 
   @override
-  void finished() {
-  }
+  void finished() {}
 
   @override
   void progress(double progress) {
@@ -60,7 +59,7 @@ class AppBuilder {
   late String appId;
   late String memberId;
 
-  static String HELLO_WORLD_PAGE_ID = "hello";
+  static String helloWorldPageId = "hello";
 
   AppBuilder(
     this.app,
@@ -70,25 +69,27 @@ class AppBuilder {
     memberId = member.documentID;
   }
 
-  var leftDrawer;
-  var rightDrawer;
-  late HomeMenuModel theHomeMenu;
-  var theAppBar;
+  DrawerModel? leftDrawer;
+  DrawerModel? rightDrawer;
+  HomeMenuModel? theHomeMenu;
+  AppBarModel? theAppBar;
 
-  var newlyCreatedApp;
+  AppModel? newlyCreatedApp;
 
   /*
    * if creating an app from an existing app, then specify fromExisting = true and provide
    * memberMediumModel representing that app or
    * url to the json
    */
-  Future<AppModel> create(AppBuilderFeedback appBuilderFeedback, bool fromExisting, {MemberMediumModel? memberMediumModel, String? url}) async {
+  Future<AppModel> create(
+      AppBuilderFeedback appBuilderFeedback, bool fromExisting,
+      {MemberMediumModel? memberMediumModel, String? url}) async {
     List<NewAppTask> tasks = [];
     // create the app
     tasks.add(() async {
       newlyCreatedApp = await appRepository()!.add(AppModel(
         documentID: appId,
-        appStatus: AppStatus.Offline,
+        appStatus: AppStatus.offline,
         title: 'New application',
         ownerID: memberId,
       ));
@@ -117,8 +118,8 @@ class AppBuilder {
     }
     tasks.addAll(newTasks);
 
-    var progressManager = ProgressManager(tasks.length,
-        (progress) => appBuilderFeedback.progress(progress));
+    var progressManager = ProgressManager(
+        tasks.length, (progress) => appBuilderFeedback.progress(progress));
 
     var currentTask = tasks[0];
     currentTask().then((value) => tasks[1]);
@@ -129,19 +130,17 @@ class AppBuilder {
       try {
         await task();
       } catch (e) {
-        print('Exception running task ' +
-            i.toString() +
-            ', error: ' +
-            e.toString());
+        print('Exception running task $i, error: $e');
       }
       progressManager.progressedNextStep();
-      if (appBuilderFeedback.isCancelled())
+      if (appBuilderFeedback.isCancelled()) {
         throw Exception("Process cancelled");
+      }
     }
 
     if (newlyCreatedApp != null) {
       appBuilderFeedback.finished();
-      return newlyCreatedApp;
+      return newlyCreatedApp!;
     } else {
       throw Exception("no app created");
     }
@@ -161,8 +160,10 @@ class AppBuilder {
     }
   }
 
-  Future<List<NewAppTask>> createAppFromMemberMedium(MemberMediumModel memberMediumModel) async {
-    return JsonToModelsHelper.createAppFromMemberMedium(app, memberId, memberMediumModel);
+  Future<List<NewAppTask>> createAppFromMemberMedium(
+      MemberMediumModel memberMediumModel) async {
+    return JsonToModelsHelper.createAppFromMemberMedium(
+        app, memberId, memberMediumModel);
   }
 
   Future<List<NewAppTask>> createAppFromUrl(String url) async {
@@ -222,16 +223,21 @@ class AppBuilder {
 
     tasks.add(() async {
       print("Welcome Page");
-      await HelloWorldPageBuilder(
-        uniqueId,
-        HELLO_WORLD_PAGE_ID,
-        app,
-        memberId,
-        theHomeMenu,
-        theAppBar,
-        leftDrawer,
-        rightDrawer,
-      ).create();
+      if ((theHomeMenu != null) &&
+          (theAppBar != null) &&
+          (leftDrawer != null) &&
+          (rightDrawer != null)) {
+        await HelloWorldPageBuilder(
+          uniqueId,
+          helloWorldPageId,
+          app,
+          memberId,
+          theHomeMenu!,
+          theAppBar!,
+          leftDrawer!,
+          rightDrawer!,
+        ).create();
+      }
     });
 
     // app
@@ -241,27 +247,27 @@ class AppBuilder {
         documentID: appId,
         title: 'New application',
         ownerID: memberId,
-        appStatus: AppStatus.Live,
+        appStatus: AppStatus.live,
         email: member.email,
         logo: logo,
         anonymousProfilePhoto: anonymousMedium,
         homePages: AppHomePageReferencesModel(
           homePageBlockedMember: constructDocumentId(
-              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+              uniqueId: uniqueId, documentId: helloWorldPageId),
           homePagePublic: constructDocumentId(
-              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+              uniqueId: uniqueId, documentId: helloWorldPageId),
           homePageSubscribedMember: constructDocumentId(
-              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+              uniqueId: uniqueId, documentId: helloWorldPageId),
           homePageLevel1Member: constructDocumentId(
-              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+              uniqueId: uniqueId, documentId: helloWorldPageId),
           homePageLevel2Member: constructDocumentId(
-              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+              uniqueId: uniqueId, documentId: helloWorldPageId),
           homePageOwner: constructDocumentId(
-              uniqueId: uniqueId, documentId: HELLO_WORLD_PAGE_ID),
+              uniqueId: uniqueId, documentId: helloWorldPageId),
         ),
         description: 'Your new application',
       );
-      /*newlyCreatedApp = */await appRepository()!.update(newApp);
+      /*newlyCreatedApp = */ await appRepository()!.update(newApp);
     });
 
     return tasks;
@@ -276,7 +282,7 @@ class AppBuilder {
       String appId, String ownerID) async {
     // add the app
     var application = AppModel(
-      appStatus: AppStatus.Offline,
+      appStatus: AppStatus.offline,
       documentID: appId,
       ownerID: ownerID,
     );
@@ -284,5 +290,4 @@ class AppBuilder {
         .appRepository()!
         .add(application);
   }
-
 }

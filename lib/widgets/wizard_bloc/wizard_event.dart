@@ -20,6 +20,9 @@ class WizardInitialise extends WizardEvent {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is WizardInitialise && member == other.member;
+
+  @override
+  int get hashCode => member.hashCode;
 }
 
 class WizardConfirm extends WizardEvent {
@@ -48,12 +51,18 @@ class WizardConfirm extends WizardEvent {
       other is WizardConfirm &&
           autoPrivileged1 == other.autoPrivileged1 &&
           mapEquals(newAppWizardParameters, other.newAppWizardParameters);
+
+  @override
+  int get hashCode =>
+      autoPrivileged1.hashCode ^ styleFamily.hashCode ^ styleName.hashCode;
 }
 
 class WizardProgressed extends WizardEvent {
   final double progress;
 
-  WizardProgressed(this.progress, );
+  WizardProgressed(
+    this.progress,
+  );
 
   @override
   List<Object?> get props => [progress];
@@ -63,10 +72,12 @@ class WizardProgressed extends WizardEvent {
       false ||
       identical(this, other) ||
       other is WizardProgressed && progress == other.progress;
+
+  @override
+  int get hashCode => progress.hashCode;
 }
 
 class WizardCancelled extends WizardEvent {
-
   WizardCancelled();
 
   @override
@@ -74,14 +85,18 @@ class WizardCancelled extends WizardEvent {
 
   @override
   bool operator ==(Object other) =>
-      other is WizardCancelled &&
-      identical(this, other);
+      other is WizardCancelled && identical(this, other);
+
+  @override
+  int get hashCode => 0;
 }
 
 class WizardFinished extends WizardEvent {
   final bool success;
 
-  WizardFinished(this.success, );
+  WizardFinished(
+    this.success,
+  );
 
   @override
   List<Object?> get props => [];
@@ -91,4 +106,7 @@ class WizardFinished extends WizardEvent {
       identical(this, other) &&
       other is WizardFinished &&
       success == other.success;
+
+  @override
+  int get hashCode => success.hashCode;
 }

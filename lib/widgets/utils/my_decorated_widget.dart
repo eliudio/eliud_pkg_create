@@ -18,8 +18,12 @@ class SingleAction extends Action {
 
   SingleAction(this.doThis);
 
+  @override
   void doIt(
-      BuildContext context, double x, double y, ) async {
+    BuildContext context,
+    double x,
+    double y,
+  ) async {
     doThis();
   }
 }
@@ -37,21 +41,27 @@ class MultipleActions extends Action {
 
   MultipleActions(this.app, this.doThis);
 
+  @override
   void doIt(
-      BuildContext context, double x, double y, ) async {
-
+    BuildContext context,
+    double x,
+    double y,
+  ) async {
     var items = doThis
         .map((value) => MenuItemAttributes(
-        label: value.label, isActive: true, onTap: () => value.doThis() ))
+            label: value.label, isActive: true, onTap: () => value.doThis()))
         .toList();
 
     StyleRegistry.registry()
         .styleWithApp(app)
         .frontEndStyle()
         .menuStyle()
-        .openMenu(app, context,
-        position: RelativeRect.fromLTRB(x, y, x, y),
-        menuItems: items,);
+        .openMenu(
+          app,
+          context,
+          position: RelativeRect.fromLTRB(x, y, x, y),
+          menuItems: items,
+        );
 
 /*
     var value = await showMenu(
@@ -86,7 +96,7 @@ class MyDecoratedWidget extends StatefulWidget {
   final Action action;
 
   MyDecoratedWidget({
-    Key? key,
+    super.key,
     required this.isCreationMode,
     required this.originalWidgetKey,
 //    required this.model,
@@ -96,7 +106,7 @@ class MyDecoratedWidget extends StatefulWidget {
     this.label,
     this.icon,
     required this.action,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -105,7 +115,7 @@ class MyDecoratedWidget extends StatefulWidget {
 }
 
 class _MyDecoratedDialogWidgetState extends State<MyDecoratedWidget> {
-  Offset? onTapPosition = null;
+  Offset? onTapPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -115,27 +125,28 @@ class _MyDecoratedDialogWidgetState extends State<MyDecoratedWidget> {
           if ((value != null) && (value as bool)) {
 //            return widget.createOriginalWidget();
             return CreatorButton(
-                backgroundColor: Constants.BACKGROUND_COLOR,
-                textColor: Constants.TEXT_COLOR,
-                icon: widget.icon ?? Icon(
-                  Icons.edit,
-                  color: Constants.ICON_COLOR,
-                  size: CreatorButton.BUTTON_HEIGHT * .7,
-                ),
-                borderColor: Constants.BORDER_COLOR,
+                backgroundColor: Constants.backgroundColor,
+                textColor: Constants.textColor,
+                icon: widget.icon ??
+                    Icon(
+                      Icons.edit,
+                      color: Constants.iconColor,
+                      size: CreatorButton.buttonClient * .7,
+                    ),
+                borderColor: Constants.borderColor,
                 ensureHeight: widget.ensureHeight,
                 initialPosition: widget.initialPosition,
                 toDecorateKey: widget.originalWidgetKey,
                 toDecorate: widget.createOriginalWidget(),
                 label: widget.label,
                 onTap: () => widget.action.doIt(
-                    context,
-                    onTapPosition == null
-                        ? fullScreenWidth(context) / 2
-                        : onTapPosition!.dx,
-                    onTapPosition == null
-                        ? fullScreenHeight(context) / 2
-                        : onTapPosition!.dy,
+                      context,
+                      onTapPosition == null
+                          ? fullScreenWidth(context) / 2
+                          : onTapPosition!.dx,
+                      onTapPosition == null
+                          ? fullScreenHeight(context) / 2
+                          : onTapPosition!.dy,
                     ),
                 onTapDown: (TapDownDetails details) =>
                     onTapPosition = details.globalPosition);
@@ -144,5 +155,4 @@ class _MyDecoratedDialogWidgetState extends State<MyDecoratedWidget> {
           }
         });
   }
-
 }

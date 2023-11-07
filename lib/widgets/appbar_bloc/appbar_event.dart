@@ -17,8 +17,11 @@ class AppBarCreateEventValidateEvent extends AppBarCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppBarCreateEventValidateEvent &&
-              appBarModel == other.appBarModel;
+      other is AppBarCreateEventValidateEvent &&
+          appBarModel == other.appBarModel;
+
+  @override
+  int get hashCode => appBarModel.hashCode;
 }
 
 class AppBarCreateEventApplyChanges extends AppBarCreateEvent {
@@ -32,6 +35,8 @@ class AppBarCreateEventApplyChanges extends AppBarCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppBarCreateEventApplyChanges &&
-              save == other.save;
+      other is AppBarCreateEventApplyChanges && save == other.save;
+
+  @override
+  int get hashCode => save.hashCode;
 }

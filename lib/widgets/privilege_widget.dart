@@ -18,8 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class PrivilegeWidget extends StatefulWidget {
   final AccessState currentAccess;
   final AppModel app;
-  PrivilegeWidget({Key? key, required this.app, required this.currentAccess})
-      : super(key: key);
+  PrivilegeWidget({super.key, required this.app, required this.currentAccess});
 
   @override
   State<StatefulWidget> createState() {
@@ -34,31 +33,36 @@ class _PrivilegeWidgetState extends State<PrivilegeWidget> {
   late String appLevel;
   late String appBlocked;
 
+  @override
   void initState() {
     super.initState();
     if (widget.currentAccess is LoggedIn) {
       var theAccess = widget.currentAccess as LoggedIn;
       isBlocked = theAccess.isBlocked(widget.app.documentID);
       currentLevel = theAccess.getPrivilegeLevel(widget.app.documentID);
-      appLevel = 'Current level: ' + privStringValue(currentLevel);
-      appBlocked = 'Blocked: ' + (isBlocked ? 'yes' : 'no');
+      appLevel = 'Current level: ${privStringValue(currentLevel)}';
+      appBlocked = 'Blocked: ${isBlocked ? 'yes' : 'no'}';
     } else {
       appLevel = '?';
-      currentLevel = PrivilegeLevel.Unknown;
+      currentLevel = PrivilegeLevel.unknown;
     }
     _privSelectedRadioTile = currentLevel != null ? currentLevel!.index : 0;
   }
 
   String privStringValue(PrivilegeLevel? privilegeLevel) {
     switch (privilegeLevel) {
-      case PrivilegeLevel.NoPrivilege:
+      case PrivilegeLevel.noPrivilege:
         return 'Public or member with no privilege';
-      case PrivilegeLevel.Level1Privilege:
+      case PrivilegeLevel.level1Privilege:
         return 'Privilege level 1';
-      case PrivilegeLevel.Level2Privilege:
+      case PrivilegeLevel.level2Privilege:
         return 'Privilege level 2';
-      case PrivilegeLevel.OwnerPrivilege:
+      case PrivilegeLevel.ownerPrivilege:
         return 'Owner';
+      case PrivilegeLevel.unknown:
+        break;
+      case null:
+        break;
     }
     return '?';
   }
@@ -116,10 +120,10 @@ class _PrivilegeWidgetState extends State<PrivilegeWidget> {
                 }
               });
             }),
-            getPrivilegeOption(PrivilegeLevel.NoPrivilege),
-            getPrivilegeOption(PrivilegeLevel.Level1Privilege),
-            getPrivilegeOption(PrivilegeLevel.Level2Privilege),
-            getPrivilegeOption(PrivilegeLevel.OwnerPrivilege),
+            getPrivilegeOption(PrivilegeLevel.noPrivilege),
+            getPrivilegeOption(PrivilegeLevel.level1Privilege),
+            getPrivilegeOption(PrivilegeLevel.level2Privilege),
+            getPrivilegeOption(PrivilegeLevel.ownerPrivilege),
             Center(
                 child: button(widget.app, context, label: 'Simulate',
                     onPressed: () {

@@ -24,12 +24,13 @@ import 'package:eliud_pkg_create/model/model_export.dart';
 import 'package:eliud_pkg_create/model/entity_export.dart';
 
 class PlayStoreCache implements PlayStoreRepository {
-
   final PlayStoreRepository reference;
-  final Map<String?, PlayStoreModel?> fullCache = Map();
+  final Map<String?, PlayStoreModel?> fullCache = {};
 
   PlayStoreCache(this.reference);
 
+  /// Add a PlayStoreModel to the repository, cached
+  @override
   Future<PlayStoreModel> add(PlayStoreModel value) {
     return reference.add(value).then((newValue) {
       fullCache[value.documentID] = newValue;
@@ -37,21 +38,31 @@ class PlayStoreCache implements PlayStoreRepository {
     });
   }
 
+  /// Add a PlayStoreEntity to the repository, cached
+  @override
   Future<PlayStoreEntity> addEntity(String documentID, PlayStoreEntity value) {
     return reference.addEntity(documentID, value);
   }
 
-  Future<PlayStoreEntity> updateEntity(String documentID, PlayStoreEntity value) {
+  /// Update a PlayStoreEntity in the repository, cached
+  @override
+  Future<PlayStoreEntity> updateEntity(
+      String documentID, PlayStoreEntity value) {
     return reference.updateEntity(documentID, value);
   }
 
-  Future<void> delete(PlayStoreModel value){
+  /// Delete a PlayStoreModel from the repository, cached
+  @override
+  Future<void> delete(PlayStoreModel value) {
     fullCache.remove(value.documentID);
     reference.delete(value);
     return Future.value();
   }
 
-  Future<PlayStoreModel?> get(String? id, {Function(Exception)? onError}) async {
+  /// Retrieve a PlayStoreModel with it's id, cached
+  @override
+  Future<PlayStoreModel?> get(String? id,
+      {Function(Exception)? onError}) async {
     var value = fullCache[id];
     if (value != null) return refreshRelations(value);
     value = await reference.get(id, onError: onError);
@@ -59,6 +70,8 @@ class PlayStoreCache implements PlayStoreRepository {
     return value;
   }
 
+  /// Update a PlayStoreModel
+  @override
   Future<PlayStoreModel> update(PlayStoreModel value) {
     return reference.update(value).then((newValue) {
       fullCache[value.documentID] = newValue;
@@ -66,47 +79,112 @@ class PlayStoreCache implements PlayStoreRepository {
     });
   }
 
+  /// Retrieve list of List<PlayStoreModel?>
   @override
-  Stream<List<PlayStoreModel?>> values({String? orderBy, bool? descending, Object? startAfter, int? limit, SetLastDoc? setLastDoc, int? privilegeLevel, EliudQuery? eliudQuery }) {
-    return reference.values(orderBy: orderBy, descending: descending, startAfter: startAfter, limit: limit, setLastDoc: setLastDoc, privilegeLevel: privilegeLevel, eliudQuery: eliudQuery);
+  Stream<List<PlayStoreModel?>> values(
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      SetLastDoc? setLastDoc,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery}) {
+    return reference.values(
+        orderBy: orderBy,
+        descending: descending,
+        startAfter: startAfter,
+        limit: limit,
+        setLastDoc: setLastDoc,
+        privilegeLevel: privilegeLevel,
+        eliudQuery: eliudQuery);
   }
 
   @override
-  Stream<List<PlayStoreModel?>> valuesWithDetails({String? orderBy, bool? descending, Object? startAfter, int? limit, SetLastDoc? setLastDoc, int? privilegeLevel, EliudQuery? eliudQuery }) {
-    return reference.valuesWithDetails(orderBy: orderBy, descending: descending, startAfter: startAfter, limit: limit, setLastDoc: setLastDoc, privilegeLevel: privilegeLevel, eliudQuery: eliudQuery);
+  Stream<List<PlayStoreModel?>> valuesWithDetails(
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      SetLastDoc? setLastDoc,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery}) {
+    return reference.valuesWithDetails(
+        orderBy: orderBy,
+        descending: descending,
+        startAfter: startAfter,
+        limit: limit,
+        setLastDoc: setLastDoc,
+        privilegeLevel: privilegeLevel,
+        eliudQuery: eliudQuery);
   }
 
   @override
-  Future<List<PlayStoreModel?>> valuesList({String? orderBy, bool? descending, Object? startAfter, int? limit, SetLastDoc? setLastDoc, int? privilegeLevel, EliudQuery? eliudQuery }) async {
-    return await reference.valuesList(orderBy: orderBy, descending: descending, startAfter: startAfter, limit: limit, setLastDoc: setLastDoc, privilegeLevel: privilegeLevel, eliudQuery: eliudQuery);
-  }
-  
-  @override
-  Future<List<PlayStoreModel?>> valuesListWithDetails({String? orderBy, bool? descending, Object? startAfter, int? limit, SetLastDoc? setLastDoc, int? privilegeLevel, EliudQuery? eliudQuery }) async {
-    return await reference.valuesListWithDetails(orderBy: orderBy, descending: descending, startAfter: startAfter, limit: limit, setLastDoc: setLastDoc, privilegeLevel: privilegeLevel, eliudQuery: eliudQuery);
+  Future<List<PlayStoreModel?>> valuesList(
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      SetLastDoc? setLastDoc,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery}) async {
+    return await reference.valuesList(
+        orderBy: orderBy,
+        descending: descending,
+        startAfter: startAfter,
+        limit: limit,
+        setLastDoc: setLastDoc,
+        privilegeLevel: privilegeLevel,
+        eliudQuery: eliudQuery);
   }
 
+  @override
+  Future<List<PlayStoreModel?>> valuesListWithDetails(
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      SetLastDoc? setLastDoc,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery}) async {
+    return await reference.valuesListWithDetails(
+        orderBy: orderBy,
+        descending: descending,
+        startAfter: startAfter,
+        limit: limit,
+        setLastDoc: setLastDoc,
+        privilegeLevel: privilegeLevel,
+        eliudQuery: eliudQuery);
+  }
+
+  @override
   void flush() {
     fullCache.clear();
   }
-  
+
+  @override
   String? timeStampToString(dynamic timeStamp) {
     return reference.timeStampToString(timeStamp);
-  } 
+  }
 
+  @override
   dynamic getSubCollection(String documentId, String name) {
     return reference.getSubCollection(documentId, name);
   }
 
-  Future<PlayStoreModel> changeValue(String documentId, String fieldName, num changeByThisValue) {
-    return reference.changeValue(documentId, fieldName, changeByThisValue).then((newValue) {
+  @override
+  Future<PlayStoreModel> changeValue(
+      String documentId, String fieldName, num changeByThisValue) {
+    return reference
+        .changeValue(documentId, fieldName, changeByThisValue)
+        .then((newValue) {
       fullCache[documentId] = newValue;
       return newValue!;
     });
   }
 
   @override
-  Future<PlayStoreEntity?> getEntity(String? id, {Function(Exception p1)? onError}) {
+  Future<PlayStoreEntity?> getEntity(String? id,
+      {Function(Exception p1)? onError}) {
     return reference.getEntity(id, onError: onError);
   }
 
@@ -115,22 +193,49 @@ class PlayStoreCache implements PlayStoreRepository {
     return reference.fromMap(o, newDocumentIds: newDocumentIds);
   }
 
+  @override
   Future<void> deleteAll() {
     return reference.deleteAll();
   }
 
   @override
-  StreamSubscription<List<PlayStoreModel?>> listen(trigger, {String? orderBy, bool? descending, Object? startAfter, int? limit, int? privilegeLevel, EliudQuery? eliudQuery}) {
-    return reference.listen(trigger, orderBy: orderBy, descending: descending, startAfter: startAfter, limit: limit, privilegeLevel: privilegeLevel, eliudQuery: eliudQuery);
+  StreamSubscription<List<PlayStoreModel?>> listen(trigger,
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery}) {
+    return reference.listen(trigger,
+        orderBy: orderBy,
+        descending: descending,
+        startAfter: startAfter,
+        limit: limit,
+        privilegeLevel: privilegeLevel,
+        eliudQuery: eliudQuery);
   }
 
   @override
-  StreamSubscription<List<PlayStoreModel?>> listenWithDetails(trigger, {String? orderBy, bool? descending, Object? startAfter, int? limit, int? privilegeLevel, EliudQuery? eliudQuery}) {
-    return reference.listenWithDetails(trigger, orderBy: orderBy, descending: descending, startAfter: startAfter, limit: limit, privilegeLevel: privilegeLevel, eliudQuery: eliudQuery);
+  StreamSubscription<List<PlayStoreModel?>> listenWithDetails(trigger,
+      {String? orderBy,
+      bool? descending,
+      Object? startAfter,
+      int? limit,
+      int? privilegeLevel,
+      EliudQuery? eliudQuery}) {
+    return reference.listenWithDetails(trigger,
+        orderBy: orderBy,
+        descending: descending,
+        startAfter: startAfter,
+        limit: limit,
+        privilegeLevel: privilegeLevel,
+        eliudQuery: eliudQuery);
   }
 
   @override
-  StreamSubscription<PlayStoreModel?> listenTo(String documentId, PlayStoreChanged changed, {PlayStoreErrorHandler? errorHandler}) {
+  StreamSubscription<PlayStoreModel?> listenTo(
+      String documentId, PlayStoreChanged changed,
+      {PlayStoreErrorHandler? errorHandler}) {
     return reference.listenTo(documentId, ((value) {
       if (value != null) {
         fullCache[value.documentID] = value;
@@ -140,11 +245,6 @@ class PlayStoreCache implements PlayStoreRepository {
   }
 
   static Future<PlayStoreModel> refreshRelations(PlayStoreModel model) async {
-
-    return model.copyWith(
-
-    );
+    return model.copyWith();
   }
-
 }
-

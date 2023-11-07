@@ -23,15 +23,20 @@ class NewAppCreateEventInitialise extends NewAppCreateEvent {
       other is NewAppCreateEventInitialise &&
           initialAppIdToBeCreated == other.initialAppIdToBeCreated &&
           member == other.member;
+
+  @override
+  int get hashCode => initialAppIdToBeCreated.hashCode ^ member.hashCode;
 }
 
 class NewAppCreateConfirm extends NewAppCreateEvent {
   final bool fromExisting;
   final LoggedIn loggedIn;
-  MemberMediumModel? memberMediumModel; // if null then from clipboard or url
-  String? url; // if null then from memberMediumModel or clipboard
+  final MemberMediumModel?
+      memberMediumModel; // if null then from clipboard or url
+  final String? url; // if null then from memberMediumModel or clipboard
 
-  NewAppCreateConfirm(this.fromExisting, this.loggedIn, this.memberMediumModel, this.url);
+  NewAppCreateConfirm(
+      this.fromExisting, this.loggedIn, this.memberMediumModel, this.url);
 
   @override
   List<Object?> get props => [];
@@ -43,10 +48,17 @@ class NewAppCreateConfirm extends NewAppCreateEvent {
           fromExisting == other.fromExisting &&
           url == other.url &&
           memberMediumModel == other.memberMediumModel;
+
+  @override
+  int get hashCode =>
+      fromExisting.hashCode ^
+      loggedIn.hashCode ^
+      memberMediumModel.hashCode ^
+      url.hashCode;
 }
 
 class NewAppCreateProgressed extends NewAppCreateEvent {
-  double progress;
+  final double progress;
   NewAppCreateProgressed(this.progress);
 
   @override
@@ -56,6 +68,9 @@ class NewAppCreateProgressed extends NewAppCreateEvent {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is NewAppCreateProgressed && progress == other.progress;
+
+  @override
+  int get hashCode => progress.hashCode;
 }
 
 class NewAppSwitchAppEvent extends NewAppCreateEvent {
@@ -67,6 +82,9 @@ class NewAppSwitchAppEvent extends NewAppCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is NewAppSwitchAppEvent;
+
+  @override
+  int get hashCode => 0;
 }
 
 class NewAppCancelled extends NewAppCreateEvent {
@@ -78,4 +96,7 @@ class NewAppCancelled extends NewAppCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is NewAppCancelled;
+
+  @override
+  int get hashCode => 0;
 }

@@ -7,7 +7,7 @@ import 'package:eliud_core/tools/random.dart';
 import 'package:eliud_core/package/access_rights.dart';
 
 class RandomLogo {
-  static var _random = new Random();
+  static final _random = Random();
 
   static List<String> randomLogos = [
     'packages/eliud_pkg_create/assets/annoyed.png',
@@ -30,17 +30,19 @@ class RandomLogo {
 
   RandomLogo();
 
-  static Future<PublicMediumModel> getRandomPhoto(AppModel app, String memberId, MediumAvailable? feedbackFunction, ) async {
+  static Future<PublicMediumModel> getRandomPhoto(
+    AppModel app,
+    String memberId,
+    MediumAvailable? feedbackFunction,
+  ) async {
     var newRandom = randomLogos[_random.nextInt(randomLogos.length)];
     var photo = await PublicMediumAccessRights()
         .getMediumHelper(
-      app,
-      memberId,
-    )
+          app,
+          memberId,
+        )
         .createThumbnailUploadPhotoAsset(newRandomKey(), newRandom,
-        feedbackProgress: feedbackFunction);
+            feedbackProgress: feedbackFunction);
     return photo;
   }
-
-
 }

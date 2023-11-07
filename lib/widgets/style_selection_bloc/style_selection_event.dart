@@ -16,7 +16,7 @@ class InitialiseStyleSelectionEvent extends StyleSelectionEvent {
   final String? styleName;
 
   @override
-  List<Object?> get props => [ family, styleName ];
+  List<Object?> get props => [family, styleName];
 
   InitialiseStyleSelectionEvent({this.family, this.styleName});
 }
@@ -34,7 +34,7 @@ class SelectedStyleEvent extends StyleSelectionEvent {
   SelectedStyleEvent(this.style);
 
   @override
-  List<Object?> get props => [ style ];
+  List<Object?> get props => [style];
 
   @override
   String toString() => 'SelectedStyleEvent{ style: $style }';
@@ -44,7 +44,7 @@ class SelectStyleEvent extends StyleSelectionEvent {
   final Style style;
 
   @override
-  List<Object?> get props => [ style ];
+  List<Object?> get props => [style];
 
   SelectStyleEvent({required this.style});
 }
@@ -54,7 +54,7 @@ class CopyStyleEvent extends StyleSelectionEvent {
   final String newName;
 
   @override
-  List<Object?> get props => [ style, newName ];
+  List<Object?> get props => [style, newName];
 
   CopyStyleEvent({required this.style, required this.newName});
 }
@@ -64,7 +64,7 @@ class AddNewStyleEvent extends StyleSelectionEvent {
   final String newStyleName;
 
   @override
-  List<Object?> get props => [ styleFamily, newStyleName ];
+  List<Object?> get props => [styleFamily, newStyleName];
 
   AddNewStyleEvent({required this.styleFamily, required this.newStyleName});
 }
@@ -73,7 +73,7 @@ class StyleUpdatedEvent extends StyleSelectionEvent {
   final Style style;
 
   @override
-  List<Object?> get props => [ style ];
+  List<Object?> get props => [style];
 
   StyleUpdatedEvent({required this.style});
 }
@@ -82,7 +82,7 @@ class DeleteStyleEvent extends StyleSelectionEvent {
   final Style style;
 
   @override
-  List<Object?> get props => [ style ];
+  List<Object?> get props => [style];
 
   DeleteStyleEvent({required this.style});
 }
@@ -107,6 +107,8 @@ class StyleSelectionApplyChanges extends StyleSelectionEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is StyleSelectionApplyChanges &&
-              save == other.save;
+      other is StyleSelectionApplyChanges && save == other.save;
+
+  @override
+  int get hashCode => save.hashCode;
 }

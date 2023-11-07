@@ -10,7 +10,7 @@ import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
 import 'package:eliud_core/package/access_rights.dart';
 import 'package:flutter/material.dart';
 
-typedef LogoFeedback(PublicMediumModel? logo);
+typedef LogoFeedback = Function(PublicMediumModel? logo);
 
 class LogoWidget extends StatefulWidget {
   final bool isCollapsable;
@@ -19,8 +19,13 @@ class LogoWidget extends StatefulWidget {
   final PublicMediumModel? logo;
   final LogoFeedback logoFeedback;
 
-  const LogoWidget({Key? key, required this.app, required this.isCollapsable, required this.logo, required this.logoFeedback, required this.collapsed})
-      : super(key: key);
+  const LogoWidget(
+      {super.key,
+      required this.app,
+      required this.isCollapsable,
+      required this.logo,
+      required this.logoFeedback,
+      required this.collapsed});
 
   @override
   State<StatefulWidget> createState() => _LogoWidgetState();
@@ -39,67 +44,65 @@ class _LogoWidgetState extends State<LogoWidget> {
           children: [
             tile(),
           ]);
-    } else{
-      return ListView(
-          shrinkWrap: true,
-          physics: ScrollPhysics(),
-          children: [
-            h4(widget.app, context, 'Logo'),
-            tile(),
-          ]);
+    } else {
+      return ListView(shrinkWrap: true, physics: ScrollPhysics(), children: [
+        h4(widget.app, context, 'Logo'),
+        tile(),
+      ]);
     }
   }
 
   Widget tile() {
-    return getListTile(context,widget.app,
-        trailing: popupMenuButton<int>(
-            widget.app, context,
+    return getListTile(context, widget.app,
+        trailing: popupMenuButton<int>(widget.app, context,
             child: Icon(Icons.more_vert),
             itemBuilder: (context) => [
-              if (Registry.registry()!.getMediumApi().hasCamera())
-                popupMenuItem(
-                  widget.app, context,
-                  value: 0,
-                  label: 'Take photo',
-                ),
-              popupMenuItem(
-                widget.app, context,
-                value: 1,
-                label: 'Upload logo',
-              ),
-              popupMenuItem(
-                widget.app, context,
-                value: 2,
-                label: 'Random logo',
-              ),
-              popupMenuItem(
-                widget.app, context,
-                value: 3,
-                label: 'Clear image',
-              ),
-            ],
+                  if (Registry.registry()!.getMediumApi().hasCamera())
+                    popupMenuItem(
+                      widget.app,
+                      context,
+                      value: 0,
+                      label: 'Take photo',
+                    ),
+                  popupMenuItem(
+                    widget.app,
+                    context,
+                    value: 1,
+                    label: 'Upload logo',
+                  ),
+                  popupMenuItem(
+                    widget.app,
+                    context,
+                    value: 2,
+                    label: 'Random logo',
+                  ),
+                  popupMenuItem(
+                    widget.app,
+                    context,
+                    value: 3,
+                    label: 'Clear image',
+                  ),
+                ],
             onSelected: (value) async {
               if (value == 0) {
                 Registry.registry()!.getMediumApi().takePhoto(
                     context,
                     widget.app,
-                        () => PublicMediumAccessRights(),
-                        (photo) =>
-                        _photoFeedbackFunction(photo),
+                    () => PublicMediumAccessRights(),
+                    (photo) => _photoFeedbackFunction(photo),
                     _photoUploading,
                     allowCrop: false);
               } else if (value == 1) {
                 Registry.registry()!.getMediumApi().uploadPhoto(
                     context,
                     widget.app,
-                        () => PublicMediumAccessRights(),
-                        (photo) =>
-                        _photoFeedbackFunction(photo),
+                    () => PublicMediumAccessRights(),
+                    (photo) => _photoFeedbackFunction(photo),
                     _photoUploading,
                     allowCrop: false);
               } else if (value == 2) {
-                var photo = await RandomLogo.getRandomPhoto(widget.app,
-                    widget.app.ownerID, _photoUploading);
+                var photo = await RandomLogo.getRandomPhoto(
+                    widget.app, widget.app.ownerID, _photoUploading);
                 _photoFeedbackFunction(photo);
               } else if (value == 3) {
                 _photoFeedbackFunction(null);
@@ -107,13 +110,12 @@ class _LogoWidgetState extends State<LogoWidget> {
             }),
         title: _progress != null
             ? progressIndicatorWithValue(widget.app, context, value: _progress!)
-            : widget.logo == null ||
-            widget.logo!.url == null
-            ? Center(child: text(widget.app, context, 'No image set'))
-            : Image.network(
-          widget.logo!.url!,
-          height: 100,
-        ));
+            : widget.logo == null || widget.logo!.url == null
+                ? Center(child: text(widget.app, context, 'No image set'))
+                : Image.network(
+                    widget.logo!.url!,
+                    height: 100,
+                  ));
   }
 
   void _photoFeedbackFunction(PublicMediumModel? platformMediumModel) {

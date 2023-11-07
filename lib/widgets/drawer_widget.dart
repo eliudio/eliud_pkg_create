@@ -24,22 +24,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'menudef/menudef_widget.dart';
 
-typedef BlocProvider BlocProviderProvider(Widget child);
+typedef BlocProviderProvider = BlocProvider Function(Widget child);
 
 void openDrawer(BuildContext context, AppModel app, DrawerModel model,
     DecorationDrawerType decorationDrawerType, double fraction) {
   openFlexibleDialog(
     app,
     context,
-    app.documentID + '/_drawer',
+    '${app.documentID}/_drawer',
     includeHeading: false,
     widthFraction: fraction,
     child: DrawerCreateWidget.getIt(
       context,
       app,
-      decorationDrawerType == DecorationDrawerType.Left
-          ? DrawerType.Left
-          : DrawerType.Right,
+      decorationDrawerType == DecorationDrawerType.left
+          ? DrawerType.left
+          : DrawerType.right,
       model,
       fullScreenWidth(context) * fraction,
       fullScreenHeight(context) - 100,
@@ -48,10 +48,10 @@ void openDrawer(BuildContext context, AppModel app, DrawerModel model,
 }
 
 enum DisplayCase {
-  ShowProgress,
-  ShowMemberProfilePhoto,
-  ShowUrlPhoto,
-  AllowNewEntry
+  showProgress,
+  showMemberProfilePhoto,
+  showUrlPhoto,
+  allowNewEntry
 }
 
 class DrawerCreateWidget extends StatefulWidget {
@@ -60,11 +60,10 @@ class DrawerCreateWidget extends StatefulWidget {
   final AppModel app;
 
   DrawerCreateWidget._({
-    Key? key,
     required this.app,
     required this.widgetWidth,
     required this.widgetHeight,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -89,7 +88,7 @@ class DrawerCreateWidget extends StatefulWidget {
 }
 
 class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
-  double? _progress;
+  double? theProgress;
 
   @override
   Widget build(BuildContext context) {
@@ -166,25 +165,28 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                                     widget.app,
                                     context,
                                     'Header Background override?',
-                                    state.drawerModel.headerBackgroundOverride !=
+                                    state.drawerModel
+                                            .headerBackgroundOverride !=
                                         null, (value) {
                                   setState(() {
                                     if (value!) {
-                                      state.drawerModel.headerBackgroundOverride =
+                                      state.drawerModel
+                                              .headerBackgroundOverride =
                                           BackgroundModel();
                                     } else {
-                                      state.drawerModel.headerBackgroundOverride =
-                                      null;
+                                      state.drawerModel
+                                          .headerBackgroundOverride = null;
                                     }
                                   });
                                 }),
-                                if (state.drawerModel.headerBackgroundOverride !=
+                                if (state
+                                        .drawerModel.headerBackgroundOverride !=
                                     null)
                                   BackgroundWidget(
                                       app: widget.app,
                                       memberId: memberId,
-                                      value:
-                                      state.drawerModel.headerBackgroundOverride!,
+                                      value: state.drawerModel
+                                          .headerBackgroundOverride!,
                                       label: 'Header Background'),
                               ]),
                           topicContainer(widget.app, context,
@@ -204,7 +206,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                                           BackgroundModel();
                                     } else {
                                       state.drawerModel.backgroundOverride =
-                                      null;
+                                          null;
                                     }
                                   });
                                 }),
@@ -214,7 +216,7 @@ class _DrawerCreateWidgetState extends State<DrawerCreateWidget> {
                                       app: widget.app,
                                       memberId: memberId,
                                       value:
-                                      state.drawerModel.backgroundOverride!,
+                                          state.drawerModel.backgroundOverride!,
                                       label: 'Background'),
                               ]),
                         ]),

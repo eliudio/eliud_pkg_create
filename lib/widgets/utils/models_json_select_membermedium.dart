@@ -21,12 +21,12 @@ class JsonMemberMediumWidget extends StatefulWidget {
   final AppModel app;
 
   JsonMemberMediumWidget({
-    Key? key,
+    super.key,
     required this.app,
     required this.ext,
     required this.initialValue,
     required this.jsonMemberMediumCallback,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -45,7 +45,7 @@ class _JsonMemberMediumWidgetState extends State<JsonMemberMediumWidget> {
                   EliudQueryCondition('readAccess',
                       arrayContains: currentMember.documentID),
                   EliudQueryCondition('mediumType',
-                      isEqualTo: MediumType.Text.index),
+                      isEqualTo: MediumType.text.index),
                   EliudQueryCondition('ext', isEqualTo: widget.ext),
                 ]),
                 orderBy: 'base',
@@ -60,30 +60,31 @@ class _JsonMemberMediumWidgetState extends State<JsonMemberMediumWidget> {
   }
 
   Widget memberMediumDropDown() {
-    var accessState = AccessBloc.getState(context);
+    //var accessState = AccessBloc.getState(context);
     return BlocBuilder<MemberMediumListBloc, MemberMediumListState>(
         builder: (context, state) {
       if (state is MemberMediumListLoaded) {
         final items = <DropdownMenuItem<MemberMediumModel>>[];
         if (state.values!.isNotEmpty) {
-          state.values!.forEach((element) {
-            items.add(new DropdownMenuItem<MemberMediumModel>(
+          for (var element in state.values!) {
+            items.add(DropdownMenuItem<MemberMediumModel>(
                 value: element,
-                child: new Container(
+                child: Container(
                   padding: const EdgeInsets.only(bottom: 5.0),
                   height: 100.0,
                   child: text(widget.app, context,
-                        (element!.base ?? 'no filename') + '.' + (element.ext ?? '.')),
+                      '${element!.base ?? 'no filename'}.${element.ext ?? '.'}'),
 /*
                     text(widget.app, context,
                         element.documentID)
                   ]),
 */
                 )));
-          });
+          }
         }
         return dropdownButton<MemberMediumModel>(
-          widget.app, context,
+          widget.app,
+          context,
           isDense: false,
           isExpanded: true,
           items: items,

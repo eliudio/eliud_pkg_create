@@ -23,9 +23,8 @@ import 'package:eliud_core/tools/query/query_tools.dart';
 
 import 'play_store_model.dart';
 
-typedef List<PlayStoreModel?> FilterPlayStoreModels(List<PlayStoreModel?> values);
-
-
+typedef FilterPlayStoreModels = List<PlayStoreModel?> Function(
+    List<PlayStoreModel?> values);
 
 class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
   final FilterPlayStoreModels? filter;
@@ -39,23 +38,32 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
   final bool? detailed;
   final int playStoreLimit;
 
-  PlayStoreListBloc({this.filter, this.paged, this.orderBy, this.descending, this.detailed, this.eliudQuery, required PlayStoreRepository playStoreRepository, this.playStoreLimit = 5})
+  PlayStoreListBloc(
+      {this.filter,
+      this.paged,
+      this.orderBy,
+      this.descending,
+      this.detailed,
+      this.eliudQuery,
+      required PlayStoreRepository playStoreRepository,
+      this.playStoreLimit = 5})
       : _playStoreRepository = playStoreRepository,
         super(PlayStoreListLoading()) {
-    on <LoadPlayStoreList> ((event, emit) {
+    on<LoadPlayStoreList>((event, emit) {
       if ((detailed == null) || (!detailed!)) {
         _mapLoadPlayStoreListToState();
       } else {
         _mapLoadPlayStoreListWithDetailsToState();
       }
     });
-    
-    on <NewPage> ((event, emit) {
-      pages = pages + 1; // it doesn't matter so much if we increase pages beyond the end
+
+    on<NewPage>((event, emit) {
+      pages = pages +
+          1; // it doesn't matter so much if we increase pages beyond the end
       _mapLoadPlayStoreListWithDetailsToState();
     });
-    
-    on <PlayStoreChangeQuery> ((event, emit) {
+
+    on<PlayStoreChangeQuery>((event, emit) {
       eliudQuery = event.newQuery;
       if ((detailed == null) || (!detailed!)) {
         _mapLoadPlayStoreListToState();
@@ -63,20 +71,20 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
         _mapLoadPlayStoreListWithDetailsToState();
       }
     });
-      
-    on <AddPlayStoreList> ((event, emit) async {
+
+    on<AddPlayStoreList>((event, emit) async {
       await _mapAddPlayStoreListToState(event);
     });
-    
-    on <UpdatePlayStoreList> ((event, emit) async {
+
+    on<UpdatePlayStoreList>((event, emit) async {
       await _mapUpdatePlayStoreListToState(event);
     });
-    
-    on <DeletePlayStoreList> ((event, emit) async {
+
+    on<DeletePlayStoreList>((event, emit) async {
       await _mapDeletePlayStoreListToState(event);
     });
-    
-    on <PlayStoreListUpdated> ((event, emit) {
+
+    on<PlayStoreListUpdated>((event, emit) {
       emit(_mapPlayStoreListUpdatedToState(event));
     });
   }
@@ -90,27 +98,31 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
   }
 
   Future<void> _mapLoadPlayStoreListToState() async {
-    int amountNow =  (state is PlayStoreListLoaded) ? (state as PlayStoreListLoaded).values!.length : 0;
+    int amountNow = (state is PlayStoreListLoaded)
+        ? (state as PlayStoreListLoaded).values!.length
+        : 0;
     _playStoresListSubscription?.cancel();
     _playStoresListSubscription = _playStoreRepository.listen(
-          (list) => add(PlayStoreListUpdated(value: _filter(list), mightHaveMore: amountNow != list.length)),
-      orderBy: orderBy,
-      descending: descending,
-      eliudQuery: eliudQuery,
-      limit: ((paged != null) && paged!) ? pages * playStoreLimit : null
-    );
-  }
-
-  Future<void> _mapLoadPlayStoreListWithDetailsToState() async {
-    int amountNow =  (state is PlayStoreListLoaded) ? (state as PlayStoreListLoaded).values!.length : 0;
-    _playStoresListSubscription?.cancel();
-    _playStoresListSubscription = _playStoreRepository.listenWithDetails(
-            (list) => add(PlayStoreListUpdated(value: _filter(list), mightHaveMore: amountNow != list.length)),
+        (list) => add(PlayStoreListUpdated(
+            value: _filter(list), mightHaveMore: amountNow != list.length)),
         orderBy: orderBy,
         descending: descending,
         eliudQuery: eliudQuery,
-        limit: ((paged != null) && paged!) ? pages * playStoreLimit : null
-    );
+        limit: ((paged != null) && paged!) ? pages * playStoreLimit : null);
+  }
+
+  Future<void> _mapLoadPlayStoreListWithDetailsToState() async {
+    int amountNow = (state is PlayStoreListLoaded)
+        ? (state as PlayStoreListLoaded).values!.length
+        : 0;
+    _playStoresListSubscription?.cancel();
+    _playStoresListSubscription = _playStoreRepository.listenWithDetails(
+        (list) => add(PlayStoreListUpdated(
+            value: _filter(list), mightHaveMore: amountNow != list.length)),
+        orderBy: orderBy,
+        descending: descending,
+        eliudQuery: eliudQuery,
+        limit: ((paged != null) && paged!) ? pages * playStoreLimit : null);
   }
 
   Future<void> _mapAddPlayStoreListToState(AddPlayStoreList event) async {
@@ -135,7 +147,9 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
   }
 
   PlayStoreListLoaded _mapPlayStoreListUpdatedToState(
-      PlayStoreListUpdated event) => PlayStoreListLoaded(values: event.value, mightHaveMore: event.mightHaveMore);
+          PlayStoreListUpdated event) =>
+      PlayStoreListLoaded(
+          values: event.value, mightHaveMore: event.mightHaveMore);
 
   @override
   Future<void> close() {
@@ -143,5 +157,3 @@ class PlayStoreListBloc extends Bloc<PlayStoreListEvent, PlayStoreListState> {
     return super.close();
   }
 }
-
-

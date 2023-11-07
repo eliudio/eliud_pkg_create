@@ -3,20 +3,20 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 enum InitialPosition {
-  CenterTop,
-  CenterBottom,
-  RightTop,
-  RightBottom,
-  RightAlmostBottom,
-  CenterCenter,
-  LeftCenter,
-  LeftTop,
-  LeftAlmostBottom,
-  LeftBottom // Horizontal X Vertical
+  centerTop,
+  centerBottom,
+  rightTop,
+  rightBottom,
+  rightAlmostBottom,
+  centerCenter,
+  leftCenter,
+  leftTop,
+  leftAlmostBottom,
+  leftBottom // Horizontal X Vertical
 }
 
 class CreatorButton extends StatefulWidget {
-  static double BUTTON_HEIGHT = kBottomNavigationBarHeight/3*2;
+  static double buttonClient = kBottomNavigationBarHeight / 3 * 2;
   final InitialPosition initialPosition;
   final String? label;
   final Widget toDecorate;
@@ -30,7 +30,7 @@ class CreatorButton extends StatefulWidget {
   final Widget icon;
 
   CreatorButton(
-      {Key? key,
+      {super.key,
       required this.initialPosition,
       required this.toDecorateKey,
       required this.toDecorate,
@@ -41,8 +41,7 @@ class CreatorButton extends StatefulWidget {
       required this.icon,
       required this.borderColor,
       required this.textColor,
-      this.label})
-      : super(key: key);
+      this.label});
 
   @override
   State<StatefulWidget> createState() {
@@ -83,38 +82,38 @@ class _CreatorButtonState extends State<CreatorButton> {
 
         setState(() {
           switch (widget.initialPosition) {
-            case InitialPosition.CenterTop:
+            case InitialPosition.centerTop:
               position = Offset((sizeBox.width - width!) / 2, 0);
               break;
-            case InitialPosition.CenterBottom:
-              position = Offset((sizeBox.width - width!) / 2, sizeBox.height - height!);
+            case InitialPosition.centerBottom:
+              position = Offset(
+                  (sizeBox.width - width!) / 2, sizeBox.height - height!);
               break;
-            case InitialPosition.CenterCenter:
+            case InitialPosition.centerCenter:
               position = Offset(
                   (sizeBox.width - width!) / 2, (sizeBox.height - height!) / 2);
               break;
-            case InitialPosition.RightTop:
+            case InitialPosition.rightTop:
               position = Offset((sizeBox.width - width!), 0);
               break;
-            case InitialPosition.RightBottom:
+            case InitialPosition.rightBottom:
               position =
                   Offset((sizeBox.width - width!), sizeBox.height - height!);
               break;
-            case InitialPosition.RightAlmostBottom:
-              position =
-                  Offset((sizeBox.width - width!), sizeBox.height - kBottomNavigationBarHeight);
+            case InitialPosition.rightAlmostBottom:
+              position = Offset((sizeBox.width - width!),
+                  sizeBox.height - kBottomNavigationBarHeight);
               break;
-            case InitialPosition.LeftAlmostBottom:
-              position =
-                  Offset(0, sizeBox.height - kBottomNavigationBarHeight);
+            case InitialPosition.leftAlmostBottom:
+              position = Offset(0, sizeBox.height - kBottomNavigationBarHeight);
               break;
-            case InitialPosition.LeftCenter:
+            case InitialPosition.leftCenter:
               position = Offset(0, (sizeBox.height - height!) / 2);
               break;
-            case InitialPosition.LeftTop:
+            case InitialPosition.leftTop:
               position = Offset(0, 20);
               break;
-            case InitialPosition.LeftBottom:
+            case InitialPosition.leftBottom:
               position = Offset(0, sizeBox.height - height!);
               break;
           }
@@ -127,43 +126,41 @@ class _CreatorButtonState extends State<CreatorButton> {
 
   @override
   Widget build(BuildContext context) {
-    var button;
+    StatelessWidget button;
 
     if (widget.label == null) {
       button = Container(
-          height: CreatorButton.BUTTON_HEIGHT,
-          width: CreatorButton.BUTTON_HEIGHT,
+          height: CreatorButton.buttonClient,
+          width: CreatorButton.buttonClient,
           decoration: BoxDecoration(
               color: widget.backgroundColor,
               border: Border.all(width: 1, color: widget.borderColor)),
-          child: GestureDetector(
-              onTap:widget.onTap,
-              child: widget.icon));
+          child: GestureDetector(onTap: widget.onTap, child: widget.icon));
     } else {
       button = GestureDetector(
           onTap: widget.onTap,
-          onDoubleTap:  widget.onTap,
-          onLongPress:  widget.onTap,
+          onDoubleTap: widget.onTap,
+          onLongPress: widget.onTap,
           onTapDown: widget.onTapDown,
           child: Container(
-          height: CreatorButton.BUTTON_HEIGHT,
-          decoration: BoxDecoration(
-              border: Border.all(width: 1, color: widget.borderColor)),
-          child: ElevatedButton.icon(
-              onPressed: widget.onTap,
-              icon: widget.icon,
-              style: ButtonStyle(
-                  backgroundColor:
-                  MaterialStateProperty.all(widget.backgroundColor),
-                  padding: MaterialStateProperty.all(EdgeInsets.all(5)),
-                  textStyle:
-                  MaterialStateProperty.all(TextStyle(fontSize: 30))),
-              label: Text(widget.label!,
-                  maxLines: 1,
-                  style: TextStyle(
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.normal,
-                      color: widget.textColor)))));
+              height: CreatorButton.buttonClient,
+              decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: widget.borderColor)),
+              child: ElevatedButton.icon(
+                  onPressed: widget.onTap,
+                  icon: widget.icon,
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(widget.backgroundColor),
+                      padding: MaterialStateProperty.all(EdgeInsets.all(5)),
+                      textStyle:
+                          MaterialStateProperty.all(TextStyle(fontSize: 30))),
+                  label: Text(widget.label!,
+                      maxLines: 1,
+                      style: TextStyle(
+                          fontSize: 10.0,
+                          fontWeight: FontWeight.normal,
+                          color: widget.textColor)))));
     }
 
     var draggable = Draggable(
@@ -180,7 +177,8 @@ class _CreatorButtonState extends State<CreatorButton> {
     return Stack(children: [
       widget.toDecorate,
       if (widget.ensureHeight) Container(height: height),
-      if (position != null) Positioned(left: position!.dx, top: position!.dy, child: draggable),
+      if (position != null)
+        Positioned(left: position!.dx, top: position!.dy, child: draggable),
       if (position == null) Positioned(left: 0, top: 0, child: draggable),
     ]);
   }

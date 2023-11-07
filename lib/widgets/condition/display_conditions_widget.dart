@@ -25,10 +25,10 @@ class DisplayConditionsWidget extends StatefulWidget {
   final AppModel app;
 
   DisplayConditionsWidget({
-    Key? key,
+    super.key,
     required this.app,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -69,9 +69,11 @@ class _DisplayConditionState extends State<DisplayConditionsWidget> {
         collapsed: true,
         children: [
           getListTile(
-            context,widget.app,
+            context,
+            widget.app,
             leading: const Icon(Icons.security),
-            title: ComboboxWidget(app: widget.app,
+            title: ComboboxWidget(
+              app: widget.app,
               initialValue: (widget.value.privilegeLevelRequired == null)
                   ? 0
                   : widget.value.privilegeLevelRequired!.index,
@@ -94,21 +96,25 @@ class _DisplayConditionState extends State<DisplayConditionsWidget> {
           ),
           _aBitSpace(),
           getListTile(
-            context,widget.app,
+            context,
+            widget.app,
             leading: const Icon(Icons.security),
-            title: PackageConditionWidget(app: widget.app,
+            title: PackageConditionWidget(
+                app: widget.app,
                 initialPackageCondition: widget.value.packageCondition,
                 packageInfos: getAllPackageConditionsAsPackageInfos2(),
                 feedback: (value) => widget.value.packageCondition = value),
           ),
           _aBitSpace(),
           getListTile(
-            context,widget.app,
+            context,
+            widget.app,
             leading: const Icon(Icons.security),
-            title: ComboboxWidget(app: widget.app,
+            title: ComboboxWidget(
+              app: widget.app,
               initialValue: (widget.value.conditionOverride == null) ||
                       (widget.value.conditionOverride ==
-                          ConditionOverride.Unknown)
+                          ConditionOverride.unknown)
                   ? 0
                   : widget.value.conditionOverride!.index + 1,
               options: const [

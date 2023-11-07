@@ -12,7 +12,7 @@ A privilege is data secured data, i.e. the storage mechanism secures the access.
 (*) It's worth remembering that when a member is blocked, that person is not blocked from public view, as that person can always logoff and open the site anonymously.
 """;
 
-typedef StorageConditionsFeedback(int value);
+typedef StorageConditionsFeedback = Function(int value);
 
 class StorageConditionsWidget extends StatefulWidget {
   final AppModel app;
@@ -21,12 +21,12 @@ class StorageConditionsWidget extends StatefulWidget {
   final StorageConditionsFeedback feedback;
 
   StorageConditionsWidget({
-    Key? key,
+    super.key,
     required this.app,
     required this.value,
     required this.ownerType,
     required this.feedback,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -61,18 +61,10 @@ class _StorageConditionState extends State<StorageConditionsWidget> {
                 'Owner Required'
               ],
               descriptions: [
-                'Make this ' +
-                    prefix +
-                    ' accessible for the public, as well as subscribed members',
-                'Make this ' +
-                    prefix +
-                    ' accessible for level 1 members, i.e. subscribed members with a level 1 access',
-                'Make this ' +
-                    prefix +
-                    ' accessible for level 2 members, i.e. subscribed members with a level 2 access',
-                'Make this ' +
-                    prefix +
-                    ' only accessible to you, as the owner ',
+                'Make this $prefix accessible for the public, as well as subscribed members',
+                'Make this $prefix accessible for level 1 members, i.e. subscribed members with a level 1 access',
+                'Make this $prefix accessible for level 2 members, i.e. subscribed members with a level 2 access',
+                'Make this $prefix only accessible to you, as the owner ',
               ],
               feedback: (value) {
                 widget.value.privilegeLevelRequired =

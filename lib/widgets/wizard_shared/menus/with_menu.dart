@@ -8,7 +8,11 @@ class WithMenu {
   final String identifier;
   final String name;
 
-  WithMenu(this.app, {required this.identifier, required this.name, });
+  WithMenu(
+    this.app, {
+    required this.identifier,
+    required this.name,
+  });
 
   Future<MenuDefModel> menuDef() async {
     var menuDefModel = MenuDefModel(
@@ -23,18 +27,15 @@ class WithMenu {
   }
 
   Future<void> updateMenuItems(List<MenuItemModel> items) async {
-    var menuDefModel = await menuDefRepository(appId: app.documentID)!.get(identifier);
-    if (menuDefModel == null) {
-      menuDefModel = await menuDef();
-    }
+    var menuDefModel =
+        await menuDefRepository(appId: app.documentID)!.get(identifier);
+    menuDefModel ??= await menuDef();
     List<MenuItemModel> newItems = [];
     if (menuDefModel.menuItems != null) {
       newItems.addAll(menuDefModel.menuItems!);
     }
     newItems.addAll(items);
-      menuDefModel = menuDefModel.copyWith(menuItems: newItems);
+    menuDefModel = menuDefModel.copyWith(menuItems: newItems);
     await menuDefRepository(appId: app.documentID)!.update(menuDefModel);
   }
-
 }
-

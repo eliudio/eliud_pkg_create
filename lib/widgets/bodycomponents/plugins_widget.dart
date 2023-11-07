@@ -16,16 +16,16 @@ class PluginsWidget extends StatefulWidget {
   final int containerPrivilege;
   final double widgetWidth;
   final double widgetHeight;
-  List<PluginWithComponents> pluginsWidthComponents;
+  final List<PluginWithComponents> pluginsWidthComponents;
 
   PluginsWidget({
-    Key? key,
+    super.key,
     required this.app,
     required this.containerPrivilege,
     required this.pluginsWidthComponents,
     required this.widgetWidth,
     required this.widgetHeight,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _PluginsWidgetState();
@@ -88,7 +88,8 @@ class _PluginsWidgetState extends State<PluginsWidget>
 
   @override
   void initState() {
-    items = widget.pluginsWidthComponents.map((item) => item.friendlyName).toList();
+    items =
+        widget.pluginsWidthComponents.map((item) => item.friendlyName).toList();
     //items!.sort();
     initInnerItems(0);
 

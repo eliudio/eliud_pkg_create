@@ -20,6 +20,9 @@ class WorkflowTasksCreateInitialiseEvent extends WorkflowTasksCreateEvent {
       identical(this, other) ||
       other is WorkflowTasksCreateInitialiseEvent &&
           ListEquality().equals(workflowTasksModel, other.workflowTasksModel);
+
+  @override
+  int get hashCode => workflowTasksModel.hashCode;
 }
 
 class WorkflowTasksCreateAddWorkflowTask extends WorkflowTasksCreateEvent {
@@ -33,7 +36,11 @@ class WorkflowTasksCreateAddWorkflowTask extends WorkflowTasksCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WorkflowTasksCreateAddWorkflowTask && workflowTaskModel == other.workflowTaskModel;
+      other is WorkflowTasksCreateAddWorkflowTask &&
+          workflowTaskModel == other.workflowTaskModel;
+
+  @override
+  int get hashCode => workflowTaskModel.hashCode;
 }
 
 class WorkflowTasksCreateDeleteItemFromIndex extends WorkflowTasksCreateEvent {
@@ -47,6 +54,9 @@ class WorkflowTasksCreateDeleteItemFromIndex extends WorkflowTasksCreateEvent {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is WorkflowTasksCreateDeleteItemFromIndex && index == other.index;
+
+  @override
+  int get hashCode => index.hashCode;
 }
 
 class WorkflowTasksCreateDeleteMenuItem extends WorkflowTasksCreateEvent {
@@ -61,9 +71,12 @@ class WorkflowTasksCreateDeleteMenuItem extends WorkflowTasksCreateEvent {
       identical(this, other) ||
       other is WorkflowTasksCreateDeleteMenuItem &&
           workflowTaskModel == other.workflowTaskModel;
+
+  @override
+  int get hashCode => workflowTaskModel.hashCode;
 }
 
-enum MoveItemDirection { Up, Down }
+enum MoveItemDirection { up, down }
 
 class WorkflowTasksMoveItem extends WorkflowTasksCreateEvent {
   final WorkflowTaskModel workflowTaskModel;
@@ -76,24 +89,32 @@ class WorkflowTasksMoveItem extends WorkflowTasksCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WorkflowTasksMoveItem &&
-              moveItemDirection == other.moveItemDirection &&
-              workflowTaskModel == other.workflowTaskModel;
+      other is WorkflowTasksMoveItem &&
+          moveItemDirection == other.moveItemDirection &&
+          workflowTaskModel == other.workflowTaskModel;
+
+  @override
+  int get hashCode => workflowTaskModel.hashCode ^ moveItemDirection.hashCode;
 }
 
 class WorkflowTasksUpdateItem extends WorkflowTasksCreateEvent {
   final WorkflowTaskModel beforeWorkflowTaskModel;
   final WorkflowTaskModel afterWorkflowTaskModel;
 
-  WorkflowTasksUpdateItem(this.beforeWorkflowTaskModel, this.afterWorkflowTaskModel);
+  WorkflowTasksUpdateItem(
+      this.beforeWorkflowTaskModel, this.afterWorkflowTaskModel);
 
   @override
   List<Object?> get props => [beforeWorkflowTaskModel, afterWorkflowTaskModel];
 
   @override
-  bool operator ==(Object other) => identical(this, other)||
+  bool operator ==(Object other) =>
+      identical(this, other) ||
       other is WorkflowTasksUpdateItem &&
           beforeWorkflowTaskModel == other.beforeWorkflowTaskModel &&
           afterWorkflowTaskModel == other.afterWorkflowTaskModel;
-}
 
+  @override
+  int get hashCode =>
+      beforeWorkflowTaskModel.hashCode ^ afterWorkflowTaskModel.hashCode;
+}

@@ -13,9 +13,11 @@ class WorkflowCreateUninitialised extends WorkflowCreateState {
   List<Object?> get props => [];
 
   @override
-  bool operator == (Object other) =>
-      identical(this, other) ||
-          other is WorkflowCreateUninitialised;
+  bool operator ==(Object other) =>
+      identical(this, other) || other is WorkflowCreateUninitialised;
+
+  @override
+  int get hashCode => 0;
 }
 
 abstract class WorkflowCreateInitialised extends WorkflowCreateState {
@@ -25,7 +27,7 @@ abstract class WorkflowCreateInitialised extends WorkflowCreateState {
 }
 
 class WorkflowCreateValidated extends WorkflowCreateInitialised {
-  WorkflowCreateValidated(WorkflowModel workflowModel) : super(workflowModel);
+  WorkflowCreateValidated(super.workflowModel);
 
   @override
   List<Object?> get props => [workflowModel];
@@ -33,12 +35,14 @@ class WorkflowCreateValidated extends WorkflowCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WorkflowCreateValidated &&
-              workflowModel == other.workflowModel;
+      other is WorkflowCreateValidated && workflowModel == other.workflowModel;
+
+  @override
+  int get hashCode => workflowModel.hashCode;
 }
 
 class WorkflowCreateChangesApplied extends WorkflowCreateInitialised {
-  WorkflowCreateChangesApplied(WorkflowModel workflowModel) : super(workflowModel);
+  WorkflowCreateChangesApplied(super.workflowModel);
 
   @override
   List<Object?> get props => [workflowModel];
@@ -46,7 +50,9 @@ class WorkflowCreateChangesApplied extends WorkflowCreateInitialised {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WorkflowCreateChangesApplied &&
-              workflowModel == other.workflowModel;
-}
+      other is WorkflowCreateChangesApplied &&
+          workflowModel == other.workflowModel;
 
+  @override
+  int get hashCode => workflowModel.hashCode;
+}

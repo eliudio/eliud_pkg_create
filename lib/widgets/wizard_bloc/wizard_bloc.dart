@@ -29,24 +29,23 @@ class WizardBloc extends Bloc<WizardEvent, WizardState> {
           styleFamily: event.styleFamily,
           styleName: event.styleName,
           accessBloc: accessBloc,
-        ).create(accessBloc, this).then((value) => add(WizardFinished(true,  )));
+        ).create(accessBloc, this).then((value) => add(WizardFinished(
+              true,
+            )));
       }
     });
 
     on<WizardFinished>((event, emit) {
       if (state is WizardInitialised) {
         var theState = state as WizardInitialised;
-        emit(
-            WizardCreated(theState.member,
-                event.success));
+        emit(WizardCreated(theState.member, event.success));
       }
     });
 
     on<WizardProgressed>((event, emit) {
       if (state is WizardInitialised) {
         var theState = state as WizardInitialised;
-        emit(WizardCreateInProgress(theState.member,
-            event.progress));
+        emit(WizardCreateInProgress(theState.member, event.progress));
       }
     });
 
@@ -54,7 +53,8 @@ class WizardBloc extends Bloc<WizardEvent, WizardState> {
       if (state is WizardInitialised) {
         var theState = state as WizardInitialised;
         emit(WizardCreateCancelled(
-            theState.member, ));
+          theState.member,
+        ));
       }
     });
   }

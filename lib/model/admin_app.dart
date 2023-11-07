@@ -13,10 +13,8 @@
 
 */
 
-
 import 'package:eliud_core/tools/admin_app_base.dart';
 import '../tools/bespoke_models.dart';
-
 
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/model_export.dart';
@@ -30,17 +28,29 @@ class AdminApp extends AdminAppInstallerBase {
   final RgbModel menuItemColor;
   final RgbModel selectedMenuItemColor;
   final RgbModel backgroundColor;
-  
-  AdminApp(this.appId, this._drawer, this._endDrawer, this._appBar, this._homeMenu, this.menuItemColor, this.selectedMenuItemColor, this.backgroundColor);
 
+  /// Construct the AdminApp
+  AdminApp(
+      this.appId,
+      this._drawer,
+      this._endDrawer,
+      this._appBar,
+      this._homeMenu,
+      this.menuItemColor,
+      this.selectedMenuItemColor,
+      this.backgroundColor);
 
+  /// Retrieve the admin pages
   PageModel _playStoresPages() {
     List<BodyComponentModel> components = [];
     components.add(BodyComponentModel(
-      documentID: "internalWidget-playStores", componentName: "eliud_pkg_create_internalWidgets", componentId: "playStores"));
+        documentID: "internalWidget-playStores",
+        componentName: "eliud_pkg_create_internalWidgets",
+        componentId: "playStores"));
     PageModel page = PageModel(
         conditions: StorageConditionsModel(
-          privilegeLevelRequired: PrivilegeLevelRequiredSimple.OwnerPrivilegeRequiredSimple,
+          privilegeLevelRequired:
+              PrivilegeLevelRequiredSimple.ownerPrivilegeRequiredSimple,
         ),
         appId: appId,
         documentID: "eliud_pkg_create_playstores_page",
@@ -51,61 +61,47 @@ class AdminApp extends AdminAppInstallerBase {
         appBar: _appBar,
         homeMenu: _homeMenu,
         bodyComponents: components,
-        layout: PageLayout.OnlyTheFirstComponent
-    );
+        layout: PageLayout.onlyTheFirstComponent);
     return page;
   }
 
-
   Future<void> _setupAdminPages() {
-
-    return pageRepository(appId: appId)!.add(_playStoresPages())
-
-    ;
+    return pageRepository(appId: appId)!.add(_playStoresPages());
   }
 
+  /// Run the admin, i.e setup all admin pages
   @override
   Future<void> run() async {
     return _setupAdminPages();
   }
-
-
 }
 
 class AdminMenu extends AdminAppMenuInstallerBase {
-
+  /// Construct the admin menu
+  @override
   Future<MenuDefModel> menu(AppModel app) async {
     var menuItems = <MenuItemModel>[];
 
-    menuItems.add(
-      MenuItemModel(
+    menuItems.add(MenuItemModel(
         documentID: "PlayStores",
         text: "PlayStores",
         description: "PlayStores",
         icon: IconModel(codePoint: 0xe88a, fontFamily: "MaterialIcons"),
-        action: GotoPage(app, pageID: "eliud_pkg_create_playstores_page"))
-    );
-
+        action: GotoPage(app, pageID: "eliud_pkg_create_playstores_page")));
 
     MenuDefModel menu = MenuDefModel(
-      admin: true,
-      documentID: "eliud_pkg_create_admin_menu",
-      appId: app.documentID,
-      name: "eliud_pkg_create",
-      menuItems: menuItems
-    );
+        admin: true,
+        documentID: "eliud_pkg_create_admin_menu",
+        appId: app.documentID,
+        name: "eliud_pkg_create",
+        menuItems: menuItems);
     await menuDefRepository(appId: app.documentID)!.add(menu);
     return menu;
   }
 }
 
 class AdminAppWiper extends AdminAppWiperBase {
-
+  /// Delete all admin pages
   @override
-  Future<void> deleteAll(String appId) async {
-    ;
-  }
-
-
+  Future<void> deleteAll(String appID) async {}
 }
-

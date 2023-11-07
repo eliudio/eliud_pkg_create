@@ -22,9 +22,8 @@ class BodyComponentsCreateWidget extends StatefulWidget {
   BodyComponentsCreateWidget._({
     required this.containerPrivilege,
     required this.app,
-    Key? key,
     required this.widgetWidth,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -40,7 +39,7 @@ class BodyComponentsCreateWidget extends StatefulWidget {
     /*double widgetHeight
       */
   ) {
-    if (app == null) throw Exception("No app selected");
+//    if (app == null) throw Exception("No app selected");
     return BlocProvider<BodyComponentsCreateBloc>(
       create: (context) => BodyComponentsCreateBloc(
         app,
@@ -83,9 +82,10 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
                           physics: ScrollPhysics(),
                           child: Column(
                               children: state.bodyComponentModels.map((item) {
-                            var theKey;
-                            if (item == state.currentlySelected)
+                            GlobalKey<State<StatefulWidget>>? theKey;
+                            if (item == state.currentlySelected) {
                               theKey = currentVisible;
+                            }
                             count++;
                             return getListTile(context, widget.app,
                                 key: theKey,
@@ -98,19 +98,23 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
                                       BlocProvider.of<BodyComponentsCreateBloc>(
                                               context)
                                           .add(BodyComponentsMoveItem(
-                                              item, MoveItemDirection.Up)),
+                                              item, MoveItemDirection.up)),
                                   actionDown: () =>
                                       BlocProvider.of<BodyComponentsCreateBloc>(
                                               context)
                                           .add(BodyComponentsMoveItem(
-                                              item, MoveItemDirection.Down)),
+                                              item, MoveItemDirection.down)),
                                   actionDetails: () => details(context, item),
                                   actionDelete: () => BlocProvider.of<
                                           BodyComponentsCreateBloc>(context)
                                       .add(BodyComponentsCreateDeleteMenuItem(
                                           item)),
                                 ),
-                                title: ComponentTitleHelper.title(context, widget.app, item.componentName!, item.componentId!));
+                                title: ComponentTitleHelper.title(
+                                    context,
+                                    widget.app,
+                                    item.componentName!,
+                                    item.componentId!));
                           }).toList())))
                 ]),
             topicContainer(widget.app, context,
@@ -147,6 +151,6 @@ class _BodyComponentsCreateWidgetState extends State<BodyComponentsCreateWidget>
           Scrollable.ensureVisible(context);
         }
       });
-        }
+    }
   }
 }

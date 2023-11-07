@@ -1,5 +1,3 @@
-
-
 class JsonConsts {
   static String app = 'app';
   static String appBar = 'appBar';

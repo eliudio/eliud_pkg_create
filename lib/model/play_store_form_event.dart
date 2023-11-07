@@ -18,7 +18,6 @@ import 'package:meta/meta.dart';
 import 'package:eliud_core/model/model_export.dart';
 import 'package:eliud_pkg_create/model/model_export.dart';
 
-
 @immutable
 abstract class PlayStoreFormEvent extends Equatable {
   const PlayStoreFormEvent();
@@ -27,15 +26,13 @@ abstract class PlayStoreFormEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class InitialiseNewPlayStoreFormEvent extends PlayStoreFormEvent {
-}
-
+class InitialiseNewPlayStoreFormEvent extends PlayStoreFormEvent {}
 
 class InitialisePlayStoreFormEvent extends PlayStoreFormEvent {
   final PlayStoreModel? value;
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   InitialisePlayStoreFormEvent({this.value});
 }
@@ -44,7 +41,7 @@ class InitialisePlayStoreFormNoLoadEvent extends PlayStoreFormEvent {
   final PlayStoreModel? value;
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   InitialisePlayStoreFormNoLoadEvent({this.value});
 }
@@ -55,7 +52,7 @@ class ChangedPlayStoreDocumentID extends PlayStoreFormEvent {
   ChangedPlayStoreDocumentID({this.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() => 'ChangedPlayStoreDocumentID{ value: $value }';
@@ -67,7 +64,7 @@ class ChangedPlayStoreAppId extends PlayStoreFormEvent {
   ChangedPlayStoreAppId({this.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() => 'ChangedPlayStoreAppId{ value: $value }';
@@ -79,7 +76,7 @@ class ChangedPlayStoreDescription extends PlayStoreFormEvent {
   ChangedPlayStoreDescription({this.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() => 'ChangedPlayStoreDescription{ value: $value }';
@@ -91,7 +88,7 @@ class ChangedPlayStoreBackgroundIcon extends PlayStoreFormEvent {
   ChangedPlayStoreBackgroundIcon({this.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() => 'ChangedPlayStoreBackgroundIcon{ value: $value }';
@@ -103,9 +100,8 @@ class ChangedPlayStoreConditions extends PlayStoreFormEvent {
   ChangedPlayStoreConditions({this.value});
 
   @override
-  List<Object?> get props => [ value ];
+  List<Object?> get props => [value];
 
   @override
   String toString() => 'ChangedPlayStoreConditions{ value: $value }';
 }
-

@@ -17,7 +17,7 @@ class BodyComponentsCreateBloc
     this.bodyComponentsModel,
   ) : super(BodyComponentsCreateUninitialised()) {
     on<BodyComponentsCreateInitialiseEvent>((event, emit) {
-      var appId = app.documentID;
+      //var appId = app.documentID;
       emit(BodyComponentsCreateInitialised(
         bodyComponentModels: event.bodyComponentsModel,
         pluginWithComponents: retrievePluginsWithComponents(),
@@ -32,20 +32,20 @@ class BodyComponentsCreateBloc
     on<BodyComponentsMoveItem>((event, emit) {
       BodyComponentsCreateInitialised theState =
           state as BodyComponentsCreateInitialised;
-      List<BodyComponentModel> _bodyComponentModels =
+      List<BodyComponentModel> bodyComponentModels =
           List.of(theState.bodyComponentModels);
       int positionToMove =
-          _bodyComponentModels.indexOf(event.bodyComponentModel);
-      if (event.moveItemDirection == MoveItemDirection.Up) {
+          bodyComponentModels.indexOf(event.bodyComponentModel);
+      if (event.moveItemDirection == MoveItemDirection.up) {
         if (positionToMove > 0) {
-          _bodyComponentModels.swap(positionToMove - 1, positionToMove);
+          bodyComponentModels.swap(positionToMove - 1, positionToMove);
         }
-      } else if (event.moveItemDirection == MoveItemDirection.Down) {
-        if (positionToMove < _bodyComponentModels.length - 1) {
-          _bodyComponentModels.swap(positionToMove + 1, positionToMove);
+      } else if (event.moveItemDirection == MoveItemDirection.down) {
+        if (positionToMove < bodyComponentModels.length - 1) {
+          bodyComponentModels.swap(positionToMove + 1, positionToMove);
         }
       }
-      emit(_newStateWithItems(_bodyComponentModels,
+      emit(_newStateWithItems(bodyComponentModels,
           currentlySelected: event.bodyComponentModel));
       apply();
     });
@@ -53,13 +53,13 @@ class BodyComponentsCreateBloc
     on<BodyComponentsUpdateItem>((event, emit) {
       BodyComponentsCreateInitialised theState =
           state as BodyComponentsCreateInitialised;
-      List<BodyComponentModel> _bodyComponentModels =
+      List<BodyComponentModel> bodyComponentModels =
           List.of(theState.bodyComponentModels);
       int positionToReplace =
-          _bodyComponentModels.indexOf(event.beforeBodyComponentModel);
-      _bodyComponentModels.replace(
+          bodyComponentModels.indexOf(event.beforeBodyComponentModel);
+      bodyComponentModels.replace(
           positionToReplace, event.afterBodyComponentModel);
-      emit(_newStateWithItems(_bodyComponentModels,
+      emit(_newStateWithItems(bodyComponentModels,
           currentlySelected: event.afterBodyComponentModel));
       apply();
     });
@@ -67,10 +67,10 @@ class BodyComponentsCreateBloc
     on<BodyComponentsCreateAddBodyComponent>((event, emit) {
       BodyComponentsCreateInitialised theState =
           state as BodyComponentsCreateInitialised;
-      List<BodyComponentModel> _bodyComponentModels =
+      List<BodyComponentModel> bodyComponentModels =
           List.of(theState.bodyComponentModels);
-      _bodyComponentModels.add(event.bodyComponentModel);
-      emit(_newStateWithItems(_bodyComponentModels,
+      bodyComponentModels.add(event.bodyComponentModel);
+      emit(_newStateWithItems(bodyComponentModels,
           currentlySelected: event.bodyComponentModel));
       apply();
     });
@@ -94,6 +94,7 @@ class BodyComponentsCreateBloc
     return newState;
   }
 
+  /*
   BodyComponentsCreateInitialised _newStateWithNewItem(
       BodyComponentModel newItem) {
     var theState = state as BodyComponentsCreateInitialised;
@@ -109,6 +110,7 @@ class BodyComponentsCreateBloc
     newBodyComponentModels.removeAt(index);
     return _newStateWithItems(newBodyComponentModels);
   }
+   */
 
   BodyComponentsCreateInitialised _newStateDeleteItem(
       BodyComponentModel bodyItemModel) {

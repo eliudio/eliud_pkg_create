@@ -13,7 +13,6 @@
 
 */
 
-
 import 'package:eliud_pkg_create/model/play_store_component_bloc.dart';
 import 'package:eliud_pkg_create/model/play_store_component_event.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
@@ -31,20 +30,22 @@ abstract class AbstractPlayStoreComponent extends StatelessWidget {
   final AppModel app;
   final String playStoreId;
 
-  AbstractPlayStoreComponent({Key? key, required this.app, required this.playStoreId}): super(key: key);
+  AbstractPlayStoreComponent(
+      {super.key, required this.app, required this.playStoreId});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PlayStoreComponentBloc> (
-          create: (context) => PlayStoreComponentBloc(
-            playStoreRepository: playStoreRepository(appId: app.documentID)!)
+    return BlocProvider<PlayStoreComponentBloc>(
+      create: (context) => PlayStoreComponentBloc(
+          playStoreRepository: playStoreRepository(appId: app.documentID)!)
         ..add(FetchPlayStoreComponent(id: playStoreId)),
       child: _playStoreBlockBuilder(context),
     );
   }
 
   Widget _playStoreBlockBuilder(BuildContext context) {
-    return BlocBuilder<PlayStoreComponentBloc, PlayStoreComponentState>(builder: (context, state) {
+    return BlocBuilder<PlayStoreComponentBloc, PlayStoreComponentState>(
+        builder: (context, state) {
       if (state is PlayStoreComponentLoaded) {
         return yourWidget(context, state.value);
       } else if (state is PlayStoreComponentPermissionDenied) {
@@ -57,7 +58,11 @@ abstract class AbstractPlayStoreComponent extends StatelessWidget {
         return AlertWidget(app: app, title: 'Error', content: state.message);
       } else {
         return Center(
-          child: StyleRegistry.registry().styleWithApp(app).frontEndStyle().progressIndicatorStyle().progressIndicator(app, context),
+          child: StyleRegistry.registry()
+              .styleWithApp(app)
+              .frontEndStyle()
+              .progressIndicatorStyle()
+              .progressIndicator(app, context),
         );
       }
     });
@@ -65,4 +70,3 @@ abstract class AbstractPlayStoreComponent extends StatelessWidget {
 
   Widget yourWidget(BuildContext context, PlayStoreModel value);
 }
-

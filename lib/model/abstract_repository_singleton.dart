@@ -16,11 +16,11 @@
 import '../model/play_store_repository.dart';
 import 'package:eliud_core/package/package.dart';
 
-PlayStoreRepository? playStoreRepository({ String? appId }) => AbstractRepositorySingleton.singleton.playStoreRepository(appId);
+PlayStoreRepository? playStoreRepository({String? appId}) =>
+    AbstractRepositorySingleton.singleton.playStoreRepository(appId);
 
 abstract class AbstractRepositorySingleton {
-  static List<MemberCollectionInfo> collections = [
-  ];
+  static List<MemberCollectionInfo> collections = [];
   static late AbstractRepositorySingleton singleton;
 
   PlayStoreRepository? playStoreRepository(String? appId);

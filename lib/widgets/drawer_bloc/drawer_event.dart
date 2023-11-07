@@ -17,8 +17,11 @@ class DrawerCreateEventValidateEvent extends DrawerCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is DrawerCreateEventValidateEvent &&
-              drawerModel == other.drawerModel;
+      other is DrawerCreateEventValidateEvent &&
+          drawerModel == other.drawerModel;
+
+  @override
+  int get hashCode => drawerModel.hashCode;
 }
 
 class DrawerCreateEventApplyChanges extends DrawerCreateEvent {
@@ -32,6 +35,8 @@ class DrawerCreateEventApplyChanges extends DrawerCreateEvent {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is DrawerCreateEventApplyChanges &&
-              save == other.save;
+      other is DrawerCreateEventApplyChanges && save == other.save;
+
+  @override
+  int get hashCode => save.hashCode;
 }

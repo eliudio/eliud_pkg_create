@@ -21,16 +21,15 @@ class LogoWizard extends NewAppWizardInfoDefaultImpl {
     if (parameters is LogoParameters) {
       return _LogoWizardWidget(app: app, parameters: parameters);
     } else {
-      return text(app, context,
-          'Unexpected class for parameters: ' + parameters.toString());
+      return text(app, context, 'Unexpected class for parameters: $parameters');
     }
   }
 
   @override
   PublicMediumModel? getPublicMediumModel(
-      String uniqueId, NewAppWizardParameters parameters, String pageType) {
+      String uniqueId, NewAppWizardParameters parameters, String mediumType) {
     if (parameters is LogoParameters) {
-      if (pageType == 'logo') return parameters.logo;
+      if (mediumType == 'logo') return parameters.logo;
     }
     return null;
   }
@@ -49,9 +48,7 @@ class _LogoWizardWidget extends StatefulWidget {
   final AppModel app;
   final LogoParameters parameters;
 
-  const _LogoWizardWidget(
-      {Key? key, required this.app, required this.parameters})
-      : super(key: key);
+  const _LogoWizardWidget({required this.app, required this.parameters});
 
   @override
   State<StatefulWidget> createState() => _LogoWizardWidgetState();
@@ -60,7 +57,7 @@ class _LogoWizardWidget extends StatefulWidget {
 class _LogoWizardWidgetState extends State<_LogoWizardWidget> {
   @override
   Widget build(BuildContext context) => LogoWidget(
-    isCollapsable: false,
+      isCollapsable: false,
       app: widget.app,
       logo: widget.parameters.logo,
       collapsed: false,
