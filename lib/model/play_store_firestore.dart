@@ -25,12 +25,21 @@ import 'package:eliud_core/tools/query/query_tools.dart';
 import 'package:eliud_core/tools/firestore/firestore_tools.dart';
 import 'package:eliud_core/tools/common_tools.dart';
 
+/* 
+ * PlayStoreFirestore is the firestore implementation of PlayStoreRepository
+ */
 class PlayStoreFirestore implements PlayStoreRepository {
+  /* 
+   * transform a map into an entity
+   */
   @override
   PlayStoreEntity? fromMap(Object? o, {Map<String, String>? newDocumentIds}) {
     return PlayStoreEntity.fromMap(o, newDocumentIds: newDocumentIds);
   }
 
+  /* 
+   * add an entity to the repository
+   */
   @override
   Future<PlayStoreEntity> addEntity(String documentID, PlayStoreEntity value) {
     return playStoreCollection
@@ -39,6 +48,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
         .then((_) => value);
   }
 
+  /* 
+   * Update an entity
+   */
   @override
   Future<PlayStoreEntity> updateEntity(
       String documentID, PlayStoreEntity value) {
@@ -48,6 +60,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
         .then((_) => value);
   }
 
+  /* 
+   * Add a model to the repository
+   */
   @override
   Future<PlayStoreModel> add(PlayStoreModel value) {
     return playStoreCollection
@@ -56,11 +71,17 @@ class PlayStoreFirestore implements PlayStoreRepository {
         .then((_) => value);
   }
 
+  /* 
+   * Delete a model
+   */
   @override
   Future<void> delete(PlayStoreModel value) {
     return playStoreCollection.doc(value.documentID).delete();
   }
 
+  /* 
+   * Update a model
+   */
   @override
   Future<PlayStoreModel> update(PlayStoreModel value) {
     return playStoreCollection
@@ -80,6 +101,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
         appId: appId);
   }
 
+  /* 
+   * Retrieve an entity from the repository with id
+   */
   @override
   Future<PlayStoreEntity?> getEntity(String? id,
       {Function(Exception)? onError}) async {
@@ -98,6 +122,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
     return null;
   }
 
+  /* 
+   * Retrieve an model from the repository with id
+   */
   @override
   Future<PlayStoreModel?> get(String? id,
       {Function(Exception)? onError}) async {
@@ -116,6 +143,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
     return null;
   }
 
+  /* 
+   * Listen to the repository using a query. Retrieve models
+   */
   @override
   StreamSubscription<List<PlayStoreModel?>> listen(
       PlayStoreModelTrigger trigger,
@@ -147,6 +177,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
     });
   }
 
+  /* 
+   * Listen to the repository using a query. Retrieve models and linked models
+   */
   @override
   StreamSubscription<List<PlayStoreModel?>> listenWithDetails(
       PlayStoreModelTrigger trigger,
@@ -178,6 +211,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
     });
   }
 
+  /* 
+   * Listen to 1 document in the repository
+   */
   @override
   StreamSubscription<PlayStoreModel?> listenTo(
       String documentId, PlayStoreChanged changed,
@@ -197,6 +233,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
     return theStream;
   }
 
+  /* 
+   * Retrieve values/models from the repository
+   */
   @override
   Stream<List<PlayStoreModel?>> values(
       {String? orderBy,
@@ -226,6 +265,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
     return values;
   }
 
+  /* 
+   * Retrieve values/models, including linked models, from the repository
+   */
   @override
   Stream<List<PlayStoreModel?>> valuesWithDetails(
       {String? orderBy,
@@ -255,6 +297,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
     return values;
   }
 
+  /* 
+   * Retrieve values/models from the repository
+   */
   @override
   Future<List<PlayStoreModel?>> valuesList(
       {String? orderBy,
@@ -285,6 +330,9 @@ class PlayStoreFirestore implements PlayStoreRepository {
     return values;
   }
 
+  /* 
+   * Retrieve values/models, including linked models, from the repository
+   */
   @override
   Future<List<PlayStoreModel?>> valuesListWithDetails(
       {String? orderBy,
@@ -315,9 +363,15 @@ class PlayStoreFirestore implements PlayStoreRepository {
     return values;
   }
 
+  /* 
+   * Flush the repository
+   */
   @override
   void flush() {}
 
+  /* 
+   * Delete all entries in the repository
+   */
   @override
   Future<void> deleteAll() {
     return playStoreCollection.get().then((snapshot) {
@@ -327,16 +381,25 @@ class PlayStoreFirestore implements PlayStoreRepository {
     });
   }
 
+  /* 
+   * Retrieve the subcollection of this repository
+   */
   @override
   dynamic getSubCollection(String documentId, String name) {
     return playStoreCollection.doc(documentId).collection(name);
   }
 
+  /* 
+   * Retrieve a timestamp
+   */
   @override
   String? timeStampToString(dynamic timeStamp) {
     return firestoreTimeStampToString(timeStamp);
   }
 
+  /* 
+   * change 1 a fieldvalue for 1 document  
+   */
   @override
   Future<PlayStoreModel?> changeValue(
       String documentId, String fieldName, num changeByThisValue) {

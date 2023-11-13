@@ -58,7 +58,7 @@ class PlayStoreForm extends StatelessWidget {
           appId,
           formAction: formAction,
         )..add(InitialisePlayStoreFormEvent(value: value)),
-        child: MyPlayStoreForm(
+        child: _MyPlayStoreForm(
             app: app, submitAction: submitAction, formAction: formAction),
       );
     }
@@ -68,7 +68,7 @@ class PlayStoreForm extends StatelessWidget {
           appId,
           formAction: formAction,
         )..add(InitialisePlayStoreFormNoLoadEvent(value: value)),
-        child: MyPlayStoreForm(
+        child: _MyPlayStoreForm(
             app: app, submitAction: submitAction, formAction: formAction),
       );
     } else {
@@ -87,25 +87,25 @@ class PlayStoreForm extends StatelessWidget {
             )..add((formAction == FormAction.updateAction
                 ? InitialisePlayStoreFormEvent(value: value)
                 : InitialiseNewPlayStoreFormEvent())),
-            child: MyPlayStoreForm(
+            child: _MyPlayStoreForm(
                 app: app, submitAction: submitAction, formAction: formAction),
           ));
     }
   }
 }
 
-class MyPlayStoreForm extends StatefulWidget {
+class _MyPlayStoreForm extends StatefulWidget {
   final AppModel app;
   final FormAction? formAction;
   final ActionModel? submitAction;
 
-  MyPlayStoreForm({required this.app, this.formAction, this.submitAction});
+  _MyPlayStoreForm({required this.app, this.formAction, this.submitAction});
 
   @override
-  State<MyPlayStoreForm> createState() => _MyPlayStoreFormState(formAction);
+  State<_MyPlayStoreForm> createState() => _MyPlayStoreFormState(formAction);
 }
 
-class _MyPlayStoreFormState extends State<MyPlayStoreForm> {
+class _MyPlayStoreFormState extends State<_MyPlayStoreForm> {
   final FormAction? formAction;
   late PlayStoreFormBloc _myFormBloc;
 

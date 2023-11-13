@@ -33,6 +33,9 @@ typedef PlayStoreChanged = Function(
   int? privilegeLevel,
 );
 
+/* 
+ * PlayStoreDropdownButtonWidget is the drop down widget to allow to select an instance of PlayStore
+ */
 class PlayStoreDropdownButtonWidget extends StatefulWidget {
   final AppModel app;
   final int? privilegeLevel;
@@ -40,6 +43,9 @@ class PlayStoreDropdownButtonWidget extends StatefulWidget {
   final PlayStoreChanged? trigger;
   final bool? optional;
 
+  /* 
+   * construct a PlayStoreDropdownButtonWidget
+   */
   PlayStoreDropdownButtonWidget(
       {required this.app,
       this.privilegeLevel,
@@ -48,18 +54,21 @@ class PlayStoreDropdownButtonWidget extends StatefulWidget {
       this.optional,
       super.key});
 
+  /* 
+   * create state of PlayStoreDropdownButtonWidget
+   */
   @override
   State<StatefulWidget> createState() {
-    return PlayStoreDropdownButtonWidgetState(value);
+    return _PlayStoreDropdownButtonWidgetState(value);
   }
 }
 
-class PlayStoreDropdownButtonWidgetState
+class _PlayStoreDropdownButtonWidgetState
     extends State<PlayStoreDropdownButtonWidget> {
   PlayStoreListBloc? bloc;
   String? value;
 
-  PlayStoreDropdownButtonWidgetState(this.value);
+  _PlayStoreDropdownButtonWidgetState(this.value);
 
   @override
   void didChangeDependencies() {
@@ -73,7 +82,7 @@ class PlayStoreDropdownButtonWidgetState
     super.dispose();
   }
 
-  List<Widget> widgets(PlayStoreModel value) {
+  List<Widget> _widgets(PlayStoreModel value) {
     var app = widget.app;
     var widgets = <Widget>[];
     widgets.add(value.description != null
@@ -130,7 +139,7 @@ class PlayStoreDropdownButtonWidgetState
                   height: 100.0,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: widgets(element),
+                    children: _widgets(element),
                   ),
                 )));
           }

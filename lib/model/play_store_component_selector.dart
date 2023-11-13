@@ -31,7 +31,13 @@ import 'play_store_list_event.dart';
 import 'play_store_list_state.dart';
 import 'play_store_model.dart';
 
+/* 
+ * PlayStoreComponentSelector is a component selector for PlayStore, allowing to select a PlayStore component
+ */
 class PlayStoreComponentSelector extends ComponentSelector {
+  /* 
+   * createSelectWidget creates the widget
+   */
   @override
   Widget createSelectWidget(BuildContext context, AppModel app,
       int privilegeLevel, double height, SelectComponent selected, editor) {
@@ -41,7 +47,7 @@ class PlayStoreComponentSelector extends ComponentSelector {
         eliudQuery: getComponentSelectorQuery(0, app.documentID),
         playStoreRepository: playStoreRepository(appId: appId)!,
       )..add(LoadPlayStoreList()),
-      child: SelectPlayStoreWidget(
+      child: _SelectPlayStoreWidget(
           app: app,
           height: height,
           containerPrivilege: privilegeLevel,
@@ -51,28 +57,30 @@ class PlayStoreComponentSelector extends ComponentSelector {
   }
 }
 
-class SelectPlayStoreWidget extends StatefulWidget {
+/* 
+ * _SelectPlayStoreWidget 
+ */
+class _SelectPlayStoreWidget extends StatefulWidget {
   final AppModel app;
   final double height;
   final SelectComponent selected;
   final int containerPrivilege;
   final ComponentEditorConstructor editorConstructor;
 
-  const SelectPlayStoreWidget(
-      {super.key,
-      required this.app,
+  const _SelectPlayStoreWidget(
+      {required this.app,
       required this.containerPrivilege,
       required this.height,
       required this.selected,
       required this.editorConstructor});
 
   @override
-  State<SelectPlayStoreWidget> createState() {
+  State<_SelectPlayStoreWidget> createState() {
     return _SelectPlayStoreWidgetState();
   }
 }
 
-class _SelectPlayStoreWidgetState extends State<SelectPlayStoreWidget>
+class _SelectPlayStoreWidgetState extends State<_SelectPlayStoreWidget>
     with TickerProviderStateMixin {
   TabController? _privilegeTabController;
   final List<String> _privilegeItems = ['No', 'L1', 'L2', 'Owner'];

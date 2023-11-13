@@ -34,6 +34,9 @@ class PlayStoreComponentBloc
     });
   }
 
+  /*
+   * Construct PlayStoreComponentBloc
+   */
   PlayStoreComponentBloc({this.playStoreRepository})
       : super(PlayStoreComponentUninitialized()) {
     on<FetchPlayStoreComponent>((event, emit) {
@@ -44,6 +47,9 @@ class PlayStoreComponentBloc
     });
   }
 
+  /*
+   * Close the PlayStoreComponentBloc
+   */
   @override
   Future<void> close() {
     _playStoreSubscription?.cancel();

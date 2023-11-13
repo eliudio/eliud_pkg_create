@@ -25,14 +25,23 @@ import 'abstract_repository_singleton.dart';
 import 'package:eliud_core/core/widgets/alert_widget.dart';
 import 'package:eliud_core/model/app_model.dart';
 
+/*
+ * AbstractPlayStoreComponent is the base class to extend / implement in case you need to implement a component
+ */
 abstract class AbstractPlayStoreComponent extends StatelessWidget {
   static String componentName = "playStores";
   final AppModel app;
   final String playStoreId;
 
+  /*
+   * Construct AbstractPlayStoreComponent
+   */
   AbstractPlayStoreComponent(
       {super.key, required this.app, required this.playStoreId});
 
+  /*
+   * build the component
+   */
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PlayStoreComponentBloc>(
@@ -68,5 +77,8 @@ abstract class AbstractPlayStoreComponent extends StatelessWidget {
     });
   }
 
+  /*
+   * Implement this method to provide your widget
+   */
   Widget yourWidget(BuildContext context, PlayStoreModel value);
 }

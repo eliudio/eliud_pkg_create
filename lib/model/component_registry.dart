@@ -22,7 +22,13 @@ import '../extensions/play_store_component.dart';
 import '../editors/play_store_component_editor.dart';
 import 'play_store_component_selector.dart';
 
+/* 
+ * Component registry contains a list of components
+ */
 class ComponentRegistry {
+  /* 
+   * Initialise the component registry
+   */
   void init() {
     Registry.registry()!.addInternalComponents('eliud_pkg_create', [
       "playStores",
