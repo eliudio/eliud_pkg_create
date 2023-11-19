@@ -1,5 +1,5 @@
 import 'package:eliud_core/model/app_bar_model.dart';
-import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core_model/model/app_model.dart';
 import 'package:eliud_core/model/app_policy_model.dart';
 import 'package:eliud_core/model/dialog_model.dart';
 import 'package:eliud_core/model/drawer_model.dart';

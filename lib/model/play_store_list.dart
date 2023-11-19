@@ -16,23 +16,23 @@
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
 import 'package:eliud_core/core/blocs/access/state/access_state.dart';
 import 'package:eliud_core/core/blocs/access/state/access_determined.dart';
-import 'package:eliud_core/style/style_registry.dart';
+import 'package:eliud_core_model/style/style_registry.dart';
 import 'package:eliud_core/tools/has_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eliud_core/model/background_model.dart';
+import 'package:eliud_core_model/model/background_model.dart';
 import 'package:eliud_core/tools/delete_snackbar.dart';
 import 'package:eliud_core/tools/router_builders.dart';
 import 'package:eliud_core/tools/etc.dart';
 import 'package:eliud_core/tools/enums.dart';
-import 'package:eliud_core/style/frontend/has_text.dart';
+import 'package:eliud_core_model/style/frontend/has_text.dart';
 
 import 'package:eliud_pkg_create/model/play_store_list_event.dart';
 import 'package:eliud_pkg_create/model/play_store_list_state.dart';
 import 'package:eliud_pkg_create/model/play_store_list_bloc.dart';
 import 'package:eliud_pkg_create/model/play_store_model.dart';
 
-import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core_model/model/app_model.dart';
 
 import 'play_store_form.dart';
 

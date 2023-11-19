@@ -8,8 +8,8 @@ import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/page_model.dart';
-import 'package:eliud_core/style/frontend/has_drawer.dart';
-import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_core_model/style/frontend/has_drawer.dart';
+import 'package:eliud_core_model/tools/etc/random.dart';
 
 String drawerID(String appID, DrawerType drawerType) {
   return '$appID-DRAWER${drawerType == DrawerType.left ? '-LEFT' : '-RIGHT'}';

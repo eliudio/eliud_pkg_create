@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core_model/model/app_model.dart';
 import 'package:eliud_core/tools/helpers/list_swap.dart';
 import 'package:eliud_core/tools/helpers/list_replace.dart';
 import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';

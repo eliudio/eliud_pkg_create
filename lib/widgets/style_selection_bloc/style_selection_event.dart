@@ -1,5 +1,5 @@
-import 'package:eliud_core/style/style.dart';
-import 'package:eliud_core/style/style_family.dart';
+import 'package:eliud_core_model/style/style.dart';
+import 'package:eliud_core_model/style/style_family.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 

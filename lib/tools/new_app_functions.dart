@@ -5,7 +5,7 @@
 // This process works except when the app was create by someone else before. In which case you must delete the app through console.firebase.google.com or by logging in as the owner of the app
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/access_model.dart';
-import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core_model/model/app_model.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
 
 Future<AppModel> claimOwnerShipApplication(String appId, String ownerID) async {

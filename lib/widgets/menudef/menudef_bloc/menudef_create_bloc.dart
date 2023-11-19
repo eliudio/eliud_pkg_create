@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core_model/model/app_model.dart';
 import 'package:eliud_core/model/icon_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/menu_item_model.dart';
 import 'package:eliud_core/tools/action/action_model.dart';
-import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_core_model/tools/etc/random.dart';
 import 'package:eliud_pkg_workflow/tools/action/workflow_action_model.dart';
 import 'package:flutter/material.dart';
 import 'menudef_create_event.dart';

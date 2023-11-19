@@ -1,6 +1,6 @@
 import 'package:eliud_core/core/blocs/access/access_event.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
-import 'package:eliud_core/model/storage_conditions_model.dart';
+import 'package:eliud_core_model/model/storage_conditions_model.dart';
 import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
 import 'package:eliud_core/tools/widgets/app_policy_dashboard.dart';
 import 'package:eliud_pkg_create/widgets/workflow_widget.dart';
@@ -12,15 +12,15 @@ import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_bloc
 import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_event.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_widget.dart';
 import 'package:eliud_core/decoration/decoration.dart';
-import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/style/frontend/has_button.dart';
-import 'package:eliud_core/style/frontend/has_container.dart';
-import 'package:eliud_core/style/frontend/has_dialog_field.dart';
-import 'package:eliud_core/style/frontend/has_divider.dart';
-import 'package:eliud_core/style/frontend/has_list_tile.dart';
-import 'package:eliud_core/style/frontend/has_progress_indicator.dart';
-import 'package:eliud_core/style/frontend/has_text.dart';
-import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_core_model/model/app_model.dart';
+import 'package:eliud_core_model/style/frontend/has_button.dart';
+import 'package:eliud_core_model/style/frontend/has_container.dart';
+import 'package:eliud_core_model/style/frontend/has_dialog_field.dart';
+import 'package:eliud_core_model/style/frontend/has_divider.dart';
+import 'package:eliud_core_model/style/frontend/has_list_tile.dart';
+import 'package:eliud_core_model/style/frontend/has_progress_indicator.dart';
+import 'package:eliud_core_model/style/frontend/has_text.dart';
+import 'package:eliud_core_model/tools/etc/random.dart';
 import 'package:eliud_core/tools/widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
@@ -119,7 +119,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
               collapsible: true,
               collapsed: true,
               children: [
-                Registry.registry()!.getMediumApi().getPublicPhotoWidget(
+                Apis.apis().getMediumApi().getPublicPhotoWidget(
                       context: context,
                       allowCrop: true,
                       defaultImage:
@@ -580,7 +580,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                             .add(AppCreateDeleteDialog(item));
                                         break;
                                       case 1:
-                                        await Registry.registry()!.openDialog(
+                                        await Apis.apis().openDialog(
                                             context,
                                             app: widget.app,
                                             id: item.documentID);
@@ -658,7 +658,7 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                             .add(AppCreateDeleteWorkflow(item));
                                         break;
                                       case 1:
-                                        await Registry.registry()!.openDialog(
+                                        await Apis.apis().openDialog(
                                             context,
                                             app: widget.app,
                                             id: item.documentID);

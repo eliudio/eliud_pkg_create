@@ -1,14 +1,14 @@
 import 'package:eliud_core/core/blocs/access/access_event.dart';
 import 'package:eliud_core/core/blocs/access/access_bloc.dart';
-import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core_model/model/app_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_pkg_create/widgets/page_bloc/page_event.dart';
 import 'package:eliud_pkg_create/widgets/page_bloc/page_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/storage_conditions_model.dart';
-import 'package:eliud_core/style/frontend/has_drawer.dart';
+import 'package:eliud_core_model/model/storage_conditions_model.dart';
+import 'package:eliud_core_model/style/frontend/has_drawer.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 
 class PageCreateBloc extends Bloc<PageCreateEvent, PageCreateState> {

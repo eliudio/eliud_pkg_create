@@ -1,7 +1,7 @@
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/rgb_model.dart';
-import 'package:eliud_core/style/frontend/has_drawer.dart';
+import 'package:eliud_core_model/model/rgb_model.dart';
+import 'package:eliud_core_model/style/frontend/has_drawer.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 
 import 'with_menu.dart';

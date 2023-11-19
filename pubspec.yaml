@@ -27,9 +27,15 @@ dependencies:
   split_view: ^3.2.1
   flutter:
     sdk: flutter
+dependency_overrides:   
+  eliud_core: 
+    path: ../eliud_core
+  eliud_core_model: 
+    path: ../eliud_core_model
 dev_dependencies:
   build_runner: ^2.4.6
-  eliud_generator: ^1.1.5+2
+  eliud_generator:
+    path: ../eliud_generator
   lints: ^3.0.0
 flutter:
   uses-material-design: true

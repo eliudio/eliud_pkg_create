@@ -21,8 +21,8 @@ import 'package:eliud_pkg_create/model/entity_export.dart';
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eliud_core/tools/query/query_tools.dart';
-import 'package:eliud_core/tools/firestore/firestore_tools.dart';
+import 'package:eliud_core_model/tools/query/query_tools.dart';
+import 'package:eliud_core_model/tools/firestore/firestore_tools.dart';
 import 'package:eliud_core/tools/common_tools.dart';
 
 /* 

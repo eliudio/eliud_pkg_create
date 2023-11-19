@@ -14,16 +14,16 @@
 */
 
 import 'dart:math';
-import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/style/frontend/has_button.dart';
-import 'package:eliud_core/style/frontend/has_divider.dart';
-import 'package:eliud_core/style/frontend/has_list_tile.dart';
-import 'package:eliud_core/style/frontend/has_tabs.dart';
-import 'package:eliud_core/style/frontend/has_text.dart';
-import 'package:eliud_core/tools/component/component_spec.dart';
+import 'package:eliud_core_model/model/app_model.dart';
+import 'package:eliud_core_model/style/frontend/has_button.dart';
+import 'package:eliud_core_model/style/frontend/has_divider.dart';
+import 'package:eliud_core_model/style/frontend/has_list_tile.dart';
+import 'package:eliud_core_model/style/frontend/has_tabs.dart';
+import 'package:eliud_core_model/style/frontend/has_text.dart';
+import 'package:eliud_core_model/tools/component/component_spec.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eliud_core/tools/query/query_tools.dart';
+import 'package:eliud_core_model/tools/query/query_tools.dart';
 
 import 'abstract_repository_singleton.dart';
 import 'play_store_list_bloc.dart';

@@ -9,17 +9,17 @@ import 'package:eliud_core/model/app_entity.dart';
 import 'package:eliud_core/model/drawer_model.dart';
 import 'package:eliud_core/model/app_bar_model.dart';
 import 'package:eliud_core/model/home_menu_model.dart';
-import 'package:eliud_core/model/app_model.dart';
-import 'package:eliud_core/style/frontend/has_drawer.dart';
+import 'package:eliud_core_model/model/app_model.dart';
+import 'package:eliud_core_model/style/frontend/has_drawer.dart';
 import 'package:eliud_core/model/dialog_entity.dart';
-import 'package:eliud_core/model/member_medium_model.dart';
+import 'package:eliud_core_model/model/member_medium_model.dart';
 import 'package:eliud_core/model/menu_def_model.dart';
 import 'package:eliud_core/model/page_entity.dart';
 import 'package:eliud_core/model/platform_medium_model.dart';
 import 'package:eliud_core/model/public_medium_model.dart';
-import 'package:eliud_core/model/storage_conditions_model.dart';
+import 'package:eliud_core_model/model/storage_conditions_model.dart';
 import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-import 'package:eliud_core/tools/random.dart';
+import 'package:eliud_core_model/tools/etc/random.dart';
 import 'package:eliud_core/tools/storage/medium_helper.dart';
 import 'package:eliud_core/tools/storage/member_medium_helper.dart';
 import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
@@ -243,7 +243,7 @@ class JsonToModelsHelper {
                 var pluginName = split[0];
                 var componentId = split[1];
                 var values = entry.value;
-                var retrieveRepo = Registry.registry()!
+                var retrieveRepo = Apis.apis()
                     .getRetrieveRepository(pluginName, componentId);
                 if (retrieveRepo != null) {
                   var documentIds = await restoreFromMap(
@@ -352,7 +352,7 @@ class JsonToModelsHelper {
                 var componentId = split[1];
                 var values = entry.value;
                 print("restoring: $pluginName $componentId");
-                var retrieveRepo = Registry.registry()!
+                var retrieveRepo = Apis.apis()
                     .getRetrieveRepository(pluginName, componentId);
                 if (retrieveRepo != null) {
                   var documentIds = await restoreFromMap(
@@ -429,7 +429,7 @@ class JsonToModelsHelper {
     // now run all revalidateModel to make sure the documents are consistent, e.g. update html links
     tasks.add(() async {
       for (var createdComponent in createdComponents) {
-        var componentSpecs = Registry.registry()!
+        var componentSpecs = Apis.apis()
             .getComponentSpecs(createdComponent.componentId);
         if (componentSpecs == null) {
           print(

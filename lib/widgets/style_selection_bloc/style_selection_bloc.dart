@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core/style/_default/default_style_family.dart';
-import 'package:eliud_core/style/style.dart';
-import 'package:eliud_core/style/style_family.dart';
-import 'package:eliud_core/style/style_registry.dart';
+import 'package:eliud_core_model/style/_default/default_style_family.dart';
+import 'package:eliud_core_model/style/style.dart';
+import 'package:eliud_core_model/style/style_family.dart';
+import 'package:eliud_core_model/style/style_registry.dart';
 import 'style_selection_event.dart';
 import 'style_selection_state.dart';
 

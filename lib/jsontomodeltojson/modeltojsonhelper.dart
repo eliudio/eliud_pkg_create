@@ -9,7 +9,7 @@ import 'package:eliud_core/model/home_menu_model.dart';
 import 'package:eliud_core/model/page_model.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_bloc.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_event.dart';
-import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core_model/model/app_model.dart';
 
 import '../widgets/bodycomponents/bodycomponents__bloc/bodycomponents_create_state.dart';
 import 'jsonconst.dart';

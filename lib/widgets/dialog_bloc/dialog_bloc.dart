@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/model/abstract_repository_singleton.dart';
 import 'package:eliud_core/model/dialog_model.dart';
-import 'package:eliud_core/model/storage_conditions_model.dart';
+import 'package:eliud_core_model/model/storage_conditions_model.dart';
 import 'dialog_event.dart';
 import 'dialog_state.dart';
 

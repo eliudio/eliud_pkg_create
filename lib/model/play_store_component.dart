@@ -20,10 +20,10 @@ import 'package:eliud_pkg_create/model/play_store_component_state.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eliud_core/style/style_registry.dart';
+import 'package:eliud_core_model/style/style_registry.dart';
 import 'abstract_repository_singleton.dart';
 import 'package:eliud_core/core/widgets/alert_widget.dart';
-import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core_model/model/app_model.dart';
 
 /*
  * AbstractPlayStoreComponent is the base class to extend / implement in case you need to implement a component

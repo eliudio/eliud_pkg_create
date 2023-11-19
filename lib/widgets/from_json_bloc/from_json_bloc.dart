@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:eliud_core/core/wizards/registry/registry.dart';
-import 'package:eliud_core/model/app_model.dart';
+import 'package:eliud_core_model/model/app_model.dart';
 import 'package:eliud_core/model/member_model.dart';
 import 'package:eliud_core/tools/helpers/progress_manager.dart';
 import 'package:flutter/services.dart';
