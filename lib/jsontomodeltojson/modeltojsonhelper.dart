@@ -1,15 +1,15 @@
-import 'package:eliud_core/core/base/entity_base.dart';
-import 'package:eliud_core/core/base/model_base.dart';
-import 'package:eliud_core/core/base/repository_base.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
-import 'package:eliud_core/model/dialog_model.dart';
-import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/home_menu_model.dart';
-import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_core_helpers/base/entity_base.dart';
+import 'package:eliud_core_helpers/base/model_base.dart';
+import 'package:eliud_core_helpers/repository/repository_base.dart';
+import 'package:eliud_core_main/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/app_bar_model.dart';
+import 'package:eliud_core_main/model/dialog_model.dart';
+import 'package:eliud_core_main/model/drawer_model.dart';
+import 'package:eliud_core_main/model/home_menu_model.dart';
+import 'package:eliud_core_main/model/page_model.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_bloc.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_event.dart';
-import 'package:eliud_core_model/model/app_model.dart';
+import 'package:eliud_core_main/model/app_model.dart';
 
 import '../widgets/bodycomponents/bodycomponents__bloc/bodycomponents_create_state.dart';
 import 'jsonconst.dart';

@@ -1,9 +1,9 @@
-import 'package:eliud_core/model/app_bar_model.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core_model/style/frontend/has_dialog.dart';
-import 'package:eliud_core_model/style/frontend/has_divider.dart';
-import 'package:eliud_core/tools/screen_size.dart';
-import 'package:eliud_core/tools/widgets/header_widget.dart';
+import 'package:eliud_core_main/model/app_bar_model.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_dialog.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_divider.dart';
+import 'package:eliud_core_helpers/etc/screen_size.dart';
+import 'package:eliud_core/core/widgets/helper_widgets/header_widget.dart';
 import 'package:flutter/material.dart';
 import 'appbar_bloc/appbar_bloc.dart';
 import 'appbar_bloc/appbar_event.dart';

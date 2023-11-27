@@ -1,5 +1,5 @@
-import 'package:eliud_core/core/wizards/builders/page_builder.dart';
-import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_core_main/wizards/builders/page_builder.dart';
+import 'package:eliud_core_main/model/page_model.dart';
 import 'package:eliud_pkg_text/wizards/builders/page/page_with_text.dart';
 
 class HelloWorldPageBuilder extends PageBuilder {

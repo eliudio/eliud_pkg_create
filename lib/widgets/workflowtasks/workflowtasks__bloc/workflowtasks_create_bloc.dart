@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core_model/model/app_model.dart';
+import 'package:eliud_core_main/model/app_model.dart';
 import 'package:eliud_core/tools/helpers/list_swap.dart';
 import 'package:eliud_core/tools/helpers/list_replace.dart';
-import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_task_model.dart';
 
 import 'workflowtasks_create_event.dart';
 import 'workflowtasks_create_state.dart';

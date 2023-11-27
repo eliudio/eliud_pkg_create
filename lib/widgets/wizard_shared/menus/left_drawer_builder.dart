@@ -1,10 +1,10 @@
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core_model/model/background_model.dart';
-import 'package:eliud_core/model/decoration_color_model.dart';
-import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/public_medium_model.dart';
-import 'package:eliud_core_model/model/rgb_model.dart';
-import 'package:eliud_core_model/style/frontend/has_drawer.dart';
+import 'package:eliud_core_main/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/background_model.dart';
+import 'package:eliud_core_main/model/decoration_color_model.dart';
+import 'package:eliud_core_main/model/drawer_model.dart';
+import 'package:eliud_core_main/model/public_medium_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_drawer.dart';
+import 'package:eliud_core_main/model/rgb_model.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'with_menu.dart';
 

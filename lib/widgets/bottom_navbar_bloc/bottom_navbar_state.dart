@@ -1,4 +1,4 @@
-import 'package:eliud_core/model/home_menu_model.dart';
+import 'package:eliud_core_main/model/home_menu_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class BottomNavBarCreateState extends Equatable {

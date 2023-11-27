@@ -1,8 +1,8 @@
 import 'package:eliud_core/decoration/decoration.dart' as deco;
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core_model/style/frontend/types.dart';
-import 'package:eliud_core_model/style/style_registry.dart';
-import 'package:eliud_core/tools/screen_size.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/types.dart';
+import 'package:eliud_core_main/apis/style/style_registry.dart';
+import 'package:eliud_core_helpers/etc/screen_size.dart';
 import 'package:flutter/material.dart';
 import '../../tools/constants.dart';
 import 'creator_button.dart';

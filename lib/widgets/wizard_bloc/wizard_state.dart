@@ -1,4 +1,4 @@
-import 'package:eliud_core/model/member_model.dart';
+import 'package:eliud_core_main/model/member_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class WizardState extends Equatable {

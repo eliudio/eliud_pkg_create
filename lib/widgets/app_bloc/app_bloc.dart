@@ -1,20 +1,21 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_home_page_references_model.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/model/app_policy_model.dart';
-import 'package:eliud_core/model/dialog_model.dart';
-import 'package:eliud_core/model/page_model.dart';
-import 'package:eliud_core_model/model/storage_conditions_model.dart';
-import 'package:eliud_core_model/style/frontend/has_drawer.dart';
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-import 'package:eliud_core_model/tools/query/query_tools.dart';
-import 'package:eliud_core_model/tools/etc/random.dart';
+import 'package:eliud_core_helpers/query/query_tools.dart';
+import 'package:eliud_core_main/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/app_home_page_references_model.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/model/dialog_model.dart';
+import 'package:eliud_core_main/model/page_model.dart';
+import 'package:eliud_core_main/model/storage_conditions_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_drawer.dart';
+import 'package:eliud_core_helpers/etc/random.dart';
+import 'package:eliud_core_main/tools/main_abstract_repository_singleton.dart';
+import 'package:eliud_core_model/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_model/model/app_policy_model.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
-import 'package:eliud_pkg_workflow/model/abstract_repository_singleton.dart';
-import 'package:eliud_pkg_workflow/model/workflow_model.dart';
+import 'package:eliud_pkg_workflow_model/model/abstract_repository_singleton.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_model.dart';
 import 'app_event.dart';
 import 'app_state.dart';
 

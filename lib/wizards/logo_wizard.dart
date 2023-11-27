@@ -1,7 +1,7 @@
-import 'package:eliud_core/core/wizards/registry/registry.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/model/public_medium_model.dart';
-import 'package:eliud_core_model/style/frontend/has_text.dart';
+import 'package:eliud_core_main/apis/wizard_api/new_app_wizard_info.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/model/public_medium_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_text.dart';
 import 'package:eliud_pkg_create/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 

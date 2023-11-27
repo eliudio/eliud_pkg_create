@@ -1,5 +1,5 @@
-import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
+import 'package:eliud_core_main/model/menu_def_model.dart';
+import 'package:eliud_core_main/model/menu_item_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class MenuDefCreateState extends Equatable {

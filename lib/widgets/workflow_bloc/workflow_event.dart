@@ -1,4 +1,4 @@
-import 'package:eliud_pkg_workflow/model/workflow_model.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class WorkflowCreateEvent extends Equatable {

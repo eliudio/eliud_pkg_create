@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/model/body_component_model.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/model/body_component_model.dart';
 import 'package:eliud_core/tools/helpers/list_swap.dart';
 import 'package:eliud_core/tools/helpers/list_replace.dart';
 

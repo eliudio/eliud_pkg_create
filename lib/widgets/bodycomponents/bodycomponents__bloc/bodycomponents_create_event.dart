@@ -1,4 +1,4 @@
-import 'package:eliud_core/model/body_component_model.dart';
+import 'package:eliud_core_main/model/body_component_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 

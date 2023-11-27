@@ -1,27 +1,27 @@
-import 'package:eliud_core/core/blocs/access/access_event.dart';
-import 'package:eliud_core/model/platform_medium_model.dart';
-import 'package:eliud_core_model/model/storage_conditions_model.dart';
-import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
+import 'package:eliud_core/access/access_event.dart';
+import 'package:eliud_core_main/apis/apis.dart';
+import 'package:eliud_core_main/model/platform_medium_model.dart';
+import 'package:eliud_core_main/model/storage_conditions_model.dart';
+import 'package:eliud_core_main/storage/platform_medium_helper.dart';
 import 'package:eliud_core/tools/widgets/app_policy_dashboard.dart';
 import 'package:eliud_pkg_create/widgets/workflow_widget.dart';
 import 'package:flutter/foundation.dart';
-import 'package:eliud_core/core/blocs/access/access_bloc.dart';
-import 'package:eliud_core/core/registry.dart';
-import 'package:eliud_core/model/member_model.dart';
+import 'package:eliud_core/access/access_bloc.dart';
+import 'package:eliud_core_main/model/member_model.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_bloc.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_bloc/models_json_event.dart';
 import 'package:eliud_pkg_create/widgets/utils/models_json_widget.dart';
 import 'package:eliud_core/decoration/decoration.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core_model/style/frontend/has_button.dart';
-import 'package:eliud_core_model/style/frontend/has_container.dart';
-import 'package:eliud_core_model/style/frontend/has_dialog_field.dart';
-import 'package:eliud_core_model/style/frontend/has_divider.dart';
-import 'package:eliud_core_model/style/frontend/has_list_tile.dart';
-import 'package:eliud_core_model/style/frontend/has_progress_indicator.dart';
-import 'package:eliud_core_model/style/frontend/has_text.dart';
-import 'package:eliud_core_model/tools/etc/random.dart';
-import 'package:eliud_core/tools/widgets/header_widget.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_button.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_container.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_dialog_field.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_divider.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_list_tile.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_progress_indicator.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_text.dart';
+import 'package:eliud_core_helpers/etc/random.dart';
+import 'package:eliud_core/core/widgets/helper_widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/page_widget.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'package:flutter/material.dart';
@@ -580,10 +580,11 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                             .add(AppCreateDeleteDialog(item));
                                         break;
                                       case 1:
-                                        await Apis.apis().openDialog(
-                                            context,
-                                            app: widget.app,
-                                            id: item.documentID);
+                                        await Apis.apis()
+                                            .getRegistryApi()
+                                            .openDialog(context,
+                                                app: widget.app,
+                                                id: item.documentID);
                                         break;
                                     }
                                   }),
@@ -658,10 +659,11 @@ class _AppCreateWidgetState extends State<AppCreateWidget> {
                                             .add(AppCreateDeleteWorkflow(item));
                                         break;
                                       case 1:
-                                        await Apis.apis().openDialog(
-                                            context,
-                                            app: widget.app,
-                                            id: item.documentID);
+                                        await Apis.apis()
+                                            .getRegistryApi()
+                                            .openDialog(context,
+                                                app: widget.app,
+                                                id: item.documentID);
                                         break;
                                     }
                                   }),

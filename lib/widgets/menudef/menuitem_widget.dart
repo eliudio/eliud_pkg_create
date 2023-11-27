@@ -1,10 +1,10 @@
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/model/display_conditions_model.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
-import 'package:eliud_core_model/style/frontend/has_container.dart';
-import 'package:eliud_core_model/style/frontend/has_dialog_field.dart';
-import 'package:eliud_core_model/style/frontend/has_text.dart';
-import 'package:eliud_core/tools/icon_formfield.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/model/display_conditions_model.dart';
+import 'package:eliud_core_main/model/menu_item_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_container.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_dialog_field.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_text.dart';
+import 'package:eliud_core_main/widgets/formfields/icon/icon_formfield.dart';
 import 'package:eliud_pkg_create/widgets/condition/display_conditions_widget.dart';
 import 'package:flutter/material.dart';
 

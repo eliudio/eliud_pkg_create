@@ -1,7 +1,7 @@
-import 'package:eliud_core/core/base/repository_base.dart';
-import 'package:eliud_core/core/registry.dart';
-import 'package:eliud_core/model/body_component_model.dart';
-import 'package:eliud_core_model/tools/component/component_spec.dart';
+import 'package:eliud_core_helpers/repository/repository_base.dart';
+import 'package:eliud_core_main/apis/apis.dart';
+import 'package:eliud_core_main/model/body_component_model.dart';
+import 'package:eliud_core_main/apis/registryapi/component/component_spec.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 
@@ -54,9 +54,10 @@ class BodyComponentsCreateInitialised extends BodyComponentsCreateState {
 }
 
 List<PluginWithComponents> retrievePluginsWithComponents() =>
-    Apis.apis().componentSpecMap().entries.map((entry) {
+    Apis.apis().getRegistryApi().componentSpecMap().entries.map((entry) {
       var key = entry.key;
-      var friendlyName = Apis.apis().packageFriendlyNames()[key];
+      var friendlyName =
+          Apis.apis().getRegistryApi().packageFriendlyNames()[key];
       return PluginWithComponents(key, friendlyName ?? '?', entry.value);
     }).toList();
 
@@ -77,7 +78,7 @@ Future<RepositoryBase?> getRepository(
 }
 
 ComponentSpec getComponentSpec(String pluginName, String componentId) {
-  var plugin = Apis.apis().componentSpecMap()[pluginName];
+  var plugin = Apis.apis().getRegistryApi().componentSpecMap()[pluginName];
   if (plugin != null) {
     for (var component in plugin) {
       if (component.name == componentId) {

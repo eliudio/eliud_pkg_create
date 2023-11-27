@@ -1,7 +1,7 @@
-import 'package:eliud_core/core/blocs/access/access_bloc.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/model/member_model.dart';
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
+import 'package:eliud_core/access/access_bloc.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/model/member_model.dart';
+import 'package:eliud_core_main/tools/main_abstract_repository_singleton.dart';
 
 import '../widgets/new_app_bloc/builders/app_builder.dart';
 

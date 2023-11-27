@@ -1,4 +1,4 @@
-import 'package:eliud_core/model/page_model.dart';
+import 'package:eliud_core_main/model/page_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class PageCreateState extends Equatable {

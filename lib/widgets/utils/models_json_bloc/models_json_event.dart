@@ -1,5 +1,5 @@
-import 'package:eliud_core_model/model/member_medium_model.dart';
-import 'package:eliud_core/model/member_model.dart';
+import 'package:eliud_core_main/model/member_medium_model.dart';
+import 'package:eliud_core_main/model/member_model.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';

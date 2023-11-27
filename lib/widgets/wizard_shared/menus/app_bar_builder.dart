@@ -1,5 +1,5 @@
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
+import 'package:eliud_core_main/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/app_bar_model.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 
 import 'with_menu.dart';

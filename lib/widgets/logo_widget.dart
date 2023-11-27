@@ -1,13 +1,13 @@
-import 'package:eliud_core/core/registry.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/model/public_medium_model.dart';
-import 'package:eliud_core_model/style/frontend/has_button.dart';
-import 'package:eliud_core_model/style/frontend/has_container.dart';
-import 'package:eliud_core_model/style/frontend/has_list_tile.dart';
-import 'package:eliud_core_model/style/frontend/has_progress_indicator.dart';
-import 'package:eliud_core_model/style/frontend/has_text.dart';
+import 'package:eliud_core_main/apis/apis.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/model/public_medium_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_button.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_container.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_list_tile.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_progress_indicator.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_text.dart';
 import 'package:eliud_pkg_create/widgets/utils/random_logo.dart';
-import 'package:eliud_core/package/access_rights.dart';
+import 'package:eliud_core_main/apis/medium/access_rights.dart';
 import 'package:flutter/material.dart';
 
 typedef LogoFeedback = Function(PublicMediumModel? logo);

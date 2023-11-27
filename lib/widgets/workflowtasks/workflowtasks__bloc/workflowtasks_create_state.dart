@@ -1,6 +1,6 @@
-import 'package:eliud_core/core/registry.dart';
-import 'package:eliud_core_model/tools/component/component_spec.dart';
-import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';
+import 'package:eliud_core_main/apis/apis.dart';
+import 'package:eliud_core_main/apis/registryapi/component/component_spec.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_task_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 
@@ -43,12 +43,12 @@ class WorkflowTasksCreateInitialised extends WorkflowTasksCreateState {
   int get hashCode => workflowTaskModels.hashCode ^ currentlySelected.hashCode;
 }
 
-List<PluginWithComponents> retrievePluginsWithComponents() =>
-    Apis.apis()
-        .componentSpecMap()
-        .entries
-        .map((entry) => PluginWithComponents(entry.key, entry.value))
-        .toList();
+List<PluginWithComponents> retrievePluginsWithComponents() => Apis.apis()
+    .getRegistryApi()
+    .componentSpecMap()
+    .entries
+    .map((entry) => PluginWithComponents(entry.key, entry.value))
+    .toList();
 
 class PluginWithComponents {
   final String name;

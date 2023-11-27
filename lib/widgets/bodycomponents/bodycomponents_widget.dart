@@ -1,10 +1,10 @@
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/model/body_component_model.dart';
-import 'package:eliud_core_model/style/frontend/has_container.dart';
-import 'package:eliud_core_model/style/frontend/has_list_tile.dart';
-import 'package:eliud_core_model/style/frontend/has_progress_indicator.dart';
-import 'package:eliud_core/tools/component/update_component.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/model/body_component_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_container.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_list_tile.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_progress_indicator.dart';
 import 'package:eliud_core/tools/component_title_helper.dart';
+import 'package:eliud_core_main/tools/component/update_component.dart';
 import 'package:eliud_pkg_create/widgets/bodycomponents/plugins_widget.dart';
 import 'package:eliud_pkg_create/widgets/utils/popup_menu_item_choices.dart';
 import 'package:flutter/material.dart';

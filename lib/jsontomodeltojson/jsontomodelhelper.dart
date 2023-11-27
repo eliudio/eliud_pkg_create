@@ -1,29 +1,29 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:eliud_core/core/base/entity_base.dart';
-import 'package:eliud_core/core/base/repository_base.dart';
-import 'package:eliud_core/core/registry.dart';
-import 'package:eliud_core/core/wizards/registry/registry.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_entity.dart';
-import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
-import 'package:eliud_core/model/home_menu_model.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core_model/style/frontend/has_drawer.dart';
-import 'package:eliud_core/model/dialog_entity.dart';
-import 'package:eliud_core_model/model/member_medium_model.dart';
-import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/model/page_entity.dart';
-import 'package:eliud_core/model/platform_medium_model.dart';
-import 'package:eliud_core/model/public_medium_model.dart';
-import 'package:eliud_core_model/model/storage_conditions_model.dart';
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-import 'package:eliud_core_model/tools/etc/random.dart';
-import 'package:eliud_core/tools/storage/medium_helper.dart';
-import 'package:eliud_core/tools/storage/member_medium_helper.dart';
-import 'package:eliud_core/tools/storage/platform_medium_helper.dart';
-import 'package:eliud_core/tools/storage/public_medium_helper.dart';
+import 'package:eliud_core_helpers/base/entity_base.dart';
+import 'package:eliud_core_helpers/repository/repository_base.dart';
+import 'package:eliud_core_main/apis/apis.dart';
+import 'package:eliud_core_main/apis/wizard_api/new_app_wizard_info.dart';
+import 'package:eliud_core_main/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/app_entity.dart';
+import 'package:eliud_core_main/model/dialog_entity.dart';
+import 'package:eliud_core_main/model/drawer_model.dart';
+import 'package:eliud_core_main/model/app_bar_model.dart';
+import 'package:eliud_core_main/model/home_menu_model.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_drawer.dart';
+import 'package:eliud_core_main/model/member_medium_model.dart';
+import 'package:eliud_core_main/model/menu_def_model.dart';
+import 'package:eliud_core_main/model/page_entity.dart';
+import 'package:eliud_core_main/model/platform_medium_model.dart';
+import 'package:eliud_core_main/model/public_medium_model.dart';
+import 'package:eliud_core_main/model/storage_conditions_model.dart';
+import 'package:eliud_core_helpers/etc/random.dart';
+import 'package:eliud_core_main/storage/medium_helper.dart';
+import 'package:eliud_core_main/storage/member_medium_helper.dart';
+import 'package:eliud_core_main/storage/platform_medium_helper.dart';
+import 'package:eliud_core_main/storage/public_medium_helper.dart';
+import 'package:eliud_core_main/tools/main_abstract_repository_singleton.dart';
 import '../tools/defaults.dart';
 import 'jsonconst.dart';
 import 'package:http/http.dart' as http;
@@ -244,6 +244,7 @@ class JsonToModelsHelper {
                 var componentId = split[1];
                 var values = entry.value;
                 var retrieveRepo = Apis.apis()
+                    .getRegistryApi()
                     .getRetrieveRepository(pluginName, componentId);
                 if (retrieveRepo != null) {
                   var documentIds = await restoreFromMap(
@@ -353,6 +354,7 @@ class JsonToModelsHelper {
                 var values = entry.value;
                 print("restoring: $pluginName $componentId");
                 var retrieveRepo = Apis.apis()
+                    .getRegistryApi()
                     .getRetrieveRepository(pluginName, componentId);
                 if (retrieveRepo != null) {
                   var documentIds = await restoreFromMap(
@@ -430,6 +432,7 @@ class JsonToModelsHelper {
     tasks.add(() async {
       for (var createdComponent in createdComponents) {
         var componentSpecs = Apis.apis()
+            .getRegistryApi()
             .getComponentSpecs(createdComponent.componentId);
         if (componentSpecs == null) {
           print(

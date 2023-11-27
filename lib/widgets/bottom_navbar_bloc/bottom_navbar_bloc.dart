@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/home_menu_model.dart';
+import 'package:eliud_core_main/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/home_menu_model.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 
 import 'bottom_navbar_event.dart';

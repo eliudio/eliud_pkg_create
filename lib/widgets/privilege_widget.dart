@@ -1,14 +1,14 @@
-import 'package:eliud_core/core/blocs/access/access_bloc.dart';
-import 'package:eliud_core/core/blocs/access/access_event.dart';
-import 'package:eliud_core/core/blocs/access/state/access_state.dart';
-import 'package:eliud_core/core/blocs/access/state/logged_in.dart';
-import 'package:eliud_core/model/access_model.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core_model/style/frontend/has_button.dart';
-import 'package:eliud_core_model/style/frontend/has_container.dart';
-import 'package:eliud_core_model/style/frontend/has_list_tile.dart';
-import 'package:eliud_core_model/style/frontend/has_text.dart';
-import 'package:eliud_core/tools/widgets/header_widget.dart';
+import 'package:eliud_core/access/access_bloc.dart';
+import 'package:eliud_core/access/access_event.dart';
+import 'package:eliud_core/access/state/access_state.dart';
+import 'package:eliud_core/access/state/logged_in.dart';
+import 'package:eliud_core_model/model/access_model.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_button.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_container.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_list_tile.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_text.dart';
+import 'package:eliud_core/core/widgets/helper_widgets/header_widget.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

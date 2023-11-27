@@ -1,12 +1,11 @@
-import 'package:eliud_core_model/model/background_model.dart';
-import 'package:eliud_core_model/model/storage_conditions_model.dart';
-import 'package:eliud_core_model/tools/component/component_spec.dart';
-import 'package:eliud_core_model/tools/etc/random.dart';
-import 'package:eliud_core/core/editor/editor_base_bloc/editor_base_bloc.dart';
-import 'package:eliud_pkg_create/model/abstract_repository_singleton.dart';
-import 'package:eliud_pkg_create/model/play_store_model.dart';
-
-import '../../model/play_store_entity.dart';
+import 'package:eliud_core_main/model/background_model.dart';
+import 'package:eliud_core_main/model/storage_conditions_model.dart';
+import 'package:eliud_core_main/apis/registryapi/component/component_spec.dart';
+import 'package:eliud_core_helpers/etc/random.dart';
+import 'package:eliud_core_main/editor/editor_base_bloc/editor_base_bloc.dart';
+import 'package:eliud_pkg_create_model/model/abstract_repository_singleton.dart';
+import 'package:eliud_pkg_create_model/model/play_store_entity.dart';
+import 'package:eliud_pkg_create_model/model/play_store_model.dart';
 
 class PlayStoreBloc extends EditorBaseBloc<PlayStoreModel, PlayStoreEntity> {
   PlayStoreBloc(String appId, EditorFeedback feedback)

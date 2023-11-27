@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core_model/style/frontend/has_drawer.dart';
+import 'package:eliud_core_main/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/drawer_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_drawer.dart';
 import 'package:eliud_pkg_create/tools/defaults.dart';
 import 'drawer_event.dart';
 import 'drawer_state.dart';

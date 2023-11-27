@@ -1,4 +1,4 @@
-import 'package:eliud_core/model/drawer_model.dart';
+import 'package:eliud_core_main/model/drawer_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class DrawerCreateEvent extends Equatable {

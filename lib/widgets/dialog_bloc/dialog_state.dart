@@ -1,4 +1,4 @@
-import 'package:eliud_core/model/dialog_model.dart';
+import 'package:eliud_core_main/model/dialog_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class DialogCreateState extends Equatable {

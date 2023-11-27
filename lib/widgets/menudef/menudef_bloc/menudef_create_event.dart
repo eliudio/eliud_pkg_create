@@ -1,8 +1,8 @@
-import 'package:eliud_core/model/dialog_model.dart';
-import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/model/menu_item_model.dart';
-import 'package:eliud_core/model/page_model.dart';
-import 'package:eliud_pkg_workflow/model/workflow_model.dart';
+import 'package:eliud_core_main/model/dialog_model.dart';
+import 'package:eliud_core_main/model/menu_def_model.dart';
+import 'package:eliud_core_main/model/menu_item_model.dart';
+import 'package:eliud_core_main/model/page_model.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class MenuDefCreateEvent extends Equatable {

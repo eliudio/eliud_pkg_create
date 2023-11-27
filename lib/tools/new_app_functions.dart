@@ -3,10 +3,10 @@
 // We do this twice: the first time before wiping the data. This is to assure that we can wipe
 // The second time because the wipe has deleted the entry
 // This process works except when the app was create by someone else before. In which case you must delete the app through console.firebase.google.com or by logging in as the owner of the app
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/access_model.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
+import 'package:eliud_core_main/tools/main_abstract_repository_singleton.dart';
+import 'package:eliud_core_model/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_model/model/access_model.dart';
+import 'package:eliud_core_main/model/app_model.dart';
 
 Future<AppModel> claimOwnerShipApplication(String appId, String ownerID) async {
   // first delete the app

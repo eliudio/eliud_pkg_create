@@ -1,14 +1,14 @@
-import 'package:eliud_core/core/blocs/access/access_bloc.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/model/member_medium_list_bloc.dart';
-import 'package:eliud_core/model/member_medium_list_event.dart';
-import 'package:eliud_core/model/member_medium_list_state.dart';
-import 'package:eliud_core_model/model/member_medium_model.dart';
-import 'package:eliud_core_model/style/frontend/has_button.dart';
-import 'package:eliud_core_model/style/frontend/has_progress_indicator.dart';
-import 'package:eliud_core_model/style/frontend/has_text.dart';
-import 'package:eliud_core_model/tools/query/query_tools.dart';
+import 'package:eliud_core/access/access_bloc.dart';
+import 'package:eliud_core_helpers/query/query_tools.dart';
+import 'package:eliud_core_main/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/model/member_medium_list_bloc.dart';
+import 'package:eliud_core_main/model/member_medium_list_event.dart';
+import 'package:eliud_core_main/model/member_medium_list_state.dart';
+import 'package:eliud_core_main/model/member_medium_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_button.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_progress_indicator.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

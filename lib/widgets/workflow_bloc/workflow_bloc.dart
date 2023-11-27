@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:eliud_pkg_workflow/model/abstract_repository_singleton.dart';
-import 'package:eliud_pkg_workflow/model/workflow_model.dart';
+import 'package:eliud_pkg_workflow_model/model/abstract_repository_singleton.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_model.dart';
 import 'package:flutter/material.dart';
 import 'workflow_event.dart';
 import 'workflow_state.dart';

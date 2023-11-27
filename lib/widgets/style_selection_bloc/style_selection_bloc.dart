@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core_model/style/_default/default_style_family.dart';
-import 'package:eliud_core_model/style/style.dart';
-import 'package:eliud_core_model/style/style_family.dart';
-import 'package:eliud_core_model/style/style_registry.dart';
+import 'package:eliud_core_main/apis/style/_default/default_style_family.dart';
+import 'package:eliud_core_main/apis/style/style.dart';
+import 'package:eliud_core_main/apis/style/style_family.dart';
+import 'package:eliud_core_main/apis/style/style_registry.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/tools/main_abstract_repository_singleton.dart';
 import 'style_selection_event.dart';
 import 'style_selection_state.dart';
-
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
-import 'package:eliud_core/model/model_export.dart';
 
 typedef FeedbackSelection = Function(String? styleFamily, String? styleName);
 

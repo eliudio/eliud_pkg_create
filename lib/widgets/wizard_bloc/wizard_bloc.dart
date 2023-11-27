@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:eliud_core/core/blocs/access/access_bloc.dart';
+import 'package:eliud_core/access/access_bloc.dart';
 import 'package:eliud_pkg_create/widgets/wizard_bloc/wizard_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eliud_core_model/model/app_model.dart';
+import 'package:eliud_core_main/model/app_model.dart';
 import 'builders/wizard_runner.dart';
 import 'wizard_event.dart';
 

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:eliud_core_main/tools/main_abstract_repository_singleton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core/tools/main_abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/app_model.dart';
 import 'builders/app_builder.dart';
 import 'new_app_event.dart';
 import 'new_app_state.dart';

@@ -1,15 +1,15 @@
-import 'package:eliud_pkg_workflow/model/workflow_model.dart';
-import 'package:eliud_pkg_workflow/model/workflow_notification_model.dart';
-import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';
-import 'package:eliud_core/model/abstract_repository_singleton.dart';
-import 'package:eliud_core/model/app_bar_model.dart';
-import 'package:eliud_core/model/dialog_model.dart';
-import 'package:eliud_core/model/drawer_model.dart';
-import 'package:eliud_core/model/home_menu_model.dart';
-import 'package:eliud_core/model/menu_def_model.dart';
-import 'package:eliud_core/model/page_model.dart';
-import 'package:eliud_core_model/style/frontend/has_drawer.dart';
-import 'package:eliud_core_model/tools/etc/random.dart';
+import 'package:eliud_core_main/model/abstract_repository_singleton.dart';
+import 'package:eliud_core_main/model/dialog_model.dart';
+import 'package:eliud_core_main/model/menu_def_model.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_model.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_notification_model.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_task_model.dart';
+import 'package:eliud_core_main/model/app_bar_model.dart';
+import 'package:eliud_core_main/model/drawer_model.dart';
+import 'package:eliud_core_main/model/home_menu_model.dart';
+import 'package:eliud_core_main/model/page_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_drawer.dart';
+import 'package:eliud_core_helpers/etc/random.dart';
 
 String drawerID(String appID, DrawerType drawerType) {
   return '$appID-DRAWER${drawerType == DrawerType.left ? '-LEFT' : '-RIGHT'}';

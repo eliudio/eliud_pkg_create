@@ -1,15 +1,15 @@
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core_model/style/frontend/has_container.dart';
-import 'package:eliud_core_model/style/frontend/has_dialog_field.dart';
-import 'package:eliud_core_model/style/frontend/has_list_tile.dart';
-import 'package:eliud_core_model/style/frontend/has_text.dart';
-import 'package:eliud_core_model/tools/component/component_spec.dart';
-import 'package:eliud_core/tools/widgets/header_widget.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_container.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_dialog_field.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_list_tile.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_text.dart';
+import 'package:eliud_core_main/apis/registryapi/component/component_spec.dart';
+import 'package:eliud_core/core/widgets/helper_widgets/header_widget.dart';
 import 'package:eliud_pkg_create/widgets/utils/combobox_widget.dart';
 import 'package:eliud_pkg_create/widgets/utils/string_combobox_widget.dart';
-import 'package:eliud_pkg_workflow/model/workflow_notification_model.dart';
-import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';
-import 'package:eliud_pkg_workflow/tools/task/task_model_registry.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_notification_model.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_task_model.dart';
+import 'package:eliud_pkg_workflow_model/tools/task/task_model_registry.dart';
 import 'package:flutter/material.dart';
 
 class WorkflowTaskWidget extends StatefulWidget {
@@ -32,13 +32,13 @@ class WorkflowTaskWidget extends StatefulWidget {
 class _WorkflowTaskWidgetState extends State<WorkflowTaskWidget> {
   @override
   Widget build(BuildContext context) {
-    var tasks = TaskModelApis.apis().getTasks();
+    var tasks = TaskModelRegistry.registry()!.getTasks();
     var taskIdentifiers = tasks.map((element) => element.identifier).toList();
     TaskEditor? taskEditorWidget;
     TaskDetails? taskDetails;
     widget.model.task ??= tasks[0].createNewInstance();
     taskDetails =
-        TaskModelApis.apis().getDetails(widget.model.task!.identifier);
+        TaskModelRegistry.registry()!.getDetails(widget.model.task!.identifier);
     if (taskDetails != null) {
       taskEditorWidget = taskDetails.editor;
     }

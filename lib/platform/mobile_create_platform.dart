@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:eliud_core_model/model/app_model.dart';
-import 'package:eliud_core_model/style/frontend/has_progress_indicator.dart';
-import 'package:eliud_core_model/style/frontend/has_text.dart';
+import 'package:eliud_core_main/model/app_model.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_progress_indicator.dart';
+import 'package:eliud_core_main/apis/style/frontend/has_text.dart';
 import 'package:eliud_pkg_create/platform/create_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

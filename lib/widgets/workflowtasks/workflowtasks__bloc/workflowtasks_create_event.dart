@@ -1,4 +1,4 @@
-import 'package:eliud_pkg_workflow/model/workflow_task_model.dart';
+import 'package:eliud_pkg_workflow_model/model/workflow_task_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 

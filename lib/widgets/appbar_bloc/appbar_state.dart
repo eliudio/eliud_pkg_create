@@ -1,4 +1,4 @@
-import 'package:eliud_core/model/app_bar_model.dart';
+import 'package:eliud_core_main/model/app_bar_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AppBarCreateState extends Equatable {
