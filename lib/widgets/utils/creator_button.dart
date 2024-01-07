@@ -149,12 +149,14 @@ class _CreatorButtonState extends State<CreatorButton> {
               child: ElevatedButton.icon(
                   onPressed: widget.onTap,
                   icon: widget.icon,
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(widget.backgroundColor),
-                      padding: MaterialStateProperty.all(EdgeInsets.all(5)),
-                      textStyle:
-                          MaterialStateProperty.all(TextStyle(fontSize: 30))),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0.0),
+                    ),
+                    primary: widget.backgroundColor,
+                    elevation: 0,
+                    textStyle: TextStyle(fontSize: 30),
+                  ),
                   label: Text(widget.label!,
                       maxLines: 1,
                       style: TextStyle(

@@ -19,6 +19,7 @@ import 'package:eliud_pkg_etc/etc_package.dart';
 import 'package:eliud_pkg_medium/medium_package.dart';
 import 'package:eliud_pkg_text/text_package.dart';
 import 'package:eliud_pkg_workflow/workflow_package.dart';
+import 'package:eliud_core_main/apis/apis.dart';
 
 import 'creator_package_stub.dart'
     if (dart.library.io) 'creator_mobile_package.dart'
@@ -47,7 +48,7 @@ abstract class CreatorPackage extends Package {
       PlayStoreComponentEditorConstructor(),
     );
 
-    NewAppWizardRegistry.registry().register(LogoWizard());
+    Apis.apis().getWizardApi().register(LogoWizard());
 
     Apis.apis()
         .getRegistryApi()

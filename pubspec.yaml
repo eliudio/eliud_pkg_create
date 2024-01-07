@@ -6,40 +6,32 @@ homepage: https://eliud.io
 repository: https://github.com/eliudio/eliud_pkg_create
 version: 1.1.5+5
 environment:
-  sdk: '>=2.17.0 <4.0.0'
+  sdk: '>=3.2.0 <4.0.0'
   flutter: '>=3.0.0'
 dependencies:
-  bloc: ^8.1.2
-  cloud_firestore: ^4.12.2
-  collection: ^1.17.2
-  eliud_core:
+  split_view: ^3.2.1                                                                                 # ANDROID IOS LINUX MACOS WEB WINDOWS
+
+  eliud_core:                                                                                        # ANDROID IOS             WEB
     path: ../eliud_core
-  eliud_core_main:
+  eliud_core_main:                                                                                   # ANDROID IOS             WEB
     path: ../eliud_core_main
-  eliud_core_helpers:
+  eliud_core_helpers:                                                                                # ANDROID IOS             WEB
     path: ../eliud_core_helpers
-  eliud_core_model:
+  eliud_core_model:                                                                                  # ANDROID IOS             WEB
     path: ../eliud_core_model
-  eliud_pkg_create_model:
+  eliud_pkg_create_model:                                                                            # ANDROID IOS             WEB
     path: ../eliud_pkg_create_model
-  eliud_pkg_medium:
+  eliud_pkg_medium:                                                                                  # ANDROID IOS             WEB
     path: ../eliud_pkg_medium
-  eliud_pkg_workflow:
+  eliud_pkg_workflow:                                                                                # ANDROID IOS             WEB
     path: ../eliud_pkg_workflow
-  eliud_pkg_workflow_model:
+  eliud_pkg_workflow_model:                                                                          # ANDROID IOS             WEB
     path: ../eliud_pkg_workflow_model
-  eliud_pkg_text:
+  eliud_pkg_text:                                                                                    # ANDROID IOS             WEB
     path: ../eliud_pkg_text
-  eliud_pkg_etc: 
+  eliud_pkg_etc:                                                                                     # ANDROID IOS             WEB
     path: ../eliud_pkg_etc
-  equatable: ^2.0.5
-  file_picker: ^5.2.0+1
-  flutter_bloc: ^8.1.3
-  http: ^1.1.0
-  intl: ^0.18.1
-  meta: ^1.9.1
-  path_provider: ^2.1.1
-  split_view: ^3.2.1
+
   flutter:
     sdk: flutter
 dev_dependencies:
