@@ -413,34 +413,34 @@ packages:
     dependency: "direct main"
     description:
       name: eliud_core
-      sha256: f30edc4d72677d4ce882d87fc11e4456b45634fcf42ed5bfef2aaab0535d8351
+      sha256: ea479b50a52a3bf63cdb5f3decfebc3697954000d94fabea99531e147bdd4863
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "1.3.0"
   eliud_core_helpers:
     dependency: "direct main"
     description:
       name: eliud_core_helpers
-      sha256: "5e6b6befc0378821cd881cdce75cb36e8777de7716a5fb416e9b4c5d1a023aef"
+      sha256: "230ef850b9928edb0fe63518a1568bb8359ecff7ebfce24d8c8a6d7a53921c0c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.3.0"
   eliud_core_main:
     dependency: "direct main"
     description:
       name: eliud_core_main
-      sha256: ab13d855af761552240f808bcdb21790289d189acce2c7b16062dc7eb70a5254
+      sha256: "9169777807299e182c57a627dc6be612ddb4ef2585d087682440caa770e8385f"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.3.0"
   eliud_core_model:
     dependency: "direct main"
     description:
       name: eliud_core_model
-      sha256: f78ad3b2e064cf963390a920e59ce6746be81288d5704465b4a153649dfc5657
+      sha256: "19164c7b5b8e2ee15f74c92df3b9926889de45c5f914c7b25b75d8ac863b5c09"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.3.0"
   eliud_generator:
     dependency: "direct dev"
     description:
@@ -453,90 +453,90 @@ packages:
     dependency: "direct main"
     description:
       name: eliud_pkg_create_model
-      sha256: "0bace9a11cdc32dce59f1cda78e3269fafcff5b3d59781e8fcd834c80f35afaa"
+      sha256: "22a57c916fe5fc6f344de077f9239739fe2193e12df2ac3da8e7b81a71076635"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.3.0"
   eliud_pkg_etc:
     dependency: "direct main"
     description:
       name: eliud_pkg_etc
-      sha256: d82fd3a090853605c0b9f06d56b7ea50e58ec822ce7101d276d8853b32a8e38c
+      sha256: "6ea931a3fff2cb104cb788a97b3bdc5d434913728064481a4f98752dad018f61"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.7"
+    version: "1.3.0"
   eliud_pkg_etc_model:
     dependency: transitive
     description:
       name: eliud_pkg_etc_model
-      sha256: d3fb9f27f4ee8f700694537c6d11ea96076673e8ffef9c4bfcad2763541e371e
+      sha256: "23e8cae6018d42088ca2b4071ed1a02e628ec115abec198256eae7f8d0b521eb"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.3.0"
   eliud_pkg_medium:
     dependency: "direct main"
     description:
       name: eliud_pkg_medium
-      sha256: fbe8d17d5f5ac0bd033b9ef9f37fb3ce0ce5211e602e61d785e6b9b3bbd1acec
+      sha256: "15e86d937892dafbec5803dc33729b8d3b4a4d72bc7996b9ebf94c0815e6ef44"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "1.3.0"
   eliud_pkg_medium_model:
     dependency: transitive
     description:
       name: eliud_pkg_medium_model
-      sha256: "52781ab98994c2bfa003100cd47b832a3d67ef85a917c4a18c577431c667c9d9"
+      sha256: "0d89a435e08defaa05280f27e5c19d951b082abbc61e75acd3492d8fb0ccba72"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.3.0"
   eliud_pkg_notifications:
     dependency: transitive
     description:
       name: eliud_pkg_notifications
-      sha256: "0a99a0476c96236d5a4d288f7e7b0e5d346f6e0a06180fe66227981c77f69b5a"
+      sha256: "66bcce270e9588e135add3f03388db86fd18e5ff675aa9e7578034818a37a9e7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "1.3.0"
   eliud_pkg_notifications_model:
     dependency: transitive
     description:
       name: eliud_pkg_notifications_model
-      sha256: f3efd59246a6c2c1f815ff9ac4cc8238eefa882ede1318c08f0aa5682982a555
+      sha256: fe0a881e87520d32b9d831eccfd86d10c8bdb12c32ec3e5c456c269d535f628f
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.3.0"
   eliud_pkg_text:
     dependency: "direct main"
     description:
       name: eliud_pkg_text
-      sha256: "2ef37fc12a9b84cef881b01b0e50ab65ba9499df1bd1752cd33d813be8f92d01"
+      sha256: b0b444229979e58c28a77aaa87579362a47d5da6bc77246c7a1cadf1fba97407
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.7"
+    version: "1.3.0"
   eliud_pkg_text_model:
     dependency: transitive
     description:
       name: eliud_pkg_text_model
-      sha256: e2396618bb089956c113c1227fb350d429c7575f3d4b5239adfe54adc748d632
+      sha256: b6e272da79df0af5fb8caf68be0d04db101e252e145f3c378656298f1269b82f
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.3.0"
   eliud_pkg_workflow:
     dependency: "direct main"
     description:
       name: eliud_pkg_workflow
-      sha256: "0fda93eeed693b57af57d19daa36db069941c183b4d6943af1d6899a54896e37"
+      sha256: "4e069fbe1fce6e8998edd71c9aeeb18cbb3d4d1846a01398c71f86784a6c96db"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "1.3.0"
   eliud_pkg_workflow_model:
     dependency: "direct main"
     description:
       name: eliud_pkg_workflow_model
-      sha256: f059978c74e647ac442162f3fa36b7c31ddc1dac3b4f77e75610c5283b4591d6
+      sha256: "9820a76b96dd431bed26eeb9dae18ef69744b6fd3a1d3b32aea589f8a2c4c29c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.3.0"
   equatable:
     dependency: "direct main"
     description:
@@ -1168,6 +1168,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.9"
+  leak_tracker:
+    dependency: transitive
+    description:
+      name: leak_tracker
+      sha256: "3f87a60e8c63aecc975dda1ceedbc8f24de75f09e4856ea27daf8958f2f0ce05"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.0.5"
+  leak_tracker_flutter_testing:
+    dependency: transitive
+    description:
+      name: leak_tracker_flutter_testing
+      sha256: "932549fb305594d82d7183ecd9fa93463e9914e1b67cacc34bc40906594a1806"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.5"
+  leak_tracker_testing:
+    dependency: transitive
+    description:
+      name: leak_tracker_testing
+      sha256: "6ba465d5d76e67ddf503e1161d1f4a6bc42306f9d66ca1e8f079a47290fb06d3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   lints:
     dependency: "direct dev"
     description:
@@ -1188,26 +1212,26 @@ packages:
     dependency: transitive
     description:
       name: matcher
-      sha256: "1803e76e6653768d64ed8ff2e1e67bea3ad4b923eb5c56a295c3e634bad5960e"
+      sha256: d2323aa2060500f906aa31a895b4030b6da3ebdcc5619d14ce1aada65cd161cb
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.16"
+    version: "0.12.16+1"
   material_color_utilities:
     dependency: transitive
     description:
       name: material_color_utilities
-      sha256: "9528f2f296073ff54cb9fee677df673ace1218163c3bc7628093e7eed5203d41"
+      sha256: f7142bb1154231d7ea5f96bc7bde4bda2a0945d2806bb11670e30b850d56bdec
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.11.1"
   meta:
     dependency: "direct main"
     description:
       name: meta
-      sha256: a6e590c838b18133bb482a2745ad77c5bb7715fb0451209e1a7567d416678b8e
+      sha256: bdb68674043280c3428e9ec998512fb681678676b3c54e773629ffe74419f8c7
       url: "https://pub.dev"
     source: hosted
-    version: "1.10.0"
+    version: "1.15.0"
   mime:
     dependency: transitive
     description:
@@ -1268,10 +1292,10 @@ packages:
     dependency: transitive
     description:
       name: path
-      sha256: "8829d8a55c13fc0e37127c29fedf290c102f4e40ae94ada574091fe0ff96c917"
+      sha256: "087ce49c3f0dc39180befefc60fdb4acd8f8620e5682fe2476afd0b3688bb4af"
       url: "https://pub.dev"
     source: hosted
-    version: "1.8.3"
+    version: "1.9.0"
   path_parsing:
     dependency: transitive
     description:
@@ -1593,10 +1617,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: "5c2f730018264d276c20e4f1503fd1308dfbbae39ec8ee63c5236311ac06954b"
+      sha256: "5b8a98dafc4d5c4c9c72d8b31ab2b23fc13422348d2997120294d3bac86b4ddb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.1"
+    version: "0.7.2"
   timing:
     dependency: transitive
     description:
@@ -1805,6 +1829,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.3"
+  vm_service:
+    dependency: transitive
+    description:
+      name: vm_service
+      sha256: "5c5f338a667b4c644744b661f309fb8080bb94b18a7e91ef1dbd343bed00ed6d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "14.2.5"
   wakelock_plus:
     dependency: transitive
     description:
@@ -1918,5 +1950,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.2.0 <4.0.0"
-  flutter: ">=3.16.0"
+  dart: ">=3.3.0 <4.0.0"
+  flutter: ">=3.18.0-18.0.pre.54"

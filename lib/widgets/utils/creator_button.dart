@@ -153,7 +153,7 @@ class _CreatorButtonState extends State<CreatorButton> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(0.0),
                     ),
-                    primary: widget.backgroundColor,
+                    //primary: widget.backgroundColor,
                     elevation: 0,
                     textStyle: TextStyle(fontSize: 30),
                   ),
